@@ -136,7 +136,6 @@ namespace Marain.Workflows.Specs.Bindings
                 this.cancellationSource.Cancel();
                 this.listener.Stop();
                 await this.mainLoopTask;
-                ((IDisposable)this.listener).Dispose();
             }
 
             private async Task MainLoop(CancellationToken cancel)
