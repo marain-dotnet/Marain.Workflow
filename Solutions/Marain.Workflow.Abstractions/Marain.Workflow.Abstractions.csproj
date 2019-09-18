@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageDescription></PackageDescription>
+    <PackageTags></PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
+  </PropertyGroup>
+
+  <Import Project="..\Common.NetStandard_2_0.proj" />
+
+  <ItemGroup>
+    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.11.0" />
+    <PackageReference Include="Corvus.ContentHandling.Json" Version="0.7.0" />
+    <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="0.1.0" />
+    <PackageReference Include="Corvus.Leasing.Abstractions" Version="0.3.0" />
+  </ItemGroup>
+
+</Project>
