@@ -40,12 +40,12 @@ namespace Marain.Workflows
         /// <summary>
         ///     The list of actions.
         /// </summary>
-        private IList<IWorkflowAction> actions;
+        private List<IWorkflowAction> actions;
 
         /// <summary>
         ///     The list of conditions.
         /// </summary>
-        private IList<IWorkflowCondition> conditions;
+        private List<IWorkflowCondition> conditions;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="WorkflowTransition" /> class.
@@ -66,7 +66,7 @@ namespace Marain.Workflows
         /// <remarks>
         ///     Actions will be executed sequentially and in order.
         /// </remarks>
-        public IList<IWorkflowAction> Actions
+        public List<IWorkflowAction> Actions
         {
             get => this.actions ?? (this.actions = new List<IWorkflowAction>());
 
@@ -77,7 +77,7 @@ namespace Marain.Workflows
         ///     Gets or sets the list conditions that must be true in order for this transition
         ///     to be valid.
         /// </summary>
-        public IList<IWorkflowCondition> Conditions
+        public List<IWorkflowCondition> Conditions
         {
             get => this.conditions ?? (this.conditions = new List<IWorkflowCondition>());
 

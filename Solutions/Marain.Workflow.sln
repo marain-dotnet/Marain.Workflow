@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevOps", "DevOps", "{D29CAB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Abstractions", "Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj", "{3C15AD77-58B3-4B15-A391-739EC449F798}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Specs", "Marain.Workflow.Specs\Marain.Workflow.Specs.csproj", "{B5340C8C-2C45-431B-AF8B-9360351F2FA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{3C15AD77-58B3-4B15-A391-739EC449F798}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C15AD77-58B3-4B15-A391-739EC449F798}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C15AD77-58B3-4B15-A391-739EC449F798}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5340C8C-2C45-431B-AF8B-9360351F2FA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5340C8C-2C45-431B-AF8B-9360351F2FA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5340C8C-2C45-431B-AF8B-9360351F2FA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5340C8C-2C45-431B-AF8B-9360351F2FA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

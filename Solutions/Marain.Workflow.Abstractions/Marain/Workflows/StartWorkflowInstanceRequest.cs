@@ -25,10 +25,10 @@ namespace Marain.Workflows
         public string ContentType => RegisteredContentType;
 
         /// <summary>
-        ///     Gets or sets the context. This will be passed to the <see cref="WorkflowEngine.CreateWorkflowInstanceAsync(string, string, string, IDictionary{string, string})" />
+        ///     Gets or sets the context. This will be passed to the <see cref="WorkflowEngine.CreateWorkflowInstanceAsync(string, string, string, Dictionary{string, string})" />
         ///     method when creating the new instance.
         /// </summary>
-        public IDictionary<string, string> Context { get; set; }
+        public Dictionary<string, string> Context { get; set; }
 
         /// <summary>
         ///     Gets or sets the id of this request. This can be used for diagnostic purposes.

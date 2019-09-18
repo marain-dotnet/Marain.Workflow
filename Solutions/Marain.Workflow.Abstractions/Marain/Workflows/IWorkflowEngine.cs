@@ -58,7 +58,7 @@ namespace Marain.Workflows
         /// <returns>
         /// A <see cref="Task"/> which completes with the created workflow instance.
         /// </returns>
-        Task<WorkflowInstance> StartWorkflowInstanceAsync(string workflowId, string partitionKey = null, string instanceId = null, IDictionary<string, string> context = null);
+        Task<WorkflowInstance> StartWorkflowInstanceAsync(string workflowId, string partitionKey = null, string instanceId = null, Dictionary<string, string> context = null);
 
         /// <summary>
         /// Gets a <see cref="Workflow"/>.

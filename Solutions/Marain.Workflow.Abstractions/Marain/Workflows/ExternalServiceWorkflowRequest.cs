@@ -83,6 +83,6 @@ namespace Marain.Workflows
         /// <see cref="InvokeExternalServiceCondition.ContextItemsToInclude"/>, and will be null if
         /// that list is null or empty.
         /// </remarks>
-        public IDictionary<string, string> ContextProperties { get; set; }
+        public Dictionary<string, string> ContextProperties { get; set; }
     }
 }

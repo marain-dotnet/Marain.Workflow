@@ -44,27 +44,27 @@ namespace Marain.Workflows
         /// <summary>
         ///     The list of entry actions.
         /// </summary>
-        private IList<IWorkflowAction> entryActions;
+        private List<IWorkflowAction> entryActions;
 
         /// <summary>
         ///     The list of entry conditions.
         /// </summary>
-        private IList<IWorkflowCondition> entryConditions;
+        private List<IWorkflowCondition> entryConditions;
 
         /// <summary>
         ///     The list of exit actions.
         /// </summary>
-        private IList<IWorkflowAction> exitActions;
+        private List<IWorkflowAction> exitActions;
 
         /// <summary>
         ///     The list of exit conditions.
         /// </summary>
-        private IList<IWorkflowCondition> exitConditions;
+        private List<IWorkflowCondition> exitConditions;
 
         /// <summary>
         ///     The list of transitions.
         /// </summary>
-        private IList<WorkflowTransition> transitions;
+        private List<WorkflowTransition> transitions;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="WorkflowState" /> class.
@@ -92,7 +92,7 @@ namespace Marain.Workflows
         /// <summary>
         ///     Gets the list of <see cref="IWorkflowAction" />s that will be executed when entering this state.
         /// </summary>
-        public IList<IWorkflowAction> EntryActions
+        public List<IWorkflowAction> EntryActions
         {
             get => this.entryActions ?? (this.entryActions = new List<IWorkflowAction>());
 
@@ -102,7 +102,7 @@ namespace Marain.Workflows
         /// <summary>
         ///     Gets the list of <see cref="IWorkflowCondition" />s that must be true in order to enter this state.
         /// </summary>
-        public IList<IWorkflowCondition> EntryConditions
+        public List<IWorkflowCondition> EntryConditions
         {
             get => this.entryConditions ?? (this.entryConditions = new List<IWorkflowCondition>());
 
@@ -112,7 +112,7 @@ namespace Marain.Workflows
         /// <summary>
         ///     Gets the list of <see cref="IWorkflowAction" />s that will be executed when leaving this state.
         /// </summary>
-        public IList<IWorkflowAction> ExitActions
+        public List<IWorkflowAction> ExitActions
         {
             get => this.exitActions ?? (this.exitActions = new List<IWorkflowAction>());
 
@@ -122,7 +122,7 @@ namespace Marain.Workflows
         /// <summary>
         ///     Gets the list of <see cref="IWorkflowCondition" />s that must be true in order to leave this state.
         /// </summary>
-        public IList<IWorkflowCondition> ExitConditions
+        public List<IWorkflowCondition> ExitConditions
         {
             get => this.exitConditions ?? (this.exitConditions = new List<IWorkflowCondition>());
 
@@ -137,7 +137,7 @@ namespace Marain.Workflows
         /// <summary>
         ///     Gets the list of transitions that can be used to leave this state.
         /// </summary>
-        public IList<WorkflowTransition> Transitions
+        public List<WorkflowTransition> Transitions
         {
             get => this.transitions ?? (this.transitions = new List<WorkflowTransition>());
 

@@ -21,7 +21,7 @@ namespace Marain.Workflows
         /// <summary>
         ///     The list of possible states for the workflow.
         /// </summary>
-        private IDictionary<string, WorkflowState> states;
+        private Dictionary<string, WorkflowState> states;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Workflow" /> class.
@@ -92,7 +92,7 @@ namespace Marain.Workflows
         ///     Use <see cref="CreateState(string, string, string)" /> or <see cref="AddState(WorkflowState)"/>
         ///     to add new states, and <see cref="GetState" /> and <see cref="RemoveState" /> to retrieve/remove states.
         /// </remarks>
-        public IDictionary<string, WorkflowState> States
+        public Dictionary<string, WorkflowState> States
         {
             get => this.states ?? (this.states = new Dictionary<string, WorkflowState>());
 

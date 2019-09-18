@@ -23,7 +23,7 @@ namespace Marain.Workflows
         ///     Context dictionary for the workflow. This can be used to store any useful data
         ///     needed by workflow states to simplify execution of their triggers and actions.
         /// </summary>
-        private IDictionary<string, string> context;
+        private Dictionary<string, string> context;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="WorkflowInstance" /> class.
@@ -50,7 +50,7 @@ namespace Marain.Workflows
         ///         can choose to add specific pieces of that data.
         ///     </para>
         /// </remarks>
-        public IDictionary<string, string> Context
+        public Dictionary<string, string> Context
         {
             get => this.context ?? (this.context = new Dictionary<string, string>());
 
@@ -87,7 +87,7 @@ namespace Marain.Workflows
         ///         current trigger's subjects (see <see cref="IWorkflowTrigger.GetSubjects" />).
         ///     </para>
         /// </remarks>
-        public IEnumerable<string> Interests { get; set; }
+        public List<string> Interests { get; set; }
 
         /// <summary>
         ///     Gets or sets a value indicating whether the instance has changed since it was loaded.

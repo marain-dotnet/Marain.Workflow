@@ -94,7 +94,7 @@ namespace Marain.Workflows
         }
 
         /// <inheritdoc/>
-        public Task<WorkflowInstance> StartWorkflowInstanceAsync(string workflowId, string partitionKey = null, string instanceId = null, IDictionary<string, string> context = null)
+        public Task<WorkflowInstance> StartWorkflowInstanceAsync(string workflowId, string partitionKey = null, string instanceId = null, Dictionary<string, string> context = null)
         {
             return this.CreateWorkflowInstanceAsync(workflowId, partitionKey, instanceId, context);
         }
@@ -110,11 +110,11 @@ namespace Marain.Workflows
         {
             QueryDefinition spec = BuildFindInstanceIdsSpec(subjects);
 
-            FeedIterator<string> results = this.workflowInstanceRepository.GetItemQueryIterator<string>(spec, continuationToken, new QueryRequestOptions { MaxItemCount = pageSize });
+            FeedIterator<dynamic> results = this.workflowInstanceRepository.GetItemQueryIterator<dynamic>(spec, continuationToken, new QueryRequestOptions { MaxItemCount = pageSize });
             if (results.HasMoreResults)
             {
-                FeedResponse<string> batch = await Retriable.RetryAsync(() => results.ReadNextAsync()).ConfigureAwait(false);
-                return batch.Resource.ToList();
+                FeedResponse<dynamic> batch = await Retriable.RetryAsync(() => results.ReadNextAsync()).ConfigureAwait(false);
+                return batch.Resource.Select(r => (string)r.id).ToList();
             }
 
             return Enumerable.Empty<string>();
@@ -290,7 +290,7 @@ namespace Marain.Workflows
         /// <param name="workflowInstanceId">The id of the workflow instance to create.</param>
         /// <param name="context">The context for the workflow instance to create.</param>
         /// <returns>The new workflow instance.</returns>
-        private async Task<WorkflowInstance> CreateWorkflowInstanceAsync(string workflowId, string partitionKey = null, string workflowInstanceId = null, IDictionary<string, string> context = null)
+        private async Task<WorkflowInstance> CreateWorkflowInstanceAsync(string workflowId, string partitionKey = null, string workflowInstanceId = null, Dictionary<string, string> context = null)
         {
             var instance = new WorkflowInstance();
 
@@ -681,7 +681,7 @@ namespace Marain.Workflows
         ///         takes a shared lease at the earliest possible moment.
         ///     </para>
         /// </remarks>
-        private async Task InitializeInstanceAsync(WorkflowInstance instance, Workflow workflow, IDictionary<string, string> context = null)
+        private async Task InitializeInstanceAsync(WorkflowInstance instance, Workflow workflow, Dictionary<string, string> context = null)
         {
             instance.WorkflowId = workflow.Id;
             instance.Context = context;
