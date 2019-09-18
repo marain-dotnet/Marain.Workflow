@@ -23,22 +23,15 @@ jobs:
     solution_to_build: $(Endjin_Solution_To_Build)
     postCustomEnvironmentVariables:
       - powershell: |
+          Write-Host "##vso[task.setvariable variable=AzureServicesAuthConnectionString]$Env:ENDJIN_AZURESERVICESAUTHCONNECTIONSTRING"
           Write-Host "##vso[task.setvariable variable=RootTenantBlobStorageConfigurationOptions__AccountName]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
-        displayName: 'Set Azure Connection String Environment Variable'
-        env:
-          ENDJIN_AZURESTORAGECONNECTIONSTRING: $(Endjin_AzureStorageConnectionString)
-      - powershell: |
           Write-Host "##vso[task.setvariable variable=RootTenantCosmosConfigurationOptions__AccountUri]$Env:ENDJIN_COSMOSDBACCOUNTURI"
-        displayName: 'Set Cosmos Account URI Environment Variable'
-        env:
-          ENDJIN_COSMOSDBACCOUNTURI: $(CosmosDbAccountUri)
-      - powershell: |
           Write-Host "##vso[task.setvariable variable=RootTenantCosmosConfigurationOptions__AccountKeySecretName]$Env:ENDJIN_COSMOSACCOUNTKEYSECRETNAME"
-        displayName: 'Set Azure Connection String Environment Variable'
-        env:
-          ENDJIN_COSMOSACCOUNTKEYSECRETNAME: $(CosmosDbKeySecretName)
-      - powershell: |
           Write-Host "##vso[task.setvariable variable=RootTenantCosmosConfigurationOptions__KeyVaultName]$Env:ENDJIN_KEYVAULTNAME"
-        displayName: 'Set Azure Connection String Environment Variable'
+        displayName: 'Set Custom Environment Variables'
         env:
+          ENDJIN_AZURESERVICESAUTHCONNECTIONSTRING: $(Endjin_AzureServicesAuthConnectionString)
+          ENDJIN_AZURESTORAGECONNECTIONSTRING: $(Endjin_AzureStorageConnectionString)
+          ENDJIN_COSMOSDBACCOUNTURI: $(CosmosDbAccountUri)
+          ENDJIN_COSMOSACCOUNTKEYSECRETNAME: $(CosmosDbKeySecretName)
           ENDJIN_KEYVAULTNAME: $(KeyVaultName)
