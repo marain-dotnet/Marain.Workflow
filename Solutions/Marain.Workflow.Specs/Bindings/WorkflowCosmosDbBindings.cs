@@ -51,19 +51,25 @@ namespace Marain.Workflows.Specs.Bindings
 
             string containerBase = Guid.NewGuid().ToString();
 
+            CosmosConfiguration cosmosConfig = tenantProvider.Root.GetDefaultCosmosConfiguration();
+            // Use a fixed shared database without
+            cosmosConfig.DisableTenantIdPrefix = true;
+            cosmosConfig.DatabaseName = "endjinspecssharedthroughput";
+            tenantProvider.Root.SetDefaultCosmosConfiguration(cosmosConfig);
+
             Container workflowsRepository = factory.GetContainerForTenantAsync(
                 tenantProvider.Root,
-                new CosmosContainerDefinition("marainspecssharedthroughput", $"{containerBase}workflows", "/partitionKey")).Result;
+                new CosmosContainerDefinition("endjinspecssharedthroughput", $"{containerBase}workflows", "/partitionKey", databaseThroughput: 400)).Result;
             featureContext.Set(workflowsRepository, WorkflowsRepository);
 
             Container workflowInstances = factory.GetContainerForTenantAsync(
                 tenantProvider.Root,
-                new CosmosContainerDefinition("endjinspecssharedthroughput", $"{containerBase}workflowinstances", "/partitionKey")).Result;
+                new CosmosContainerDefinition("endjinspecssharedthroughput", $"{containerBase}workflowinstances", "/partitionKey", databaseThroughput: 400)).Result;
             featureContext.Set(workflowInstances, WorkflowInstancesRepository);
 
             Container testDocumentsRepository = factory.GetContainerForTenantAsync(
                 tenantProvider.Root,
-                new CosmosContainerDefinition("endjinspecssharedthroughput", $"{containerBase}testdocuments", "/partitionKey")).Result;
+                new CosmosContainerDefinition("endjinspecssharedthroughput", $"{containerBase}testdocuments", "/partitionKey", databaseThroughput: 400)).Result;
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
         }
 
