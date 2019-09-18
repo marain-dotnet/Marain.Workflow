@@ -136,6 +136,7 @@ namespace Marain.Workflows.Specs.Bindings
                 this.cancellationSource.Cancel();
                 this.listener.Stop();
                 await this.mainLoopTask;
+                ((IDisposable)this.listener).Dispose();
             }
 
             private async Task MainLoop(CancellationToken cancel)
@@ -190,7 +191,7 @@ namespace Marain.Workflows.Specs.Bindings
                 response.ContentLength64 = buffer.Length;
                 Stream output = response.OutputStream;
                 output.Write(buffer, 0, buffer.Length);
-                output.Close();
+                //output.Close();
 
                 response.ContentType = "application/json";
             }
