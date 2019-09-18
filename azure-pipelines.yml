@@ -32,6 +32,6 @@ jobs:
         env:
           ENDJIN_AZURESERVICESAUTHCONNECTIONSTRING: $(Endjin_AzureServicesAuthConnectionString)
           ENDJIN_AZURESTORAGECONNECTIONSTRING: $(Endjin_AzureStorageConnectionString)
-          ENDJIN_COSMOSDBACCOUNTURI: $(CosmosDbAccountUri)
-          ENDJIN_COSMOSACCOUNTKEYSECRETNAME: $(CosmosDbKeySecretName)
-          ENDJIN_KEYVAULTNAME: $(KeyVaultName)
+          ENDJIN_COSMOSDBACCOUNTURI: $(Endjin_CosmosDbAccountUri)
+          ENDJIN_COSMOSACCOUNTKEYSECRETNAME: $(Endjin_CosmosDbKeySecretName)
+          ENDJIN_KEYVAULTNAME: $(Endjin_KeyVaultName)
