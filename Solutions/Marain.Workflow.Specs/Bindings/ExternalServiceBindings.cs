@@ -140,7 +140,7 @@ namespace Marain.Workflows.Specs.Bindings
                     await this.mainLoopTask;
                     ((IDisposable)this.listener).Dispose();
                 }
-                catch(ObjectDisposedException ex)
+                catch (ObjectDisposedException)
                 {
                 }
             }

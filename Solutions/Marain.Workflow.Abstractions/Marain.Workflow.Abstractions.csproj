@@ -14,10 +14,10 @@
   <Import Project="..\Common.NetStandard_2_0.proj" />
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.11.0" />
-    <PackageReference Include="Corvus.ContentHandling.Json" Version="0.8.0" />
+    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.15.0" />
+    <PackageReference Include="Corvus.ContentHandling.Json" Version="0.11.0" />
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="0.1.0" />
-    <PackageReference Include="Corvus.Leasing.Abstractions" Version="0.3.0" />
+    <PackageReference Include="Corvus.Leasing.Abstractions" Version="0.4.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
   </ItemGroup>
 
