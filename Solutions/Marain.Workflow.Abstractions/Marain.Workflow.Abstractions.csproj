@@ -18,7 +18,7 @@
     <PackageReference Include="Corvus.ContentHandling.Json" Version="0.11.0" />
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="0.1.0" />
     <PackageReference Include="Corvus.Leasing.Abstractions" Version="0.4.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
 </Project>
