@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "EventHubListenerConnectionString": "",
+  "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
+  "EventHubStorageAccountConnectionString": "UseDevelopmentStorage=true",
+  "KeyVaultName": "",
+  "CosmosDbAccountUri": "",
+  "kv:workflowstorecosmosdbkey": ""
+}

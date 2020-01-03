@@ -1,5 +1,5 @@
-﻿// <copyright file="CreateCatalogItemTrigger.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="CauseExternalInvocationTrigger.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable SA1600, CS1591
@@ -10,7 +10,7 @@ namespace Marain.Workflows.Specs.TestObjects.Triggers
 
     public class CauseExternalInvocationTrigger : IWorkflowTrigger
     {
-        public const string RegisteredContentType = "application/vnd.marain.datacatalog.causeexternalinvocationtrigger";
+        public const string RegisteredContentType = "application/vnd.endjin.datacatalog.causeexternalinvocationtrigger";
 
         public string Id { get; set; }
 
@@ -18,8 +18,8 @@ namespace Marain.Workflows.Specs.TestObjects.Triggers
 
         public string PartitionKey => this.Id;
 
-        public IEnumerable<string> GetSubjects() => new[] { this.Id };
-
         public string OtherData { get; set; }
+
+        public IEnumerable<string> GetSubjects() => new[] { this.Id };
     }
 }

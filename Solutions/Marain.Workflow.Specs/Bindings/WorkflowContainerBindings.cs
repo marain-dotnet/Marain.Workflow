@@ -1,21 +1,18 @@
-﻿// <copyright file="WorkflowContainerBindings.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="WorkflowContainerBindings.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 namespace Marain.Workflows.Specs.Bindings
 {
-    using Corvus.SpecFlow.Extensions;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.Leasing;
+    using Corvus.SpecFlow.Extensions;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Subjects;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-
     using TechTalk.SpecFlow;
-    using Microsoft.Extensions.Configuration;
-    using System.Collections.Generic;
-    using Corvus.Tenancy;
 
     /// <summary>
     ///     Container related bindings to configure the service provider for features.
@@ -29,45 +26,43 @@ namespace Marain.Workflows.Specs.Bindings
         /// <param name="featureContext">
         ///     The feature context.
         /// </param>
-        [BeforeFeature("@setupContainer", Order = ContainerBeforeFeatureOrder.PopulateServiceCollection)]
+        [BeforeFeature("@perFeatureContainer", Order = ContainerBeforeFeatureOrder.PopulateServiceCollection)]
         public static void InitializeContainer(FeatureContext featureContext)
         {
             ContainerBindings.ConfigureServices(
                 featureContext,
-                serviceCollection =>
+                services =>
                 {
-                    serviceCollection.AddLogging(
-                        b =>
-                        {
-                            b.AddConsole();
-                            b.AddDebug();
-                        });
-
-                    var configData = new Dictionary<string, string>
-                    {
-                        //// { "STORAGEACCOUNTCONNECTIONSTRING", "UseDevelopmentStorage=true" },
-                    };
-                    IConfigurationRoot config = new ConfigurationBuilder()
-                        .AddInMemoryCollection(configData)
+                    IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
                         .AddEnvironmentVariables()
-                        .AddJsonFile("local.settings.json", true, true)
-                        .Build();
+                        .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true);
 
-                    serviceCollection.AddContentSerialization();
-                    serviceCollection.AddSingleton(config);
-                    serviceCollection.AddSingleton<ITenantProvider, FakeTenantProvider>();
-                    serviceCollection.AddSharedThroughputCosmosDbTestServices("/partitionKey");
-                    serviceCollection.AddCosmosClientExtensions();
-                    serviceCollection.AddTenantCosmosContainerFactory(config);
-                    serviceCollection.AddInMemoryWorkflowTriggerQueue();
-                    serviceCollection.AddInMemoryLeasing();
-                    serviceCollection.RegisterCoreWorkflowContentTypes();
-                    serviceCollection.RegisterTestContentTypes();
+                    IConfigurationRoot root = configurationBuilder.Build();
 
-                    serviceCollection.AddSingleton<IWorkflowEngineFactory>(s => new FeatureContextWorkflowEngineFactory(featureContext, s.GetRequiredService<ILeaseProvider>(), s.GetRequiredService<ILogger<IWorkflowEngine>>()));
-                    serviceCollection.AddSingleton(new DataCatalogItemRepositoryFactory(featureContext));
+                    services.AddSingleton(root);
 
-                    serviceCollection.AddSingleton<IServiceIdentityTokenSource, FakeServiceIdentityTokenSource>();
+                    services.AddLogging();
+
+                    services.AddJsonSerializerSettings();
+
+                    services.AddTenantCloudBlobContainerFactory(root);
+                    services.AddTenantProviderBlobStore();
+                    services.AddTenantCosmosContainerFactory(root);
+
+                    services.AddInMemoryWorkflowTriggerQueue();
+                    services.AddInMemoryLeasing();
+
+                    services.RegisterCoreWorkflowContentTypes();
+                    services.AddContent(factory => factory.RegisterTestContentTypes());
+
+                    services.AddSingleton<IWorkflowEngineFactory>(s => new FeatureContextWorkflowEngineFactory(
+                        featureContext,
+                        s.GetRequiredService<ILeaseProvider>(),
+                        s.GetRequiredService<ILogger<IWorkflowEngine>>()));
+
+                    services.AddSingleton<DataCatalogItemRepositoryFactory>();
+
+                    services.AddSingleton<IServiceIdentityTokenSource, FakeServiceIdentityTokenSource>();
                 });
         }
     }

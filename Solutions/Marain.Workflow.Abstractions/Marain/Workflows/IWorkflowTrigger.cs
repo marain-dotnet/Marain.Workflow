@@ -5,21 +5,22 @@
 namespace Marain.Workflows
 {
     using System.Collections.Generic;
+
     using Newtonsoft.Json;
 
     /// <summary>
-    ///     The interface for triggers which can be passed to <see cref="WorkflowInstance" />s
-    ///     for processing.
+    /// The interface for triggers which can be passed to <see cref="WorkflowInstance" />s
+    /// for processing.
     /// </summary>
     public interface IWorkflowTrigger
     {
         /// <summary>
-        ///     Gets the content type that will be used when serializing/deserializing.
+        /// Gets the content type that will be used when serializing/deserializing.
         /// </summary>
         string ContentType { get; }
 
         /// <summary>
-        ///     Gets or sets the id for this state.
+        /// Gets or sets the id for this state.
         /// </summary>
         string Id { get; set; }
 
@@ -30,11 +31,11 @@ namespace Marain.Workflows
         string PartitionKey { get; }
 
         /// <summary>
-        ///     Gets the list of subjects for this state.
+        /// Gets the list of subjects for this state.
         /// </summary>
         /// <returns>
-        ///     The list of subjects for the trigger. These will be used to identify which
-        ///     <see cref="WorkflowInstance" />s could potentially accept the trigger.
+        /// The list of subjects for the trigger. These will be used to identify which
+        /// <see cref="WorkflowInstance" />s could potentially accept the trigger.
         /// </returns>
         IEnumerable<string> GetSubjects();
     }

@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Specs.Features
+namespace Endjin.Workflow.Specs.Features
 {
     using TechTalk.SpecFlow;
     
@@ -19,8 +19,8 @@ namespace Marain.Workflows.Specs.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Deprecate an item")]
+    [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     [NUnit.Framework.CategoryAttribute("setupCosmosDBRepository")]
-    [NUnit.Framework.CategoryAttribute("setupContainer")]
     public partial class DeprecateAnItemFeature
     {
         
@@ -34,8 +34,8 @@ namespace Marain.Workflows.Specs.Features
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Deprecate an item", null, ProgrammingLanguage.CSharp, new string[] {
-                        "setupCosmosDBRepository",
-                        "setupContainer"});
+                        "perFeatureContainer",
+                        "setupCosmosDBRepository"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -84,7 +84,7 @@ namespace Marain.Workflows.Specs.Features
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 7
- testRunner.Given("I have created and persisted the DataCatalogWorkflow with Id \"dc-workflow\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have created and persisted the DataCatalogWorkflow with Id \'dc-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 8
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -104,8 +104,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "AllowPublishedEntry",
                         "x"});
 #line 9
- testRunner.And("I have created and persisted a new instance with Id \"id1\" of the workflow with Id" +
-                    " \"dc-workflow\" and supplied the following context items", ((string)(null)), table20, "And ");
+ testRunner.And("I have created and persisted a new instance with Id \'id1\' of the workflow with Id" +
+                    " \'dc-workflow\' and supplied the following context items", ((string)(null)), table20, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
                         "Id",
@@ -116,38 +116,38 @@ this.ScenarioInitialize(scenarioInfo);
                         "The new notes",
                         "The new description"});
 #line 15
- testRunner.And("I have an object of type \"application/vnd.marain.datacatalog.catalogitempatchdeta" +
-                    "ils\" called \"patch\"", ((string)(null)), table21, "And ");
+ testRunner.And("I have an object of type \'application/vnd.endjin.datacatalog.catalogitempatchdeta" +
+                    "ils\' called \'patch\'", ((string)(null)), table21, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
                         "PatchDetails"});
             table22.AddRow(new string[] {
                         "{patch}"});
 #line 18
- testRunner.And("I have sent the workflow engine a trigger of type \"application/vnd.marain.datacat" +
-                    "alog.editcatalogitemtrigger\"", ((string)(null)), table22, "And ");
+ testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
+                    "alog.editcatalogitemtrigger\'", ((string)(null)), table22, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
                         "CatalogItemId"});
             table23.AddRow(new string[] {
                         "id1"});
 #line 21
- testRunner.And("I have sent the workflow engine a trigger of type \"application/vnd.marain.datacat" +
-                    "alog.publishcatalogitemtrigger\"", ((string)(null)), table23, "And ");
+ testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
+                    "alog.publishcatalogitemtrigger\'", ((string)(null)), table23, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
                         "CatalogItemId"});
             table24.AddRow(new string[] {
                         "id1"});
 #line 24
- testRunner.When("I send the workflow engine a trigger of type \"application/vnd.marain.datacatalog." +
-                    "deprecatecatalogitemtrigger\"", ((string)(null)), table24, "When ");
+ testRunner.When("I send the workflow engine a trigger of type \'application/vnd.endjin.datacatalog." +
+                    "deprecatecatalogitemtrigger\'", ((string)(null)), table24, "When ");
 #line 27
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 28
- testRunner.Then("the workflow instance with Id \"id1\" should have status \"Complete\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance with Id \'id1\' should have status \'Complete\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 29
- testRunner.And("the workflow instance with Id \"id1\" should be in the state called \"Deprecated\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the workflow instance with Id \'id1\' should be in the state called \'Deprecated\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
                         "Message"});

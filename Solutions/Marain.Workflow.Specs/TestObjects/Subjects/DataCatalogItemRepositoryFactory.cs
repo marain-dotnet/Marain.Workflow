@@ -1,27 +1,21 @@
-﻿// <copyright file="DataCatalogItemRepositoryFactory.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="DataCatalogItemRepositoryFactory.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
 
 namespace Marain.Workflows.Specs.TestObjects.Subjects
 {
-    using Marain.Workflows.Specs.Bindings;
     using Microsoft.Azure.Cosmos;
+    using Marain.Workflows.Specs.Bindings;
+
     using TechTalk.SpecFlow;
 
     public class DataCatalogItemRepositoryFactory
     {
-        private readonly FeatureContext featureContext;
-
-        public DataCatalogItemRepositoryFactory(FeatureContext featureContext)
-        {
-            this.featureContext = featureContext;
-        }
-
         public Container GetRepository()
         {
-            return this.featureContext.Get<Container>(WorkflowCosmosDbBindings.TestDocumentsRepository);
+            return (Container)FeatureContext.Current[WorkflowCosmosDbBindings.TestDocumentsRepository];
         }
     }
 }

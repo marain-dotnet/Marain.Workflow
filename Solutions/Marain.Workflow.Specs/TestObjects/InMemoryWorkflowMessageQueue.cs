@@ -1,5 +1,5 @@
-﻿// <copyright file="InMemoryWorkflowMessageQueue.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="InMemoryWorkflowMessageQueue.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 namespace Marain.Workflows.Specs.TestObjects
@@ -15,7 +15,7 @@ namespace Marain.Workflows.Specs.TestObjects
     /// <summary>
     ///     An in memory implementation of the <see cref="IWorkflowMessageQueue" />
     ///     interface that accepts new triggers and hands them off to the
-    ///     appropriate <see cref="IWorkflowEngine" />
+    ///     appropriate <see cref="IWorkflowEngine" />.
     /// </summary>
     /// <remarks>
     ///     <para>
@@ -33,6 +33,11 @@ namespace Marain.Workflows.Specs.TestObjects
         private readonly ILogger<InMemoryWorkflowMessageQueue> logger;
 
         /// <summary>
+        ///     The tenant provider that will be used when accessing storage.
+        /// </summary>
+        private readonly ITenantProvider tenantProvider;
+
+        /// <summary>
         ///     The queue that will be used for triggers.
         /// </summary>
         private readonly ConcurrentQueue<WorkflowMessageEnvelope> queue;
@@ -41,7 +46,6 @@ namespace Marain.Workflows.Specs.TestObjects
         ///     The factory for the workflow engine to which triggers will be passed.
         /// </summary>
         private readonly IWorkflowEngineFactory workflowEngineFactory;
-        private readonly ITenantProvider tenantProvider;
 
         /// <summary>
         ///     The task that represents the procssing thread.
@@ -59,7 +63,10 @@ namespace Marain.Workflows.Specs.TestObjects
         ///     Initializes a new instance of the <see cref="InMemoryWorkflowMessageQueue" /> class.
         /// </summary>
         /// <param name="workflowEngineFactory">
-        ///     The workflow engine factory to create the engine to which to hand off the triggers
+        ///     The workflow engine factory to create the engine to which to hand off the triggers.
+        /// </param>
+        /// <param name="tenantProvider">
+        ///     The tenant provider that will be used when accessing storage.
         /// </param>
         /// <param name="logger">
         ///     Logger to use to write diagnostic messages.
@@ -76,8 +83,8 @@ namespace Marain.Workflows.Specs.TestObjects
             ILogger<InMemoryWorkflowMessageQueue> logger)
         {
             this.logger = logger;
-            this.workflowEngineFactory = workflowEngineFactory;
             this.tenantProvider = tenantProvider;
+            this.workflowEngineFactory = workflowEngineFactory;
             this.queue = new ConcurrentQueue<WorkflowMessageEnvelope>();
         }
 
@@ -165,13 +172,14 @@ namespace Marain.Workflows.Specs.TestObjects
                         break;
                     }
 
-                    await Task.Delay(TimeSpan.FromMilliseconds(10)).ConfigureAwait(false);
+                    await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
                     continue;
                 }
 
                 this.queue.TryPeek(out WorkflowMessageEnvelope item);
 
-                IWorkflowEngine engine = await this.workflowEngineFactory.GetWorkflowEngineAsync(this.tenantProvider.Root).ConfigureAwait(false);
+                IWorkflowEngine engine =
+                    await this.workflowEngineFactory.GetWorkflowEngineAsync(this.tenantProvider.Root).ConfigureAwait(false);
 
                 if (item.IsTrigger)
                 {
@@ -181,7 +189,8 @@ namespace Marain.Workflows.Specs.TestObjects
 
                     IEnumerable<string> instanceIds = await engine.GetMatchingWorkflowInstanceIdsForSubjectsAsync(
                                           item.Trigger.GetSubjects(),
-                                          int.MaxValue).ConfigureAwait(false);
+                                          int.MaxValue,
+                                          null).ConfigureAwait(false);
 
                     foreach (string current in instanceIds)
                     {

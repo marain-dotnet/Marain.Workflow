@@ -16,12 +16,12 @@ namespace Marain.Workflows
         /// <summary>
         /// Gets or sets the repository definition for the workflow instance repository.
         /// </summary>
-        CosmosContainerDefinition WorkflowInstanceRepositoryDefinition { get; set; }
+        CosmosContainerDefinition WorkflowInstanceCosmosContainerDefinition { get; set; }
 
         /// <summary>
         /// Gets or sets the repository definition for the workflow repository.
         /// </summary>
-        CosmosContainerDefinition WorkflowRepositoryDefinition { get; set; }
+        CosmosContainerDefinition WorkflowCosmosContainerDefinition { get; set; }
 
         /// <summary>
         /// Gets an <see cref="IWorkflowEngine"/> for the tenant.

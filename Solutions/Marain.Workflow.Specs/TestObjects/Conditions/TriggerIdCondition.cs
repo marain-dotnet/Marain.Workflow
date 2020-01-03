@@ -1,5 +1,5 @@
-﻿// <copyright file="TriggerIdCondition.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="TriggerIdCondition.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable

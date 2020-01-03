@@ -1,12 +1,9 @@
-﻿// <copyright file="DataCatalogWorkflowSteps.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="DataCatalogWorkflowSteps.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
-
-#pragma warning disable
 
 namespace Marain.Workflows.Specs.Steps
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
@@ -19,54 +16,67 @@ namespace Marain.Workflows.Specs.Steps
     using Marain.Workflows.Specs.TestObjects.Subjects;
     using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.DependencyInjection;
-
     using NUnit.Framework;
-
     using TechTalk.SpecFlow;
     using TechTalk.SpecFlow.Assist;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable SA1600 // Elements should be documented
 
     [Binding]
     public class DataCatalogWorkflowSteps
     {
-        private readonly FeatureContext featureContext;
         private readonly ScenarioContext scenarioContext;
+        private readonly FeatureContext featureContext;
 
         public DataCatalogWorkflowSteps(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
-            this.featureContext = featureContext;
             this.scenarioContext = scenarioContext;
+            this.featureContext = featureContext;
         }
 
-        [Given(@"I have an object of type ""(.*)"" called ""(.*)""")]
+        [Given("I have an object of type '(.*)' called '(.*)'")]
         public void GivenIHaveAnObjectOfTypeCalled(string contentType, string instanceName, Table table)
         {
             this.scenarioContext.Set(this.CreateObject(contentType, table), instanceName);
         }
 
-        [Given(@"I have created and persisted the DataCatalogWorkflow with Id ""(.*)""")]
+        [Given("I have created and persisted the DataCatalogWorkflow with Id '(.*)'")]
         public async Task GivenIHaveCreatedAndPersistedANewInstanceOfTheDataCatalogWorkflowWithId(string workflowId)
         {
-            var workflow = DataCatalogWorkflowFactory.Create(featureContext, ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IWorkflowMessageQueue>(), workflowId);
-            var tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<ITenantProvider>();
-            var engineFactory = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowEngineFactory>();
-            var engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root);
+            IWorkflowMessageQueue workflowMessageQueue =
+                ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowMessageQueue>();
+            Workflow workflow = DataCatalogWorkflowFactory.Create(workflowId, workflowMessageQueue);
+
+            IWorkflowEngineFactory engineFactory =
+                ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowEngineFactory>();
+            ITenantProvider tenantProvider =
+                ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantProvider>();
+
+            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
 
             await engine.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
         }
 
-        [Then(@"a new data catalog item with Id ""(.*)"" should have been added to the data catalog store")]
+        [Then("a new data catalog item with Id '(.*)' should have been added to the data catalog store")]
         public async Task ThenANewDataCatalogItemWithIdShouldHaveBeenAddedToTheDataCatalogStore(string catalogItemId)
         {
-            var repo = ContainerBindings.GetServiceProvider(this.featureContext).GetService<DataCatalogItemRepositoryFactory>().GetRepository();
-            var item = await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
+                                              .GetService<DataCatalogItemRepositoryFactory>()
+                                              .GetRepository();
+
+            ItemResponse<CatalogItem> item =
+                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
 
             Assert.IsNotNull(item);
         }
 
-        [Then(@"a new data catalog item with Id ""(.*)"" should not have been added to the data catalog store")]
+        [Then("a new data catalog item with Id '(.*)' should not have been added to the data catalog store")]
         public async Task ThenANewDataCatalogItemWithIdShouldNotHaveBeenAddedToTheDataCatalogStore(string catalogItemId)
         {
-            var repo = ContainerBindings.GetServiceProvider(this.featureContext).GetService<DataCatalogItemRepositoryFactory>().GetRepository();
+            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
+                                              .GetService<DataCatalogItemRepositoryFactory>()
+                                              .GetRepository();
 
             try
             {
@@ -83,62 +93,78 @@ namespace Marain.Workflows.Specs.Steps
             }
         }
 
-        [Then(@"the data catalog item with Id ""(.*)"" should have a Description of ""(.*)""")]
+        [Then("the data catalog item with Id '(.*)' should have a Description of '(.*)'")]
         public async Task ThenTheDataCatalogItemWithIdShouldHaveADescriptionOf(
             string catalogItemId,
             string expectedDescription)
         {
-            var repo = ContainerBindings.GetServiceProvider(this.featureContext).GetService<DataCatalogItemRepositoryFactory>().GetRepository();
-            var item = await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
+                                              .GetService<DataCatalogItemRepositoryFactory>()
+                                              .GetRepository();
+
+            ItemResponse<CatalogItem> item =
+                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
 
             Assert.AreEqual(expectedDescription, item.Resource.Description);
         }
 
-        [Then(@"the data catalog item with Id ""(.*)"" should have an Identifier of ""(.*)""")]
+        [Then("the data catalog item with Id '(.*)' should have an Identifier of '(.*)'")]
         public async Task ThenTheDataCatalogItemWithIdShouldHaveAnIdentifierOf(
             string catalogItemId,
             string expectedIdentifier)
         {
-            var repo = ContainerBindings.GetServiceProvider(this.featureContext).GetService<DataCatalogItemRepositoryFactory>().GetRepository();
-            var item = await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
-            
+            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
+                                              .GetService<DataCatalogItemRepositoryFactory>()
+                                              .GetRepository();
+
+            ItemResponse<CatalogItem> item =
+                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+
             Assert.AreEqual(expectedIdentifier, item.Resource.Identifier);
         }
 
-        [Then(@"the data catalog item with Id ""(.*)"" should have a Type of ""(.*)""")]
+        [Then("the data catalog item with Id '(.*)' should have a Type of '(.*)'")]
         public async Task ThenTheDataCatalogItemWithIdShouldHaveATypeOf(string catalogItemId, string expectedType)
         {
-            var repo = ContainerBindings.GetServiceProvider(this.featureContext).GetService<DataCatalogItemRepositoryFactory>().GetRepository();
-            var item = await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
+                                              .GetService<DataCatalogItemRepositoryFactory>()
+                                              .GetRepository();
+
+            ItemResponse<CatalogItem> item =
+                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
 
             Assert.AreEqual(expectedType, item.Resource.Type);
         }
 
-        [Then(@"the data catalog item with Id ""(.*)"" should have Notes of ""(.*)""")]
+        [Then("the data catalog item with Id '(.*)' should have Notes of '(.*)'")]
         public async Task ThenTheDataCatalogItemWithIdShouldHaveNotesOf(string catalogItemId, string expectedNotes)
         {
-            var repo = ContainerBindings.GetServiceProvider(this.featureContext).GetService<DataCatalogItemRepositoryFactory>().GetRepository();
-            var item = await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
+                                              .GetService<DataCatalogItemRepositoryFactory>()
+                                              .GetRepository();
+
+            ItemResponse<CatalogItem> item =
+                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
 
             Assert.AreEqual(expectedNotes, item.Resource.Notes);
         }
 
-        [Then(@"the following trace messages should be the last messages recorded")]
+        [Then("the following trace messages should be the last messages recorded")]
         public void ThenTheFollowingTraceMessagesShouldBeTheLastMessagesRecorded(Table table)
         {
-            var log = this.scenarioContext[TraceAction.ScenarioContextListName] as List<string>;
+            var log = this.scenarioContext[TraceAction.ScenarioContextListName] as IList<string>;
 
             Assert.IsNotNull(log);
             Assert.GreaterOrEqual(log.Count, table.Rows.Count);
 
-            var logTail = log.Skip(log.Count - table.Rows.Count).ToArray();
+            string[] logTail = log.Skip(log.Count - table.Rows.Count).ToArray();
             logTail.ForEachAtIndex((s, i) => Assert.AreEqual(table.Rows[i]["Message"], s));
         }
 
-        [Then(@"the following trace messages should have been recorded")]
+        [Then("the following trace messages should have been recorded")]
         public void ThenTheFollowingTraceMessagesShouldHaveBeenRecorded(Table table)
         {
-            var log = this.scenarioContext[TraceAction.ScenarioContextListName] as List<string>;
+            var log = this.scenarioContext[TraceAction.ScenarioContextListName] as IList<string>;
 
             Assert.IsNotNull(log);
             Assert.AreEqual(table.Rows.Count, log.Count);
@@ -146,51 +172,60 @@ namespace Marain.Workflows.Specs.Steps
             log.ForEachAtIndex((s, i) => Assert.AreEqual(table.Rows[i]["Message"], s));
         }
 
-        [Then(@"the workflow instance with Id ""(.*)"" should be in the state called ""(.*)""")]
+        [Then("the workflow instance with Id '(.*)' should be in the state called '(.*)'")]
         public async Task ThenTheWorkflowInstanceWithIdShouldBeInTheStateCalled(string instanceId, string stateName)
         {
-            var engineFactory = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowEngineFactory>();
-            var tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<ITenantProvider>();
-            var engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root);
+            IWorkflowEngineFactory engineFactory = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                                    .GetService<IWorkflowEngineFactory>();
 
-            var instance = await engine.GetWorkflowInstanceAsync(instanceId).ConfigureAwait(false);
-            var workflow = await engine.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
-            var currentState = workflow.GetState(instance.StateId);
+            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                              .GetService<ITenantProvider>();
+
+            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
+
+            WorkflowInstance instance = await engine.GetWorkflowInstanceAsync(instanceId).ConfigureAwait(false);
+            Workflow workflow = await engine.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
+            WorkflowState currentState = workflow.GetState(instance.StateId);
 
             Assert.AreEqual(stateName, currentState.DisplayName);
         }
 
-        [Then(@"the workflow instance with Id ""(.*)"" should have status ""(.*)""")]
+        [Then("the workflow instance with Id '(.*)' should have status '(.*)'")]
         public async Task ThenTheWorkflowInstanceWithIdShouldHaveStatus(string instanceId, string expectedStatus)
         {
-            var engineFactory = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowEngineFactory>();
-            var tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<ITenantProvider>();
-            var engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root);
+            IWorkflowEngineFactory engineFactory = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                                    .GetService<IWorkflowEngineFactory>();
 
-            var instance = await engine.GetWorkflowInstanceAsync(instanceId).ConfigureAwait(false);
+            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                              .GetService<ITenantProvider>();
+
+            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
+
+            WorkflowInstance instance = await engine.GetWorkflowInstanceAsync(instanceId).ConfigureAwait(false);
 
             Assert.AreEqual(expectedStatus, instance.Status.ToString());
         }
 
-        [Given(@"I have sent the workflow engine a trigger of type ""(.*)""")]
-        [When(@"I send the workflow engine a trigger of type ""(.*)""")]
+        [Given("I have sent the workflow engine a trigger of type '(.*)'")]
+        [When("I send the workflow engine a trigger of type '(.*)'")]
         public async Task WhenISendTheWorkflowEngineATriggerOfType(string contentType, Table table)
         {
             var trigger = (IWorkflowTrigger)this.CreateObject(contentType, table);
 
-            var queue = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowMessageQueue>();
-            await queue.EnqueueTriggerAsync(trigger, default(Guid));
+            IWorkflowMessageQueue queue = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                           .GetRequiredService<IWorkflowMessageQueue>();
+
+            await queue.EnqueueTriggerAsync(trigger, default).ConfigureAwait(false);
         }
 
         private object CreateObject(string contentType, Table table)
         {
             Assert.AreEqual(1, table.RowCount);
 
-            var instance = table.CreateInstance(() => ContainerBindings.GetServiceProvider(this.featureContext).GetContent(contentType));
-
-            return instance;
+            return table.CreateInstance(() => ContainerBindings.GetServiceProvider(this.featureContext).GetContent(contentType));
         }
     }
 }
 
-#pragma warning restore
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning restore SA1600 // Elements should be documented

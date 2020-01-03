@@ -1,5 +1,5 @@
-﻿// <copyright file="CatalogItemIdCondition.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="CatalogItemIdCondition.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -15,7 +15,7 @@ namespace Marain.Workflows.Specs.TestObjects.Conditions
 
     public class CatalogItemIdCondition : IWorkflowCondition
     {
-        public const string RegisteredContentType = "application/vnd.marain.datacatalog.catalogitemidcondition";
+        public const string RegisteredContentType = "application/vnd.endjin.datacatalog.catalogitemidcondition";
 
         public string ContentType => RegisteredContentType;
 

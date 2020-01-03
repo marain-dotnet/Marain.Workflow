@@ -1,5 +1,5 @@
-﻿// <copyright file="WorkflowCosmosDbBindings.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="WorkflowCosmosDbBindings.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 namespace Marain.Workflows.Specs.Bindings
@@ -14,30 +14,30 @@ namespace Marain.Workflows.Specs.Bindings
     using TechTalk.SpecFlow;
 
     /// <summary>
-    ///     Specflow bindings to support Cosmos DB
+    ///     Specflow bindings to support Cosmos DB.
     /// </summary>
     [Binding]
     public static class WorkflowCosmosDbBindings
     {
         /// <summary>
-        ///     The key for the document repository instance in the feature context
+        ///     The key for the document repository instance in the feature context.
         /// </summary>
         public const string TestDocumentsRepository = "TestDocumentsRepository";
 
         /// <summary>
-        ///     The key for the workflow instances repository instance in the feature context
+        ///     The key for the workflow instances repository instance in the feature context.
         /// </summary>
         public const string WorkflowInstancesRepository = "WorkflowInstancesRepository";
 
         /// <summary>
-        ///     The key for the workflows repository instance in the feature context
+        ///     The key for the workflows repository instance in the feature context.
         /// </summary>
         public const string WorkflowsRepository = "WorkflowsRepository";
 
         /// <summary>
-        ///     Set up a Cosmos DB Repository for the feature
+        ///     Set up a Cosmos DB Repository for the feature.
         /// </summary>
-        /// <param name="featureContext">The feature context</param>
+        /// <param name="featureContext">The feature context.</param>
         /// <remarks>
         ///     Note that this sets up a resource in Azure and will incur cost. Ensure the corresponding tear down operation
         ///     is always run, or verify manually after a test run.
@@ -49,35 +49,31 @@ namespace Marain.Workflows.Specs.Bindings
             ITenantCosmosContainerFactory factory = serviceProvider.GetRequiredService<ITenantCosmosContainerFactory>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
 
+            ITenant rootTenant = tenantProvider.Root;
+
             string containerBase = Guid.NewGuid().ToString();
 
-            CosmosConfiguration cosmosConfig = tenantProvider.Root.GetDefaultCosmosConfiguration();
-            // Use a fixed shared database without
-            cosmosConfig.DisableTenantIdPrefix = true;
-            cosmosConfig.DatabaseName = "endjinspecssharedthroughput";
-            tenantProvider.Root.SetDefaultCosmosConfiguration(cosmosConfig);
-
             Container workflowsRepository = factory.GetContainerForTenantAsync(
-                tenantProvider.Root,
-                new CosmosContainerDefinition("endjinspecssharedthroughput", $"{containerBase}workflows", "/partitionKey", databaseThroughput: 400)).Result;
+                rootTenant,
+                new CosmosContainerDefinition("workflow", $"{containerBase}workflows", "/id")).Result;
             featureContext.Set(workflowsRepository, WorkflowsRepository);
 
             Container workflowInstances = factory.GetContainerForTenantAsync(
-                tenantProvider.Root,
-                new CosmosContainerDefinition("endjinspecssharedthroughput", $"{containerBase}workflowinstances", "/partitionKey", databaseThroughput: 400)).Result;
+                rootTenant,
+                new CosmosContainerDefinition("workflow", $"{containerBase}workflowinstances", "/id")).Result;
             featureContext.Set(workflowInstances, WorkflowInstancesRepository);
 
             Container testDocumentsRepository = factory.GetContainerForTenantAsync(
-                tenantProvider.Root,
-                new CosmosContainerDefinition("endjinspecssharedthroughput", $"{containerBase}testdocuments", "/partitionKey", databaseThroughput: 400)).Result;
+                rootTenant,
+                new CosmosContainerDefinition("workflow", $"{containerBase}testdocuments", "/id")).Result;
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
         }
 
         /// <summary>
-        ///     Tear down the cosmos DB repository for the feature
+        ///     Tear down the cosmos DB repository for the feature.
         /// </summary>
-        /// <param name="featureContext">The feature context</param>
-        /// <returns>A <see cref="Task" /> which completes once the operation has completed</returns>
+        /// <param name="featureContext">The feature context.</param>
+        /// <returns>A <see cref="Task" /> which completes once the operation has completed.</returns>
         [AfterFeature("@setupCosmosDBRepository", Order = 100000)]
         public static async Task TeardownCosmosDb(FeatureContext featureContext)
         {

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+  <Import Project="..\Common.NetStandard_2_0.proj" />
+  <ItemGroup>
+    <Compile Remove="Endjin\**" />
+    <EmbeddedResource Remove="Endjin\**" />
+    <None Remove="Endjin\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Endjin.OpenApi.Abstractions\Endjin.OpenApi.Abstractions.csproj" />
+    <ProjectReference Include="..\Endjin.Operations.ControlClient\Endjin.Operations.ControlClient.csproj" />
+    <ProjectReference Include="..\Endjin.Telemetry.Abstractions\Endjin.Telemetry.Abstractions.csproj" />
+    <ProjectReference Include="..\Endjin.Telemetry.Azure\Endjin.Telemetry.Azure.csproj" />
+    <ProjectReference Include="..\Endjin.Workflow.Abstractions\Endjin.Workflow.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

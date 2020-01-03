@@ -1,5 +1,5 @@
-﻿@setupCosmosDBRepository
-@setupContainer
+﻿@perFeatureContainer
+@setupCosmosDBRepository
 Feature: InvokeExternalServiceCondition
     In order to be able to define a workflow that queries external HTTP endpoints to determine conditions
     As a developer defining a workflow
@@ -8,7 +8,7 @@ Feature: InvokeExternalServiceCondition
 @externalServiceRequired
 Scenario: External condition returns true
     Given I have created and persisted a workflow containing an external condition with id 'external-condition-workflow'
-	And I have created and persisted a new instance with Id "id1" of the workflow with Id "external-condition-workflow" and supplied the following context items
+	And I have created and persisted a new instance with Id 'id1' of the workflow with Id 'external-condition-workflow' and supplied the following context items
 	| Key                              | Value  |
 	| include1                         | value1 |
 	| include2                         | value2 |
@@ -28,13 +28,13 @@ Scenario: External condition returns true
     And the request body ContextProperties key 'include1' has the value 'value1'
     And the request body ContextProperties key 'include2' has the value 'value2'
     And the request body ContextProperties has 2 values
-	Then the workflow instance with Id "id1" should have status "Complete"
-	And the workflow instance with Id "id1" should be in the state called "Done"
+	Then the workflow instance with Id 'id1' should have status 'Complete'
+	And the workflow instance with Id 'id1' should be in the state called 'Done'
 
 @externalServiceRequired
 Scenario: External condition returns false
     Given I have created and persisted a workflow containing an external condition with id 'external-condition-workflow'
-	And I have created and persisted a new instance with Id "id2" of the workflow with Id "external-condition-workflow" and supplied the following context items
+	And I have created and persisted a new instance with Id 'id2' of the workflow with Id 'external-condition-workflow' and supplied the following context items
 	| Key                              | Value  |
 	| include1                         | value1 |
 	| include2                         | value2 |
@@ -54,13 +54,13 @@ Scenario: External condition returns false
     And the request body ContextProperties key 'include1' has the value 'value1'
     And the request body ContextProperties key 'include2' has the value 'value2'
     And the request body ContextProperties has 2 values
-	Then the workflow instance with Id "id2" should have status "Waiting"
-	And the workflow instance with Id "id2" should be in the state called "Waiting to run"
+	Then the workflow instance with Id 'id2' should have status 'Waiting'
+	And the workflow instance with Id 'id2' should be in the state called 'Waiting to run'
 
 @externalServiceRequired
 Scenario: External condition returns a 500 status code
     Given I have created and persisted a workflow containing an external condition with id 'external-condition-workflow'
-	And I have created and persisted a new instance with Id "id3" of the workflow with Id "external-condition-workflow" and supplied the following context items
+	And I have created and persisted a new instance with Id 'id3' of the workflow with Id 'external-condition-workflow' and supplied the following context items
 	| Key                              | Value  |
 	| include1                         | value1 |
 	| include2                         | value2 |
@@ -71,5 +71,5 @@ Scenario: External condition returns a 500 status code
     When I send a trigger that will execute the condition with a trigger id of 'id3'
 	And I wait for all triggers to be processed
     Then the condition endpoint should have been invoked
-	Then the workflow instance with Id "id3" should have status "Faulted"
-	And the workflow instance with Id "id3" should be in the state called "Waiting to run"
+	Then the workflow instance with Id 'id3' should have status 'Faulted'
+	And the workflow instance with Id 'id3' should be in the state called 'Waiting to run'

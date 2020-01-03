@@ -1,5 +1,5 @@
-﻿// <copyright file="DataCatalogWorkflowFactory.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="DataCatalogWorkflowFactory.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 namespace Marain.Workflows.Specs.TestObjects
@@ -8,7 +8,8 @@ namespace Marain.Workflows.Specs.TestObjects
     using Marain.Workflows.Specs.TestObjects.Conditions;
     using Marain.Workflows.Specs.TestObjects.Subjects;
     using Marain.Workflows.Specs.TestObjects.Triggers;
-    using TechTalk.SpecFlow;
+
+    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     ///     The data catalog workflow factory.
@@ -16,13 +17,12 @@ namespace Marain.Workflows.Specs.TestObjects
     public static class DataCatalogWorkflowFactory
     {
         /// <summary>
-        ///     Creates an instance of a ficticious workflow for testing purposes.
+        /// Creates an instance of a ficticious workflow for testing purposes.
         /// </summary>
-        /// <param name="id">
-        ///     The id to give the new workflow.
-        /// </param>
+        /// <param name="id">The id to give the new workflow.</param>
+        /// <param name="workflowMessageQueue">The message queue to send workflow messages via.</param>
         /// <returns>
-        ///     The new <see cref="Workflow" />.
+        /// The new <see cref="Workflow" />.
         /// </returns>
         /// <remarks>
         ///     <para>
@@ -65,7 +65,7 @@ namespace Marain.Workflows.Specs.TestObjects
         ///                        |     (end)     |
         ///                        |               |
         ///                        +---------------+
-        ///         </c>
+        ///         </c>.
         ///     </para>
         ///     <para>
         ///         To assist with testing it has the following notable points:
@@ -91,9 +91,9 @@ namespace Marain.Workflows.Specs.TestObjects
         ///         </list>
         ///     </para>
         /// </remarks>
-        public static Workflow Create(FeatureContext featureContext, IWorkflowMessageQueue queue, string id)
+        public static Workflow Create(string id, IWorkflowMessageQueue workflowMessageQueue)
         {
-            var dataCatalogItemRepositoryFactory = new DataCatalogItemRepositoryFactory(featureContext);
+            var dataCatalogItemRepositoryFactory = new DataCatalogItemRepositoryFactory();
 
             var workflow = new Workflow(
                 id,
@@ -111,7 +111,7 @@ namespace Marain.Workflows.Specs.TestObjects
             initializing.EntryConditions.Add(
                 new ContextItemsPresentCondition { RequiredContextItems = new[] { "Identifier", "Type" } });
             initializing.AddTraceActionForEntry();
-            initializing.EntryActions.Add(new SendCreateCatalogItemTriggerAction(queue));
+            initializing.EntryActions.Add(new SendCreateCatalogItemTriggerAction(workflowMessageQueue));
             initializing.AddTraceActionForExit();
 
             waitingForDocumentation.AddTraceActionForEntry();
@@ -130,17 +130,19 @@ namespace Marain.Workflows.Specs.TestObjects
             deprecated.AddTraceActionForEntry();
             deprecated.AddTraceActionForExit();
 
-            WorkflowTransition createCatalogItemTransition = initializing.CreateTransition(waitingForDocumentation, displayName: "Create catalog item");
+            WorkflowTransition createCatalogItemTransition =
+                initializing.CreateTransition(waitingForDocumentation, displayName: "Create catalog item");
             createCatalogItemTransition.Conditions.Add(
                 new TriggerContentTypeCondition
-                    {
-                        TriggerContentType = CreateCatalogItemTrigger.RegisteredContentType
-                    });
+                {
+                    TriggerContentType = CreateCatalogItemTrigger.RegisteredContentType,
+                });
             createCatalogItemTransition.Conditions.Add(new CatalogItemIdCondition());
             createCatalogItemTransition.Actions.Add(new CreateCatalogItemAction(dataCatalogItemRepositoryFactory));
             createCatalogItemTransition.AddTraceAction();
 
-            WorkflowTransition waitingForDocumentationEditTransition = waitingForDocumentation.CreateTransition(waitingForDocumentation, displayName: "Edit");
+            WorkflowTransition waitingForDocumentationEditTransition =
+                waitingForDocumentation.CreateTransition(waitingForDocumentation, displayName: "Edit");
             waitingForDocumentationEditTransition.Conditions.Add(
                 new TriggerContentTypeCondition { TriggerContentType = EditCatalogItemTrigger.RegisteredContentType });
             waitingForDocumentationEditTransition.Conditions.Add(new CatalogItemIdCondition());
@@ -152,15 +154,16 @@ namespace Marain.Workflows.Specs.TestObjects
                 waitingForDocumentation.CreateTransition(published, displayName: "Publish");
             waitingForDocumentationPublishTransition.Conditions.Add(
                 new TriggerContentTypeCondition
-                    {
-                        TriggerContentType = PublishCatalogItemTrigger.RegisteredContentType
-                    });
+                {
+                    TriggerContentType = PublishCatalogItemTrigger.RegisteredContentType,
+                });
             waitingForDocumentationPublishTransition.Conditions.Add(new CatalogItemIdCondition());
             waitingForDocumentationPublishTransition.Conditions.Add(
                 new CatalogItemCompleteCondition(dataCatalogItemRepositoryFactory));
             waitingForDocumentationPublishTransition.AddTraceAction();
 
-            WorkflowTransition publishedEditCompleteTransition = published.CreateTransition(published, displayName: "Edit (complete)");
+            WorkflowTransition publishedEditCompleteTransition =
+                published.CreateTransition(published, displayName: "Edit (complete)");
             publishedEditCompleteTransition.Conditions.Add(
                 new TriggerContentTypeCondition { TriggerContentType = EditCatalogItemTrigger.RegisteredContentType });
             publishedEditCompleteTransition.Conditions.Add(new CatalogItemIdCondition());
@@ -170,7 +173,8 @@ namespace Marain.Workflows.Specs.TestObjects
                 new ApplyCatalogItemPatchAction(dataCatalogItemRepositoryFactory));
             publishedEditCompleteTransition.AddTraceAction();
 
-            WorkflowTransition publishedEditIncompleteTransition = published.CreateTransition(waitingForDocumentation, displayName: "Edit (incomplete)");
+            WorkflowTransition publishedEditIncompleteTransition =
+                published.CreateTransition(waitingForDocumentation, displayName: "Edit (incomplete)");
             publishedEditIncompleteTransition.Conditions.Add(
                 new TriggerContentTypeCondition { TriggerContentType = EditCatalogItemTrigger.RegisteredContentType });
             publishedEditIncompleteTransition.Conditions.Add(new CatalogItemIdCondition());
@@ -183,19 +187,18 @@ namespace Marain.Workflows.Specs.TestObjects
             WorkflowTransition publishedDeleteTransition = published.CreateTransition(deleted, displayName: "Delete");
             publishedDeleteTransition.Conditions.Add(
                 new TriggerContentTypeCondition
-                    {
-                        TriggerContentType = DeleteCatalogItemTrigger.RegisteredContentType
-                    });
+                {
+                    TriggerContentType = DeleteCatalogItemTrigger.RegisteredContentType,
+                });
             publishedDeleteTransition.Conditions.Add(new CatalogItemIdCondition());
             publishedDeleteTransition.AddTraceAction();
 
             WorkflowTransition publishedDeprecateTransition = published.CreateTransition(deprecated, displayName: "Deprecate");
             publishedDeprecateTransition.Conditions.Add(
                 new TriggerContentTypeCondition
-                    {
-                        TriggerContentType =
-                            DeprecateCatalogItemTrigger.RegisteredContentType
-                    });
+                {
+                    TriggerContentType = DeprecateCatalogItemTrigger.RegisteredContentType,
+                });
             publishedDeprecateTransition.Conditions.Add(new CatalogItemIdCondition());
             publishedDeprecateTransition.AddTraceAction();
 

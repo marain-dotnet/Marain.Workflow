@@ -1,5 +1,5 @@
-﻿// <copyright file="DeprecateCatalogItemTrigger.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="DeprecateCatalogItemTrigger.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -11,7 +11,7 @@ namespace Marain.Workflows.Specs.TestObjects.Triggers
 
     public class DeprecateCatalogItemTrigger : ICatalogItemTrigger
     {
-        public const string RegisteredContentType = "application/vnd.marain.datacatalog.deprecatecatalogitemtrigger";
+        public const string RegisteredContentType = "application/vnd.endjin.datacatalog.deprecatecatalogitemtrigger";
 
         public string CatalogItemId { get; set; }
 

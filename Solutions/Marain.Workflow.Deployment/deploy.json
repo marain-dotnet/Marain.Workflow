@@ -1,0 +1,448 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "type": "string"
+    },
+    "appName": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    },
+    "functionsAppPackageFolder": {
+      "type": "string",
+      "minLength": 1
+    },
+    "messageIngestionHostFunctionsAppPackageFileName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the webdeploy package for message ingestion host function"
+      }
+    },
+    "engineHostFunctionsAppPackageFileName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the webdeploy package for engine host function"
+      }
+    },
+    "messagePreProcessingHostFunctionsAppPackageFileName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the webdeploy package for message pre-processing function"
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring"
+    },
+    "eventHubNamespaceName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the event hub namespace"
+      }
+    },
+    "eventHubHubName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the event hub"
+      }
+    },
+    "eventHubThroughputUnits": {
+      "type": "int",
+      "minValue": 2,
+      "maxValue": 20
+    },
+    "isDeveloperEnvironment": {
+      "type": "bool",
+      "defaultValue": "false",
+      "metadata": {
+        "description": "If true, only resources needed to support a developer environment will be deployed."
+      }
+    },
+    "aadTenantId": {
+      "type": "string",
+      "metadata": {
+        "description": "The AAD tenant id that is used for all easy auth settings"
+      }
+    },
+    "engineAadClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "The AAD client id for the engine function easy auth settings"
+      }
+    },
+    "ingestionAadClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "The AAD client id for the ingestion function easy auth settings"
+      }
+    },
+    "preprocessorAadClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "The AAD client id for the preprocessor function easy auth settings"
+      }
+    },
+    "operationsControlServiceBaseUrl": {
+      "type": "string"
+    },
+    "operationsControlServiceAadResourceId": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "defaultName": "[concat(parameters('prefix'), parameters('appName'), parameters('environment'))]",
+    "messageIngestionHostFunctionsAppName": "[concat(parameters('prefix'), parameters('appName'), 'ingestion', parameters('environment'))]",
+    "engineHostFunctionsAppName": "[concat(parameters('prefix'), parameters('appName'), 'engine', parameters('environment'))]",
+    "messagePreProcessingHostFunctionsAppName": "[concat(parameters('prefix'), parameters('appName'), 'preprocess', parameters('environment'))]",
+    "appInsightsName": "[variables('defaultName')]",
+    "tenantId": "[subscription().tenantID]",
+    "subscriptionId": "[subscription().subscriptionID]",
+    "tagValues": {
+      "prefix": "[parameters('prefix')]",
+      "appName": "[parameters('appName')]",
+      "environment": "[parameters('environment')]"
+    }
+  },
+  "resources": [
+    {
+      "name": "app-insights",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/app-insights.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appName": {
+            "value": "[variables('appInsightsName')]"
+          },
+          "appType": {
+            "value": "web"
+          },
+          "appLocation": {
+            "value": "[resourceGroup().location]"
+          },
+          "tagValues": {
+            "value": "[variables('tagValues')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "key-vault",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/key-vault.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "tenantId": {
+            "value": "[variables('tenantId')]"
+          },
+          "keyVaultName": {
+            "value": "[variables('defaultName')]"
+          },
+          "diagnosticsStorageAccountName": {
+            "value": "[variables('defaultName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "cosmos-db",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/cosmos-db.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "accountName": {
+            "value": "[variables('defaultName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "event-hub",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/event-hub.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "namespaceName": { "value": "[parameters('eventHubNamespaceName')]" },
+          "eventHubName": { "value": "[parameters('eventHubHubName')]" },
+          "throughputUnits": { "value": "[parameters('eventHubThroughputUnits')]" }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('isDeveloperEnvironment'))]",
+      "name": "message-ingestion-functions-app",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": { "value": "[variables('messageIngestionHostFunctionsAppName')]" },
+          "functionsAppPackageFolder": { "value": "[parameters('functionsAppPackageFolder')]" },
+          "functionsAppPackageFileName": { "value": "[parameters('messageIngestionHostFunctionsAppPackageFileName')]" },
+          "_artifactsLocation": { "value": "[parameters('_artifactsLocation')]" },
+          "_artifactsLocationSasToken": { "value": "[parameters('_artifactsLocationSasToken')]" }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('isDeveloperEnvironment'))]",
+      "name": "message-ingestion-functions-app-auth-settings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'message-ingestion-functions-app')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-auth-settings.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": {
+            "value": "[variables('messageIngestionHostFunctionsAppName')]"
+          },
+          "aadTenantId": {
+            "value": "[parameters('aadTenantId')]"
+          },
+          "aadClientId": {
+            "value": "[parameters('ingestionAadClientId')]"
+          },
+          "unauthenticatedClientAction": {
+            "value": "RedirectToLoginPage"
+          }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('isDeveloperEnvironment'))]",
+      "name": "message-ingestion-functions-app-settings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'message-ingestion-functions-app')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-settings-message-ingestion-host.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountConnectionString": { "value": "[reference('message-ingestion-functions-app', '2016-09-01').outputs.storageAccountConnectionString.value]" },
+          "functionsAppName": { "value": "[variables('messageIngestionHostFunctionsAppName')]" },
+          "tenantId": { "value": "[variables('tenantId')]" },
+          "subscriptionId": { "value": "[variables('subscriptionId')]" },
+          "applicationInsightsInstrumentationKey": { "value": "[reference('app-insights').outputs.instrumentationKey.value]" },
+          "keyVaultName": { "value": "[variables('defaultName')]" },
+          "operationsControlServiceBaseUrl": { "value": "[parameters('operationsControlServiceBaseUrl')]" },
+          "operationsControlServiceAadResourceId": { "value": "[parameters('operationsControlServiceAadResourceId')]" }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('isDeveloperEnvironment'))]",
+      "name": "engine-functions-app",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": { "value": "[variables('engineHostFunctionsAppName')]" },
+          "functionsAppPackageFolder": { "value": "[parameters('functionsAppPackageFolder')]" },
+          "functionsAppPackageFileName": { "value": "[parameters('engineHostFunctionsAppPackageFileName')]" },
+          "_artifactsLocation": { "value": "[parameters('_artifactsLocation')]" },
+          "_artifactsLocationSasToken": { "value": "[parameters('_artifactsLocationSasToken')]" }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('isDeveloperEnvironment'))]",
+      "name": "engine-functions-app-auth-settings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'engine-functions-app')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-auth-settings.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": {
+            "value": "[variables('engineHostFunctionsAppName')]"
+          },
+          "aadTenantId": {
+            "value": "[parameters('aadTenantId')]"
+          },
+          "aadClientId": {
+            "value": "[parameters('engineAadClientId')]"
+          },
+          "unauthenticatedClientAction": {
+            "value": "RedirectToLoginPage"
+          }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('isDeveloperEnvironment'))]",
+      "name": "engine-functions-app-settings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'engine-functions-app')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-settings-engine-host.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountConnectionString": { "value": "[reference('engine-functions-app', '2016-09-01').outputs.storageAccountConnectionString.value]" },
+          "functionsAppName": { "value": "[variables('engineHostFunctionsAppName')]" },
+          "tenantId": { "value": "[variables('tenantId')]" },
+          "subscriptionId": { "value": "[variables('subscriptionId')]" },
+          "applicationInsightsInstrumentationKey": { "value": "[reference('app-insights').outputs.instrumentationKey.value]" },
+          "keyVaultName": { "value": "[variables('defaultName')]" },
+          "cosmosDbName": { "value": "[variables('defaultName')]" },
+          "workflowStoreCosmosKeySecretName": { "value": "workflowstorecosmosdbkey" }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('isDeveloperEnvironment'))]",
+      "name": "message-preprocessor-functions-app",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": { "value": "[variables('messagePreProcessingHostFunctionsAppName')]" },
+          "functionsAppPackageFolder": { "value": "[parameters('functionsAppPackageFolder')]" },
+          "functionsAppPackageFileName": { "value": "[parameters('messagePreProcessingHostFunctionsAppPackageFileName')]" },
+          "_artifactsLocation": { "value": "[parameters('_artifactsLocation')]" },
+          "_artifactsLocationSasToken": { "value": "[parameters('_artifactsLocationSasToken')]" }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('isDeveloperEnvironment'))]",
+      "name": "message-preprocessor-functions-app-auth-settings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'message-preprocessor-functions-app')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-auth-settings.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": {
+            "value": "[variables('messagePreProcessingHostFunctionsAppName')]"
+          },
+          "aadTenantId": {
+            "value": "[parameters('aadTenantId')]"
+          },
+          "aadClientId": {
+            "value": "[parameters('preprocessorAadClientId')]"
+          },
+          "unauthenticatedClientAction": {
+            "value": "RedirectToLoginPage"
+          }
+        }
+      }
+    },
+    {
+      "condition": "[not(parameters('isDeveloperEnvironment'))]",
+      "name": "message-preprocessor-functions-app-settings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'message-preprocessor-functions-app')]",
+        "[concat('Microsoft.Resources/deployments/', 'event-hub')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-settings-message-pre-processing-host.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountConnectionString": { "value": "[reference('message-preprocessor-functions-app', '2016-09-01').outputs.storageAccountConnectionString.value]" },
+          "functionsAppName": { "value": "[variables('messagePreProcessingHostFunctionsAppName')]" },
+          "tenantId": { "value": "[variables('tenantId')]" },
+          "subscriptionId": { "value": "[variables('subscriptionId')]" },
+          "applicationInsightsInstrumentationKey": { "value": "[reference('app-insights').outputs.instrumentationKey.value]" },
+          "keyVaultName": { "value": "[variables('defaultName')]" },
+          "eventHubConnectionString": { "value": "[reference('event-hub').outputs.listenPolicyConnectionString.value]" },
+          "cosmosDbName": { "value": "[variables('defaultName')]" },
+          "workflowStoreCosmosKeySecretName": { "value": "workflowstorecosmosdbkey" },
+          "engineFunctionsAppName": { "value": "[concat('https://', variables('engineHostFunctionsAppName'), '.azurewebsites.net/')]" },
+          "operationsControlServiceBaseUrl": { "value": "[parameters('operationsControlServiceBaseUrl')]" },
+          "operationsControlServiceAadResourceId": { "value": "[parameters('operationsControlServiceAadResourceId')]" }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "applicationInsightsInstrumentationKey": {
+      "type": "string",
+      "value": "[reference('app-insights').outputs.instrumentationKey.value]"
+    }
+  }
+}
+

@@ -1,8 +1,6 @@
-﻿// <copyright file="CreateCatalogItemTrigger.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="CommonSteps.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
-
-#pragma warning disable SA1600, CS1591
 
 namespace Marain.Workflows.Specs.Steps
 {
@@ -18,25 +16,27 @@ namespace Marain.Workflows.Specs.Steps
     using NUnit.Framework;
     using TechTalk.SpecFlow;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable SA1600 // Elements should be documented
+
     [Binding]
     public class CommonSteps
     {
-        private readonly FeatureContext featureContext;
         private readonly ScenarioContext scenarioContext;
+        private readonly FeatureContext featureContext;
 
         public CommonSteps(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
-            this.featureContext = featureContext;
             this.scenarioContext = scenarioContext;
+            this.featureContext = featureContext;
         }
 
         public static ExternalServiceWorkflowRequest RequestBody { get; set; }
+
         public static CauseExternalInvocationTrigger TriggerIn { get; set; }
 
-        [When(
-            @"I create and persist a new instance with Id ""(.*)"" of the workflow with Id ""(.*)"" and supply the following context items")]
-        [Given(
-            @"I have created and persisted a new instance with Id ""(.*)"" of the workflow with Id ""(.*)"" and supplied the following context items")]
+        [When("I create and persist a new instance with Id '(.*)' of the workflow with Id '(.*)' and supply the following context items")]
+        [Given("I have created and persisted a new instance with Id '(.*)' of the workflow with Id '(.*)' and supplied the following context items")]
         public async Task WhenICreateANewInstanceCalledOfTheWorkflowWithId(
             string instanceId,
             string workflowId,
@@ -44,8 +44,8 @@ namespace Marain.Workflows.Specs.Steps
         {
             var context = table.Rows.ToDictionary(x => x["Key"], x => x["Value"]);
 
-            IWorkflowEngineFactory engineFactory = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IWorkflowEngineFactory>();
-            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<ITenantProvider>();
+            IWorkflowEngineFactory engineFactory = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowEngineFactory>();
+            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantProvider>();
             IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
 
             await engine.StartWorkflowInstanceAsync(new StartWorkflowInstanceRequest { Context = context, WorkflowId = workflowId, WorkflowInstanceId = instanceId }).ConfigureAwait(false);
@@ -54,7 +54,7 @@ namespace Marain.Workflows.Specs.Steps
         [Given("the external service will return a (.*) status")]
         public void GivenITheExternalServiceWillReturnAStatus(int statusCode)
         {
-            ExternalServiceBindings.GetExternalService(this.scenarioContext).StatusCode = statusCode;
+            ExternalServiceBindings.GetService(this.scenarioContext).StatusCode = statusCode;
         }
 
         [Given("the workflow trigger queue is ready to process new triggers")]
@@ -74,7 +74,7 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the Content-Type header should be '(.*)'")]
         public void ThenTheContent_TypeHeaderShouldBe(string contentType)
         {
-            ExternalServiceBindings.ExternalService.RequestInfo requestInfo = ExternalServiceBindings.GetExternalService(this.scenarioContext).Requests.Single();
+            ExternalServiceBindings.ExternalService.RequestInfo requestInfo = ExternalServiceBindings.GetService(this.scenarioContext).Requests.Single();
             Assert.IsTrue(requestInfo.Headers.TryGetValue("Content-Type", out string contentTypeHeader), "Should contain Content-Type header");
             var parsedHeader = MediaTypeHeaderValue.Parse(contentTypeHeader);
             Assert.AreEqual(contentType, parsedHeader.MediaType);
@@ -116,3 +116,6 @@ namespace Marain.Workflows.Specs.Steps
         }
     }
 }
+
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning restore SA1600 // Elements should be documented

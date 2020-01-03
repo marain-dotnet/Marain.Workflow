@@ -1,5 +1,5 @@
-﻿// <copyright file="CatalogItemCompleteCondition.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="CatalogItemCompleteCondition.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -15,7 +15,7 @@ namespace Marain.Workflows.Specs.TestObjects.Conditions
 
     public class CatalogItemCompleteCondition : IWorkflowCondition
     {
-        public const string RegisteredContentType = "application/vnd.marain.datacatalog.catalogitemcompletecondition";
+        public const string RegisteredContentType = "application/vnd.endjin.datacatalog.catalogitemcompletecondition";
 
         private readonly DataCatalogItemRepositoryFactory repositoryFactory;
 
@@ -46,7 +46,11 @@ namespace Marain.Workflows.Specs.TestObjects.Conditions
         private async Task<bool> EvaluateAsync(WorkflowInstance instance, string catalogItemId)
         {
             var repository = this.repositoryFactory.GetRepository();
-            var item = await repository.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+
+            var item = await repository
+                .ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))
+                .ConfigureAwait(false);
+
             return item.Resource.IsComplete();
         }
     }

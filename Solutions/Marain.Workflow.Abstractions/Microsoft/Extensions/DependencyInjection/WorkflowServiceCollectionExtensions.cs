@@ -16,17 +16,22 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class WorkflowServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds the event hub implementation of <see cref="IWorkflowMessageQueue"/>
-        /// to the given <see cref="IServiceCollection"/>.
+        /// Adds the standard <see cref="IWorkflowEngineFactory"/> implementation to the given
+        /// <see cref="IServiceCollection"/>.
         /// </summary>
-        /// <param name="collection">
-        /// The Service Collection to add to.
-        /// </param>
+        /// <param name="collection">The Service Collection to add to.</param>
         /// <param name="configureFactory">Configure the <see cref="IWorkflowEngineFactory"/>.</param>
-        /// <returns>
-        /// The <see cref="IServiceCollection"/>.
-        /// </returns>
-        public static IServiceCollection AddWorkflowEngineFactory(this IServiceCollection collection, Action<IWorkflowEngineFactory> configureFactory = null)
+        /// <returns>The <see cref="IServiceCollection"/>.</returns>
+        /// <remarks>
+        /// The default workflow engine has dependencies on
+        /// - <see cref="ITenantCosmosContainerFactory"/>
+        /// - <see cref="ILeaseProvider"/>
+        /// - <see cref="ILogger"/>
+        /// Implementations of these services must be added to the service collection separately.
+        /// </remarks>
+        public static IServiceCollection AddWorkflowEngineFactory(
+            this IServiceCollection collection,
+            Action<IWorkflowEngineFactory> configureFactory = null)
         {
             collection.AddSingleton<IWorkflowEngineFactory>(s =>
             {

@@ -15,7 +15,7 @@ namespace Marain.Workflows
     public class HostedWorkflowTrigger : IWorkflowTrigger
     {
         /// <summary>
-        ///     The content type that will be used when serializing/deserializing.
+        /// The content type that will be used when serializing/deserializing.
         /// </summary>
         public const string RegisteredContentType = "application/vnd.marain.workflows.hosted.trigger";
 

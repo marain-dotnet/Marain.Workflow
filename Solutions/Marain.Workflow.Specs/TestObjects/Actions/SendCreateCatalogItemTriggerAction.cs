@@ -1,5 +1,5 @@
-﻿// <copyright file="SendCreateCatalogItemTriggerAction.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="SendCreateCatalogItemTriggerAction.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -15,7 +15,7 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
     {
         private readonly IWorkflowMessageQueue queue;
 
-        public const string RegisteredContentType = "application/vnd.marain.datacatalog.sendcreatecatalogitemtriggeraction";
+        public const string RegisteredContentType = "application/vnd.endjin.datacatalog.sendcreatecatalogitemtriggeraction";
 
         public string Id { get; set; } = Guid.NewGuid().ToString();
 

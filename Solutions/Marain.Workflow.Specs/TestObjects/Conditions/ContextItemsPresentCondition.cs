@@ -1,5 +1,5 @@
-﻿// <copyright file="ContextItemsPresentCondition.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="ContextItemsPresentCondition.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -13,7 +13,7 @@ namespace Marain.Workflows.Specs.TestObjects.Conditions
 
     public class ContextItemsPresentCondition : IWorkflowCondition
     {
-        public const string RegisteredContentType = "application/vnd.marain.datacatalog.contextitemspresentcondition";
+        public const string RegisteredContentType = "application/vnd.endjin.datacatalog.contextitemspresentcondition";
 
         public string ContentType => RegisteredContentType;
 

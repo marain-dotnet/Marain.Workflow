@@ -42,9 +42,15 @@ namespace Marain.Workflows
         /// <summary>
         /// Initializes a new instance of the <see cref="ExternalServiceInvocationException"/> class.
         /// </summary>
-        /// <param name="actionOrConditionContentType">The content type of the workflow action or condition that was executing when this error occurred.</param>
-        /// <param name="actionOrConditionId">The Id of the workflow action or condition that was executing when this error occurred.</param>
-        /// <param name="workflowInstanceId">The Id of the workflow instance that the action or condition was being applied to.</param>
+        /// <param name="actionOrConditionContentType">
+        /// The content type of the workflow action or condition that was executing when this error occurred.
+        /// </param>
+        /// <param name="actionOrConditionId">
+        /// The Id of the workflow action or condition that was executing when this error occurred.
+        /// </param>
+        /// <param name="workflowInstanceId">
+        /// The Id of the workflow instance that the action or condition was being applied to.
+        /// </param>
         /// <param name="triggerId">The Id of the trigger whose execution led to this error.</param>
         /// <param name="responseStatusCode">The status code received from the external service.</param>
         /// <param name="responseReasonPhrase">The reason phrase received from the external service.</param>

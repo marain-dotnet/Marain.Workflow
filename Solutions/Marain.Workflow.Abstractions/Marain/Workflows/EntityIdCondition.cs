@@ -10,23 +10,23 @@ namespace Marain.Workflows
     using System.Threading.Tasks;
 
     /// <summary>
-    ///     An <see cref="IWorkflowCondition" /> which checks a value from an <see cref="EntityIdTrigger" /> against
-    ///     a value from the context of the <see cref="WorkflowInstance" />, and ensures that the value of the
-    ///     <see cref="Activity" /> property matches the corresponding value on the trigger.
+    /// An <see cref="IWorkflowCondition" /> which checks a value from an <see cref="EntityIdTrigger" /> against
+    /// a value from the context of the <see cref="WorkflowInstance" />, and ensures that the value of the
+    /// <see cref="Activity" /> property matches the corresponding value on the trigger.
     /// </summary>
     /// <remarks>
-    ///     If the incoming trigger is not an <see cref="EntityIdTrigger" />, the condition will always evaluate
-    ///     to false.
+    /// If the incoming trigger is not an <see cref="EntityIdTrigger" />, the condition will always evaluate
+    /// to false.
     /// </remarks>
     public class EntityIdCondition : IWorkflowCondition
     {
         /// <summary>
-        ///     The content type that will be used when serializing/deserializing.
+        /// The content type that will be used when serializing/deserializing.
         /// </summary>
         public const string RegisteredContentType = "application/vnd.marain.workflows.entityidcondition";
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EntityIdCondition" /> class.
+        /// Initializes a new instance of the <see cref="EntityIdCondition" /> class.
         /// </summary>
         public EntityIdCondition()
         {
@@ -34,18 +34,18 @@ namespace Marain.Workflows
         }
 
         /// <summary>
-        ///     Gets or sets the activity, which will be compared against the corresponding value on the trigger.
+        /// Gets or sets the activity, which will be compared against the corresponding value on the trigger.
         /// </summary>
         public string Activity { get; set; }
 
         /// <summary>
-        ///     Gets the content type that will be used when serializing/deserializing.
+        /// Gets the content type that will be used when serializing/deserializing.
         /// </summary>
         public string ContentType => RegisteredContentType;
 
         /// <summary>
-        ///     Gets or sets the key that will be used to retrieve the entity Id to compare from the
-        ///     <see cref="WorkflowInstance" />.
+        /// Gets or sets the key that will be used to retrieve the entity Id to compare from the
+        /// <see cref="WorkflowInstance" />.
         /// </summary>
         public string EntityIdContextProperty { get; set; }
 

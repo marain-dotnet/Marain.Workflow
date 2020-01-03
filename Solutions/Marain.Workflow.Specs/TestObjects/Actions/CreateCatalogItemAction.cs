@@ -1,5 +1,5 @@
-﻿// <copyright file="CreateCatalogItemAction.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="CreateCatalogItemAction.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -10,11 +10,10 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
     using System.Threading.Tasks;
 
     using Marain.Workflows.Specs.TestObjects.Subjects;
-    using Microsoft.Azure.Cosmos;
 
     public class CreateCatalogItemAction : IWorkflowAction
     {
-        public const string RegisteredContentType = "application/vnd.marain.datacatalog.createcatalogitemaction";
+        public const string RegisteredContentType = "application/vnd.endjin.datacatalog.createcatalogitemaction";
 
         private readonly DataCatalogItemRepositoryFactory repositoryFactory;
 
@@ -38,7 +37,7 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
             instance.Context.Remove("Type");
 
             var repository = this.repositoryFactory.GetRepository();
-            await repository.UpsertItemAsync(item, new PartitionKey(item.PartitionKey)).ConfigureAwait(false);
+            await repository.UpsertItemAsync(item).ConfigureAwait(false);
         }
 
         public string ContentType => RegisteredContentType;

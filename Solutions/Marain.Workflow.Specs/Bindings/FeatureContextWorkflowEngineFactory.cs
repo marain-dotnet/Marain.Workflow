@@ -1,15 +1,15 @@
-﻿// <copyright file="FeatureContextWorkflowEngineFactory.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="FeatureContextWorkflowEngineFactory.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 namespace Marain.Workflows.Specs.Bindings
 {
+    using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Leasing;
     using Corvus.Tenancy;
     using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.Logging;
-    using System.Threading.Tasks;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -22,12 +22,15 @@ namespace Marain.Workflows.Specs.Bindings
         private readonly ILogger<IWorkflowEngine> logger;
 
         /// <summary>
-        /// Creates an instance of the FeatureContextWorkflowRepositoriesFactory for a specific FeatureContext
+        /// Creates an instance of the FeatureContextWorkflowRepositoriesFactory for a specific FeatureContext.
         /// </summary>
-        /// <param name="featureContext">The feature context</param>
-        /// <param name="leaseProvider">The lease provider</param>
-        /// <param name="logger">The logger</param>
-        public FeatureContextWorkflowEngineFactory(FeatureContext featureContext, ILeaseProvider leaseProvider, ILogger<IWorkflowEngine> logger)
+        /// <param name="featureContext">The feature context.</param>
+        /// <param name="leaseProvider">The lease provider.</param>
+        /// <param name="logger">The logger.</param>
+        public FeatureContextWorkflowEngineFactory(
+            FeatureContext featureContext,
+            ILeaseProvider leaseProvider,
+            ILogger<IWorkflowEngine> logger)
         {
             this.featureContext = featureContext;
             this.leaseProvider = leaseProvider;
@@ -35,18 +38,20 @@ namespace Marain.Workflows.Specs.Bindings
         }
 
         /// <inheritdoc/>
-        public bool SupportKeyRotation { get; set; }
+        public CosmosContainerDefinition WorkflowInstanceCosmosContainerDefinition { get; set; }
 
         /// <inheritdoc/>
-        public CosmosContainerDefinition WorkflowInstanceRepositoryDefinition { get; set; }
-
-        /// <inheritdoc/>
-        public CosmosContainerDefinition WorkflowRepositoryDefinition { get; set; }
+        public CosmosContainerDefinition WorkflowCosmosContainerDefinition { get; set; }
 
         /// <inheritdoc/>
         public Task<IWorkflowEngine> GetWorkflowEngineAsync(ITenant tenant)
         {
-            return Task.FromResult((IWorkflowEngine)new WorkflowEngine(this.featureContext.Get<Container>(WorkflowCosmosDbBindings.WorkflowInstancesRepository), this.featureContext.Get<Container>(WorkflowCosmosDbBindings.WorkflowsRepository), this.leaseProvider, this.logger));
+            return Task.FromResult(
+                (IWorkflowEngine)new WorkflowEngine(
+                    (Container)this.featureContext[WorkflowCosmosDbBindings.WorkflowInstancesRepository],
+                    (Container)this.featureContext[WorkflowCosmosDbBindings.WorkflowsRepository],
+                    this.leaseProvider,
+                    this.logger));
         }
     }
 }

@@ -1,0 +1,69 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccountConnectionString": {
+      "type": "string"
+    },
+    "functionsAppName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "keyVaultName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cosmosDbName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workflowStoreCosmosKeySecretName": {
+      "type": "string"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subscriptionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "applicationInsightsInstrumentationKey": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "name": "[concat(parameters('functionsAppName'),'/appsettings')]",
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+      ],
+      "tags": {
+        "displayName": "AppSettings"
+      },
+      "properties": {
+        "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[parameters('storageAccountConnectionString')]",
+        "WEBSITE_CONTENTSHARE": "[toLower(parameters('functionsAppName'))]",
+        "AzureConfigurationStorage": "[parameters('storageAccountConnectionString')]",
+        "APPINSIGHTS_INSTRUMENTATIONKEY": "[parameters('applicationInsightsInstrumentationKey')]",
+        "FUNCTIONS_EXTENSION_VERSION": "beta",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+        "SubscriptionId": "[parameters('subscriptionId')]",
+        "TenantId": "[parameters('tenantId')]",
+        "AzureWebJobsDashboard": "[parameters('storageAccountConnectionString')]",
+        "AzureWebJobsStorage": "[parameters('storageAccountConnectionString')]",
+        "AzureServicesAuthConnectionString": "",
+        "KeyVaultName": "[parameters('keyVaultName')]",
+        "LeasingStorageAccountConnectionString": "[parameters('storageAccountConnectionString')]",
+        "CosmosDbAccountUri": "[concat('https://', parameters('cosmosDbName'), '.documents.azure.com:443/')]",
+        "CosmosDbKeySecretName": "[parameters('workflowStoreCosmosKeySecretName')]"
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

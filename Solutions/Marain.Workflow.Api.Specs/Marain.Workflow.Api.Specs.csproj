@@ -1,0 +1,84 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Marain.Workflows.Functions.Specs</RootNamespace>
+  </PropertyGroup>
+  
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\net471\Endjin.Workflow.Functions.Specs.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\net471\Endjin.Workflow.Functions.Specs.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.EventHubs" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Azure.EventHubs.Processor" Version="3.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <PackageReference Include="SpecFlow.NUnit.Runners" Version="2.4.1" />
+    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Endjin.Composition.Abstractions\Endjin.Composition.Abstractions.csproj" />
+    <ProjectReference Include="..\Endjin.Composition.MicrosoftDI\Endjin.Composition.MicrosoftDI.csproj" />
+    <ProjectReference Include="..\Endjin.Leasing.Azure\Endjin.Leasing.Azure.csproj" />
+    <ProjectReference Include="..\Endjin.Serialization.Json\Endjin.Serialization.Json.csproj" />
+    <ProjectReference Include="..\Endjin.SpecFlow.Bindings\Endjin.SpecFlow.Bindings.csproj" />
+    <ProjectReference Include="..\Endjin.TestConfiguration\Endjin.TestConfiguration.csproj" />
+    <ProjectReference Include="..\Endjin.Workflow.Abstractions\Endjin.Workflow.Abstractions.csproj" />
+    <ProjectReference Include="..\Endjin.Workflow.Azure\Endjin.Workflow.Azure.csproj" />
+    <ProjectReference Include="..\Endjin.Workflow.Functions\Endjin.Workflow.Functions.csproj" />
+    <ProjectReference Include="..\Endjin.Workflow.Serialization.Json\Endjin.Workflow.Serialization.Json.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Management" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="EndToEnd\SendTriggerToInstance.feature.cs">
+      <DependentUpon>SendTriggerToInstance.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="EndToEnd\StartNewInstance.feature.cs">
+      <DependentUpon>StartNewInstance.feature</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="EngineHost\SendTriggerToInstance.feature.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SendTriggerToInstance.feature</DependentUpon>
+    </Compile>
+    <Compile Update="EngineHost\StartNewInstance.feature.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>StartNewInstance.feature</DependentUpon>
+    </Compile>
+    <Compile Update="MessageIngestionHost\SendStartWorkflowInstanceRequest.feature.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SendStartWorkflowInstanceRequest.feature</DependentUpon>
+    </Compile>
+    <Compile Update="MessageIngestionHost\SendTrigger.feature.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SendTrigger.feature</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,5 @@
-﻿
-// <copyright file="DeleteCatalogItemTrigger.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="DeleteCatalogItemTrigger.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -12,7 +11,7 @@ namespace Marain.Workflows.Specs.TestObjects.Triggers
 
     public class DeleteCatalogItemTrigger : ICatalogItemTrigger
     {
-        public const string RegisteredContentType = "application/vnd.marain.datacatalog.deletecatalogitemtrigger";
+        public const string RegisteredContentType = "application/vnd.endjin.datacatalog.deletecatalogitemtrigger";
 
         public string CatalogItemId { get; set; }
 

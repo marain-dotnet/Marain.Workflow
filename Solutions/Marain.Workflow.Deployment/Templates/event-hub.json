@@ -1,0 +1,111 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Event Hub namespace"
+      }
+    },
+    "throughputUnits": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 20,
+      "metadata": {
+        "description": "Number of throughput units to assign to Event Hub namespace"
+      }
+    },
+    "eventHubName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Event Hub"
+      }
+    }
+  },
+  "variables": {
+    "managePolicy": "Manager",
+    "sendPolicy": "Sender",
+    "listenPolicy": "Listener",
+    "location": "[resourceGroup().location]",
+    "ehVersion": "2015-08-01",
+    "defaultSASKeyName": "RootManageSharedAccessKey",
+    "authRuleResourceId": "[resourceId('Microsoft.EventHub/namespaces/authorizationRules', parameters('namespaceName'), variables('defaultSASKeyName'))]",
+    "sendPolicyResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('namespaceName'), parameters('eventHubName'), variables('sendPolicy'))]",
+    "listenPolicyResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('namespaceName'), parameters('eventHubName'), variables('listenPolicy'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('ehVersion')]",
+      "name": "[parameters('namespaceName')]",
+      "type": "Microsoft.EventHub/Namespaces",
+      "location": "[variables('location')]",
+      "sku": {
+        "name": "Standard",
+        "tier": "Standard",
+        "capacity": "[parameters('throughputUnits')]"
+      },
+      "resources": [
+        {
+          "apiVersion": "[variables('ehVersion')]",
+          "name": "[parameters('eventHubName')]",
+          "type": "EventHubs",
+          "dependsOn": [
+            "[concat('Microsoft.EventHub/namespaces/', parameters('namespaceName'))]"
+          ],
+          "properties": {
+            "path": "[parameters('eventHubName')]",
+            "partitionCount": "[parameters('throughputUnits')]"
+          },
+          "resources": [
+            {
+              "apiVersion": "[variables('ehVersion')]",
+              "name": "[variables('sendPolicy')]",
+              "type": "authorizationRules",
+              "dependsOn": [
+                "[concat('Microsoft.EventHub/namespaces/', parameters('namespaceName'),'/eventhubs/',parameters('eventHubName'))]"
+              ],
+              "properties": {
+                "Rights": [
+                  "Send"
+                ]
+              }
+            },
+            {
+              "apiVersion": "[variables('ehVersion')]",
+              "name": "[variables('listenPolicy')]",
+              "type": "authorizationRules",
+              "dependsOn": [
+                "[concat('Microsoft.EventHub/namespaces/', parameters('namespaceName'),'/eventhubs/',parameters('eventHubName'))]"
+              ],
+              "properties": {
+                "Rights": [
+                  "Listen"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "namespaceConnectionString": {
+      "type": "string",
+      "value": "[listkeys(variables('authRuleResourceId'), variables('ehVersion')).primaryConnectionString]"
+    },
+    "sendPolicyName": {
+      "type": "string",
+      "value": "[variables('sendPolicy')]"
+    },
+    "sendPolicyPrimaryKey": {
+      "type": "string",
+      "value": "[listkeys(variables('sendPolicyResourceId'), variables('ehVersion')).primaryKey]"
+    },
+    "listenPolicyConnectionString": {
+      "type": "string",
+      "value": "[concat('Endpoint=sb://', parameters('namespaceName'), '.servicebus.windows.net/;SharedAccessKeyName=', variables('listenPolicy'), ';SharedAccessKey=', listkeys(variables('listenPolicyResourceId'), variables('ehVersion')).primaryKey, ';EntityPath=', parameters('eventHubName'))]"
+    }
+  }
+}

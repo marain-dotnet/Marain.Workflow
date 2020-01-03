@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Common.NetStandard_2_0.proj" />
+
+  <PropertyGroup>
+    <AzureFunctionsVersion>v2</AzureFunctionsVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.8.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.8.1" />
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.8" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.28" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Endjin.Functions\Endjin.Functions.csproj" />
+    <ProjectReference Include="..\Endjin.OpenApi.Auditing\Endjin.OpenApi.Auditing.csproj" />
+    <ProjectReference Include="..\Endjin.OpenApi.Hosting.AspNetCore\Endjin.OpenApi.Hosting.AspNetCore.csproj" />
+    <ProjectReference Include="..\Endjin.Serialization.Json\Endjin.Serialization.Json.csproj" />
+    <ProjectReference Include="..\Endjin.Telemetry.Azure\Endjin.Telemetry.Azure.csproj" />
+    <ProjectReference Include="..\Endjin.Workflow.Abstractions\Endjin.Workflow.Abstractions.csproj" />
+    <ProjectReference Include="..\Endjin.Workflow.Azure\Endjin.Workflow.Azure.csproj" />
+    <ProjectReference Include="..\Endjin.Workflow.Functions\Endjin.Workflow.Functions.csproj" />
+    <ProjectReference Include="..\Endjin.Workflow.Serialization.Json\Endjin.Workflow.Serialization.Json.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.template.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PackageFunctionsApp" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Properties="DeployOnBuild=true;WebPublishMethod=Package;PackageAsSingleFile=true;PackageLocation=bin\$(Configuration)\package" Targets="Build" />
+  </Target>
+</Project>

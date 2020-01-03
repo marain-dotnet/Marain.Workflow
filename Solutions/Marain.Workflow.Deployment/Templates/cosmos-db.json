@@ -1,0 +1,76 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "defaultConsistency": {
+      "type": "string",
+      "defaultValue": "Session",
+      "allowedValues": [
+        "Session",
+        "Strong",
+        "Eventual",
+        "Bounded_Staleness",
+        "Consistent_Prefix"
+      ]
+    },
+    "defaultExperience": {
+      "type": "string",
+      "defaultValue": "DocumentDB",
+      "allowedValues": [
+        "DocumentDB",
+        "MongoDB",
+        "Gremlin",
+        "Table"
+      ]
+    },
+    "maxIntervalInSeconds": {
+      "type": "int",
+      "defaultValue": 5
+    },
+    "maxStalenessPrefix": {
+      "type": "int",
+      "defaultValue": 100
+    },
+    "databaseAccountOfferType": {
+      "type": "string",
+      "defaultValue": "Standard"
+    } 
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "comments": "CosmosDB",
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "kind": "GlobalDocumentDB",
+      "name": "[parameters('accountName')]",
+      "apiVersion": "2015-04-08",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "defaultExperience": "[parameters('defaultExperience')]"
+      },
+      "scale": null,
+      "properties": {
+        "databaseAccountOfferType": "[parameters('databaseAccountOfferType')]",
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "[parameters('defaultConsistency')]",
+          "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]",
+          "maxStalenessPrefix": "[parameters('maxStalenessPrefix')]"
+        },
+        "name": "[parameters('accountName')]"
+      },
+      "dependsOn": []
+    }
+  ],
+
+  "outputs": {
+
+  }
+}
+
+
+

@@ -1,5 +1,5 @@
-﻿// <copyright file="CatalogItemWillBeCompleteCondition.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="CatalogItemWillBeCompleteCondition.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -17,7 +17,7 @@ namespace Marain.Workflows.Specs.TestObjects.Conditions
     public class CatalogItemWillBeCompleteCondition : IWorkflowCondition
     {
         public const string RegisteredContentType =
-            "application/vnd.marain.datacatalog.catalogitemwillcompletecondition";
+            "application/vnd.endjin.datacatalog.catalogitemwillcompletecondition";
 
         private readonly DataCatalogItemRepositoryFactory repositoryFactory;
 
@@ -51,7 +51,7 @@ namespace Marain.Workflows.Specs.TestObjects.Conditions
         {
             var repository = this.repositoryFactory.GetRepository();
             var item = await repository.ReadItemAsync<CatalogItem>(patch.Id, new PartitionKey(patch.Id)).ConfigureAwait(false);
-            var newItem = patch.ApplyTo(item.Resource);
+            var newItem = patch.ApplyTo(item);
             return newItem.IsComplete() == this.ExpectedResult;
         }
     }
