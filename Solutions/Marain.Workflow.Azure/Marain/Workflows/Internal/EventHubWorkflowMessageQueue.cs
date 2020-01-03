@@ -5,45 +5,37 @@
 namespace Marain.Workflows.Internal
 {
     using System;
-    using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
-
-    using Marain.Serialization.Json;
-    using Marain.Telemetry;
-    using Marain.Utilities.Azure;
-    using Microsoft.ApplicationInsights;
+    using Corvus.Extensions.Cosmos.Crypto;
+    using Corvus.Extensions.Json;
     using Microsoft.Azure.EventHubs;
     using Microsoft.Extensions.Configuration;
 
     using Newtonsoft.Json;
 
     /// <summary>
-    ///     Workflow trigger queue implementation that pushes triggers
-    ///     to an event hub namespace.
+    /// Workflow trigger queue implementation that pushes triggers to an event hub namespace.
     /// </summary>
     public class EventHubWorkflowMessageQueue : IWorkflowMessageQueue
     {
-        private readonly Lazy<EventHubClient> client;
-
-        private readonly JsonSerializerSettings serializationSettings;
+        private readonly Lazy<Task<EventHubClient>> clientProvider;
 
         private readonly IConfigurationRoot configuration;
-        private readonly IMetric enqueuedMetric;
+        private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="EventHubWorkflowMessageQueue" /> class.
+        /// Initializes a new instance of the <see cref="EventHubWorkflowMessageQueue" /> class.
         /// </summary>
-        /// <param name="configuration">
-        ///     The configuration.
-        /// </param>
-        /// <param name="telemetryClient">A <see cref="TelemetryClient"/>.</param>
-        public EventHubWorkflowMessageQueue(IConfigurationRoot configuration, TelemetryClient telemetryClient)
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="serializerSettingsProvider">The serializer settings provider to use when serializing message envelopes.</param>
+        public EventHubWorkflowMessageQueue(
+            IConfigurationRoot configuration,
+            IJsonSerializerSettingsProvider serializerSettingsProvider)
         {
             this.configuration = configuration;
-            this.client = new Lazy<EventHubClient>(this.BuildEventHubClient);
-            this.serializationSettings = SerializerSettings.CreateSerializationSettings();
-            this.enqueuedMetric = telemetryClient.CreateMetric("Endjin_WorkflowMessageEnqueued");
+            this.clientProvider = new Lazy<Task<EventHubClient>>(this.BuildEventHubClientAsync);
+            this.serializerSettingsProvider = serializerSettingsProvider;
         }
 
         /// <inheritdoc />
@@ -66,28 +58,22 @@ namespace Marain.Workflows.Internal
 
         private async Task EnqueueMessageEnvelopeAsync(WorkflowMessageEnvelope envelope)
         {
-            string json = JsonConvert.SerializeObject(envelope, this.serializationSettings);
+            string json = JsonConvert.SerializeObject(envelope, this.serializerSettingsProvider.Instance);
             byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
 
             var data = new EventData(jsonBytes);
-            data.Properties.Add("AppInsightsOperationId", TelemetryOperationContext.Current.OperationId);
+            EventHubClient client = await this.clientProvider.Value.ConfigureAwait(false);
 
-            foreach (KeyValuePair<string, string> current in TelemetryOperationContext.Current.Properties)
-            {
-                data.Properties.Add(current.Key, current.Value);
-            }
-
-            await this.client.Value.SendAsync(data, envelope.PartitionKey).ConfigureAwait(false);
-            this.enqueuedMetric.TrackValue(1);
+            await client.SendAsync(data, envelope.PartitionKey).ConfigureAwait(false);
         }
 
-        private EventHubClient BuildEventHubClient()
+        private async Task<EventHubClient> BuildEventHubClientAsync()
         {
-            string connectionString = SecretHelper.GetSecretFromConfigurationOrKeyVault(
+            string connectionString = await SecretHelper.GetSecretFromConfigurationOrKeyVaultAsync(
                 this.configuration,
                 "kv:triggereventhubconnectionstring",
                 this.configuration["KeyVaultName"],
-                "triggereventhubconnectionstring");
+                "triggereventhubconnectionstring").ConfigureAwait(false);
 
             return EventHubClient.CreateFromConnectionString(connectionString);
         }

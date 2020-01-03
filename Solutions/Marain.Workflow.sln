@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{7239829F-870
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Specs", "Marain.Workflow.Specs\Marain.Workflow.Specs.csproj", "{2EBB45F6-5392-4102-BE3B-CE6209C35913}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Azure", "Marain.Workflow.Azure\Marain.Workflow.Azure.csproj", "{7AD05D90-7A2C-4BCB-AE25-F9B01766FAF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{2EBB45F6-5392-4102-BE3B-CE6209C35913}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EBB45F6-5392-4102-BE3B-CE6209C35913}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EBB45F6-5392-4102-BE3B-CE6209C35913}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AD05D90-7A2C-4BCB-AE25-F9B01766FAF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AD05D90-7A2C-4BCB-AE25-F9B01766FAF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AD05D90-7A2C-4BCB-AE25-F9B01766FAF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AD05D90-7A2C-4BCB-AE25-F9B01766FAF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

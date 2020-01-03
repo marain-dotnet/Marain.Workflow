@@ -3,6 +3,13 @@
   <Import Project="..\Common.NetCoreApp_2_1.proj" />
 
   <PropertyGroup>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageDescription></PackageDescription>
+    <PackageTags></PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <IsPackable>false</IsPackable>
     <RootNamespace>Endjin.Workflow.Specs</RootNamespace>
   </PropertyGroup>

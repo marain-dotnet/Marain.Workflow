@@ -2,6 +2,13 @@
 
   <Import Project="..\Common.NetStandard_2_0.proj" />
 
+  <PropertyGroup>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageDescription></PackageDescription>
+    <PackageTags></PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.19.0" />
     <PackageReference Include="Corvus.Extensions.CosmosClient" Version="0.6.0" />
