@@ -2,8 +2,6 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-#pragma warning disable
-
 namespace Marain.Workflows.Functions.Specs.Steps
 {
     using System;
@@ -11,9 +9,7 @@ namespace Marain.Workflows.Functions.Specs.Steps
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
-
-    using Marain.Composition;
-
+    using Corvus.SpecFlow.Extensions;
     using Microsoft.Extensions.DependencyInjection;
 
     using TechTalk.SpecFlow;
@@ -22,24 +18,26 @@ namespace Marain.Workflows.Functions.Specs.Steps
     [Binding]
     public class ObjectSteps
     {
+        private readonly FeatureContext featureContext;
         private readonly ScenarioContext context;
 
-        public ObjectSteps(ScenarioContext context)
+        public ObjectSteps(FeatureContext featureContext, ScenarioContext context)
         {
             this.context = context;
+            this.featureContext = featureContext;
         }
 
         [Given(@"I have an object of type ""(.*)"" called ""(.*)""")]
         [Given(@"I have objects of type ""(.*)"" called ""(.*)""")]
         public void GivenIHaveAnObjectOfTypeCalled(string contentType, string instanceName, Table table)
         {
-            var instances = table.CreateSet(() => ServiceRoot.ServiceProvider.GetContent(contentType)).ToArray();
+            var instances = table.CreateSet(() => ContainerBindings.GetServiceProvider(this.featureContext).GetContent(contentType)).ToArray();
             this.context[instanceName] = instances;
         }
 
         [Given(@"I have a POCO object of type ""(.*)"" called ""(.*)""")]
         [Given(@"I have POCO objects of type ""(.*)"" called ""(.*)""")]
-        public void GivenIHaveAPOCOObjectOfTypeCalled(string typeName, string instanceName, Table table)
+        public void GivenIHaveAPocoObjectOfTypeCalled(string typeName, string instanceName, Table table)
         {
             var type = Type.GetType(typeName);
             var obj = table.CreateSet(() => Activator.CreateInstance(type));
@@ -54,5 +52,3 @@ namespace Marain.Workflows.Functions.Specs.Steps
         }
     }
 }
-
-#pragma warning restore

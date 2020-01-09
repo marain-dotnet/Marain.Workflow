@@ -4,18 +4,13 @@
 
 namespace Marain.Workflows.Functions
 {
-    using System.Linq;
     using System.Threading.Tasks;
-
-    using Marain.OpenApi;
-    using Marain.Telemetry;
-    using Marain.Tenancy;
-    using Microsoft.ApplicationInsights;
-    using Microsoft.ApplicationInsights.DataContracts;
+    using Corvus.Tenancy;
+    using Menes;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    ///     Handles incoming triggers posted to the trigger service.
+    /// Handles incoming triggers posted to the trigger service.
     /// </summary>
     [EmbeddedOpenApiDefinition("Marain.Workflows.Functions.EngineService.yaml")]
     public class EngineService : IOpenApiService
@@ -23,72 +18,51 @@ namespace Marain.Workflows.Functions
         private const string StartWorkflowInstanceOperationId = "startWorkflowInstance";
         private const string SendTriggerOperationId = "sendTrigger";
 
+        private readonly ITenantProvider tenantProvider;
         private readonly IWorkflowEngineFactory workflowEngineFactory;
-        private readonly TelemetryClient telemetryClient;
-        private readonly ILogger<EngineService> logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EngineService"/> class.
         /// </summary>
         /// <param name="workflowEngineFactory">The workflow engine factory.</param>
-        /// <param name="logger">The logger.</param>
-        /// /// <param name="telemetryClient">A <see cref="TelemetryClient"/> to log telemetry.</param>
-        public EngineService(IWorkflowEngineFactory workflowEngineFactory, ILogger<EngineService> logger, TelemetryClient telemetryClient)
+        /// <param name="tenantProvider">The tenant provider.</param>
+        public EngineService(
+            IWorkflowEngineFactory workflowEngineFactory,
+            ITenantProvider tenantProvider)
         {
             this.workflowEngineFactory = workflowEngineFactory;
-            this.telemetryClient = telemetryClient;
-            this.logger = logger;
+            this.tenantProvider = tenantProvider;
         }
 
         /// <summary>
-        ///     Handles an incoming trigger for an instance.
+        /// Handles incoming triggers for an instance.
         /// </summary>
-        /// <param name="workflowInstanceId">
-        ///     The Id of the workflow instance to which this trigger will be applied.
-        /// </param>
-        /// <param name="body">
-        ///     The trigger.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="OpenApiResult" />.
-        /// </returns>
+        /// <param name="tenantId">The tenant Id for the current request.</param>
+        /// <param name="workflowInstanceId">The Id of the workflow instance to which this trigger will be applied.</param>
+        /// <param name="body">The trigger.</param>
+        /// <returns>The <see cref="OpenApiResult" />.</returns>
         [OperationId(SendTriggerOperationId)]
-        public async Task<OpenApiResult> HandleTrigger(string workflowInstanceId, IWorkflowTrigger body)
+        public async Task<OpenApiResult> HandleTrigger(string tenantId, string workflowInstanceId, IWorkflowTrigger body)
         {
-            using (this.telemetryClient.StartOperation<RequestTelemetry>(SendTriggerOperationId))
-            {
-                TelemetryOperationContext.Current.Properties["Endjin_WorkflowTriggerId"] = body.Id;
-
-                // TODO: We should be passing the tenant in through e.g. a header
-                IWorkflowEngine workflowEngine = await this.workflowEngineFactory.GetWorkflowEngineAsync(Tenant.Root).ConfigureAwait(false);
-                await workflowEngine.ProcessTriggerAsync(body, workflowInstanceId).ConfigureAwait(false);
-                return this.OkResult();
-            }
+            ITenant tenant = await this.tenantProvider.GetTenantAsync(tenantId).ConfigureAwait(false);
+            IWorkflowEngine workflowEngine = await this.workflowEngineFactory.GetWorkflowEngineAsync(tenant).ConfigureAwait(false);
+            await workflowEngine.ProcessTriggerAsync(body, workflowInstanceId).ConfigureAwait(false);
+            return this.OkResult();
         }
 
         /// <summary>
-        ///     The handle trigger.
+        /// Handles requests to start new workflow instances.
         /// </summary>
-        /// <param name="body">
-        ///     The request body.
-        /// </param>
-        /// <returns>
-        ///     The <see cref="Task" />.
-        /// </returns>
+        /// <param name="tenantId">The tenant Id for the current request.</param>
+        /// <param name="body">The request body.</param>
+        /// <returns>The <see cref="Task" />.</returns>
         [OperationId(StartWorkflowInstanceOperationId)]
-        public async Task<OpenApiResult> StartWorkflowInstance(StartWorkflowInstanceRequest body)
+        public async Task<OpenApiResult> StartWorkflowInstance(string tenantId, StartWorkflowInstanceRequest body)
         {
-            using (this.telemetryClient.StartOperation<RequestTelemetry>(StartWorkflowInstanceOperationId))
-            {
-                TelemetryOperationContext.Current.Properties["Endjin_WorkflowRequestId"] = body.RequestId;
-                TelemetryOperationContext.Current.Properties["Endjin_WorkflowId"] = body.WorkflowId;
-
-                // TODO: We should be passing the tenant in through e.g. a header
-                IWorkflowEngine workflowEngine = await this.workflowEngineFactory.GetWorkflowEngineAsync(Tenant.Root).ConfigureAwait(false);
-
-                await workflowEngine.StartWorkflowInstanceAsync(body).ConfigureAwait(false);
-                return this.CreatedResult();
-            }
+            ITenant tenant = await this.tenantProvider.GetTenantAsync(tenantId).ConfigureAwait(false);
+            IWorkflowEngine workflowEngine = await this.workflowEngineFactory.GetWorkflowEngineAsync(tenant).ConfigureAwait(false);
+            await workflowEngine.StartWorkflowInstanceAsync(body).ConfigureAwait(false);
+            return this.CreatedResult();
         }
     }
 }

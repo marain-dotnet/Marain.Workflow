@@ -1,19 +1,17 @@
-﻿#pragma warning disable
-
-namespace Marain.Workflow.Functions.SpecFlow.Bindings
+﻿namespace Marain.Workflow.Functions.SpecFlow.Bindings
 {
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
-
-    using Marain.Serialization.Json;
+    using Corvus.Extensions.Json;
+    using Corvus.SpecFlow.Extensions;
     using Marain.Workflows;
 
     using Microsoft.Azure.EventHubs;
     using Microsoft.Azure.EventHubs.Processor;
-
+    using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
 
     using TechTalk.SpecFlow;
@@ -26,7 +24,10 @@ namespace Marain.Workflow.Functions.SpecFlow.Bindings
 
         public TestEventProcessor()
         {
-            this.serializationSettings = SerializerSettings.CreateSerializationSettings();
+            IJsonSerializerSettingsProvider serializerSettingsProvider =
+                ContainerBindings.GetServiceProvider(FeatureContext.Current).GetRequiredService<IJsonSerializerSettingsProvider>();
+
+            this.serializationSettings = serializerSettingsProvider.Instance;
 
             if (!ScenarioContext.Current.TryGetValue<List<TestEventProcessor>>(out var listProcessor))
             {
@@ -81,5 +82,3 @@ namespace Marain.Workflow.Functions.SpecFlow.Bindings
         }
     }
 }
-
-#pragma warning restore

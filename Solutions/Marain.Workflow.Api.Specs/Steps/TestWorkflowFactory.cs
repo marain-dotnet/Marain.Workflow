@@ -2,12 +2,8 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-#pragma warning disable
-
 namespace Marain.Workflows.Functions.Specs.Steps
 {
-    using Marain.Composition;
-
     using Microsoft.Extensions.DependencyInjection;
 
     public static class TestWorkflowFactory
@@ -57,5 +53,3 @@ namespace Marain.Workflows.Functions.Specs.Steps
         }
     }
 }
-
-#pragma warning restore

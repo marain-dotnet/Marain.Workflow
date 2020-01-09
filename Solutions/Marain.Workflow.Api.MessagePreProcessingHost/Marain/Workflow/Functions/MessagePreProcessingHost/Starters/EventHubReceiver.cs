@@ -5,13 +5,8 @@
 namespace Marain.Workflow.Functions.MessagePreProcessingHost.Starters
 {
     using System.Threading.Tasks;
-
-    using Marain.Composition;
     using Marain.Workflow.Functions.MessagePreProcessingHost.Orchestrators;
     using Marain.Workflow.Functions.MessagePreProcessingHost.Shared;
-
-    using Microsoft.ApplicationInsights;
-    using Microsoft.ApplicationInsights.DataContracts;
     using Microsoft.Azure.EventHubs;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Extensions.DependencyInjection;
@@ -58,17 +53,17 @@ namespace Marain.Workflow.Functions.MessagePreProcessingHost.Starters
 
             data.InitializeTelemetryOperationContext(context, log);
 
-            TelemetryClient telemetryClient = ServiceRoot.ServiceProvider.GetService<TelemetryClient>();
+            ////TelemetryClient telemetryClient = ServiceRoot.ServiceProvider.GetService<TelemetryClient>();
 
-            using (telemetryClient.StartOperation<RequestTelemetry>(context.GetFunctionNameForBespokeStartOperation()))
-            {
-                string instanceId = await orchestrationClient.StartNewAsync(
-                                     nameof(TriggerExecutionOrchestrator),
-                                     data).ConfigureAwait(false);
+            ////using (telemetryClient.StartOperation<RequestTelemetry>(context.GetFunctionNameForBespokeStartOperation()))
+            ////{
+            string instanceId = await orchestrationClient.StartNewAsync(
+                                    nameof(TriggerExecutionOrchestrator),
+                                    data).ConfigureAwait(false);
 
-                log.LogInformation(
-                    $"Started new instance {instanceId} of orchestration function {nameof(TriggerExecutionOrchestrator)}");
-            }
+            log.LogInformation(
+                $"Started new instance {instanceId} of orchestration function {nameof(TriggerExecutionOrchestrator)}");
+            ////}
         }
     }
 }

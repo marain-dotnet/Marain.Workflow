@@ -24,23 +24,17 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.EventHubs" Version="3.0.0" />
     <PackageReference Include="Microsoft.Azure.EventHubs.Processor" Version="3.0.0" />
+    <PackageReference Include="Corvus.SpecFlow.Extensions" Version="0.7.0-preview.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
-    <PackageReference Include="SpecFlow.NUnit.Runners" Version="2.4.1" />
-    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="2.4.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+    <PackageReference Include="SpecFlow" Version="3.0.225" />
+    <PackageReference Include="SpecFlow.NUnit" Version="3.0.225" />
+    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.0.225" />
+    <PackageReference Include="nunit" Version="3.12.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Endjin.Composition.Abstractions\Endjin.Composition.Abstractions.csproj" />
-    <ProjectReference Include="..\Endjin.Composition.MicrosoftDI\Endjin.Composition.MicrosoftDI.csproj" />
-    <ProjectReference Include="..\Endjin.Leasing.Azure\Endjin.Leasing.Azure.csproj" />
-    <ProjectReference Include="..\Endjin.Serialization.Json\Endjin.Serialization.Json.csproj" />
-    <ProjectReference Include="..\Endjin.SpecFlow.Bindings\Endjin.SpecFlow.Bindings.csproj" />
-    <ProjectReference Include="..\Endjin.TestConfiguration\Endjin.TestConfiguration.csproj" />
-    <ProjectReference Include="..\Endjin.Workflow.Abstractions\Endjin.Workflow.Abstractions.csproj" />
-    <ProjectReference Include="..\Endjin.Workflow.Azure\Endjin.Workflow.Azure.csproj" />
-    <ProjectReference Include="..\Endjin.Workflow.Functions\Endjin.Workflow.Functions.csproj" />
-    <ProjectReference Include="..\Endjin.Workflow.Serialization.Json\Endjin.Workflow.Serialization.Json.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

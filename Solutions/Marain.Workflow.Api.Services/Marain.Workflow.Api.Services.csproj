@@ -6,10 +6,18 @@
     <None Remove="Endjin\**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Endjin.OpenApi.Abstractions\Endjin.OpenApi.Abstractions.csproj" />
-    <ProjectReference Include="..\Endjin.Operations.ControlClient\Endjin.Operations.ControlClient.csproj" />
-    <ProjectReference Include="..\Endjin.Telemetry.Abstractions\Endjin.Telemetry.Abstractions.csproj" />
-    <ProjectReference Include="..\Endjin.Telemetry.Azure\Endjin.Telemetry.Azure.csproj" />
-    <ProjectReference Include="..\Endjin.Workflow.Abstractions\Endjin.Workflow.Abstractions.csproj" />
+    <None Remove="Marain\Workflows\Functions\EngineService.yaml" />
+    <None Remove="Marain\Workflows\Functions\MessageIngestionService.yaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Marain\Workflows\Functions\EngineService.yaml" />
+    <EmbeddedResource Include="Marain\Workflows\Functions\MessageIngestionService.yaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Marain.Operations.ControlClient" Version="0.8.0" />
+    <PackageReference Include="Menes.Abstractions" Version="0.10.0-preview.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
   </ItemGroup>
 </Project>

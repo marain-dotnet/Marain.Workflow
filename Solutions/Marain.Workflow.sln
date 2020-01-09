@@ -31,6 +31,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Specs", "Ma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Azure", "Marain.Workflow.Azure\Marain.Workflow.Azure.csproj", "{7AD05D90-7A2C-4BCB-AE25-F9B01766FAF1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.Services", "Marain.Workflow.Api.Services\Marain.Workflow.Api.Services.csproj", "{3F13DE23-163E-411B-AA29-C425AFEA7CC2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.Services.AspNetCore", "Marain.Workflow.Api.Services.AspNetCore\Marain.Workflow.Api.Services.AspNetCore.csproj", "{D6B4FC16-40D7-44F0-AFA3-3F5A35ECEF5F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.MessageIngestionHost", "Marain.Workflow.Api.MessageIngestionHost\Marain.Workflow.Api.MessageIngestionHost.csproj", "{3CF1DEAC-451D-4984-A4C1-55A0BBD196BF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.EngineHost", "Marain.Workflow.Api.EngineHost\Marain.Workflow.Api.EngineHost.csproj", "{1E316C2E-2360-4501-ABCE-342099F4CBCE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.Specs", "Marain.Workflow.Api.Specs\Marain.Workflow.Api.Specs.csproj", "{1299E881-7001-4A0F-95E4-692E6B6139CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,9 +63,36 @@ Global
 		{7AD05D90-7A2C-4BCB-AE25-F9B01766FAF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AD05D90-7A2C-4BCB-AE25-F9B01766FAF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AD05D90-7A2C-4BCB-AE25-F9B01766FAF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F13DE23-163E-411B-AA29-C425AFEA7CC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F13DE23-163E-411B-AA29-C425AFEA7CC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F13DE23-163E-411B-AA29-C425AFEA7CC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F13DE23-163E-411B-AA29-C425AFEA7CC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6B4FC16-40D7-44F0-AFA3-3F5A35ECEF5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6B4FC16-40D7-44F0-AFA3-3F5A35ECEF5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6B4FC16-40D7-44F0-AFA3-3F5A35ECEF5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6B4FC16-40D7-44F0-AFA3-3F5A35ECEF5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CF1DEAC-451D-4984-A4C1-55A0BBD196BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CF1DEAC-451D-4984-A4C1-55A0BBD196BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CF1DEAC-451D-4984-A4C1-55A0BBD196BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CF1DEAC-451D-4984-A4C1-55A0BBD196BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E316C2E-2360-4501-ABCE-342099F4CBCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E316C2E-2360-4501-ABCE-342099F4CBCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E316C2E-2360-4501-ABCE-342099F4CBCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E316C2E-2360-4501-ABCE-342099F4CBCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1299E881-7001-4A0F-95E4-692E6B6139CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1299E881-7001-4A0F-95E4-692E6B6139CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1299E881-7001-4A0F-95E4-692E6B6139CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1299E881-7001-4A0F-95E4-692E6B6139CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3F13DE23-163E-411B-AA29-C425AFEA7CC2} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
+		{D6B4FC16-40D7-44F0-AFA3-3F5A35ECEF5F} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
+		{3CF1DEAC-451D-4984-A4C1-55A0BBD196BF} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
+		{1E316C2E-2360-4501-ABCE-342099F4CBCE} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
+		{1299E881-7001-4A0F-95E4-692E6B6139CC} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EED79307-5690-4CE6-A80D-F41857C97EFF}

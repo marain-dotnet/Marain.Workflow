@@ -12,9 +12,9 @@ namespace Marain.Workflows.Functions.Specs.Steps
     using System.IO;
     using System.Linq;
     using System.Net;
-
-    using Marain.Serialization.Json;
-
+    using Corvus.Extensions.Json;
+    using Corvus.SpecFlow.Extensions;
+    using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
 
     using NUnit.Framework;
@@ -25,10 +25,12 @@ namespace Marain.Workflows.Functions.Specs.Steps
     public class WebRequestSteps
     {
         private readonly ScenarioContext context;
+        private readonly FeatureContext featureContext;
 
-        public WebRequestSteps(ScenarioContext context)
+        public WebRequestSteps(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
-            this.context = context;
+            this.context = scenarioContext;
+            this.featureContext = featureContext;
         }
 
         [Then("I should have received a (.*) status code from the HTTP request")]
@@ -59,7 +61,8 @@ namespace Marain.Workflows.Functions.Specs.Steps
 
         private void PostObjectToEndpoint(object instance, string url)
         {
-            string body = JsonConvert.SerializeObject(instance, SerializerSettings.CreateSerializationSettings());
+            var serializationSettingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
+            string body = JsonConvert.SerializeObject(instance, serializationSettingsProvider.Instance);
             var address = new Uri(url);
 
             HttpWebRequest request = WebRequest.CreateHttp(address);

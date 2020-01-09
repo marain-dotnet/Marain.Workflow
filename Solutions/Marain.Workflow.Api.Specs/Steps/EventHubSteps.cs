@@ -2,18 +2,15 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-#pragma warning disable
-
 namespace Marain.Workflows.Functions.Specs.Steps
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Corvus.Extensions.Json;
+    using Corvus.SpecFlow.Extensions;
 
-    using Marain.Composition;
-    using Marain.Serialization.Json;
-    using Marain.SpecFlow.Bindings;
     using Marain.Workflow.Functions.SpecFlow.Bindings;
 
     using Microsoft.Azure.EventHubs;
@@ -31,16 +28,18 @@ namespace Marain.Workflows.Functions.Specs.Steps
     public class EventHubSteps
     {
         private readonly ScenarioContext context;
+        private readonly FeatureContext featureContext;
 
-        public EventHubSteps(ScenarioContext context)
+        public EventHubSteps(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
-            this.context = context;
+            this.context = scenarioContext;
+            this.featureContext = featureContext;
         }
 
         [Given(@"I am listening for events from the event hub")]
         public async Task GivenIAmListeningForEventsFromTheEventHubWhoseConnectionStringIsStoredInTheKeyVaultSecretAt()
         {
-            var configuration = ServiceRoot.ServiceProvider.GetService<IConfigurationRoot>();
+            var configuration =  ContainerBindings.GetServiceProvider(this.featureContext).GetService<IConfigurationRoot>();
 
             var host = new EventProcessorHost(
                 "endworkflow",
@@ -86,7 +85,9 @@ namespace Marain.Workflows.Functions.Specs.Steps
 
             var matchInstances = this.context.Get<IEnumerable<object>>(instanceName);
 
-            var jsonSerializerSettings = SerializerSettings.CreateSerializationSettings();
+            var serializerSettingsProvider =
+                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
+            var jsonSerializerSettings = serializerSettingsProvider.Instance;
 
             var matchJson = matchInstances.Select(x => JsonConvert.SerializeObject(x, jsonSerializerSettings)).ToArray();
 
@@ -117,7 +118,9 @@ namespace Marain.Workflows.Functions.Specs.Steps
 
             var matchInstances = this.context.Get<IEnumerable<object>>(instanceName);
 
-            var jsonSerializerSettings = SerializerSettings.CreateSerializationSettings();
+            var serializerSettingsProvider =
+                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
+            var jsonSerializerSettings = serializerSettingsProvider.Instance;
 
             var matchJson = matchInstances.Select(x => JsonConvert.SerializeObject(x, jsonSerializerSettings)).ToArray();
 
@@ -148,5 +151,3 @@ namespace Marain.Workflows.Functions.Specs.Steps
         }
     }
 }
-
-#pragma warning restore
