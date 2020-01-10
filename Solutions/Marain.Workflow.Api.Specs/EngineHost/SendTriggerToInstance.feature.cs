@@ -19,7 +19,8 @@ namespace Marain.Workflows.Functions.Specs.EngineHost
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("SendTriggerToInstance")]
-    [NUnit.Framework.CategoryAttribute("setupContainer")]
+    [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
+    [NUnit.Framework.CategoryAttribute("useWorkflowEngineApi")]
     public partial class SendTriggerToInstanceFeature
     {
         
@@ -35,7 +36,8 @@ namespace Marain.Workflows.Functions.Specs.EngineHost
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "SendTriggerToInstance", "\tIn order to tell the workflow engine to carry out actions\r\n\tAs an external user " +
                     "of the workflow engine\r\n\tI want to send a trigger to a specific workflow instanc" +
                     "e", ProgrammingLanguage.CSharp, new string[] {
-                        "setupContainer"});
+                        "perFeatureContainer",
+                        "useWorkflowEngineApi"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -80,15 +82,12 @@ namespace Marain.Workflows.Functions.Specs.EngineHost
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Send a trigger", null, new string[] {
                         "useChildObjects"});
-#line 8
+#line 9
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 9
- testRunner.Given("I start a functions instance for the local project \'Endjin.Workflow.Functions.Eng" +
-                    "ineHost\' on port 7071", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 10
- testRunner.And("I have added the workflow \"SimpleExpensesWorkflow\" to the workflow store with Id " +
-                    "\"simple-expenses-workflow\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Given("I have added the workflow \"SimpleExpensesWorkflow\" to the workflow store with Id " +
+                    "\"simple-expenses-workflow\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 11
  testRunner.And("I have cleared down the workflow instance store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -115,8 +114,8 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.And("I have an object of type \"application/vnd.marain.workflows.hosted.trigger\" called" +
                     " \"trigger\"", ((string)(null)), table6, "And ");
 #line 20
- testRunner.When("I post the object called \"trigger\" to the endpoint \"http://localhost:7071/workflo" +
-                    "winstances/instance/triggers\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I post the object called \'trigger\' to the workflow engine path \'/workflowinstance" +
+                    "s/instance/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 21
  testRunner.Then("I should have received a 200 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 22
@@ -134,21 +133,18 @@ this.ScenarioInitialize(scenarioInfo);
 #line 24
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 25
- testRunner.Given("I start a functions instance for the local project \'Endjin.Workflow.Functions.Eng" +
-                    "ineHost\' on port 7071", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "TriggerName"});
             table7.AddRow(new string[] {
                         "Submit"});
-#line 26
- testRunner.And("I have an object of type \"application/vnd.marain.workflows.hosted.trigger\" called" +
-                    " \"trigger\"", ((string)(null)), table7, "And ");
+#line 25
+ testRunner.Given("I have an object of type \"application/vnd.marain.workflows.hosted.trigger\" called" +
+                    " \"trigger\"", ((string)(null)), table7, "Given ");
+#line 28
+ testRunner.When("I post the object called \'trigger\' to the workflow engine path \'/workflowinstance" +
+                    "s/a-non-existant-workflow-id/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 29
- testRunner.When("I post the object called \"trigger\" to the endpoint \"http://localhost:7071/workflo" +
-                    "winstances/a-non-existant-workflow-id/triggers\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 30
  testRunner.Then("I should have received a 404 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();

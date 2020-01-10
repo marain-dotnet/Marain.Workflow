@@ -28,22 +28,32 @@ namespace Marain.Workflow.Functions.SpecFlow.Bindings
         /// </summary>
         /// <param name="featureContext">The feature context for the current feature</param>
         /// <remarks>We expect features run in parallel to be executing in separate app domains</remarks>
-        [BeforeFeature("@setupContainer", Order = ContainerBeforeFeatureOrder.PopulateServiceCollection)]
+        [BeforeFeature("@perFeatureContainer", Order = ContainerBeforeFeatureOrder.PopulateServiceCollection)]
         public static void SetupFeature(FeatureContext featureContext)
         {
             ContainerBindings.ConfigureServices(
                 featureContext,
-                serviceCollection =>
+                services =>
                 {
-                    ////IConfigurationRoot configurationRoot = serviceCollection.AddTestConfiguration(null);
-                    ////serviceCollection.AddEndjinJsonConverters();
-                    ////serviceCollection.AddLogging();
-                    ////serviceCollection.AddRepositoryJsonConverters();
-                    ////serviceCollection.SetRootTenantDefaultRepositoryConfiguration(configurationRoot);
-                    ////serviceCollection.AddTenantKeyVaultOrConfigurationAccountKeyProvider();
-                    ////serviceCollection.AddWorkflowEngineFactory();
-                    ////serviceCollection.RegisterCoreWorkflowContentTypes();
-                    ////serviceCollection.AddAzureLeasing(c => c.ConnectionStringKey = "LeasingStorageAccountConnectionString");
+                    IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
+                        .AddEnvironmentVariables()
+                        .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true);
+
+                    IConfigurationRoot root = configurationBuilder.Build();
+
+                    services.AddSingleton(root);
+
+                    services.AddJsonSerializerSettings();
+                    services.AddLogging();
+
+                    services.AddTenantProviderBlobStore();
+                    services.AddTenantCloudBlobContainerFactory(root);
+
+                    services.AddTenantCosmosContainerFactory(root);
+
+                    services.AddWorkflowEngineFactory();
+                    services.RegisterCoreWorkflowContentTypes();
+                    services.AddAzureLeasing(c => c.ConnectionStringKey = "LeasingStorageAccountConnectionString");
                 });
         }
     }

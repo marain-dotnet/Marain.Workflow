@@ -19,7 +19,7 @@ namespace Marain.Workflows.Functions.Specs.EndToEnd
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("StartNewInstance")]
-    [NUnit.Framework.CategoryAttribute("setupContainer")]
+    [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     public partial class StartNewInstanceFeature
     {
         
@@ -34,7 +34,7 @@ namespace Marain.Workflows.Functions.Specs.EndToEnd
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "StartNewInstance", "\tIn order manage a new thing through a workflow\r\n\tAs an external user of the work" +
                     "flow engine\r\n\tI want to be able to start a new instance of a workflow", ProgrammingLanguage.CSharp, new string[] {
-                        "setupContainer"});
+                        "perFeatureContainer"});
             testRunner.OnFeatureStart(featureInfo);
         }
         

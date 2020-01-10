@@ -19,7 +19,7 @@ namespace Marain.Workflows.Functions.Specs.EndToEnd
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("SendTriggerToInstance")]
-    [NUnit.Framework.CategoryAttribute("setupContainer")]
+    [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     public partial class SendTriggerToInstanceFeature
     {
         
@@ -35,7 +35,7 @@ namespace Marain.Workflows.Functions.Specs.EndToEnd
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "SendTriggerToInstance", "\tIn order to tell the workflow engine to carry out actions\r\n\tAs an external user " +
                     "of the workflow engine\r\n\tI want to send a trigger to a specific workflow instanc" +
                     "e", ProgrammingLanguage.CSharp, new string[] {
-                        "setupContainer"});
+                        "perFeatureContainer"});
             testRunner.OnFeatureStart(featureInfo);
         }
         

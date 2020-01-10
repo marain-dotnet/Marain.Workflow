@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Functions.EngineHost
+namespace Marain.Workflows.Functions.MessageIngestionHost
 {
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Hosting;

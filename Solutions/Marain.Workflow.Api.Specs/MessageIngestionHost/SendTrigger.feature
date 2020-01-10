@@ -1,4 +1,4 @@
-﻿@setupContainer
+﻿@perFeatureContainer
 Feature: SendTrigger
 	In order to tell the workflow engine to carry out actions
 	As an external user of the workflow engine

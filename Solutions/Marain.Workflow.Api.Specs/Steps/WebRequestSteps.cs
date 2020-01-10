@@ -14,6 +14,8 @@ namespace Marain.Workflows.Functions.Specs.Steps
     using System.Net;
     using Corvus.Extensions.Json;
     using Corvus.SpecFlow.Extensions;
+    using Corvus.Tenancy;
+    using Marain.Workflows.Functions.Specs.Bindings;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
 
@@ -49,10 +51,22 @@ namespace Marain.Workflows.Functions.Specs.Steps
             Assert.GreaterOrEqual(responses.Count(), count, $"Did not receive the required number of {code} status codes. Received the following: {string.Join(", ", allCodes)}");
         }
 
-        [When(@"I post the object called ""(.*)"" to the endpoint ""(.*)""")]
-        [When(@"I post the objects called ""(.*)"" to the endpoint ""(.*)""")]
-        public void WhenIPostTheObjectCalledToTheEndpoint(string instanceName, string url)
+        [When(@"I post the object called '(.*)' to the workflow engine path '(.*)'")]
+        public void WhenIPostTheObjectCalledToTheWorkflowEnginePath(string instanceName, string path)
         {
+            var url = EngineFunctionBindings.BaseUrl + path;
+            this.PostContextObjectToEndpoint(instanceName, url);
+        }
+
+        private void PostContextObjectToEndpoint(string instanceName, string url)
+        {
+            ITenantProvider tenantProvider =
+                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<ITenantProvider>();
+
+            var tenantId = tenantProvider.Root.Id;
+
+            url = url.Replace("{tenantId}", tenantId);
+
             foreach (object obj in this.context.Get<IEnumerable<object>>(instanceName))
             {
                 this.PostObjectToEndpoint(obj, url);

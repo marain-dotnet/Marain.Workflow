@@ -1,6 +1,4 @@
-﻿#pragma warning disable
-
-namespace Marain.Workflows.Functions.Specs.Steps
+﻿namespace Marain.Workflows.Functions.Specs.Steps
 {
     using System;
     using System.Collections.Generic;
@@ -27,10 +25,10 @@ namespace Marain.Workflows.Functions.Specs.Steps
         private readonly IServiceProvider serviceProvider;
 
         public WorkflowSteps(
-            ScenarioContext context,
+            ScenarioContext scenarioContext,
             FeatureContext featureContext)
         {
-            this.context = context;
+            this.context = scenarioContext;
             serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
         }
 
@@ -40,8 +38,8 @@ namespace Marain.Workflows.Functions.Specs.Steps
             var workflow = TestWorkflowFactory.Get(workflowName);
             workflow.Id = workflowId;
 
-            var engineFactory = this.serviceProvider.GetService<IWorkflowEngineFactory>();
-            var tenantProvider = this.serviceProvider.GetService<ITenantProvider>();
+            var engineFactory = this.serviceProvider.GetRequiredService<IWorkflowEngineFactory>();
+            var tenantProvider = this.serviceProvider.GetRequiredService<ITenantProvider>();
             var engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root);
 
             await engine.UpsertWorkflowAsync(workflow);
@@ -50,8 +48,8 @@ namespace Marain.Workflows.Functions.Specs.Steps
         [Given(@"I have started an instance of the workflow ""(.*)"" with instance id ""(.*)"" and using context object ""(.*)""")]
         public async Task GivenIHaveStartedAnInstanceOfTheWorkflowWithInstanceIdAndUsingContextObject(string workflowId, string instanceId, string contextInstanceName)
         {
-            var engineFactory = this.serviceProvider.GetService<IWorkflowEngineFactory>();
-            var tenantProvider = this.serviceProvider.GetService<ITenantProvider>();
+            var engineFactory = this.serviceProvider.GetRequiredService<IWorkflowEngineFactory>();
+            var tenantProvider = this.serviceProvider.GetRequiredService<ITenantProvider>();
             var engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root);
             var context = this.context.Get<IDictionary<string, string>>(contextInstanceName);
 
@@ -69,8 +67,8 @@ namespace Marain.Workflows.Functions.Specs.Steps
         [Given(@"I have cleared down the workflow instance store")]
         public async Task GivenIHaveClearedDownTheWorkflowInstanceStore()
         {
-            var engineFactory = this.serviceProvider.GetService<IWorkflowEngineFactory>();
-            var tenantProvider = this.serviceProvider.GetService<ITenantProvider>();
+            var engineFactory = this.serviceProvider.GetRequiredService<IWorkflowEngineFactory>();
+            var tenantProvider = this.serviceProvider.GetRequiredService<ITenantProvider>();
             var engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root);
 
             var instanceIds = await engine.GetMatchingWorkflowInstanceIdsForSubjectsAsync(new string[0], int.MaxValue, null);
@@ -84,8 +82,8 @@ namespace Marain.Workflows.Functions.Specs.Steps
         [Then(@"there should be (.*) workflow instances in the workflow instance store")]
         public async Task ThenThereShouldBeANewWorkflowInstanceInTheWorkflowInstanceStore(int expected)
         {
-            var engineFactory = this.serviceProvider.GetService<IWorkflowEngineFactory>();
-            var tenantProvider = this.serviceProvider.GetService<ITenantProvider>();
+            var engineFactory = this.serviceProvider.GetRequiredService<IWorkflowEngineFactory>();
+            var tenantProvider = this.serviceProvider.GetRequiredService<ITenantProvider>();
             var engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root);
             var instances = await engine.GetMatchingWorkflowInstanceIdsForSubjectsAsync(new string[0], int.MaxValue, null);
 
@@ -133,8 +131,8 @@ namespace Marain.Workflows.Functions.Specs.Steps
         {
             await this.EnsureWorkflowInstanceIsNotBeingModified(id).ConfigureAwait(false);
 
-            var engineFactory = this.serviceProvider.GetService<IWorkflowEngineFactory>();
-            var tenantProvider = this.serviceProvider.GetService<ITenantProvider>();
+            var engineFactory = this.serviceProvider.GetRequiredService<IWorkflowEngineFactory>();
+            var tenantProvider = this.serviceProvider.GetRequiredService<ITenantProvider>();
             var engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root);
 
             try
@@ -168,8 +166,8 @@ namespace Marain.Workflows.Functions.Specs.Steps
         {
             var instance = await this.GetWorkflowInstance(instanceId).ConfigureAwait(false);
 
-            var engineFactory = this.serviceProvider.GetService<IWorkflowEngineFactory>();
-            var tenantProvider = this.serviceProvider.GetService<ITenantProvider>();
+            var engineFactory = this.serviceProvider.GetRequiredService<IWorkflowEngineFactory>();
+            var tenantProvider = this.serviceProvider.GetRequiredService<ITenantProvider>();
             var engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root);
 
             var workflow = await engine.GetWorkflowAsync(instance.WorkflowId);
@@ -182,7 +180,7 @@ namespace Marain.Workflows.Functions.Specs.Steps
         {
             // The instance can be persisted but potentially also be being modified. To make sure it's not, attempt to take
             // out a lease on the instance.
-            var leaseProvider = this.serviceProvider.GetService<ILeaseProvider>();
+            var leaseProvider = this.serviceProvider.GetRequiredService<ILeaseProvider>();
             await leaseProvider.ExecuteWithMutexAsync(
                 ct => Console.WriteLine($"Acquired lease for instance {instanceId}"),
                 instanceId,
@@ -190,5 +188,3 @@ namespace Marain.Workflows.Functions.Specs.Steps
         }
     }
 }
-
-#pragma warning restore

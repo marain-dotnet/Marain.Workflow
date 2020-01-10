@@ -19,7 +19,7 @@ namespace Marain.Workflows.Functions.Specs.MessageIngestionHost
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("SendStartWorkflowInstanceRequest")]
-    [NUnit.Framework.CategoryAttribute("setupContainer")]
+    [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     public partial class SendStartWorkflowInstanceRequestFeature
     {
         
@@ -35,7 +35,7 @@ namespace Marain.Workflows.Functions.Specs.MessageIngestionHost
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "SendStartWorkflowInstanceRequest", "\tIn order to tell the workflow engine to carry out actions\r\n\tAs an external user " +
                     "of the workflow engine\r\n\tI want to send a request to start a new workflow instan" +
                     "ce", ProgrammingLanguage.CSharp, new string[] {
-                        "setupContainer"});
+                        "perFeatureContainer"});
             testRunner.OnFeatureStart(featureInfo);
         }
         

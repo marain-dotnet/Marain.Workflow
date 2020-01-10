@@ -21,14 +21,14 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds services required by workflow engine API.
         /// </summary>
         /// <param name="services">The service collection.</param>
-        /// <param name="rootTenantDefaultConfiguration">
+        /// <param name="configuration">
         /// Configuration section to read root tenant default repository settings from.
         /// </param>
         /// <param name="configureHost">Optional callback for additional host configuration.</param>
         /// <returns>The service collection, to enable chaining.</returns>
         public static IServiceCollection AddWorkflowEngineApi(
             this IServiceCollection services,
-            IConfiguration rootTenantDefaultConfiguration,
+            IConfiguration configuration,
             Action<IOpenApiHostConfiguration> configureHost = null)
         {
             // Verify that these services aren't already present
@@ -42,10 +42,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddLogging();
 
-            services.AddTenantCloudBlobContainerFactory(rootTenantDefaultConfiguration);
+            services.AddTenantCloudBlobContainerFactory(configuration);
             services.AddTenantProviderBlobStore();
-            services.AddTenantedAzureCosmosWorkflowStore(rootTenantDefaultConfiguration);
 
+            services.AddTenantCosmosContainerFactory(configuration);
             services.AddWorkflowEngineFactory();
 
             services.AddOpenApiHttpRequestHosting<SimpleOpenApiContext>(config =>

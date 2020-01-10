@@ -1,4 +1,4 @@
-﻿@setupContainer
+﻿@perFeatureContainer
 Feature: StartNewInstance
 	In order manage a new thing through a workflow
 	As an external user of the workflow engine
