@@ -88,7 +88,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.Given("I have added the workflow \"SimpleExpensesWorkflow\" to the workflow store with Id " +
                     "\"simple-expenses-workflow\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 11
- testRunner.And("I have cleared down the workflow instance store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
                         "Key",
@@ -143,7 +143,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.Given("I have added the workflow \"SimpleExpensesWorkflow\" to the workflow store with Id " +
                     "\"simple-expenses-workflow\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 27
- testRunner.And("I have cleared down the workflow instance store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                         "Key",

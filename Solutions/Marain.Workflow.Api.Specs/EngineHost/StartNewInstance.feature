@@ -8,7 +8,7 @@ Feature: StartNewInstance
 
 Scenario: Start a new instance with a specified instance id
 	Given I have added the workflow "SimpleExpensesWorkflow" to the workflow store with Id "simple-expenses-workflow"
-	And I have cleared down the workflow instance store
+	And The workflow instance store is empty
 	And I have a dictionary called "context"
 	| Key        | Value    |
 	| Claimant   | J George |
@@ -24,7 +24,7 @@ Scenario: Start a new instance with a specified instance id
 
 Scenario: Start a new instance without specifying an instance id
 	Given I have added the workflow "SimpleExpensesWorkflow" to the workflow store with Id "simple-expenses-workflow"
-	And I have cleared down the workflow instance store
+	And The workflow instance store is empty
 	And I have a dictionary called "context"
 	| Key  | Value |
 	| Claimant   | J George |

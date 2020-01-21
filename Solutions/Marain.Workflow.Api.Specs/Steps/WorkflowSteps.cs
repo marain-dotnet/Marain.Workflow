@@ -64,7 +64,7 @@
             await engine.StartWorkflowInstanceAsync(request);
         }
 
-        [Given(@"I have cleared down the workflow instance store")]
+        [Given(@"The workflow instance store is empty")]
         public async Task GivenIHaveClearedDownTheWorkflowInstanceStore()
         {
             var engineFactory = this.serviceProvider.GetRequiredService<IWorkflowEngineFactory>();

@@ -133,7 +133,6 @@ components:
       required:
         - contentType
         - triggerName
-        - subjects
 
     ############################################################################
     # RFC 7807 Problem Details response definition
