@@ -15,16 +15,16 @@ namespace Marain.Workflows.Specs.Bindings
     using TechTalk.SpecFlow;
 
     /// <summary>
-    ///     Container related bindings to configure the service provider for features.
+    /// Container related bindings to configure the service provider for features.
     /// </summary>
     [Binding]
     public static class WorkflowContainerBindings
     {
         /// <summary>
-        ///     Initializes the container before each feature's tests are run.
+        /// Initializes the container before each feature's tests are run.
         /// </summary>
         /// <param name="featureContext">
-        ///     The feature context.
+        /// The feature context.
         /// </param>
         [BeforeFeature("@perFeatureContainer", Order = ContainerBeforeFeatureOrder.PopulateServiceCollection)]
         public static void InitializeContainer(FeatureContext featureContext)

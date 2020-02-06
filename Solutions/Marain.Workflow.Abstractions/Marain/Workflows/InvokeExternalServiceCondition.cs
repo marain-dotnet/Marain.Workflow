@@ -13,7 +13,6 @@ namespace Marain.Workflows
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
-    using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
 
     /// <summary>

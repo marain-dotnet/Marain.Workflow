@@ -1,11 +1,14 @@
-﻿// <copyright file="Steps.cs" company="Endjin Limited">
+﻿// <copyright file="WebRequestSteps.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable SA1600 // Elements should be documented
 #pragma warning disable CS1591 // Elements should be documented
 
-namespace Marain.Workflows.Functions.Specs.Steps
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable SA1600 // Elements should be documented
+
+namespace Marain.Workflows.Api.Specs.Steps
 {
     using System;
     using System.Collections.Generic;
@@ -15,7 +18,7 @@ namespace Marain.Workflows.Functions.Specs.Steps
     using Corvus.Extensions.Json;
     using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
-    using Marain.Workflows.Functions.Specs.Bindings;
+    using Marain.Workflows.Api.Specs.Bindings;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
 
@@ -51,10 +54,17 @@ namespace Marain.Workflows.Functions.Specs.Steps
             Assert.GreaterOrEqual(responses.Count(), count, $"Did not receive the required number of {code} status codes. Received the following: {string.Join(", ", allCodes)}");
         }
 
-        [When(@"I post the object called '(.*)' to the workflow engine path '(.*)'")]
+        [When("I post the object called '(.*)' to the workflow engine path '(.*)'")]
         public void WhenIPostTheObjectCalledToTheWorkflowEnginePath(string instanceName, string path)
         {
-            var url = EngineFunctionBindings.BaseUrl + path;
+            string url = EngineFunctionBindings.BaseUrl + path;
+            this.PostContextObjectToEndpoint(instanceName, url);
+        }
+
+        [When("I post the object called '(.*)' to the high traffic message ingestion path '(.*)'")]
+        public void WhenIPostTheObjectCalledToTheHighTrafficMessageIngestionPath(string instanceName, string path)
+        {
+            string url = HighTrafficIngestionHostFunctionBindings.BaseUrl + path;
             this.PostContextObjectToEndpoint(instanceName, url);
         }
 
@@ -63,7 +73,7 @@ namespace Marain.Workflows.Functions.Specs.Steps
             ITenantProvider tenantProvider =
                 ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<ITenantProvider>();
 
-            var tenantId = tenantProvider.Root.Id;
+            string tenantId = tenantProvider.Root.Id;
 
             url = url.Replace("{tenantId}", tenantId);
 
@@ -75,7 +85,7 @@ namespace Marain.Workflows.Functions.Specs.Steps
 
         private void PostObjectToEndpoint(object instance, string url)
         {
-            var serializationSettingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
+            IJsonSerializerSettingsProvider serializationSettingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
             string body = JsonConvert.SerializeObject(instance, serializationSettingsProvider.Instance);
             var address = new Uri(url);
 

@@ -5,6 +5,7 @@
 namespace Marain.Workflows
 {
     using System;
+    using Corvus.Extensions.Json;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -22,6 +23,11 @@ namespace Marain.Workflows
         /// Gets the content type that will be used when serializing/deserializing.
         /// </summary>
         public string ContentType => RegisteredContentType;
+
+        /// <summary>
+        /// Gets or sets the tenant associated with the request.
+        /// </summary>
+        public string TenantId { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether the message envelope contains a start
@@ -55,5 +61,10 @@ namespace Marain.Workflows
         /// Gets or sets the unique identifier of the Operation tracking the progress of this work.
         /// </summary>
         public Guid OperationId { get; set; }
+
+        /// <summary>
+        /// Gets a <see cref="PropertyBag"/> containing any additional data.
+        /// </summary>
+        public PropertyBag Properties { get; } = new PropertyBag();
     }
 }

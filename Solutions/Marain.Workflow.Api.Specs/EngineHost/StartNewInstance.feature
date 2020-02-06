@@ -7,7 +7,7 @@ Feature: StartNewInstance
 	I want to be able to start a new instance of a workflow
 
 Scenario: Start a new instance with a specified instance id
-	Given I have added the workflow "SimpleExpensesWorkflow" to the workflow store with Id "simple-expenses-workflow"
+	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow'
 	And The workflow instance store is empty
 	And I have a dictionary called "context"
 	| Key        | Value    |
@@ -18,12 +18,12 @@ Scenario: Start a new instance with a specified instance id
 	| simple-expenses-workflow | instance           | {context} |
 	When I post the object called 'request' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflowinstances'
 	Then I should have received a 201 status code from the HTTP request
-	And there should be a workflow instance with the id "instance" in the workflow instance store
-	And the workflow instance with id "instance" should be an instance of the workflow with id "simple-expenses-workflow"
-	And the workflow instance with id "instance" should have a context dictionary that matches "context"
+	And there should be a workflow instance with the id 'instance' in the workflow instance store
+	And the workflow instance with id 'instance' should be an instance of the workflow with id 'simple-expenses-workflow'
+	And the workflow instance with id 'instance' should have a context dictionary that matches 'context'
 
 Scenario: Start a new instance without specifying an instance id
-	Given I have added the workflow "SimpleExpensesWorkflow" to the workflow store with Id "simple-expenses-workflow"
+	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow'
 	And The workflow instance store is empty
 	And I have a dictionary called "context"
 	| Key  | Value |

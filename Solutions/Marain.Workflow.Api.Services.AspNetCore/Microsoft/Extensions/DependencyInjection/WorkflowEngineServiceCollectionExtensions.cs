@@ -5,10 +5,9 @@
 namespace Microsoft.Extensions.DependencyInjection
 {
     using System;
-    using System.Configuration;
     using System.Linq;
     using Marain.Workflows;
-    using Marain.Workflows.Functions;
+    using Marain.Workflows.Api.Services;
     using Menes;
     using Microsoft.Extensions.Configuration;
 
@@ -26,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </param>
         /// <param name="configureHost">Optional callback for additional host configuration.</param>
         /// <returns>The service collection, to enable chaining.</returns>
-        public static IServiceCollection AddWorkflowEngineApi(
+        public static IServiceCollection AddTenantedWorkflowEngineApi(
             this IServiceCollection services,
             IConfiguration configuration,
             Action<IOpenApiHostConfiguration> configureHost = null)

@@ -13,16 +13,16 @@ namespace Marain.Workflows
     /// </summary>
     /// <remarks>
     /// <para>
-    ///     The queue must operate in a "fire and forget" fashion - i.e. as soon
-    ///     as a message has been enqueued, further processing must take place
-    ///     asynchronously (see notes on <see cref="EnqueueTriggerAsync" /> for more
-    ///     details.
+    /// The queue must operate in a "fire and forget" fashion - i.e. as soon
+    /// as a message has been enqueued, further processing must take place
+    /// asynchronously (see notes on <see cref="EnqueueTriggerAsync" /> for more
+    /// details.
     /// </para>
     /// <para>
-    ///     An implementation of this interface can also handle passing the messages
-    ///     to the workflow engine (as with the InMemoryWorkflowMessageQueue)
-    ///     but this is not mandatory. A full implementation of the workflow engine
-    ///     will rely on other means to dequeue messages and pass them into the engine.
+    /// An implementation of this interface can also handle passing the messages
+    /// to the workflow engine (as with the InMemoryWorkflowMessageQueue)
+    /// but this is not mandatory. A full implementation of the workflow engine
+    /// will rely on other means to dequeue messages and pass them into the engine.
     /// </para>
     /// </remarks>
     public interface IWorkflowMessageQueue

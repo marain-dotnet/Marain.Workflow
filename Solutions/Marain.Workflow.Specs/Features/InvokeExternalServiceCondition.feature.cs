@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Endjin.Workflow.Specs.Features
+namespace Marain.Workflows.Specs.Features
 {
     using TechTalk.SpecFlow;
     

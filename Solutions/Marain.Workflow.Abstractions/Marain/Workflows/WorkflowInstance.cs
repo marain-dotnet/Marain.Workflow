@@ -46,9 +46,9 @@ namespace Marain.Workflows
         /// </summary>
         /// <remarks>
         /// <para>
-        ///     Workflow instances will almost always have related data that are stored independently
-        ///     of the instance itself. However, to make processing triggers more efficient, you
-        ///     can choose to add specific pieces of that data.
+        /// Workflow instances will almost always have related data that are stored independently
+        /// of the instance itself. However, to make processing triggers more efficient, you
+        /// can choose to add specific pieces of that data.
         /// </para>
         /// </remarks>
         public IDictionary<string, string> Context
@@ -78,14 +78,14 @@ namespace Marain.Workflows
         /// </summary>
         /// <remarks>
         /// <para>
-        ///     This list is automatically updated whenever the instance's current <see cref="StateId" />
-        ///     changes. The list will be populated by calling <see cref="WorkflowState.GetInterests" />
-        ///     on the current state and  will always include the value of the <see cref="Id" /> property.
+        /// This list is automatically updated whenever the instance's current <see cref="StateId" />
+        /// changes. The list will be populated by calling <see cref="WorkflowState.GetInterests" />
+        /// on the current state and  will always include the value of the <see cref="Id" /> property.
         /// </para>
         /// <para>
-        ///     This list is intended for use by the <see cref="WorkflowEngine.GetMatchingWorkflowInstanceIdsForSubjectsAsync(IEnumerable{string}, int, string)" />
-        ///     method to search for <see cref="WorkflowInstance" />s whose interests match at least one of the
-        ///     current trigger's subjects (see <see cref="IWorkflowTrigger.GetSubjects" />).
+        /// This list is intended for use by the <see cref="WorkflowEngine.GetMatchingWorkflowInstanceIdsForSubjectsAsync(IEnumerable{string}, int, int)" />
+        /// method to search for <see cref="WorkflowInstance" />s whose interests match at least one of the
+        /// current trigger's subjects (see <see cref="IWorkflowTrigger.GetSubjects" />).
         /// </para>
         /// </remarks>
         public IEnumerable<string> Interests { get; set; }

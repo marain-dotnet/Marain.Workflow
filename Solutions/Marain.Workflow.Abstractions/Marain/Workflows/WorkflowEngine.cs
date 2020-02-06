@@ -151,16 +151,15 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<IEnumerable<string>> GetMatchingWorkflowInstanceIdsForSubjectsAsync(
             IEnumerable<string> subjects,
-            int limit,
-            string continuationToken)
+            int pageSize,
+            int pageNumber)
         {
-            QueryDefinition spec = BuildFindInstanceIdsSpec(subjects);
+            QueryDefinition spec = BuildFindInstanceIdsSpec(subjects, pageSize, pageNumber);
 
-            FeedIterator<dynamic> iterator = this.workflowInstanceContainer.GetItemQueryIterator<dynamic>(spec, continuationToken, new QueryRequestOptions { MaxItemCount = limit });
+            FeedIterator<dynamic> iterator = this.workflowInstanceContainer.GetItemQueryIterator<dynamic>(spec);
 
             if (iterator.HasMoreResults)
             {
-                // TODO: Need to modify this to return a more complex return object that contains the continuation token.
                 FeedResponse<dynamic> results = await Retriable.RetryAsync(() => iterator.ReadNextAsync()).ConfigureAwait(false);
                 return results.Select(x => (string)x.id);
             }
@@ -171,7 +170,7 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<int> GetMatchingWorkflowInstanceCountForSubjectsAsync(IEnumerable<string> subjects)
         {
-            QueryDefinition spec = BuildFindInstanceIdsSpec(subjects, true);
+            QueryDefinition spec = BuildFindInstanceIdsSpec(subjects, 1, 0, true);
 
             FeedIterator<int> iterator = this.workflowInstanceContainer.GetItemQueryIterator<int>(spec, null, new QueryRequestOptions { MaxItemCount = 1 });
 
@@ -180,22 +179,22 @@ namespace Marain.Workflows
             return result.First();
         }
 
-        private static QueryDefinition BuildFindInstanceIdsSpec(IEnumerable<string> subjects, bool countOnly = false)
+        private static QueryDefinition BuildFindInstanceIdsSpec(IEnumerable<string> subjects, int pageSize, int pageNumber, bool countOnly = false)
         {
             string[] subjectsArray = subjects?.ToArray();
 
             string query = countOnly ? "SELECT VALUE COUNT(root.id) FROM root" : "SELECT root.id FROM root";
-
+            string offsetLimitClause = $" OFFSET {pageSize * pageNumber} LIMIT {pageSize}";
             if (subjectsArray?.Length > 0)
             {
                 (string where, List<(string, string)> parameters) = GetSubjectClause(subjectsArray);
-                var result = new QueryDefinition($"{query} WHERE {where}");
+                var result = new QueryDefinition($"{query} WHERE {where}" + offsetLimitClause);
                 parameters.ForEach(x => result.WithParameter(x.Item1, x.Item2));
 
                 return result;
             }
 
-            return new QueryDefinition(query);
+            return new QueryDefinition(query + offsetLimitClause);
         }
 
         /// <summary>
@@ -255,7 +254,7 @@ namespace Marain.Workflows
 
                 this.logger.LogDebug($"Accepted trigger {trigger.Id} in instance {item.Id}", trigger, item);
             }
-            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            catch (WorkflowInstanceNotFoundException)
             {
                 // Bubble this specific exception out as the caller needs to know that they sent through an
                 // invalid workflow instance id.
@@ -263,7 +262,7 @@ namespace Marain.Workflows
                     new EventId(0),
                     $"Unable to locate the specified instance {instanceId} for trigger {trigger.Id}");
 
-                throw new WorkflowInstanceNotFoundException();
+                throw;
             }
             catch (Exception ex)
             {
@@ -398,82 +397,82 @@ namespace Marain.Workflows
         /// </returns>
         /// <remarks>
         /// <para>
-        ///     This method consists of three parts:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <description>
-        ///                 Determining if the supplied trigger can be accepted by the
-        ///                 <see cref="WorkflowInstance" /> in its current state.
-        ///             </description>
-        ///         </item>
-        ///         <item>
-        ///             <description>
-        ///                 Executing the actions required to move to the new state.
-        ///             </description>
-        ///         </item>
-        ///         <item>
-        ///             <description>
-        ///                 Updating the <see cref="WorkflowInstance" /> with the new state and
-        ///                 associated interests.
-        ///             </description>
-        ///         </item>
-        ///     </list>
+        /// This method consists of three parts:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>
+        ///             Determining if the supplied trigger can be accepted by the
+        ///             <see cref="WorkflowInstance" /> in its current state.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Executing the actions required to move to the new state.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Updating the <see cref="WorkflowInstance" /> with the new state and
+        ///             associated interests.
+        ///         </description>
+        ///     </item>
+        /// </list>
         /// </para>
         /// <para>
-        ///     To determine the transition to use, the following steps are taken:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <description>
-        ///                 Evaluate the exit conditions of the current state (from
-        ///                 <see cref="WorkflowState.ExitConditions" />. If any conditions
-        ///                 evaluate to false, processing ends.
-        ///             </description>
-        ///         </item>
-        ///         <item>
-        ///             <description>
-        ///                 Iterate the <see cref="WorkflowState.Transitions" /> collection
-        ///                 and select the first <see cref="WorkflowTransition" /> whose
-        ///                 <see cref="WorkflowTransition.Conditions" /> all evaluate to true.
-        ///                 If no transitions match, then processing ends.
-        ///             </description>
-        ///         </item>
-        ///         <item>
-        ///             <description>
-        ///                 Retrieve the target state from the transition, and evaluate its
-        ///                 entry conditions (from <see cref="WorkflowState.EntryConditions" />.
-        ///                 If any conditions evaluate to false, processing ends.
-        ///             </description>
-        ///         </item>
-        ///     </list>
+        /// To determine the transition to use, the following steps are taken:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>
+        ///             Evaluate the exit conditions of the current state (from
+        ///             <see cref="WorkflowState.ExitConditions" />. If any conditions
+        ///             evaluate to false, processing ends.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Iterate the <see cref="WorkflowState.Transitions" /> collection
+        ///             and select the first <see cref="WorkflowTransition" /> whose
+        ///             <see cref="WorkflowTransition.Conditions" /> all evaluate to true.
+        ///             If no transitions match, then processing ends.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Retrieve the target state from the transition, and evaluate its
+        ///             entry conditions (from <see cref="WorkflowState.EntryConditions" />.
+        ///             If any conditions evaluate to false, processing ends.
+        ///         </description>
+        ///     </item>
+        /// </list>
         /// </para>
         /// <para>
-        ///     Once it has been determined that the trigger can be processed, actions
-        ///     from the current state, transition and target state are executed in order:
-        ///     <list type="bullet">
-        ///         <item>
-        ///             <description>
-        ///                 The current state's <see cref="WorkflowState.ExitActions" />.
-        ///             </description>
-        ///         </item>
-        ///         <item>
-        ///             <description>
-        ///                 The transition's <see cref="WorkflowTransition.Actions" />
-        ///             </description>
-        ///         </item>
-        ///         <item>
-        ///             <description>
-        ///                 The target state's <see cref="WorkflowState.ExitActions" />.
-        ///             </description>
-        ///         </item>
-        ///     </list>
+        /// Once it has been determined that the trigger can be processed, actions
+        /// from the current state, transition and target state are executed in order:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>
+        ///             The current state's <see cref="WorkflowState.ExitActions" />.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             The transition's <see cref="WorkflowTransition.Actions" />
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             The target state's <see cref="WorkflowState.ExitActions" />.
+        ///         </description>
+        ///     </item>
+        /// </list>
         /// </para>
         /// <para>
-        ///     Once all actions have been processed, the <see cref="WorkflowInstance" />s status
-        ///     is set back to <see cref="WorkflowStatus.Waiting" />, if the new current state
-        ///     contains any transitions. If the new current state doesn't contain any transitions,
-        ///     there is no way of leaving this state and the workflow status is set to
-        ///     <see cref="WorkflowStatus.Complete" />. Additionally, the <see cref="WorkflowInstance.IsDirty" />
-        ///     property is set to true to ensure that the instance is saved by the <see cref="IWorkflowEngine" />.
+        /// Once all actions have been processed, the <see cref="WorkflowInstance" />s status
+        /// is set back to <see cref="WorkflowStatus.Waiting" />, if the new current state
+        /// contains any transitions. If the new current state doesn't contain any transitions,
+        /// there is no way of leaving this state and the workflow status is set to
+        /// <see cref="WorkflowStatus.Complete" />. Additionally, the <see cref="WorkflowInstance.IsDirty" />
+        /// property is set to true to ensure that the instance is saved by the <see cref="IWorkflowEngine" />.
         /// </para>
         /// </remarks>
         private async Task<WorkflowState> AcceptTriggerAsync(
@@ -666,18 +665,18 @@ namespace Marain.Workflows
         /// <returns>A <see cref="Task" /> that completes when the instance is initialised.</returns>
         /// <remarks>
         /// <para>
-        ///     Initialization includes the following steps:
-        ///     - Setting the instance's <see cref="WorkflowInstance.Context" /> property to the supplied dictionary.
-        ///     - Setting the state of this instance to the workflow's initial state.
-        ///     - Validating the entry conditions of the initial state.
-        ///     - Executing the entry actions of the initial state.
+        /// Initialization includes the following steps:
+        /// - Setting the instance's <see cref="WorkflowInstance.Context" /> property to the supplied dictionary.
+        /// - Setting the state of this instance to the workflow's initial state.
+        /// - Validating the entry conditions of the initial state.
+        /// - Executing the entry actions of the initial state.
         /// </para>
         /// <para>
-        ///     It is possible for an action executed as part of initialization to cause an
-        ///     <see cref="IWorkflowTrigger" /> to be created. If an action does do this, it should
-        ///     add it to the current <see cref="IWorkflowMessageQueue" />. As a result of this it
-        ///     is vitally important that the code creating and Initializing a workflow instance
-        ///     takes a shared lease at the earliest possible moment.
+        /// It is possible for an action executed as part of initialization to cause an
+        /// <see cref="IWorkflowTrigger" /> to be created. If an action does do this, it should
+        /// add it to the current <see cref="IWorkflowMessageQueue" />. As a result of this it
+        /// is vitally important that the code creating and Initializing a workflow instance
+        /// takes a shared lease at the earliest possible moment.
         /// </para>
         /// </remarks>
         private async Task InitializeInstanceAsync(WorkflowInstance instance, Workflow workflow, IDictionary<string, string> context = null)

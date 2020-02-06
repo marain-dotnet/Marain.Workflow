@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Functions.Specs.MessageIngestionHost
+namespace Marain.Workflows.Api.Specs.MessageIngestionHost
 {
     using TechTalk.SpecFlow;
     
@@ -20,6 +20,8 @@ namespace Marain.Workflows.Functions.Specs.MessageIngestionHost
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("SendStartWorkflowInstanceRequest")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
+    [NUnit.Framework.CategoryAttribute("useHighTrafficIngestionApi")]
+    [NUnit.Framework.CategoryAttribute("useChildObjects")]
     public partial class SendStartWorkflowInstanceRequestFeature
     {
         
@@ -35,7 +37,9 @@ namespace Marain.Workflows.Functions.Specs.MessageIngestionHost
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "SendStartWorkflowInstanceRequest", "\tIn order to tell the workflow engine to carry out actions\r\n\tAs an external user " +
                     "of the workflow engine\r\n\tI want to send a request to start a new workflow instan" +
                     "ce", ProgrammingLanguage.CSharp, new string[] {
-                        "perFeatureContainer"});
+                        "perFeatureContainer",
+                        "useHighTrafficIngestionApi",
+                        "useChildObjects"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -78,28 +82,22 @@ namespace Marain.Workflows.Functions.Specs.MessageIngestionHost
         public virtual void SendARequestToStartANewWorkflowInstance()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Send a request to start a new workflow instance", null, ((string[])(null)));
-#line 7
+#line 9
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 8
- testRunner.Given("I start a functions instance for the local project \'Endjin.Workflow.Functions.Mes" +
-                    "sageIngestionHost\' on port 7071", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 9
- testRunner.Given("I start a functions instance for the local project \'Endjin.Operations.Functions.O" +
-                    "perationsControlHost\' on port 7078", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                         "WorkflowId"});
             table13.AddRow(new string[] {
                         "target-workflow-id"});
 #line 10
- testRunner.And("I have an object of type \"application/vnd.marain.workflows.hosted.startworkflowin" +
-                    "stancerequest\" called \"request\"", ((string)(null)), table13, "And ");
+ testRunner.Given("I have an object of type \"application/vnd.marain.workflows.hosted.startworkflowin" +
+                    "stancerequest\" called \"request\"", ((string)(null)), table13, "Given ");
 #line 13
  testRunner.And("I am listening for events from the event hub", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 14
- testRunner.When("I post the object called \"request\" to the endpoint \"http://localhost:7071/startne" +
-                    "wworkflowinstancerequests\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I post the object called \'request\' to the high traffic message ingestion path \'/{" +
+                    "tenantId}/marain/workflow/htingestion/startnewworkflowinstancerequests\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 15
  testRunner.And("wait for up to 3 seconds for incoming events from the event hub", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 16
@@ -121,12 +119,6 @@ this.ScenarioInitialize(scenarioInfo);
 #line 20
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 21
- testRunner.Given("I start a functions instance for the local project \'Endjin.Workflow.Functions.Mes" +
-                    "sageIngestionHost\' on port 7071", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 22
- testRunner.Given("I start a functions instance for the local project \'Endjin.Operations.Functions.O" +
-                    "perationsControlHost\' on port 7078", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                         "WorkflowId",
@@ -161,22 +153,22 @@ this.ScenarioInitialize(scenarioInfo);
             table14.AddRow(new string[] {
                         "target-workflow-id",
                         "instance-9"});
-#line 23
- testRunner.And("I have an object of type \"application/vnd.marain.workflows.hosted.startworkflowin" +
-                    "stancerequest\" called \"requests\"", ((string)(null)), table14, "And ");
-#line 35
+#line 21
+ testRunner.Given("I have an object of type \"application/vnd.marain.workflows.hosted.startworkflowin" +
+                    "stancerequest\" called \"requests\"", ((string)(null)), table14, "Given ");
+#line 33
  testRunner.And("I am listening for events from the event hub", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 36
- testRunner.When("I post the object called \"requests\" to the endpoint \"http://localhost:7071/startn" +
-                    "ewworkflowinstancerequests\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 37
+#line 34
+ testRunner.When("I post the object called \'request\' to the high traffic message ingestion path \'/{" +
+                    "tenantId}/marain/workflow/htingestion/startnewworkflowinstancerequests\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 35
  testRunner.And("wait for up to 3 seconds for incoming events from the event hub", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 38
+#line 36
  testRunner.Then("I should have received 10 202 status codes from the HTTP requests", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 39
+#line 37
  testRunner.And("I should have received at least 10 start new workflow instance messages containin" +
                     "g JSON data that represents the object called \"requests\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 40
+#line 38
  testRunner.And("I should not have received an exception from processing events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();

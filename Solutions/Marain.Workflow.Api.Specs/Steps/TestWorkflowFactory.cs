@@ -2,51 +2,50 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Functions.Specs.Steps
+namespace Marain.Workflows.Api.Specs.Steps
 {
-    using Microsoft.Extensions.DependencyInjection;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable SA1600 // Elements should be documented
 
     public static class TestWorkflowFactory
     {
         public static Workflow Get(string name)
         {
-            switch (name)
+            return name switch
             {
-                case "SimpleExpensesWorkflow":
-                    return GetSimpleExpensesWorkflow();
-            }
-
-            return null;
+                "SimpleExpensesWorkflow" => GetSimpleExpensesWorkflow(),
+                _ => null,
+            };
         }
 
         public static Workflow GetSimpleExpensesWorkflow()
         {
             var workflow = new Workflow { DisplayName = "Simple expenses workflow" };
 
-            var waitingToBeSubmitted = workflow.CreateState(displayName: "Waiting to be submitted");
-            var waitingForApproval = workflow.CreateState(displayName: "Waiting for approval");
-            var waitingForPayment = workflow.CreateState(displayName: "Waiting for payment");
-            var paid = workflow.CreateState(displayName: "Paid");
-            var abandoned = workflow.CreateState(displayName: "Abandoned");
+            WorkflowState waitingToBeSubmitted = workflow.CreateState(displayName: "Waiting to be submitted");
+            WorkflowState waitingForApproval = workflow.CreateState(displayName: "Waiting for approval");
+            WorkflowState waitingForPayment = workflow.CreateState(displayName: "Waiting for payment");
+            WorkflowState paid = workflow.CreateState(displayName: "Paid");
+            WorkflowState abandoned = workflow.CreateState(displayName: "Abandoned");
 
             workflow.SetInitialState(waitingToBeSubmitted);
 
-            var updateTransition = waitingToBeSubmitted.CreateTransition(waitingToBeSubmitted, displayName: "Update");
+            WorkflowTransition updateTransition = waitingToBeSubmitted.CreateTransition(waitingToBeSubmitted, displayName: "Update");
             updateTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Update" });
 
-            var submitTransition = waitingToBeSubmitted.CreateTransition(waitingForApproval, displayName: "Submit");
+            WorkflowTransition submitTransition = waitingToBeSubmitted.CreateTransition(waitingForApproval, displayName: "Submit");
             submitTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Submit" });
 
-            var abandonTransition = waitingToBeSubmitted.CreateTransition(abandoned, displayName: "Abandon");
+            WorkflowTransition abandonTransition = waitingToBeSubmitted.CreateTransition(abandoned, displayName: "Abandon");
             abandonTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Abandon" });
 
-            var approveTransition = waitingForApproval.CreateTransition(waitingForPayment, displayName: "Approve");
+            WorkflowTransition approveTransition = waitingForApproval.CreateTransition(waitingForPayment, displayName: "Approve");
             approveTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Approve" });
 
-            var rejectTransition = waitingForApproval.CreateTransition(waitingToBeSubmitted, displayName: "Reject");
+            WorkflowTransition rejectTransition = waitingForApproval.CreateTransition(waitingToBeSubmitted, displayName: "Reject");
             rejectTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Reject" });
 
-            var payTransition = waitingForPayment.CreateTransition(paid, displayName: "Pay");
+            WorkflowTransition payTransition = waitingForPayment.CreateTransition(paid, displayName: "Pay");
             payTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Pay" });
 
             return workflow;

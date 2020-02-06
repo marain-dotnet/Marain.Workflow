@@ -6,7 +6,6 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     using Marain.Workflows;
     using Marain.Workflows.Internal;
-    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Service collection extensions to add workflow event hub trigger queueing.

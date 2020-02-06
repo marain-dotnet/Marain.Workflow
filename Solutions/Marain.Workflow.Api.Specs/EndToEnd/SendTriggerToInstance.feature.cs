@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Functions.Specs.EndToEnd
+namespace Marain.Workflows.Api.Specs.EndToEnd
 {
     using TechTalk.SpecFlow;
     

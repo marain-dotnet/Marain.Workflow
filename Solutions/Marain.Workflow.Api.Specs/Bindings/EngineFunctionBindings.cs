@@ -1,11 +1,18 @@
-﻿using System.Threading.Tasks;
-using Corvus.SpecFlow.Extensions;
-using Corvus.SpecFlow.Extensions.SelfHostedOpenApiFunctionManagement;
-using Marain.Workflows.Functions.EngineHost;
-using TechTalk.SpecFlow;
+﻿// <copyright file="EngineFunctionBindings.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
+// </copyright>
 
-namespace Marain.Workflows.Functions.Specs.Bindings
+namespace Marain.Workflows.Api.Specs.Bindings
 {
+    using System.Threading.Tasks;
+    using Corvus.SpecFlow.Extensions;
+    using Corvus.SpecFlow.Extensions.SelfHostedOpenApiFunctionManagement;
+    using Marain.Workflows.Api.EngineHost;
+    using TechTalk.SpecFlow;
+
+    /// <summary>
+    /// SpecFlow bindings to run the workflow engine function in-memory.
+    /// </summary>
     [Binding]
     public static class EngineFunctionBindings
     {
@@ -19,14 +26,10 @@ namespace Marain.Workflows.Functions.Specs.Bindings
         /// </summary>
         /// <param name="context">The current <see cref="FeatureContext"/>.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        /// <remarks>
-        /// As part of the initialisation, an <see cref="HttpClient"/> will be created and stored in
-        /// the <see cref="FeatureContext"/>.
-        /// </remarks>
         [BeforeFeature("@useWorkflowEngineApi", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
-        public static async Task StartContentManagementFunction(FeatureContext context)
+        public static async Task StartWorkflowEngineFunction(FeatureContext context)
         {
-            await OpenApiWebHostManager.GetInstance(context).StartFunctionAsync<Functions.EngineHost.Startup>(BaseUrl).ConfigureAwait(false);
+            await OpenApiWebHostManager.GetInstance(context).StartFunctionAsync<Startup>(BaseUrl).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -35,12 +38,9 @@ namespace Marain.Workflows.Functions.Specs.Bindings
         /// <param name="context">The current <see cref="FeatureContext"/>.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [AfterFeature("@useWorkflowEngineApi")]
-        public static Task StopContentManagementFunction(FeatureContext context)
+        public static Task StopWorkflowEngineFunction(FeatureContext context)
         {
-            return context.RunAndStoreExceptionsAsync(async () =>
-            {
-                await OpenApiWebHostManager.GetInstance(context).StopAllFunctionsAsync().ConfigureAwait(false);
-            });
+            return context.RunAndStoreExceptionsAsync(async () => await OpenApiWebHostManager.GetInstance(context).StopAllFunctionsAsync().ConfigureAwait(false));
         }
     }
 }

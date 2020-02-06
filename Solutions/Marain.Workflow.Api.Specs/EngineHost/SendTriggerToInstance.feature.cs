@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Functions.Specs.EngineHost
+namespace Marain.Workflows.Api.Specs.EngineHost
 {
     using TechTalk.SpecFlow;
     
@@ -86,8 +86,8 @@ namespace Marain.Workflows.Functions.Specs.EngineHost
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 10
- testRunner.Given("I have added the workflow \"SimpleExpensesWorkflow\" to the workflow store with Id " +
-                    "\"simple-expenses-workflow\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
+                    "\'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 11
  testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -103,8 +103,8 @@ this.ScenarioInitialize(scenarioInfo);
 #line 12
  testRunner.And("I have a dictionary called \"context\"", ((string)(null)), table5, "And ");
 #line 16
- testRunner.And("I have started an instance of the workflow \"simple-expenses-workflow\" with instan" +
-                    "ce id \"instance\" and using context object \"context\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have started an instance of the workflow \'simple-expenses-workflow\' with instan" +
+                    "ce id \'instance\' and using context object \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "TriggerName"});
@@ -119,8 +119,8 @@ this.ScenarioInitialize(scenarioInfo);
 #line 21
  testRunner.Then("I should have received a 200 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 22
- testRunner.And("the workflow instance with id \"instance\" should be in the state with name \"Waitin" +
-                    "g for approval\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the workflow instance with id \'instance\' should be in the state with name \'Waitin" +
+                    "g for approval\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }

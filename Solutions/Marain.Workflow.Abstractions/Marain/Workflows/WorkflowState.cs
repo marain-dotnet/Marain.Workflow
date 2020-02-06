@@ -14,24 +14,24 @@ namespace Marain.Workflows
     /// </summary>
     /// <remarks>
     /// <para>
-    ///     A workflow state contains:
-    ///     - Entry conditions: A list of <see cref="IWorkflowCondition" /> that must be
-    ///     satisfied in order for a workflow instance to enter the state.
-    ///     - Entry actions: A list of <see cref="IWorkflowAction" /> that will be
-    ///     executed when a workflow instance enters this state.
-    ///     - Exit conditions: A list of <see cref="IWorkflowCondition" /> that must be
-    ///     satisfied in order for a workflow instance to leave the state.
-    ///     - Exit actions: A list of <see cref="IWorkflowAction" /> that will be
-    ///     executed when a workflow instance leaves this state.
-    ///     - Transitions: A list of <see cref="WorkflowTransition" /> that can be used
-    ///     to move from this state to another (or if necessary, from this state to
-    ///     itself.
+    /// A workflow state contains:
+    /// - Entry conditions: A list of <see cref="IWorkflowCondition" /> that must be
+    /// satisfied in order for a workflow instance to enter the state.
+    /// - Entry actions: A list of <see cref="IWorkflowAction" /> that will be
+    /// executed when a workflow instance enters this state.
+    /// - Exit conditions: A list of <see cref="IWorkflowCondition" /> that must be
+    /// satisfied in order for a workflow instance to leave the state.
+    /// - Exit actions: A list of <see cref="IWorkflowAction" /> that will be
+    /// executed when a workflow instance leaves this state.
+    /// - Transitions: A list of <see cref="WorkflowTransition" /> that can be used
+    /// to move from this state to another (or if necessary, from this state to
+    /// itself.
     /// </para>
     /// <para>
-    ///     These collections are used by <see cref="IWorkflowEngine" /> to
-    ///     determine whether an <see cref="WorkflowInstance" /> in a particular state can process a
-    ///     trigger. See remarks on the <see cref="IWorkflowEngine.ProcessTriggerAsync(IWorkflowTrigger, string, string)" />
-    ///     extension method for an explanation of how this is done.
+    /// These collections are used by <see cref="IWorkflowEngine" /> to
+    /// determine whether an <see cref="WorkflowInstance" /> in a particular state can process a
+    /// trigger. See remarks on the <see cref="IWorkflowEngine.ProcessTriggerAsync(IWorkflowTrigger, string, string)" />
+    /// extension method for an explanation of how this is done.
     /// </para>
     /// </remarks>
     public class WorkflowState
@@ -200,10 +200,10 @@ namespace Marain.Workflows
         /// </returns>
         /// <remarks>
         /// <para>
-        ///     The list of interests is built up by concatenating all interests from
-        ///     - the entry conditions
-        ///     - the exit conditions
-        ///     - the transitions.
+        /// The list of interests is built up by concatenating all interests from
+        /// - the entry conditions
+        /// - the exit conditions
+        /// - the transitions.
         /// </para>
         /// </remarks>
         public IEnumerable<string> GetInterests(WorkflowInstance instance)

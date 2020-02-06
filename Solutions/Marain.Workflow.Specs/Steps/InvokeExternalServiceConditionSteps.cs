@@ -2,8 +2,6 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-#pragma warning disable SA1600, CS1591
-
 namespace Marain.Workflows.Specs.Steps
 {
     using System;
@@ -132,6 +130,3 @@ namespace Marain.Workflows.Specs.Steps
         }
     }
 }
-
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-#pragma warning restore SA1600 // Elements should be documented

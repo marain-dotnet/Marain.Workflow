@@ -13,21 +13,21 @@ namespace Marain.Workflows
     /// </summary>
     /// <remarks>
     /// <para>
-    ///     A <see cref="WorkflowState" /> can have any number of transitions attached to it. A state
-    ///     with no transitions is classed as an "end" state, as there is no way of continuing
-    ///     the workflow from that state.
+    /// A <see cref="WorkflowState" /> can have any number of transitions attached to it. A state
+    /// with no transitions is classed as an "end" state, as there is no way of continuing
+    /// the workflow from that state.
     /// </para>
     /// <para>
-    ///     Transitions have <see cref="IWorkflowCondition" /> and <see cref="IWorkflowAction" /> associated
-    ///     with them. When determining if a transition should be applied for a specific <see cref="WorkflowInstance" />,
-    ///     the conditions will be checked in conjunction with those of the current and target state. For
-    ///     more information on this, see docs for <see cref="WorkflowEngine" />.
+    /// Transitions have <see cref="IWorkflowCondition" /> and <see cref="IWorkflowAction" /> associated
+    /// with them. When determining if a transition should be applied for a specific <see cref="WorkflowInstance" />,
+    /// the conditions will be checked in conjunction with those of the current and target state. For
+    /// more information on this, see docs for <see cref="WorkflowEngine" />.
     /// </para>
     /// <para>
-    ///     When adding transitions to an <see cref="WorkflowState" /> bear in mind that the transitions will
-    ///     be checked in order and the first whose conditions are all valid will be selected. This means that
-    ///     if you have multiple transitions that have similar lists of conditions, you should add the more
-    ///     specific transitions first.
+    /// When adding transitions to an <see cref="WorkflowState" /> bear in mind that the transitions will
+    /// be checked in order and the first whose conditions are all valid will be selected. This means that
+    /// if you have multiple transitions that have similar lists of conditions, you should add the more
+    /// specific transitions first.
     /// </para>
     /// </remarks>
     public class WorkflowTransition
@@ -120,8 +120,8 @@ namespace Marain.Workflows
         /// </returns>
         /// <remarks>
         /// <para>
-        ///     The list of interests is built up by concatenating the interests
-        ///     from the <see cref="Conditions" />.
+        /// The list of interests is built up by concatenating the interests
+        /// from the <see cref="Conditions" />.
         /// </para>
         /// </remarks>
         public IEnumerable<string> GetInterests(WorkflowInstance instance)

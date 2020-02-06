@@ -123,6 +123,3 @@ namespace Marain.Workflows.Specs.Steps
         }
     }
 }
-
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-#pragma warning restore SA1600 // Elements should be documented

@@ -6,7 +6,6 @@ namespace Marain.Workflows
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Microsoft.Azure.Cosmos;
 
     /// <summary>
     /// The workflow engine. Manages the processing of triggers (classes inheriting <see cref="IWorkflowTrigger" />
@@ -14,10 +13,10 @@ namespace Marain.Workflows
     /// </summary>
     /// <remarks>
     /// <para>
-    ///     The workflow engine should be supplied with <see cref="IWorkflowTrigger" /> messages from an external source
-    ///     such as a queue. It handles retrieval of the workflow instances
-    ///     that could potentially accept a trigger, and the requesting and releasing of shared leases for each instance
-    ///     whilst it is passed the trigger to process.
+    /// The workflow engine should be supplied with <see cref="IWorkflowTrigger" /> messages from an external source
+    /// such as a queue. It handles retrieval of the workflow instances
+    /// that could potentially accept a trigger, and the requesting and releasing of shared leases for each instance
+    /// whilst it is passed the trigger to process.
     /// </para>
     /// </remarks>
     public interface IWorkflowEngine
@@ -100,14 +99,13 @@ namespace Marain.Workflows
         /// Gets the workflow instance IDs that correspond to a particular set of subjects.
         /// </summary>
         /// <param name="subjects">The list of subjects.</param>
-        /// <param name="limit">The maximum number of items to return.</param>
-        /// <param name="continuationToken">A continuation token from a previous request that can be used to obtain the
-        /// next set of items.</param>
+        /// <param name="pageSize">The number of items to return.</param>
+        /// <param name="pageNumber">The page of items to return.</param>
         /// <returns>A <see cref="Task"/> which completes with the specified page of workflow instance ids.</returns>
         Task<IEnumerable<string>> GetMatchingWorkflowInstanceIdsForSubjectsAsync(
             IEnumerable<string> subjects,
-            int limit,
-            string continuationToken);
+            int pageSize,
+            int pageNumber);
 
         /// <summary>
         /// Gets the number of instances that match a particular set of subjects.

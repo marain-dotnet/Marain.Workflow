@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Functions.Specs.MessageIngestionHost
+namespace Marain.Workflows.Api.Specs.MessageIngestionHost
 {
     using TechTalk.SpecFlow;
     

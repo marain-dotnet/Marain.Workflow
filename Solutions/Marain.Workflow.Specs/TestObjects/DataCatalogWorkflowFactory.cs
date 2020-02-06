@@ -9,10 +9,8 @@ namespace Marain.Workflows.Specs.TestObjects
     using Marain.Workflows.Specs.TestObjects.Subjects;
     using Marain.Workflows.Specs.TestObjects.Triggers;
 
-    using Microsoft.Extensions.DependencyInjection;
-
     /// <summary>
-    ///     The data catalog workflow factory.
+    /// The data catalog workflow factory.
     /// </summary>
     public static class DataCatalogWorkflowFactory
     {
@@ -25,71 +23,71 @@ namespace Marain.Workflows.Specs.TestObjects
         /// The new <see cref="Workflow" />.
         /// </returns>
         /// <remarks>
-        ///     <para>
-        ///         The workflow generated is shown in the following diagram:
-        ///     </para>
-        ///     <para>
-        ///         <c>
-        ///                              Start
-        ///                                |
-        ///                                |
-        ///                        +-------v-------+
-        ///                        |               |
-        ///                        | Initializing  |
-        ///                        |               |
-        ///                        +-------+-------+
-        ///                                |
-        ///                                | Create
-        ///                                |
-        ///                        +-------v-------+
-        ///                        |               |
-        ///                        | Waiting for   |
-        ///                 +------+ documentation |
-        ///                 |      |               |
-        ///                 |      +-------+-------+
-        ///                 |              |
-        ///           Edit                 | Publish
-        ///           (incomplete)         |
-        ///                 |      +-------v-------+               +---------------+
-        ///                 |      |               |               |               |
-        ///                 +------+   Published   |  Deprecate    |  Deprecated   |
-        ///                        |               +--------------->    (end)      |
-        ///                 +------>               |               |               |
-        ///                 |      +--+---------+--+               +---------------+
-        ///                 |         |         |
-        ///            Edit +---------+         | Delete
-        ///            (complete)               |
-        ///                        +------------v--+
-        ///                        |               |
-        ///                        |    Deleted    |
-        ///                        |     (end)     |
-        ///                        |               |
-        ///                        +---------------+
-        ///         </c>.
-        ///     </para>
-        ///     <para>
-        ///         To assist with testing it has the following notable points:
-        ///         <list type="bullet">
-        ///             <item>
-        ///                 <description>
-        ///                     The initial state, "Initializing" will validate the context properties
-        ///                     and self-trigger a transition to "Waiting for documentation.
-        ///                 </description>
-        ///             </item>
-        ///             <item>
-        ///                 <description>
-        ///                     Every state has a TraceAction added to its entry and exit actions lists
-        ///                     so that tests can verify the expected actions were called in the expected
-        ///                     order.
-        ///                 </description>
-        ///             </item>
-        ///             <item>
-        ///                 <description>
-        ///                     Every transition has a TraceAction added to it for the same reason.
-        ///                 </description>
-        ///             </item>
-        ///         </list>
-        ///     </para>
+        /// <para>
+        ///     The workflow generated is shown in the following diagram:
+        /// </para>
+        /// <para>
+        ///     <c>
+        ///                          Start
+        ///                            |
+        ///                            |
+        ///                    +-------v-------+
+        ///                    |               |
+        ///                    | Initializing  |
+        ///                    |               |
+        ///                    +-------+-------+
+        ///                            |
+        ///                            | Create
+        ///                            |
+        ///                    +-------v-------+
+        ///                    |               |
+        ///                    | Waiting for   |
+        ///             +------+ documentation |
+        ///             |      |               |
+        ///             |      +-------+-------+
+        ///             |              |
+        ///       Edit                 | Publish
+        ///       (incomplete)         |
+        ///             |      +-------v-------+               +---------------+
+        ///             |      |               |               |               |
+        ///             +------+   Published   |  Deprecate    |  Deprecated   |
+        ///                    |               +--------------->    (end)      |
+        ///             +------>               |               |               |
+        ///             |      +--+---------+--+               +---------------+
+        ///             |         |         |
+        ///        Edit +---------+         | Delete
+        ///        (complete)               |
+        ///                    +------------v--+
+        ///                    |               |
+        ///                    |    Deleted    |
+        ///                    |     (end)     |
+        ///                    |               |
+        ///                    +---------------+
+        ///     </c>.
+        /// </para>
+        /// <para>
+        ///     To assist with testing it has the following notable points:
+        ///     <list type="bullet">
+        ///         <item>
+        ///             <description>
+        ///                 The initial state, "Initializing" will validate the context properties
+        ///                 and self-trigger a transition to "Waiting for documentation.
+        ///             </description>
+        ///         </item>
+        ///         <item>
+        ///             <description>
+        ///                 Every state has a TraceAction added to its entry and exit actions lists
+        ///                 so that tests can verify the expected actions were called in the expected
+        ///                 order.
+        ///             </description>
+        ///         </item>
+        ///         <item>
+        ///             <description>
+        ///                 Every transition has a TraceAction added to it for the same reason.
+        ///             </description>
+        ///         </item>
+        ///     </list>
+        /// </para>
         /// </remarks>
         public static Workflow Create(string id, IWorkflowMessageQueue workflowMessageQueue)
         {

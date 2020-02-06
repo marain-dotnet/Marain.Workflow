@@ -6,12 +6,12 @@
     <None Remove="Endjin\**" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Marain\Workflows\Functions\EngineService.yaml" />
-    <None Remove="Marain\Workflows\Functions\MessageIngestionService.yaml" />
+    <None Remove="Marain\Workflows\Api\EngineService.yaml" />
+    <None Remove="Marain\Workflows\Api\MessageIngestionService.yaml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Marain\Workflows\Functions\EngineService.yaml" />
-    <EmbeddedResource Include="Marain\Workflows\Functions\MessageIngestionService.yaml" />
+    <EmbeddedResource Include="Marain\Workflows\Api\Services\EngineService.yaml" />
+    <EmbeddedResource Include="Marain\Workflows\Api\Services\MessageIngestionService.yaml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Marain.Operations.ControlClient" Version="0.8.0" />
@@ -19,5 +19,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>

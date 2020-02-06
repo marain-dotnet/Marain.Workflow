@@ -2,18 +2,19 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Functions.Specs.Steps
+namespace Marain.Workflows.Api.Specs.Steps
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading;
     using Corvus.SpecFlow.Extensions;
     using Microsoft.Extensions.DependencyInjection;
 
     using TechTalk.SpecFlow;
     using TechTalk.SpecFlow.Assist;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable SA1600 // Elements should be documented
 
     [Binding]
     public class ObjectSteps
@@ -31,7 +32,7 @@ namespace Marain.Workflows.Functions.Specs.Steps
         [Given(@"I have objects of type ""(.*)"" called ""(.*)""")]
         public void GivenIHaveAnObjectOfTypeCalled(string contentType, string instanceName, Table table)
         {
-            var instances = table.CreateSet(() => ContainerBindings.GetServiceProvider(this.featureContext).GetContent(contentType)).ToArray();
+            object[] instances = table.CreateSet(() => ContainerBindings.GetServiceProvider(this.featureContext).GetContent(contentType)).ToArray();
             this.context[instanceName] = instances;
         }
 
@@ -40,7 +41,7 @@ namespace Marain.Workflows.Functions.Specs.Steps
         public void GivenIHaveAPocoObjectOfTypeCalled(string typeName, string instanceName, Table table)
         {
             var type = Type.GetType(typeName);
-            var obj = table.CreateSet(() => Activator.CreateInstance(type));
+            IEnumerable<object> obj = table.CreateSet(() => Activator.CreateInstance(type));
             this.context[instanceName] = obj;
         }
 

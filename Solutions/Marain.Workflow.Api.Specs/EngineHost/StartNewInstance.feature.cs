@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Functions.Specs.EngineHost
+namespace Marain.Workflows.Api.Specs.EngineHost
 {
     using TechTalk.SpecFlow;
     
@@ -85,8 +85,8 @@ namespace Marain.Workflows.Functions.Specs.EngineHost
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 10
- testRunner.Given("I have added the workflow \"SimpleExpensesWorkflow\" to the workflow store with Id " +
-                    "\"simple-expenses-workflow\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
+                    "\'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 11
  testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -119,14 +119,14 @@ this.ScenarioInitialize(scenarioInfo);
 #line 20
  testRunner.Then("I should have received a 201 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 21
- testRunner.And("there should be a workflow instance with the id \"instance\" in the workflow instan" +
+ testRunner.And("there should be a workflow instance with the id \'instance\' in the workflow instan" +
                     "ce store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 22
- testRunner.And("the workflow instance with id \"instance\" should be an instance of the workflow wi" +
-                    "th id \"simple-expenses-workflow\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the workflow instance with id \'instance\' should be an instance of the workflow wi" +
+                    "th id \'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 23
- testRunner.And("the workflow instance with id \"instance\" should have a context dictionary that ma" +
-                    "tches \"context\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the workflow instance with id \'instance\' should have a context dictionary that ma" +
+                    "tches \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -140,8 +140,8 @@ this.ScenarioInitialize(scenarioInfo);
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line 26
- testRunner.Given("I have added the workflow \"SimpleExpensesWorkflow\" to the workflow store with Id " +
-                    "\"simple-expenses-workflow\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
+                    "\'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 27
  testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden

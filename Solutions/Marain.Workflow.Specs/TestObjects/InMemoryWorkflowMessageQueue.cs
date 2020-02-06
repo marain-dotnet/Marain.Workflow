@@ -13,69 +13,69 @@ namespace Marain.Workflows.Specs.TestObjects
 
     /// <inheritdoc />
     /// <summary>
-    ///     An in memory implementation of the <see cref="IWorkflowMessageQueue" />
-    ///     interface that accepts new triggers and hands them off to the
-    ///     appropriate <see cref="IWorkflowEngine" />.
+    /// An in memory implementation of the <see cref="IWorkflowMessageQueue" />
+    /// interface that accepts new triggers and hands them off to the
+    /// appropriate <see cref="IWorkflowEngine" />.
     /// </summary>
     /// <remarks>
-    ///     <para>
-    ///         As it currently stands, this implementation is not suitable for use
-    ///         in any kind of production scenario. Any errors thrown out of the workflow
-    ///         engine would cause the background processing thread to end, preventing
-    ///         any further messages from being processed.
-    ///     </para>
+    /// <para>
+    ///     As it currently stands, this implementation is not suitable for use
+    ///     in any kind of production scenario. Any errors thrown out of the workflow
+    ///     engine would cause the background processing thread to end, preventing
+    ///     any further messages from being processed.
+    /// </para>
     /// </remarks>
     public class InMemoryWorkflowMessageQueue : IWorkflowMessageQueue
     {
         /// <summary>
-        ///     The logger that will be used for diagnostic messages.
+        /// The logger that will be used for diagnostic messages.
         /// </summary>
         private readonly ILogger<InMemoryWorkflowMessageQueue> logger;
 
         /// <summary>
-        ///     The tenant provider that will be used when accessing storage.
+        /// The tenant provider that will be used when accessing storage.
         /// </summary>
         private readonly ITenantProvider tenantProvider;
 
         /// <summary>
-        ///     The queue that will be used for triggers.
+        /// The queue that will be used for triggers.
         /// </summary>
         private readonly ConcurrentQueue<WorkflowMessageEnvelope> queue;
 
         /// <summary>
-        ///     The factory for the workflow engine to which triggers will be passed.
+        /// The factory for the workflow engine to which triggers will be passed.
         /// </summary>
         private readonly IWorkflowEngineFactory workflowEngineFactory;
 
         /// <summary>
-        ///     The task that represents the procssing thread.
+        /// The task that represents the procssing thread.
         /// </summary>
         private Task runner;
 
         /// <summary>
-        ///     Flag that indicates whether or not the <see cref="FinishProcessing" /> method has
-        ///     been called to tall the processing thread to finish processing queued triggers
-        ///     but not accept any new ones.
+        /// Flag that indicates whether or not the <see cref="FinishProcessing" /> method has
+        /// been called to tall the processing thread to finish processing queued triggers
+        /// but not accept any new ones.
         /// </summary>
         private bool shouldComplete;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="InMemoryWorkflowMessageQueue" /> class.
+        /// Initializes a new instance of the <see cref="InMemoryWorkflowMessageQueue" /> class.
         /// </summary>
         /// <param name="workflowEngineFactory">
-        ///     The workflow engine factory to create the engine to which to hand off the triggers.
+        /// The workflow engine factory to create the engine to which to hand off the triggers.
         /// </param>
         /// <param name="tenantProvider">
-        ///     The tenant provider that will be used when accessing storage.
+        /// The tenant provider that will be used when accessing storage.
         /// </param>
         /// <param name="logger">
-        ///     Logger to use to write diagnostic messages.
+        /// Logger to use to write diagnostic messages.
         /// </param>
         /// <remarks>
-        ///     <para>
-        ///         The queue will be created in the "Stopped" state. To begin processing,
-        ///         call the <see cref="StartProcessing" /> method.
-        ///     </para>
+        /// <para>
+        ///     The queue will be created in the "Stopped" state. To begin processing,
+        ///     call the <see cref="StartProcessing" /> method.
+        /// </para>
         /// </remarks>
         public InMemoryWorkflowMessageQueue(
             IWorkflowEngineFactory workflowEngineFactory,
@@ -99,7 +99,7 @@ namespace Marain.Workflows.Specs.TestObjects
 
         /// <inheritdoc />
         /// <exception cref="InvalidOperationException">
-        ///     Thrown if the <see cref="FinishProcessing" /> method has been called.
+        /// Thrown if the <see cref="FinishProcessing" /> method has been called.
         /// </exception>
         public Task EnqueueTriggerAsync(
             IWorkflowTrigger trigger,
@@ -109,11 +109,11 @@ namespace Marain.Workflows.Specs.TestObjects
         }
 
         /// <summary>
-        ///     Signals the <see cref="Process" /> task that it should finish processing currently queued
-        ///     triggers and then stop.
+        /// Signals the <see cref="Process" /> task that it should finish processing currently queued
+        /// triggers and then stop.
         /// </summary>
         /// <returns>
-        ///     A <see cref="Task" /> that will finish when all triggers in the queue have been processed.
+        /// A <see cref="Task" /> that will finish when all triggers in the queue have been processed.
         /// </returns>
         public Task FinishProcessing()
         {
@@ -122,11 +122,11 @@ namespace Marain.Workflows.Specs.TestObjects
         }
 
         /// <summary>
-        ///     Start passing trigger messsages to the <see cref="IWorkflowEngine" /> that was
-        ///     passed to the constructor.
+        /// Start passing trigger messsages to the <see cref="IWorkflowEngine" /> that was
+        /// passed to the constructor.
         /// </summary>
         /// <exception cref="InvalidOperationException">
-        ///     Thrown if processing is already started.
+        /// Thrown if processing is already started.
         /// </exception>
         public void StartProcessing()
         {
@@ -154,12 +154,12 @@ namespace Marain.Workflows.Specs.TestObjects
         }
 
         /// <summary>
-        ///     The Process method is invoked asynchronously when <see cref="StartProcessing" /> is
-        ///     called. It will run on a background thread until <see cref="FinishProcessing" />
-        ///     is called.
+        /// The Process method is invoked asynchronously when <see cref="StartProcessing" /> is
+        /// called. It will run on a background thread until <see cref="FinishProcessing" />
+        /// is called.
         /// </summary>
         /// <returns>
-        ///     A <see cref="Task" /> that will complete after <see cref="FinishProcessing" /> is called.
+        /// A <see cref="Task" /> that will complete after <see cref="FinishProcessing" /> is called.
         /// </returns>
         private async Task Process()
         {
@@ -190,7 +190,7 @@ namespace Marain.Workflows.Specs.TestObjects
                     IEnumerable<string> instanceIds = await engine.GetMatchingWorkflowInstanceIdsForSubjectsAsync(
                                           item.Trigger.GetSubjects(),
                                           int.MaxValue,
-                                          null).ConfigureAwait(false);
+                                          0).ConfigureAwait(false);
 
                     foreach (string current in instanceIds)
                     {

@@ -7,7 +7,6 @@ namespace Marain.Workflows.Specs.TestObjects
     using System;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
-    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Creates a workflow for testing external actions.

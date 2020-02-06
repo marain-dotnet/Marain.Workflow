@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Functions.Specs.Steps
+namespace Marain.Workflows.Api.Specs.Steps
 {
     using System;
     using System.Collections.Generic;
@@ -24,22 +24,25 @@ namespace Marain.Workflows.Functions.Specs.Steps
 
     using TechTalk.SpecFlow;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable SA1600 // Elements should be documented
+
     [Binding]
     public class EventHubSteps
     {
-        private readonly ScenarioContext context;
+        private readonly ScenarioContext scenarioContext;
         private readonly FeatureContext featureContext;
 
         public EventHubSteps(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
-            this.context = scenarioContext;
+            this.scenarioContext = scenarioContext;
             this.featureContext = featureContext;
         }
 
-        [Given(@"I am listening for events from the event hub")]
+        [Given("I am listening for events from the event hub")]
         public async Task GivenIAmListeningForEventsFromTheEventHubWhoseConnectionStringIsStoredInTheKeyVaultSecretAt()
         {
-            var configuration =  ContainerBindings.GetServiceProvider(this.featureContext).GetService<IConfigurationRoot>();
+            IConfigurationRoot configuration = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IConfigurationRoot>();
 
             var host = new EventProcessorHost(
                 "endworkflow",
@@ -48,11 +51,16 @@ namespace Marain.Workflows.Functions.Specs.Steps
                 configuration["EventHubStorageAccountConnectionString"],
                 "triggerleases");
 
-            var processorOptions = new EventProcessorOptions { InitialOffsetProvider = s => EventPosition.FromEnd() };
+            var processorOptions = new EventProcessorOptions
+            {
+                InitialOffsetProvider = _ => EventPosition.FromEnd(),
+            };
 
-            this.context.Set(host);
+            this.scenarioContext.Set(host);
 
-            await host.RegisterEventProcessorAsync<TestEventProcessor>(processorOptions);
+            var eventProcessorFactory = new TestEventProcessorFactory(this.featureContext, this.scenarioContext);
+
+            await host.RegisterEventProcessorFactoryAsync(eventProcessorFactory, processorOptions).ConfigureAwait(false);
         }
 
         [AfterScenario]
@@ -61,11 +69,11 @@ namespace Marain.Workflows.Functions.Specs.Steps
             await scenarioContext.RunAndStoreExceptionsAsync(
                 async () =>
                 {
-                    if (this.context.TryGetValue<EventProcessorHost>(out var processor))
+                    if (this.scenarioContext.TryGetValue<EventProcessorHost>(out EventProcessorHost processor))
                     {
-                        await processor.UnregisterEventProcessorAsync();
+                        await processor.UnregisterEventProcessorAsync().ConfigureAwait(false);
                     }
-                });
+                }).ConfigureAwait(false);
         }
 
         [Then(@"I should have received a trigger containing JSON data that represents the object called ""(.*)""")]
@@ -80,22 +88,22 @@ namespace Marain.Workflows.Functions.Specs.Steps
             int count,
             string instanceName)
         {
-            var eventProcessors = this.context.Get<List<TestEventProcessor>>();
-            var receivedEvents = eventProcessors.SelectMany(x => x.ReceivedEvents.Where(e => e.IsTrigger).Select(e => e.Trigger));
+            List<TestEventProcessor> eventProcessors = this.scenarioContext.Get<List<TestEventProcessor>>();
+            IEnumerable<IWorkflowTrigger> receivedEvents = eventProcessors.SelectMany(x => x.ReceivedEvents.Where(e => e.IsTrigger).Select(e => e.Trigger));
 
-            var matchInstances = this.context.Get<IEnumerable<object>>(instanceName);
+            IEnumerable<object> matchInstances = this.scenarioContext.Get<IEnumerable<object>>(instanceName);
 
-            var serializerSettingsProvider =
+            IJsonSerializerSettingsProvider serializerSettingsProvider =
                 ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
-            var jsonSerializerSettings = serializerSettingsProvider.Instance;
+            JsonSerializerSettings jsonSerializerSettings = serializerSettingsProvider.Instance;
 
-            var matchJson = matchInstances.Select(x => JsonConvert.SerializeObject(x, jsonSerializerSettings)).ToArray();
+            string[] matchJson = matchInstances.Select(x => JsonConvert.SerializeObject(x, jsonSerializerSettings)).ToArray();
 
-            var receivedEventsJson = receivedEvents.Select(x => JsonConvert.SerializeObject(x, jsonSerializerSettings)).ToArray();
+            string[] receivedEventsJson = receivedEvents.Select(x => JsonConvert.SerializeObject(x, jsonSerializerSettings)).ToArray();
 
             Console.WriteLine($"Received {receivedEventsJson.Length} events from Event Hub.");
 
-            var matchingEvents = receivedEventsJson.Count(e => matchJson.Contains(e));
+            int matchingEvents = receivedEventsJson.Count(e => matchJson.Contains(e));
 
             Console.WriteLine($"Found {matchingEvents} events that match the triggers that were sent");
 
@@ -105,7 +113,7 @@ namespace Marain.Workflows.Functions.Specs.Steps
         [Then(@"I should have received a start new workflow instance message containing JSON data that represents the object called ""(.*)""")]
         public void ThenIShouldHaveReceivedAStartNewWorkflowInstanceMessageContainingJSONDataThatRepresentsTheObjectCalled(string instanceName)
         {
-            ThenIShouldHaveReceivedAtLeastStartNewWorkflowInstanceMessageContainingJSONDataThatRepresentsTheObjectCalled(
+            this.ThenIShouldHaveReceivedAtLeastStartNewWorkflowInstanceMessageContainingJSONDataThatRepresentsTheObjectCalled(
                 1,
                 instanceName);
         }
@@ -113,39 +121,38 @@ namespace Marain.Workflows.Functions.Specs.Steps
         [Then(@"I should have received at least (.*) start new workflow instance messages containing JSON data that represents the object called ""(.*)""")]
         public void ThenIShouldHaveReceivedAtLeastStartNewWorkflowInstanceMessageContainingJSONDataThatRepresentsTheObjectCalled(int count, string instanceName)
         {
-            var eventProcessors = this.context.Get<List<TestEventProcessor>>();
-            var receivedEvents = eventProcessors.SelectMany(x => x.ReceivedEvents.Where(e => e.IsStartWorkflowRequest).Select(e => e.StartWorkflowInstanceRequest));
+            List<TestEventProcessor> eventProcessors = this.scenarioContext.Get<List<TestEventProcessor>>();
+            IEnumerable<StartWorkflowInstanceRequest> receivedEvents = eventProcessors.SelectMany(x => x.ReceivedEvents.Where(e => e.IsStartWorkflowRequest).Select(e => e.StartWorkflowInstanceRequest));
 
-            var matchInstances = this.context.Get<IEnumerable<object>>(instanceName);
+            IEnumerable<object> matchInstances = this.scenarioContext.Get<IEnumerable<object>>(instanceName);
 
-            var serializerSettingsProvider =
+            IJsonSerializerSettingsProvider serializerSettingsProvider =
                 ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
-            var jsonSerializerSettings = serializerSettingsProvider.Instance;
+            JsonSerializerSettings jsonSerializerSettings = serializerSettingsProvider.Instance;
 
-            var matchJson = matchInstances.Select(x => JsonConvert.SerializeObject(x, jsonSerializerSettings)).ToArray();
+            string[] matchJson = matchInstances.Select(x => JsonConvert.SerializeObject(x, jsonSerializerSettings)).ToArray();
 
-            var receivedEventsJson = receivedEvents.Select(x => JsonConvert.SerializeObject(x, jsonSerializerSettings)).ToArray();
+            string[] receivedEventsJson = receivedEvents.Select(x => JsonConvert.SerializeObject(x, jsonSerializerSettings)).ToArray();
 
             Console.WriteLine($"Received {receivedEventsJson.Length} events from Event Hub.");
 
-            var matchingEvents = receivedEventsJson.Count(e => matchJson.Contains(e));
+            int matchingEvents = receivedEventsJson.Count(e => matchJson.Contains(e));
 
             Console.WriteLine($"Found {matchingEvents} events that match the start new workflow instance requests that were sent");
 
             Assert.GreaterOrEqual(matchingEvents, count);
         }
 
-
-        [When(@"wait for up to (.*) seconds for incoming events from the event hub")]
+        [When("wait for up to (.*) seconds for incoming events from the event hub")]
         public Task WhenWaitForToUpSecondsForIncomingEventsFromTheEventHub(int p0)
         {
             return Task.Delay(p0 * 1000);
         }
 
-        [Then(@"I should not have received an exception from processing events")]
+        [Then("I should not have received an exception from processing events")]
         public void ThenIShouldNotHaveReceivedAnExceptionFromProcessingEvents()
         {
-            var exceptionPresent = this.context.TryGetValue<Exception>(out var ex);
+            bool exceptionPresent = this.scenarioContext.TryGetValue<Exception>(out _);
 
             Assert.IsFalse(exceptionPresent);
         }
