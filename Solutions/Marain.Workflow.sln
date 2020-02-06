@@ -43,8 +43,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.Message
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.EngineHost.Client", "Marain.Workflow.Api.EngineHost.Client\Marain.Workflow.Api.EngineHost.Client.csproj", "{4EF18979-2FEA-4CC4-9CBB-11B78E088201}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.MessageIngestionHost", "Marain.Workflow.Api.MessageIngestionHost\Marain.Workflow.Api.MessageIngestionHost.csproj", "{63E9FEC7-33A0-4B5B-A02F-FC1736B31E1B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,10 +89,6 @@ Global
 		{4EF18979-2FEA-4CC4-9CBB-11B78E088201}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EF18979-2FEA-4CC4-9CBB-11B78E088201}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EF18979-2FEA-4CC4-9CBB-11B78E088201}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63E9FEC7-33A0-4B5B-A02F-FC1736B31E1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63E9FEC7-33A0-4B5B-A02F-FC1736B31E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63E9FEC7-33A0-4B5B-A02F-FC1736B31E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63E9FEC7-33A0-4B5B-A02F-FC1736B31E1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,7 +100,6 @@ Global
 		{1299E881-7001-4A0F-95E4-692E6B6139CC} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 		{AD2E284B-2F33-4C0D-8E4F-CC84456A0828} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 		{4EF18979-2FEA-4CC4-9CBB-11B78E088201} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
-		{63E9FEC7-33A0-4B5B-A02F-FC1736B31E1B} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EED79307-5690-4CE6-A80D-F41857C97EFF}

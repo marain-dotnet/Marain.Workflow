@@ -61,13 +61,6 @@ namespace Marain.Workflows.Api.Specs.Steps
             this.PostContextObjectToEndpoint(instanceName, url);
         }
 
-        [When("I post the object called '(.*)' to the high traffic message ingestion path '(.*)'")]
-        public void WhenIPostTheObjectCalledToTheHighTrafficMessageIngestionPath(string instanceName, string path)
-        {
-            string url = HighTrafficIngestionHostFunctionBindings.BaseUrl + path;
-            this.PostContextObjectToEndpoint(instanceName, url);
-        }
-
         private void PostContextObjectToEndpoint(string instanceName, string url)
         {
             ITenantProvider tenantProvider =

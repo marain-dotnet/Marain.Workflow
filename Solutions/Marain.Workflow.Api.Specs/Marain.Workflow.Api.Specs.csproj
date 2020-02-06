@@ -37,35 +37,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Api.EngineHost\Marain.Workflow.Api.EngineHost.csproj" />
-    <ProjectReference Include="..\Marain.Workflow.Api.MessageIngestionHost\Marain.Workflow.Api.MessageIngestionHost.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Management" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Update="EndToEnd\SendTriggerToInstance.feature.cs">
-      <DependentUpon>SendTriggerToInstance.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="EndToEnd\StartNewInstance.feature.cs">
-      <DependentUpon>StartNewInstance.feature</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="MessageIngestionHost\SendStartWorkflowInstanceRequest.feature.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SendStartWorkflowInstanceRequest.feature</DependentUpon>
-    </Compile>
-    <Compile Update="MessageIngestionHost\SendTrigger.feature.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SendTrigger.feature</DependentUpon>
-    </Compile>
   </ItemGroup>
   
   <ItemGroup>
