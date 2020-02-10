@@ -12,6 +12,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
     using Corvus.Tenancy;
     using Marain.Workflows.Api.MessagePreProcessingHost.Shared;
     using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -56,7 +57,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
         /// </returns>
         [FunctionName(nameof(GetWorkflowInstanceIdsActivity))]
         public async Task<string[]> RunAction(
-            [ActivityTrigger] DurableActivityContext context,
+            [ActivityTrigger] IDurableActivityContext context,
             ExecutionContext executionContext,
             ILogger logger)
         {

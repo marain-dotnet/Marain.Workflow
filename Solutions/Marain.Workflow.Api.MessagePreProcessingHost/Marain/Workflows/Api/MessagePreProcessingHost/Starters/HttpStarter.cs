@@ -10,6 +10,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Starters
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Azure.WebJobs.Extensions.Http;
 
     /// <summary>
@@ -38,7 +39,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Starters
         [FunctionName("HttpStarter")]
         public Task<IActionResult> RunAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*path}")] HttpRequest req,
-            [OrchestrationClient] DurableOrchestrationClient orchestrationClient,
+            [DurableClient] IDurableOrchestrationClient orchestrationClient,
             ExecutionContext executionContext)
         {
             var additionalParameters = new DurableFunctionsOpenApiContextAdditionalProperties

@@ -12,6 +12,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
     using Marain.Workflows.Api.MessagePreProcessingHost.Shared;
 
     using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -47,14 +48,13 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
         /// </returns>
         [FunctionName(nameof(TriggerInstancesExecutionOrchestrator))]
         public async Task RunOrchestrator(
-            [OrchestrationTrigger] DurableOrchestrationContext orchestrationContext,
+            [OrchestrationTrigger] IDurableOrchestrationContext orchestrationContext,
             ExecutionContext executionContext,
             ILogger log)
         {
-            if (!orchestrationContext.IsReplaying)
-            {
-                log.LogDebug("Starting new TriggerInstancesExecutionOrchestrator instance");
-            }
+            ILogger replaySafeLogger = orchestrationContext.CreateReplaySafeLogger(log);
+
+            replaySafeLogger.LogDebug("Starting new TriggerInstancesExecutionOrchestrator instance");
 
             WorkflowMessageEnvelope envelope =
                 orchestrationContext.GetInputWithCustomSerializationSettings<WorkflowMessageEnvelope>(
@@ -62,10 +62,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
 
             int pageNumber = envelope.GetWorkflowInstancesPageNumber();
 
-            if (!orchestrationContext.IsReplaying)
-            {
-                log.LogDebug($"Processing trigger {envelope.Trigger.Id} against instances page {pageNumber}");
-            }
+            replaySafeLogger.LogDebug($"Processing trigger {envelope.Trigger.Id} against instances page {pageNumber}");
 
             string[] instanceIds =
                 await orchestrationContext.CallActivityWithCustomSerializationSettingsAsync<WorkflowMessageEnvelope, string[]>(
@@ -73,10 +70,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
                     envelope,
                     this.serializerSettingsProvider.Instance);
 
-            if (!orchestrationContext.IsReplaying)
-            {
-                log.LogDebug($"Retrieved {instanceIds.Length} instance Ids");
-            }
+            replaySafeLogger.LogDebug($"Retrieved {instanceIds.Length} instance Ids");
 
             var tasks = new List<Task>(instanceIds.Length);
 
@@ -91,10 +85,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
 
             await Task.WhenAll(tasks);
 
-            if (!orchestrationContext.IsReplaying)
-            {
-                log.LogDebug($"Processing trigger {envelope.Trigger.Id} against instances page {pageNumber}");
-            }
+            replaySafeLogger.LogDebug($"Processing trigger {envelope.Trigger.Id} against instances page {pageNumber}");
         }
     }
 }

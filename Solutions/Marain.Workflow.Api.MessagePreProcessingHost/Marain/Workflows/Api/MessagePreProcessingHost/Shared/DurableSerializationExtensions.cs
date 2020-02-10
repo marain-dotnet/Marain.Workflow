@@ -6,6 +6,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Shared
 {
     using System.Threading.Tasks;
     using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -18,7 +19,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Shared
         /// object using the supplied serialization settings.
         /// </summary>
         /// <typeparam name="T">The type of the input parameter.</typeparam>
-        /// <param name="client">The <see cref="DurableOrchestrationClient"/>.</param>
+        /// <param name="client">The <see cref="IDurableOrchestrationClient"/>.</param>
         /// <param name="orchestratorFunctionName">The name of the orchestration to start.</param>
         /// <param name="instanceId">The instance Id for the orchestration.</param>
         /// <param name="input">The input data.</param>
@@ -31,7 +32,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Shared
         /// https://github.com/Azure/azure-functions-durable-extension/pull/1101.
         /// </remarks>
         public static Task<string> StartNewWithCustomSerializationSettingsAsync<T>(
-            this DurableOrchestrationClient client,
+            this IDurableOrchestrationClient client,
             string orchestratorFunctionName,
             string instanceId,
             T input,
@@ -46,13 +47,11 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Shared
         /// settings.
         /// </summary>
         /// <typeparam name="T">The type of the input parameter.</typeparam>
-        /// <param name="context">The <see cref="DurableOrchestrationContext"/>.</param>
+        /// <param name="context">The <see cref="IDurableOrchestrationContext"/>.</param>
         /// <param name="jsonSerializerSettings">The serialization settings to use.</param>
         /// <returns>The deserialized input data.</returns>
-        /// <remarks>Assumes data was added to the context using
-        /// <see cref="DurableSerializationExtensions.StartNewWithCustomSerializationSettingsAsync{T}(DurableOrchestrationClient, string, string, T, JsonSerializerSettings)"/>.</remarks>
         public static T GetInputWithCustomSerializationSettings<T>(
-            this DurableOrchestrationContext context,
+            this IDurableOrchestrationContext context,
             JsonSerializerSettings jsonSerializerSettings)
         {
             string serializedInput = context.GetInput<string>();
@@ -64,11 +63,11 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Shared
         /// settings.
         /// </summary>
         /// <typeparam name="T">The type of the input parameter.</typeparam>
-        /// <param name="context">The <see cref="DurableActivityContext"/>.</param>
+        /// <param name="context">The <see cref="IDurableActivityContext"/>.</param>
         /// <param name="jsonSerializerSettings">The serialization settings to use.</param>
         /// <returns>The deserialized input data.</returns>
         public static T GetInputWithCustomSerializationSettings<T>(
-            this DurableActivityContext context,
+            this IDurableActivityContext context,
             JsonSerializerSettings jsonSerializerSettings)
         {
             string serializedInput = context.GetInput<string>();
@@ -86,7 +85,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Shared
         /// <param name="jsonSerializerSettings">The serialization settings to use.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static Task CallActivityWithCustomSerializationSettingsAsync<TInput>(
-            this DurableOrchestrationContext context,
+            this IDurableOrchestrationContext context,
             string activityName,
             TInput input,
             JsonSerializerSettings jsonSerializerSettings)
@@ -107,7 +106,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Shared
         /// <param name="jsonSerializerSettings">The serialization settings to use.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static Task<TOutput> CallActivityWithCustomSerializationSettingsAsync<TInput, TOutput>(
-            this DurableOrchestrationContext context,
+            this IDurableOrchestrationContext context,
             string activityName,
             TInput input,
             JsonSerializerSettings jsonSerializerSettings)
@@ -127,7 +126,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Shared
         /// <param name="jsonSerializerSettings">The serialization settings to use.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public static Task CallSubOrchestratorWithCustomSerializationSettingsAsync<TInput>(
-            this DurableOrchestrationContext context,
+            this IDurableOrchestrationContext context,
             string subOrchestratorName,
             TInput input,
             JsonSerializerSettings jsonSerializerSettings)

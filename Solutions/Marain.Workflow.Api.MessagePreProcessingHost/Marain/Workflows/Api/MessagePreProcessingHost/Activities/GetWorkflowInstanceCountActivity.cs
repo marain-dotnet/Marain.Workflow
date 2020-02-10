@@ -11,6 +11,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
     using Marain.Workflows;
     using Marain.Workflows.Api.MessagePreProcessingHost.Shared;
     using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -55,7 +56,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
         /// </returns>
         [FunctionName(nameof(GetWorkflowInstanceCountActivity))]
         public async Task<int> RunAction(
-            [ActivityTrigger] DurableActivityContext context,
+            [ActivityTrigger] IDurableActivityContext context,
             ExecutionContext executionContext,
             ILogger logger)
         {

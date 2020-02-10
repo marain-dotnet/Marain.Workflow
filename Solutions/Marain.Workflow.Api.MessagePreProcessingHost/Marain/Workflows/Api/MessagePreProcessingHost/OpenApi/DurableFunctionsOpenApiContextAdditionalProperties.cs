@@ -5,6 +5,7 @@
 namespace Marain.Workflows.Api.MessagePreProcessingHost.OpenApi
 {
     using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
     /// <summary>
     /// Dto class for passing through the durable functions orchestration client to
@@ -18,8 +19,8 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.OpenApi
         public ExecutionContext ExecutionContext { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref="DurableOrchestrationClient"/>.
+        /// Gets or sets the <see cref="IDurableOrchestrationClient"/>.
         /// </summary>
-        public DurableOrchestrationClient OrchestrationClient { get; set; }
+        public IDurableOrchestrationClient OrchestrationClient { get; set; }
     }
 }

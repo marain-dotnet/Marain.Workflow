@@ -8,6 +8,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.OpenApi
     using System.Security.Claims;
     using Menes;
     using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
     /// <summary>
     /// OpenApi context that allows the orchestration client to be supplied to functions.
@@ -34,7 +35,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.OpenApi
         /// <summary>
         /// Gets or sets the current functions durable functions orchestration client.
         /// </summary>
-        public DurableOrchestrationClient OrchestrationClient
+        public IDurableOrchestrationClient OrchestrationClient
         {
             get => this.additionalProperties.OrchestrationClient;
             set => this.additionalProperties.OrchestrationClient = value;

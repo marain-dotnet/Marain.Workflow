@@ -10,6 +10,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
     using Marain.Operations.Client.OperationsControl;
     using Marain.Operations.Client.OperationsControl.Models;
     using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
     /// <summary>
     /// The durable activity for recording that work on a long-running operation is complete.
@@ -41,7 +42,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
         /// </returns>
         [FunctionName(nameof(FailLongRunningOperationActivity))]
         public async Task RunAction(
-            [ActivityTrigger] DurableActivityContext context,
+            [ActivityTrigger] IDurableActivityContext context,
             ExecutionContext executionContext)
         {
             (Guid operationId, string tenantId) = context.GetInput<(Guid, string)>();

@@ -11,6 +11,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
     using Marain.Workflows.Api.MessagePreProcessingHost.Activities;
     using Marain.Workflows.Api.MessagePreProcessingHost.Shared;
     using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -46,10 +47,12 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
         /// </returns>
         [FunctionName(nameof(TriggerExecutionOrchestrator))]
         public async Task RunOrchestrator(
-            [OrchestrationTrigger] DurableOrchestrationContext orchestrationContext,
+            [OrchestrationTrigger] IDurableOrchestrationContext orchestrationContext,
             ExecutionContext executionContext,
             ILogger log)
         {
+            ILogger replaySafeLogger = orchestrationContext.CreateReplaySafeLogger(log);
+
             WorkflowMessageEnvelope envelope =
                 orchestrationContext.GetInputWithCustomSerializationSettings<WorkflowMessageEnvelope>(
                     this.serializerSettingsProvider.Instance);
@@ -62,11 +65,8 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
 
                 if (envelope.IsStartWorkflowRequest)
                 {
-                    if (!orchestrationContext.IsReplaying)
-                    {
-                        log.LogDebug(
-                                $"Received new start workflow request with Id {envelope.StartWorkflowInstanceRequest.RequestId} for workflow {envelope.StartWorkflowInstanceRequest.WorkflowId}");
-                    }
+                    replaySafeLogger.LogDebug(
+                            $"Received new start workflow request with Id {envelope.StartWorkflowInstanceRequest.RequestId} for workflow {envelope.StartWorkflowInstanceRequest.WorkflowId}");
 
                     await orchestrationContext.CallActivityWithCustomSerializationSettingsAsync(
                         nameof(CreateWorkflowActivity),
@@ -75,10 +75,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
                 }
                 else
                 {
-                    if (!orchestrationContext.IsReplaying)
-                    {
-                        log.LogDebug($"Received new workflow trigger with Id {envelope.Trigger.Id}");
-                    }
+                    replaySafeLogger.LogDebug($"Received new workflow trigger with Id {envelope.Trigger.Id}");
 
                     int count = await orchestrationContext.CallActivityWithCustomSerializationSettingsAsync<WorkflowMessageEnvelope, int>(
                                     nameof(GetWorkflowInstanceCountActivity),
@@ -87,10 +84,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
 
                     int pages = (int)Math.Ceiling((decimal)count / 500);
 
-                    if (!orchestrationContext.IsReplaying)
-                    {
-                        log.LogDebug($"Found {count} instances that match. Split into {pages} pages for fan-out.");
-                    }
+                    replaySafeLogger.LogDebug($"Found {count} instances that match. Split into {pages} pages for fan-out.");
 
                     var tasks = new Task[pages];
 
@@ -105,10 +99,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
 
                     await Task.WhenAll(tasks);
 
-                    if (!orchestrationContext.IsReplaying)
-                    {
-                        log.LogDebug("All sub-orchestrations complete");
-                    }
+                    replaySafeLogger.LogDebug("All sub-orchestrations complete");
                 }
 
                 await orchestrationContext.CallActivityAsync(
@@ -117,10 +108,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
             }
             catch (FunctionFailedException x)
             {
-                if (!orchestrationContext.IsReplaying)
-                {
-                    log.LogError($"Error during orchestration: {x}");
-                }
+                replaySafeLogger.LogError($"Error during orchestration: {x}");
 
                 await orchestrationContext.CallActivityAsync(
                     nameof(FailLongRunningOperationActivity),
