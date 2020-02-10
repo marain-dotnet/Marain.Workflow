@@ -1,24 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Common.NetStandard_2_0.proj" />
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace />
-    <DocumentationFile>$(OutputPath)$(TargetFramework.ToLowerInvariant())\$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <TreatSpecificWarningsAsErrors />
-    <WarningsAsErrors />
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <DebugType>Full</DebugType>
+    <RootNamespace>Marain.Workflow.Api.EngineHost.Client</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.1" />
     <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.21" />
   </ItemGroup>
 </Project>

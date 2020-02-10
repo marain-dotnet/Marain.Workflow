@@ -2,10 +2,6 @@
   <Import Project="..\Common.NetStandard_2_0.proj" />
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-  
-  <PropertyGroup>
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
   </PropertyGroup>
 
@@ -20,9 +16,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Marain.Operations.ControlClient" Version="0.8.0" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.EventHubs" Version="4.1.0" />
+    <EmbeddedResource Include="..\Marain.Workflow.Api.Services\Marain\Workflows\Api\Services\MessageIngestionService.yaml" Link="Marain\Workflows\Api\MessagePreProcessingHost\OpenApi\MessageIngestionService.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Marain.Operations.ControlClient" Version="0.7.0" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.2.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="1.8.2" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.28" />
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +34,10 @@
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
     <None Update="local.settings.template.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
@@ -42,9 +46,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Marain\Workflows\Api\MessagePreProcessingHost\Starters\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0">

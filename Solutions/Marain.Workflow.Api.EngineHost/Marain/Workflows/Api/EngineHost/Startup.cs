@@ -2,6 +2,8 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
+[assembly: Microsoft.Azure.WebJobs.Hosting.WebJobsStartup(typeof(Marain.Workflows.Api.EngineHost.Startup))]
+
 namespace Marain.Workflows.Api.EngineHost
 {
     using Microsoft.Azure.WebJobs;

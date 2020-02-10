@@ -2,16 +2,14 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
+#pragma warning disable RCS1090 // Call 'ConfigureAwait(false)'
 namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
 {
     using System;
     using System.Threading.Tasks;
     using Marain.Operations.Client.OperationsControl;
     using Marain.Operations.Client.OperationsControl.Models;
-    using Marain.Workflows.Api.MessagePreProcessingHost.Shared;
     using Microsoft.Azure.WebJobs;
-    using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// The durable activity for recording that work has started on a long-running operation.
@@ -43,13 +41,19 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
         /// </returns>
         [FunctionName(nameof(StartLongRunningOperationActivity))]
         public async Task RunAction(
-            [ActivityTrigger] IDurableActivityContext context,
+            [ActivityTrigger] DurableActivityContext context,
             ExecutionContext executionContext)
         {
             (Guid operationId, string tenantId) = context.GetInput<(Guid, string)>();
 
-            // TODO: Check the result for problems.
-            ProblemDetails operationResult = await this.operationsControl.SetOperationRunningAsync(tenantId, operationId).ConfigureAwait(false);
+            ProblemDetails operationResult = await this.operationsControl.SetOperationRunningAsync(tenantId, operationId);
+
+            if (operationResult != null)
+            {
+                var exception = new Exception($"Unexpected arror when attempting to start long running operation '{operationId}' for tenant '{tenantId}': {operationResult.Status} - {operationResult.Title}");
+                exception.Data.Add("ProblemDetails", operationResult);
+                throw exception;
+            }
         }
     }
 }
