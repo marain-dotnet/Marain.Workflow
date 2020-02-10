@@ -1,6 +1,5 @@
 {
   "IsEncrypted": false,
-  "EventHubListenerConnectionString": "",
   "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
-  "EventHubStorageAccountConnectionString": "UseDevelopmentStorage=true"
+  "Operations:ControlServiceBaseUrl": "http://localhost:7078/"
 }

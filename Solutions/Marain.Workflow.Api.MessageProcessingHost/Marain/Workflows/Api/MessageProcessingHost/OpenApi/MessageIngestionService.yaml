@@ -9,7 +9,7 @@ info:
 servers:
   - url: https://workflow.marain.io
 paths:
-  /{tenantId}/marain/workflow/triggers:
+  /{tenantId}/marain/workflow/messageprocessing/triggers:
     post:
       summary: Send a new trigger into the workflow engine
       operationId: sendTrigger
@@ -38,7 +38,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetails"
-  /{tenantId}/marain/workflow/startnewworkflowinstancerequests:
+  /{tenantId}/marain/workflow/messageprocessing/startnewworkflowinstancerequests:
     post:
       summary: Send a request to start a new workflow instance into the workflow engine
       operationId: sendStartNewWorkflowInstanceRequest

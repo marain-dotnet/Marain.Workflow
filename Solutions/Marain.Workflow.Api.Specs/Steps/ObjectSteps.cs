@@ -28,24 +28,15 @@ namespace Marain.Workflows.Api.Specs.Steps
             this.featureContext = featureContext;
         }
 
-        [Given(@"I have an object of type ""(.*)"" called ""(.*)""")]
-        [Given(@"I have objects of type ""(.*)"" called ""(.*)""")]
+        [Given("I have an object of type '(.*)' called '(.*)'")]
+        [Given("I have objects of type '(.*)' called '(.*)'")]
         public void GivenIHaveAnObjectOfTypeCalled(string contentType, string instanceName, Table table)
         {
             object[] instances = table.CreateSet(() => ContainerBindings.GetServiceProvider(this.featureContext).GetContent(contentType)).ToArray();
             this.context[instanceName] = instances;
         }
 
-        [Given(@"I have a POCO object of type ""(.*)"" called ""(.*)""")]
-        [Given(@"I have POCO objects of type ""(.*)"" called ""(.*)""")]
-        public void GivenIHaveAPocoObjectOfTypeCalled(string typeName, string instanceName, Table table)
-        {
-            var type = Type.GetType(typeName);
-            IEnumerable<object> obj = table.CreateSet(() => Activator.CreateInstance(type));
-            this.context[instanceName] = obj;
-        }
-
-        [Given(@"I have a dictionary called ""(.*)""")]
+        [Given("I have a dictionary called '(.*)'")]
         public void GivenIHaveADictionaryCalled(string instanceName, Table table)
         {
             var dict = table.Rows.ToDictionary(x => x["Key"], x => x["Value"]);

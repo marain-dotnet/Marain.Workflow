@@ -101,7 +101,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "CostCenter",
                         "GD3724"});
 #line 12
- testRunner.And("I have a dictionary called \"context\"", ((string)(null)), table5, "And ");
+ testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table5, "And ");
 #line 16
  testRunner.And("I have started an instance of the workflow \'simple-expenses-workflow\' with instan" +
                     "ce id \'instance\' and using context object \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -111,8 +111,8 @@ this.ScenarioInitialize(scenarioInfo);
             table6.AddRow(new string[] {
                         "Submit"});
 #line 17
- testRunner.And("I have an object of type \"application/vnd.marain.workflows.hosted.trigger\" called" +
-                    " \"trigger\"", ((string)(null)), table6, "And ");
+ testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.trigger\' called" +
+                    " \'trigger\'", ((string)(null)), table6, "And ");
 #line 20
  testRunner.When("I post the object called \'trigger\' to the workflow engine path \'/{tenantId}/marai" +
                     "n/workflow/engine/workflowinstances/instance/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -139,8 +139,8 @@ this.ScenarioInitialize(scenarioInfo);
             table7.AddRow(new string[] {
                         "Submit"});
 #line 25
- testRunner.Given("I have an object of type \"application/vnd.marain.workflows.hosted.trigger\" called" +
-                    " \"trigger\"", ((string)(null)), table7, "Given ");
+ testRunner.Given("I have an object of type \'application/vnd.marain.workflows.hosted.trigger\' called" +
+                    " \'trigger\'", ((string)(null)), table7, "Given ");
 #line 28
  testRunner.When("I post the object called \'trigger\' to the workflow engine path \'/{tenantId}/marai" +
                     "n/workflow/engine/workflowinstances/a-non-existant-workflow-id/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");

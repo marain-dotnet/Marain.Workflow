@@ -57,7 +57,14 @@ namespace Marain.Workflows.Api.Specs.Steps
         [When("I post the object called '(.*)' to the workflow engine path '(.*)'")]
         public void WhenIPostTheObjectCalledToTheWorkflowEnginePath(string instanceName, string path)
         {
-            string url = EngineFunctionBindings.BaseUrl + path;
+            string url = WorkflowFunctionBindings.EngineHostBaseUrl + path;
+            this.PostContextObjectToEndpoint(instanceName, url);
+        }
+
+        [When("I post the object called '(.*)' to the workflow message processing path '(.*)'")]
+        public void WhenIPostTheObjectCalledToTheWorkflowMessageProcessingPath(string instanceName, string path)
+        {
+            string url = WorkflowFunctionBindings.MessageProcessingHostBaseUrl + path;
             this.PostContextObjectToEndpoint(instanceName, url);
         }
 

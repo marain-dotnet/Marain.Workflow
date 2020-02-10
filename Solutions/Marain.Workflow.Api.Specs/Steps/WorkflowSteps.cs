@@ -72,7 +72,7 @@ namespace Marain.Workflows.Api.Specs.Steps
         }
 
         [Given("The workflow instance store is empty")]
-        public async Task GivenIHaveClearedDownTheWorkflowInstanceStore()
+        public async Task TheWorkflowInstanceStoreIsEmpty()
         {
             IWorkflowEngineFactory engineFactory = this.serviceProvider.GetRequiredService<IWorkflowEngineFactory>();
             ITenantProvider tenantProvider = this.serviceProvider.GetRequiredService<ITenantProvider>();
@@ -117,7 +117,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             var tokenSource = new CancellationTokenSource();
             tokenSource.CancelAfter(TimeSpan.FromSeconds(maximumWaitTime));
             await Retriable.RetryAsync(
-                () => this.GetWorkflowInstance(instanceId),
+                () => this.GetWorkflowInstance(instanceId, false),
                 tokenSource.Token,
                 new Linear(TimeSpan.FromSeconds(1), int.MaxValue),
                 new AnyException(),
@@ -140,7 +140,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             var tokenSource = new CancellationTokenSource();
             tokenSource.CancelAfter(TimeSpan.FromSeconds(maxWaitTime));
             await Retriable.RetryAsync(
-                () => this.ThenTheWorkflowInstanceWithIdShouldBeInTheStateWithName(instanceId, expectedStateName),
+                () => this.VerifyWorkflowInstanceState(instanceId, expectedStateName, false),
                 tokenSource.Token,
                 new Linear(TimeSpan.FromSeconds(1), int.MaxValue),
                 new AnyException(),
@@ -148,7 +148,12 @@ namespace Marain.Workflows.Api.Specs.Steps
         }
 
         [Then("the workflow instance with id '(.*)' should be in the state with name '(.*)'")]
-        public async Task ThenTheWorkflowInstanceWithIdShouldBeInTheStateWithName(string instanceId, string expectedStateName)
+        public Task ThenTheWorkflowInstanceWithIdShouldBeInTheStateWithName(string instanceId, string expectedStateName)
+        {
+            return this.VerifyWorkflowInstanceState(instanceId, expectedStateName, true);
+        }
+
+        private async Task VerifyWorkflowInstanceState(string instanceId, string expectedStateName, bool useAssert = true)
         {
             WorkflowInstance instance = await this.GetWorkflowInstance(instanceId).ConfigureAwait(false);
 
@@ -159,10 +164,20 @@ namespace Marain.Workflows.Api.Specs.Steps
             Workflow workflow = await engine.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
             WorkflowState state = workflow.GetState(instance.StateId);
 
-            Assert.AreEqual(expectedStateName, state.DisplayName);
+            if (useAssert)
+            {
+                Assert.AreEqual(expectedStateName, state.DisplayName);
+            }
+            else
+            {
+                if (expectedStateName != state.DisplayName)
+                {
+                    throw new Exception();
+                }
+            }
         }
 
-        private async Task<WorkflowInstance> GetWorkflowInstance(string id)
+        private async Task<WorkflowInstance> GetWorkflowInstance(string id, bool failTestOnException = true)
         {
             await this.EnsureWorkflowInstanceIsNotBeingModified(id).ConfigureAwait(false);
 
@@ -175,7 +190,7 @@ namespace Marain.Workflows.Api.Specs.Steps
                 WorkflowInstance instance = await engine.GetWorkflowInstanceAsync(id).ConfigureAwait(false);
                 return instance;
             }
-            catch (Exception ex)
+            catch (Exception ex) when (failTestOnException)
             {
                 Assert.Fail($"Couldn't find an instance with id {id}: {ex}");
             }
