@@ -35,3 +35,9 @@ jobs:
           ENDJIN_COSMOSDBACCOUNTURI: $(Endjin_CosmosDbAccountUri)
           ENDJIN_COSMOSACCOUNTKEYSECRETNAME: $(Endjin_CosmosDbKeySecretName)
           ENDJIN_KEYVAULTNAME: $(Endjin_KeyVaultName)
+      - task: Npm@1
+          displayName: 'Install Latest Azure Functions V2 Runtime'
+          inputs:
+            command: custom
+            verbose: false
+            customCommand: 'install -g azure-functions-core-tools@2 --unsafe-perm true'
