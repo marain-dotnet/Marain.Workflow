@@ -2,21 +2,21 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Api.MessagePreProcessingHost.OpenApi
+namespace Marain.Workflows.Api.MessageProcessingHost.OpenApi
 {
     using System;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Marain.Operations.Client.OperationsControl;
     using Marain.Operations.Client.OperationsControl.Models;
-    using Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators;
-    using Marain.Workflows.Api.MessagePreProcessingHost.Shared;
+    using Marain.Workflows.Api.MessageProcessingHost.Orchestrators;
+    using Marain.Workflows.Api.MessageProcessingHost.Shared;
     using Menes;
 
     /// <summary>
     /// Handles incoming triggers posted to the trigger service.
     /// </summary>
-    [EmbeddedOpenApiDefinition("Marain.Workflows.Api.MessagePreProcessingHost.OpenApi.MessageIngestionService.yaml")]
+    [EmbeddedOpenApiDefinition("Marain.Workflows.Api.MessageProcessingHost.OpenApi.MessageIngestionService.yaml")]
     public class MessageIngestionService : IOpenApiService
     {
         private const string StartNewWorkflowOperationId = "sendStartNewWorkflowInstanceRequest";

@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Api.MessagePreProcessingHost.Shared
+namespace Marain.Workflows.Api.MessageProcessingHost.Shared
 {
     using Microsoft.Azure.WebJobs;
 

@@ -2,10 +2,10 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Api.MessagePreProcessingHost.Starters
+namespace Marain.Workflows.Api.MessageProcessingHost.Starters
 {
     using System.Threading.Tasks;
-    using Marain.Workflows.Api.MessagePreProcessingHost.OpenApi;
+    using Marain.Workflows.Api.MessageProcessingHost.OpenApi;
     using Menes;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;

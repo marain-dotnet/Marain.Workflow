@@ -1,9 +1,9 @@
-﻿// <copyright file="FailLongRunningOperationActivity.cs" company="Endjin Limited">
+﻿// <copyright file="CompleteLongRunningOperationActivity.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable RCS1090 // Call 'ConfigureAwait(false)'
-namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
+namespace Marain.Workflows.Api.MessageProcessingHost.Activities
 {
     using System;
     using System.Threading.Tasks;
@@ -15,7 +15,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
     /// <summary>
     /// The durable activity for recording that work on a long-running operation is complete.
     /// </summary>
-    public class FailLongRunningOperationActivity
+    public class CompleteLongRunningOperationActivity
     {
         private readonly IMarainOperationsControl operationsControl;
 
@@ -23,7 +23,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
         /// Initializes a new instance of the <see cref="CompleteLongRunningOperationActivity"/> class.
         /// </summary>
         /// <param name="operationsControl">The operations control client.</param>
-        public FailLongRunningOperationActivity(IMarainOperationsControl operationsControl)
+        public CompleteLongRunningOperationActivity(IMarainOperationsControl operationsControl)
         {
             this.operationsControl = operationsControl;
         }
@@ -34,20 +34,16 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
         /// <param name="context">
         /// The context.
         /// </param>
-        /// <param name="executionContext">
-        /// The execution Context.
-        /// </param>
         /// <returns>
         /// The <see cref="Task" />.
         /// </returns>
-        [FunctionName(nameof(FailLongRunningOperationActivity))]
+        [FunctionName(nameof(CompleteLongRunningOperationActivity))]
         public async Task RunAction(
-            [ActivityTrigger] IDurableActivityContext context,
-            ExecutionContext executionContext)
+            [ActivityTrigger] IDurableActivityContext context)
         {
             (Guid operationId, string tenantId) = context.GetInput<(Guid, string)>();
 
-            ProblemDetails operationResult = await this.operationsControl.SetOperationFailedAsync(tenantId, operationId);
+            ProblemDetails operationResult = await this.operationsControl.SetOperationSucceededAsync(tenantId, operationId);
 
             if (operationResult != null)
             {

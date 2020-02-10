@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Api.Services\Marain.Workflow.Api.Services.csproj" />
-    <ProjectReference Include="..\Marain.Workflow.Azure\Marain.Workflow.Azure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

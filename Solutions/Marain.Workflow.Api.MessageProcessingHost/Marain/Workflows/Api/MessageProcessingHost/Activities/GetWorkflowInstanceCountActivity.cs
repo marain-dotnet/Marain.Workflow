@@ -3,13 +3,13 @@
 // </copyright>
 
 #pragma warning disable RCS1090 // Call 'ConfigureAwait(false)'
-namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
+namespace Marain.Workflows.Api.MessageProcessingHost.Activities
 {
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Corvus.Tenancy;
     using Marain.Workflows;
-    using Marain.Workflows.Api.MessagePreProcessingHost.Shared;
+    using Marain.Workflows.Api.MessageProcessingHost.Shared;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Extensions.Logging;
@@ -45,20 +45,12 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
         /// <param name="context">
         /// The context.
         /// </param>
-        /// <param name="executionContext">
-        /// The execution Context.
-        /// </param>
-        /// <param name="logger">
-        /// The logger.
-        /// </param>
         /// <returns>
         /// The <see cref="Task" />.
         /// </returns>
         [FunctionName(nameof(GetWorkflowInstanceCountActivity))]
         public async Task<int> RunAction(
-            [ActivityTrigger] IDurableActivityContext context,
-            ExecutionContext executionContext,
-            ILogger logger)
+            [ActivityTrigger] IDurableActivityContext context)
         {
             WorkflowMessageEnvelope envelope =
                 context.GetInputWithCustomSerializationSettings<WorkflowMessageEnvelope>(this.serializerSettingsProvider.Instance);

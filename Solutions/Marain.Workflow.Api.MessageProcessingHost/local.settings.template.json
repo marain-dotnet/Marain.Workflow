@@ -4,17 +4,10 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "KeyVaultName": "",
-    "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
-    "EventHubConnectionString": "",
     "APPINSIGHTS_INSTRUMENTATIONKEY": "",
     "AI:DeveloperMode": "true",
+    "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
     "Operations:ControlServiceBaseUrl": "http://localhost:7078/",
-    "CosmosDbAccountUri": "",
-    "CosmosDbKeySecretName": "",
     "Workflow:EngineHostServiceBaseUrl": "http://localhost:7075"
-  },
-  "kv": {
-    "workflowstorecosmosdbkey": ""
   }
 }

@@ -2,15 +2,15 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-[assembly: Microsoft.Azure.WebJobs.Hosting.WebJobsStartup(typeof(Marain.Workflows.Api.MessagePreProcessingHost.Shared.Startup))]
+[assembly: Microsoft.Azure.WebJobs.Hosting.WebJobsStartup(typeof(Marain.Workflows.Api.MessageProcessingHost.Shared.Startup))]
 
-namespace Marain.Workflows.Api.MessagePreProcessingHost.Shared
+namespace Marain.Workflows.Api.MessageProcessingHost.Shared
 {
     using System;
     using System.Linq;
     using Marain.Operations.Client.OperationsControl;
     using Marain.Workflow.Api.EngineHost.Client;
-    using Marain.Workflows.Api.MessagePreProcessingHost.OpenApi;
+    using Marain.Workflows.Api.MessageProcessingHost.OpenApi;
     using Menes;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Hosting;

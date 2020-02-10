@@ -1,9 +1,9 @@
-﻿// <copyright file="CompleteLongRunningOperationActivity.cs" company="Endjin Limited">
+﻿// <copyright file="StartLongRunningOperationActivity.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable RCS1090 // Call 'ConfigureAwait(false)'
-namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
+namespace Marain.Workflows.Api.MessageProcessingHost.Activities
 {
     using System;
     using System.Threading.Tasks;
@@ -13,9 +13,9 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
     using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 
     /// <summary>
-    /// The durable activity for recording that work on a long-running operation is complete.
+    /// The durable activity for recording that work has started on a long-running operation.
     /// </summary>
-    public class CompleteLongRunningOperationActivity
+    public class StartLongRunningOperationActivity
     {
         private readonly IMarainOperationsControl operationsControl;
 
@@ -23,7 +23,7 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
         /// Initializes a new instance of the <see cref="CompleteLongRunningOperationActivity"/> class.
         /// </summary>
         /// <param name="operationsControl">The operations control client.</param>
-        public CompleteLongRunningOperationActivity(IMarainOperationsControl operationsControl)
+        public StartLongRunningOperationActivity(IMarainOperationsControl operationsControl)
         {
             this.operationsControl = operationsControl;
         }
@@ -34,20 +34,16 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Activities
         /// <param name="context">
         /// The context.
         /// </param>
-        /// <param name="executionContext">
-        /// The execution Context.
-        /// </param>
         /// <returns>
         /// The <see cref="Task" />.
         /// </returns>
-        [FunctionName(nameof(CompleteLongRunningOperationActivity))]
+        [FunctionName(nameof(StartLongRunningOperationActivity))]
         public async Task RunAction(
-            [ActivityTrigger] IDurableActivityContext context,
-            ExecutionContext executionContext)
+            [ActivityTrigger] IDurableActivityContext context)
         {
             (Guid operationId, string tenantId) = context.GetInput<(Guid, string)>();
 
-            ProblemDetails operationResult = await this.operationsControl.SetOperationSucceededAsync(tenantId, operationId);
+            ProblemDetails operationResult = await this.operationsControl.SetOperationRunningAsync(tenantId, operationId);
 
             if (operationResult != null)
             {

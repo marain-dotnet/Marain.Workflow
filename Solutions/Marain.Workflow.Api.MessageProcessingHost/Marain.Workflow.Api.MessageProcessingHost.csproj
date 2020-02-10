@@ -16,7 +16,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\Marain.Workflow.Api.Services\Marain\Workflows\Api\Services\MessageIngestionService.yaml" Link="Marain\Workflows\Api\MessagePreProcessingHost\OpenApi\MessageIngestionService.yaml" />
+    <None Remove="Marain\Workflows\Api\MessageProcessingHost\OpenApi\MessageIngestionService.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Marain\Workflows\Api\MessageProcessingHost\OpenApi\MessageIngestionService.yaml" />
   </ItemGroup>
 
   <ItemGroup>

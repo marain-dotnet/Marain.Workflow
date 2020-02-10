@@ -3,13 +3,13 @@
 // </copyright>
 
 #pragma warning disable RCS1090 // Call 'ConfigureAwait(false)'
-namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
+namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
-    using Marain.Workflows.Api.MessagePreProcessingHost.Activities;
-    using Marain.Workflows.Api.MessagePreProcessingHost.Shared;
+    using Marain.Workflows.Api.MessageProcessingHost.Activities;
+    using Marain.Workflows.Api.MessageProcessingHost.Shared;
 
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.DurableTask;
@@ -37,9 +37,6 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
         /// <param name="orchestrationContext">
         /// The context.
         /// </param>
-        /// <param name="executionContext">
-        /// The execution context.
-        /// </param>
         /// <param name="log">
         /// The logger.
         /// </param>
@@ -49,7 +46,6 @@ namespace Marain.Workflows.Api.MessagePreProcessingHost.Orchestrators
         [FunctionName(nameof(TriggerInstancesExecutionOrchestrator))]
         public async Task RunOrchestrator(
             [OrchestrationTrigger] IDurableOrchestrationContext orchestrationContext,
-            ExecutionContext executionContext,
             ILogger log)
         {
             ILogger replaySafeLogger = orchestrationContext.CreateReplaySafeLogger(log);
