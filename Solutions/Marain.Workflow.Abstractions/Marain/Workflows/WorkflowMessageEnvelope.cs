@@ -63,8 +63,8 @@ namespace Marain.Workflows
         public Guid OperationId { get; set; }
 
         /// <summary>
-        /// Gets a <see cref="PropertyBag"/> containing any additional data.
+        /// Gets or sets a <see cref="PropertyBag"/> containing any additional data.
         /// </summary>
-        public PropertyBag Properties { get; } = new PropertyBag();
+        public PropertyBag Properties { get; set; } = new PropertyBag();
     }
 }
