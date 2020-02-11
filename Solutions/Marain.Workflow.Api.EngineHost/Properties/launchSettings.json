@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Endjin.Workflow.Api.EngineHost": {
+      "commandName": "Project",
+      "commandLineArgs": "host start -p 7075"
+    }
+  }
+}
