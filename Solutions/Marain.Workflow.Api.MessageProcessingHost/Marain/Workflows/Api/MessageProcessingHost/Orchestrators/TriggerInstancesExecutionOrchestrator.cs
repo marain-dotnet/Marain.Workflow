@@ -34,15 +34,9 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
         /// <summary>
         /// The run orchestrator.
         /// </summary>
-        /// <param name="orchestrationContext">
-        /// The context.
-        /// </param>
-        /// <param name="log">
-        /// The logger.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Task" />.
-        /// </returns>
+        /// <param name="orchestrationContext">The context.</param>
+        /// <param name="log">The logger.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [FunctionName(nameof(TriggerInstancesExecutionOrchestrator))]
         public async Task RunOrchestrator(
             [OrchestrationTrigger] IDurableOrchestrationContext orchestrationContext,

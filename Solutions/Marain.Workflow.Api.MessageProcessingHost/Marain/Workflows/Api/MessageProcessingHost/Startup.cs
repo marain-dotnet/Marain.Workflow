@@ -89,6 +89,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
 
         private static IConfigurationRoot Configure(IServiceCollection services)
         {
+            // TODO: Get rid of this and replace any of our code that depends on it with custom configuration sections.
+            // https://github.com/marain-dotnet/Marain.Workflow/issues/45
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true);

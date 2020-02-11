@@ -26,10 +26,9 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
         /// <param name="jsonSerializerSettings">The serialization settings to use.</param>
         /// <returns>The instance Id of the newly started orchestration.</returns>
         /// <remarks>
-        /// There is a merged PR that adds the ability to specify serialization settings to the
-        /// durable functions host at startup. Once we update to the latest version of the
-        /// durable extensions, we should be able to drop this code.
-        /// https://github.com/Azure/azure-functions-durable-extension/pull/1101.
+        /// There is a feature PR that adds the ability to specify serialization settings to the
+        /// durable functions host at startup. However, it only works for passing data from a starter
+        /// to an orchestration, not from an orchestration to an activity.
         /// </remarks>
         public static Task<string> StartNewWithCustomSerializationSettingsAsync<T>(
             this IDurableOrchestrationClient client,

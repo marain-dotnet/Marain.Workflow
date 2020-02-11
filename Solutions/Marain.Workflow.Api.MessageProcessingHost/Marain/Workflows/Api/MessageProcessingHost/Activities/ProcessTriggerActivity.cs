@@ -63,7 +63,6 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
             WorkflowMessageEnvelope envelope =
                 context.GetInputWithCustomSerializationSettings<WorkflowMessageEnvelope>(this.serializerSettingsProvider.Instance);
 
-            // TODO: Check earlier that the trigger type is correct. Maybe change the envelope?
             var workflowTrigger = (HostedWorkflowTrigger)envelope.Trigger;
             string instanceId = envelope.GetWorkflowInstanceId();
 

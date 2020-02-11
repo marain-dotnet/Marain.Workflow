@@ -15,12 +15,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
         /// <summary>
         /// Gets the page of workflow instances to request.
         /// </summary>
-        /// <param name="data">
-        /// The data.
-        /// </param>
-        /// <returns>
-        /// The <see cref="int"/>.
-        /// </returns>
+        /// <param name="data">The envelope to add the value to.</param>
+        /// <returns>The page of workflow instances to process.</returns>
         public static int GetWorkflowInstancesPageNumber(this WorkflowMessageEnvelope data)
         {
             if (data.Properties.TryGet<int>("GetWorkflowInstancesPageNumber", out int result))
@@ -32,28 +28,20 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
         }
 
         /// <summary>
-        /// The set workflow instances page number.
+        /// Sets the workflow instances page number.
         /// </summary>
-        /// <param name="data">
-        /// The data.
-        /// </param>
-        /// <param name="pageNumber">
-        /// The page number.
-        /// </param>
+        /// <param name="data">The envelope to add the value to.</param>
+        /// <param name="pageNumber">The page number.</param>
         public static void SetWorkflowInstancesPageNumber(this WorkflowMessageEnvelope data, int pageNumber)
         {
             data.Properties.Set("GetWorkflowInstancesPageNumber", pageNumber);
         }
 
         /// <summary>
-        /// The get workflow instance id.
+        /// Gets the workflow instance Id to process.
         /// </summary>
-        /// <param name="data">
-        /// The data.
-        /// </param>
-        /// <returns>
-        /// The <see cref="string"/>.
-        /// </returns>
+        /// <param name="data">The envelope to add the value to.</param>
+        /// <returns>The workflow instance id.</returns>
         public static string GetWorkflowInstanceId(this WorkflowMessageEnvelope data)
         {
             if (data.Properties.TryGet<string>("WorkflowInstanceId", out string result))
@@ -65,14 +53,10 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
         }
 
         /// <summary>
-        /// The set workflow instance id.
+        /// Sets the workflow instance Id to process.
         /// </summary>
-        /// <param name="data">
-        /// The data.
-        /// </param>
-        /// <param name="workflowInstanceId">
-        /// The workflow instance id.
-        /// </param>
+        /// <param name="data">The envelope to add the value to.</param>
+        /// <param name="workflowInstanceId">The workflow instance id.</param>
         public static void SetWorkflowInstanceId(this WorkflowMessageEnvelope data, string workflowInstanceId)
         {
             data.Properties.Set("WorkflowInstanceId", workflowInstanceId);

@@ -10,7 +10,7 @@ namespace Marain.Workflow.Functions.SpecFlow.Bindings
     using TechTalk.SpecFlow;
 
     /// <summary>
-    /// Provides Specflow bindings for Endjin Composition.
+    /// Bindings to set up the test container with workflow services so that test setup/teardown can be performed.
     /// </summary>
     [Binding]
     public static class WorkflowFunctionsContainerBindings

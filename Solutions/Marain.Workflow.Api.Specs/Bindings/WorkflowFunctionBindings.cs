@@ -9,7 +9,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using TechTalk.SpecFlow;
 
     /// <summary>
-    /// SpecFlow bindings to run the workflow engine function in-memory.
+    /// SpecFlow bindings to run the workflow functions using the Functions tools.
     /// </summary>
     [Binding]
     public static class WorkflowFunctionBindings
