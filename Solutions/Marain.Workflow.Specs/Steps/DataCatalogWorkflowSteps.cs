@@ -55,7 +55,7 @@ namespace Marain.Workflows.Specs.Steps
 
             IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            await engine.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
+            await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => engine.UpsertWorkflowAsync(workflow)).ConfigureAwait(false);
         }
 
         [Then("a new data catalog item with Id '(.*)' should have been added to the data catalog store")]
@@ -65,8 +65,8 @@ namespace Marain.Workflows.Specs.Steps
                                               .GetService<DataCatalogItemRepositoryFactory>()
                                               .GetRepository();
 
-            ItemResponse<CatalogItem> item =
-                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.IsNotNull(item);
         }
@@ -80,7 +80,9 @@ namespace Marain.Workflows.Specs.Steps
 
             try
             {
-                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                    () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
+
                 Assert.Fail(
                     $"Did not expect a Catalog Item with Id {catalogItemId} to have been created, but one was found.");
             }
@@ -102,8 +104,8 @@ namespace Marain.Workflows.Specs.Steps
                                               .GetService<DataCatalogItemRepositoryFactory>()
                                               .GetRepository();
 
-            ItemResponse<CatalogItem> item =
-                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedDescription, item.Resource.Description);
         }
@@ -117,8 +119,8 @@ namespace Marain.Workflows.Specs.Steps
                                               .GetService<DataCatalogItemRepositoryFactory>()
                                               .GetRepository();
 
-            ItemResponse<CatalogItem> item =
-                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedIdentifier, item.Resource.Identifier);
         }
@@ -130,8 +132,8 @@ namespace Marain.Workflows.Specs.Steps
                                               .GetService<DataCatalogItemRepositoryFactory>()
                                               .GetRepository();
 
-            ItemResponse<CatalogItem> item =
-                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedType, item.Resource.Type);
         }
@@ -143,8 +145,8 @@ namespace Marain.Workflows.Specs.Steps
                                               .GetService<DataCatalogItemRepositoryFactory>()
                                               .GetRepository();
 
-            ItemResponse<CatalogItem> item =
-                await repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId)).ConfigureAwait(false);
+            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedNotes, item.Resource.Notes);
         }
@@ -183,8 +185,12 @@ namespace Marain.Workflows.Specs.Steps
 
             IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            WorkflowInstance instance = await engine.GetWorkflowInstanceAsync(instanceId).ConfigureAwait(false);
-            Workflow workflow = await engine.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
+            WorkflowInstance instance = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => engine.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
+
+            Workflow workflow = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => engine.GetWorkflowAsync(instance.WorkflowId)).ConfigureAwait(false);
+
             WorkflowState currentState = workflow.GetState(instance.StateId);
 
             Assert.AreEqual(stateName, currentState.DisplayName);
@@ -201,7 +207,8 @@ namespace Marain.Workflows.Specs.Steps
 
             IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            WorkflowInstance instance = await engine.GetWorkflowInstanceAsync(instanceId).ConfigureAwait(false);
+            WorkflowInstance instance = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => engine.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
 
             Assert.AreEqual(expectedStatus, instance.Status.ToString());
         }

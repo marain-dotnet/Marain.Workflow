@@ -63,7 +63,7 @@ namespace Marain.Workflows.Specs.Steps
 
             IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            await engine.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
+            await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => engine.UpsertWorkflowAsync(workflow)).ConfigureAwait(false);
         }
 
         [When("I send a trigger that will execute the action with a trigger id of '(.*)'")]
