@@ -90,29 +90,29 @@ this.ScenarioInitialize(scenarioInfo);
 #line 11
  testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                         "Key",
                         "Value"});
-            table8.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "Claimant",
                         "J George"});
-            table8.AddRow(new string[] {
+            table4.AddRow(new string[] {
                         "CostCenter",
                         "GD3724"});
 #line 12
- testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table8, "And ");
+ testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table4, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                         "WorkflowId",
                         "WorkflowInstanceId",
                         "Context"});
-            table9.AddRow(new string[] {
+            table5.AddRow(new string[] {
                         "simple-expenses-workflow",
                         "instance",
                         "{context}"});
 #line 16
  testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.startworkflowin" +
-                    "stancerequest\' called \'request\'", ((string)(null)), table9, "And ");
+                    "stancerequest\' called \'request\'", ((string)(null)), table5, "And ");
 #line 19
  testRunner.When("I post the object called \'request\' to the workflow engine path \'/{tenantId}/marai" +
                     "n/workflow/engine/workflowinstances\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -145,27 +145,27 @@ this.ScenarioInitialize(scenarioInfo);
 #line 27
  testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                         "Key",
                         "Value"});
-            table10.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "Claimant",
                         "J George"});
-            table10.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "CostCenter",
                         "GD3724"});
 #line 28
- testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table10, "And ");
+ testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table6, "And ");
 #line hidden
-            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                         "WorkflowId",
                         "Context"});
-            table11.AddRow(new string[] {
+            table7.AddRow(new string[] {
                         "simple-expenses-workflow",
                         "{context}"});
 #line 32
  testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.startworkflowin" +
-                    "stancerequest\' called \'request\'", ((string)(null)), table11, "And ");
+                    "stancerequest\' called \'request\'", ((string)(null)), table7, "And ");
 #line 35
  testRunner.When("I post the object called \'request\' to the workflow engine path \'/{tenantId}/marai" +
                     "n/workflow/engine/workflowinstances\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
@@ -186,13 +186,13 @@ this.ScenarioInitialize(scenarioInfo);
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line hidden
-            TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
                         "WorkflowId"});
-            table12.AddRow(new string[] {
+            table8.AddRow(new string[] {
                         "4629f9f3-a706-4901-a215-df8313376b52"});
 #line 40
  testRunner.Given("I have an object of type \'application/vnd.marain.workflows.hosted.startworkflowin" +
-                    "stancerequest\' called \'request\'", ((string)(null)), table12, "Given ");
+                    "stancerequest\' called \'request\'", ((string)(null)), table8, "Given ");
 #line 43
  testRunner.When("I post the object called \'request\' to the workflow engine path \'/{tenantId}/marai" +
                     "n/workflow/engine/workflowinstances\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
