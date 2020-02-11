@@ -9,6 +9,7 @@ namespace Marain.Workflows.Specs.Bindings
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Marain.Workflows.Specs.Steps;
     using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
@@ -53,19 +54,22 @@ namespace Marain.Workflows.Specs.Bindings
 
             string containerBase = Guid.NewGuid().ToString();
 
-            Container workflowsRepository = factory.GetContainerForTenantAsync(
-                rootTenant,
-                new CosmosContainerDefinition("workflow", $"{containerBase}workflows", "/id")).Result;
+            Container workflowsRepository = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => factory.GetContainerForTenantAsync(
+                    rootTenant,
+                    new CosmosContainerDefinition("workflow", $"{containerBase}workflows", "/id"))).Result;
             featureContext.Set(workflowsRepository, WorkflowsRepository);
 
-            Container workflowInstances = factory.GetContainerForTenantAsync(
-                rootTenant,
-                new CosmosContainerDefinition("workflow", $"{containerBase}workflowinstances", "/id")).Result;
+            Container workflowInstances = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => factory.GetContainerForTenantAsync(
+                    rootTenant,
+                    new CosmosContainerDefinition("workflow", $"{containerBase}workflowinstances", "/id"))).Result;
             featureContext.Set(workflowInstances, WorkflowInstancesRepository);
 
-            Container testDocumentsRepository = factory.GetContainerForTenantAsync(
-                rootTenant,
-                new CosmosContainerDefinition("workflow", $"{containerBase}testdocuments", "/id")).Result;
+            Container testDocumentsRepository = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => factory.GetContainerForTenantAsync(
+                    rootTenant,
+                    new CosmosContainerDefinition("workflow", $"{containerBase}testdocuments", "/id"))).Result;
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
         }
 
