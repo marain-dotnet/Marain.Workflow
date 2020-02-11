@@ -7,10 +7,13 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageDescription></PackageDescription>
-    <PackageTags></PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageDescription>
+    </PackageDescription>
+    <PackageTags>
+    </PackageTags>
+    <PackageReleaseNotes>
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
