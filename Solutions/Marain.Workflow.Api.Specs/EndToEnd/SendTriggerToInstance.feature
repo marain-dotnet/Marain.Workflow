@@ -7,6 +7,7 @@ Feature: SendTriggerToInstance
 	As an external user of the workflow engine
 	I want to send a trigger to a specific workflow instance
 
+@ignore
 Scenario: Send a trigger
 	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow'
 	And The workflow instance store is empty
