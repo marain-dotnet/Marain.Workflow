@@ -34,7 +34,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
         /// </summary>
         /// <param name="context">The current <see cref="FeatureContext"/>.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [BeforeFeature("@useWorkflowEngineApi")]
+        [BeforeFeature("@useWorkflowEngineApi", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
         public static Task StartWorkflowEngineFunctionAsync(FeatureContext context)
         {
             return GetFunctionsController(context).StartFunctionsInstance(
@@ -50,7 +50,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
         /// </summary>
         /// <param name="context">The current <see cref="FeatureContext"/>.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [BeforeFeature("@useWorkflowMessageProcessingApi")]
+        [BeforeFeature("@useWorkflowMessageProcessingApi", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
         public static Task StartWorkflowMessageProcessingFunctionAsync(FeatureContext context)
         {
             FunctionConfiguration config = GetFunctionConfiguration(context);
@@ -64,7 +64,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
         }
 
         /// <summary>
-        ///     Tear down the running functions instances for the scenario.
+        /// Tear down the running functions instances for the scenario.
         /// </summary>
         /// <param name="context">The current <see cref="FeatureContext"/>.</param>
         [AfterFeature]
