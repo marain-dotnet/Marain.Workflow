@@ -20,7 +20,7 @@ namespace Marain.Workflows.Specs.Features
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("InvokeExternalServiceAction")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
-    [NUnit.Framework.CategoryAttribute("setupCosmosDBRepository")]
+    [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainers")]
     public partial class InvokeExternalServiceActionFeature
     {
         
@@ -37,7 +37,7 @@ namespace Marain.Workflows.Specs.Features
                     "\r\n    As a developer defining a workflow\r\n    I want to be able to define a work" +
                     "flow action that invokes an external HTTP endpoint", ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
-                        "setupCosmosDBRepository"});
+                        "setupTenantedCosmosContainers"});
             testRunner.OnFeatureStart(featureInfo);
         }
         

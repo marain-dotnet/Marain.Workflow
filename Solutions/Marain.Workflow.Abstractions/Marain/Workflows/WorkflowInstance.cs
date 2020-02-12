@@ -83,7 +83,7 @@ namespace Marain.Workflows
         /// on the current state and  will always include the value of the <see cref="Id" /> property.
         /// </para>
         /// <para>
-        /// This list is intended for use by the <see cref="WorkflowEngine.GetMatchingWorkflowInstanceIdsForSubjectsAsync(IEnumerable{string}, int, int)" />
+        /// This list is intended for use by the <see cref="IWorkflowInstanceStore.GetMatchingWorkflowInstanceIdsForSubjectsAsync(IEnumerable{string}, int, int)" />
         /// method to search for <see cref="WorkflowInstance" />s whose interests match at least one of the
         /// current trigger's subjects (see <see cref="IWorkflowTrigger.GetSubjects" />).
         /// </para>

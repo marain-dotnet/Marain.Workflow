@@ -62,15 +62,15 @@ namespace Marain.Workflows.Specs.Steps
                                      .OfType<InvokeExternalServiceCondition>()
                                      .Single();
 
-            IWorkflowEngineFactory engineFactory =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IWorkflowEngineFactory>();
+            ITenantedWorkflowStoreFactory storeFactory = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                                    .GetService<ITenantedWorkflowStoreFactory>();
 
             ITenantProvider tenantProvider =
                 ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<ITenantProvider>();
 
-            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
+            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => engine.UpsertWorkflowAsync(workflow)).ConfigureAwait(false);
+            await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => store.UpsertWorkflowAsync(workflow)).ConfigureAwait(false);
         }
 
         [Given("the external service response body will contain '(.*)'")]

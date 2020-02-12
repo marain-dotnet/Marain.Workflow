@@ -1,5 +1,5 @@
 ﻿@perFeatureContainer
-@setupCosmosDBRepository
+@setupTenantedCosmosContainers
 Feature: Deprecate an item
 
 @useChildObjects

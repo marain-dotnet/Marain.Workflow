@@ -1,5 +1,5 @@
 ﻿@perFeatureContainer
-@setupCosmosDBRepository
+@setupTenantedCosmosContainers
 Feature: Edit catalog item
 
 @useChildObjects

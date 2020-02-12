@@ -42,7 +42,9 @@ namespace Marain.Workflow.Functions.SpecFlow.Bindings
                     services.AddTenantProviderBlobStore();
 
                     services.AddTenantCosmosContainerFactory(root);
-                    services.AddWorkflowEngineFactory();
+                    services.AddTenantedWorkflowEngineFactory();
+                    services.AddTenantedAzureCosmosWorkflowStore(root);
+                    services.AddTenantedAzureCosmosWorkflowInstanceStore(root);
 
                     services.RegisterCoreWorkflowContentTypes();
 

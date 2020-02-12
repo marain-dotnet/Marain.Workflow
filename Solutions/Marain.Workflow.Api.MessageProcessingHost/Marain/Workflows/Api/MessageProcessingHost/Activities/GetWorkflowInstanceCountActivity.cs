@@ -19,22 +19,22 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
     /// </summary>
     public class GetWorkflowInstanceCountActivity
     {
-        private readonly IWorkflowEngineFactory workflowEngineFactory;
+        private readonly ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory;
         private readonly ITenantProvider tenantProvider;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetWorkflowInstanceCountActivity"/> class.
         /// </summary>
-        /// <param name="workflowEngineFactory">The factory class for the workflow engine.</param>
+        /// <param name="workflowInstanceStoreFactory">The factory class for the workflow instance store.</param>
         /// <param name="serializerSettingsProvider">The serialization settings provider.</param>
         /// <param name="tenantProvider">The tenant provider.</param>
         public GetWorkflowInstanceCountActivity(
-            IWorkflowEngineFactory workflowEngineFactory,
+            ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             ITenantProvider tenantProvider)
         {
-            this.workflowEngineFactory = workflowEngineFactory;
+            this.workflowInstanceStoreFactory = workflowInstanceStoreFactory;
             this.tenantProvider = tenantProvider;
             this.serializerSettingsProvider = serializerSettingsProvider;
         }
@@ -57,9 +57,9 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
 
             ITenant tenant = await this.tenantProvider.GetTenantAsync(envelope.TenantId);
 
-            IWorkflowEngine workflowEngine = await this.workflowEngineFactory.GetWorkflowEngineAsync(tenant);
+            IWorkflowInstanceStore instanceStore = await this.workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenant);
 
-            return await workflowEngine.GetMatchingWorkflowInstanceCountForSubjectsAsync(envelope.Trigger.GetSubjects());
+            return await instanceStore.GetMatchingWorkflowInstanceCountForSubjectsAsync(envelope.Trigger.GetSubjects());
         }
     }
 }

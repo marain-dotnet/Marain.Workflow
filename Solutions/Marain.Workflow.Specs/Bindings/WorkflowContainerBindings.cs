@@ -5,13 +5,12 @@
 namespace Marain.Workflows.Specs.Bindings
 {
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
-    using Corvus.Leasing;
     using Corvus.SpecFlow.Extensions;
+    using Corvus.Tenancy;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Subjects;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -45,20 +44,18 @@ namespace Marain.Workflows.Specs.Bindings
 
                     services.AddJsonSerializerSettings();
 
-                    services.AddTenantCloudBlobContainerFactory(root);
-                    services.AddTenantProviderBlobStore();
+                    services.AddSingleton<ITenantProvider, FakeTenantProvider>();
                     services.AddTenantCosmosContainerFactory(root);
 
                     services.AddInMemoryWorkflowTriggerQueue();
                     services.AddInMemoryLeasing();
 
                     services.RegisterCoreWorkflowContentTypes();
-                    services.AddContent(factory => factory.RegisterTestContentTypes());
+                    services.AddTenantedWorkflowEngineFactory();
+                    services.AddTenantedAzureCosmosWorkflowStore(root);
+                    services.AddTenantedAzureCosmosWorkflowInstanceStore(root);
 
-                    services.AddSingleton<IWorkflowEngineFactory>(s => new FeatureContextWorkflowEngineFactory(
-                        featureContext,
-                        s.GetRequiredService<ILeaseProvider>(),
-                        s.GetRequiredService<ILogger<IWorkflowEngine>>()));
+                    services.AddContent(factory => factory.RegisterTestContentTypes());
 
                     services.AddSingleton<DataCatalogItemRepositoryFactory>();
 

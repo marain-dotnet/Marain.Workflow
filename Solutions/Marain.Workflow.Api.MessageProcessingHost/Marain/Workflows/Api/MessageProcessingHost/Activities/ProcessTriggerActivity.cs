@@ -23,7 +23,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
     /// </summary>
     public class ProcessTriggerActivity
     {
-        private readonly IWorkflowEngineFactory workflowEngineFactory;
+        private readonly ITenantedWorkflowEngineFactory workflowEngineFactory;
         private readonly IWorkflowEngineClient client;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
@@ -34,7 +34,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
         /// <param name="serializerSettingsProvider">The serialization settings provider.</param>
         /// <param name="client">The client for the workflow engine.</param>
         public ProcessTriggerActivity(
-            IWorkflowEngineFactory workflowEngineFactory,
+            ITenantedWorkflowEngineFactory workflowEngineFactory,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             IWorkflowEngineClient client)
         {

@@ -11,5 +11,10 @@
     <PackageReleaseNotes>
     </PackageReleaseNotes>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Marain.Workflow.Storage.AzureCosmos\Marain.Workflow.Storage.AzureCosmos.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Tenancy.Abstractions\Marain.Workflow.Tenancy.Abstractions.csproj" />
+  </ItemGroup>
 
 </Project>

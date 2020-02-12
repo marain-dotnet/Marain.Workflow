@@ -44,7 +44,7 @@ namespace Marain.Workflows.Specs.Steps
         {
             var context = table.Rows.ToDictionary(x => x["Key"], x => x["Value"]);
 
-            IWorkflowEngineFactory engineFactory = ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowEngineFactory>();
+            ITenantedWorkflowEngineFactory engineFactory = ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantedWorkflowEngineFactory>();
             ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantProvider>();
             IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
 

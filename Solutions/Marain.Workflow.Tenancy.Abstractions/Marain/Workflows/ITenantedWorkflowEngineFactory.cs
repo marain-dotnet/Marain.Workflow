@@ -1,28 +1,17 @@
-﻿// <copyright file="IWorkflowEngineFactory.cs" company="Endjin Limited">
+﻿// <copyright file="ITenantedWorkflowEngineFactory.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 namespace Marain.Workflows
 {
     using System.Threading.Tasks;
-    using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Tenancy;
 
     /// <summary>
     /// A factory for creating a workflow engine.
     /// </summary>
-    public interface IWorkflowEngineFactory
+    public interface ITenantedWorkflowEngineFactory
     {
-        /// <summary>
-        /// Gets or sets the repository definition for the workflow instance repository.
-        /// </summary>
-        CosmosContainerDefinition WorkflowInstanceCosmosContainerDefinition { get; set; }
-
-        /// <summary>
-        /// Gets or sets the repository definition for the workflow repository.
-        /// </summary>
-        CosmosContainerDefinition WorkflowCosmosContainerDefinition { get; set; }
-
         /// <summary>
         /// Gets an <see cref="IWorkflowEngine"/> for the tenant.
         /// </summary>

@@ -26,16 +26,6 @@ namespace Marain.Workflows.Specs.Bindings
         public const string TestDocumentsRepository = "TestDocumentsRepository";
 
         /// <summary>
-        /// The key for the workflow instances repository instance in the feature context.
-        /// </summary>
-        public const string WorkflowInstancesRepository = "WorkflowInstancesRepository";
-
-        /// <summary>
-        /// The key for the workflows repository instance in the feature context.
-        /// </summary>
-        public const string WorkflowsRepository = "WorkflowsRepository";
-
-        /// <summary>
         /// Set up a Cosmos DB Repository for the feature.
         /// </summary>
         /// <param name="featureContext">The feature context.</param>
@@ -43,7 +33,7 @@ namespace Marain.Workflows.Specs.Bindings
         /// Note that this sets up a resource in Azure and will incur cost. Ensure the corresponding tear down operation
         /// is always run, or verify manually after a test run.
         /// </remarks>
-        [BeforeFeature("@setupCosmosDBRepository", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
+        [BeforeFeature("@setupTenantedCosmosContainers", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
         public static void SetupCosmosDbRepository(FeatureContext featureContext)
         {
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
@@ -52,19 +42,12 @@ namespace Marain.Workflows.Specs.Bindings
 
             ITenant rootTenant = tenantProvider.Root;
 
+            CosmosConfiguration config = tenantProvider.Root.GetDefaultCosmosConfiguration();
+            config.DatabaseName = "endjinspecssharedthroughput";
+            config.DisableTenantIdPrefix = true;
+            tenantProvider.Root.SetDefaultCosmosConfiguration(config);
+
             string containerBase = Guid.NewGuid().ToString();
-
-            Container workflowsRepository = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => factory.GetContainerForTenantAsync(
-                    rootTenant,
-                    new CosmosContainerDefinition("workflow", $"{containerBase}workflows", "/id"))).Result;
-            featureContext.Set(workflowsRepository, WorkflowsRepository);
-
-            Container workflowInstances = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => factory.GetContainerForTenantAsync(
-                    rootTenant,
-                    new CosmosContainerDefinition("workflow", $"{containerBase}workflowinstances", "/id"))).Result;
-            featureContext.Set(workflowInstances, WorkflowInstancesRepository);
 
             Container testDocumentsRepository = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
                 () => factory.GetContainerForTenantAsync(
@@ -78,11 +61,10 @@ namespace Marain.Workflows.Specs.Bindings
         /// </summary>
         /// <param name="featureContext">The feature context.</param>
         /// <returns>A <see cref="Task" /> which completes once the operation has completed.</returns>
-        [AfterFeature("@setupCosmosDBRepository", Order = 100000)]
+        [AfterFeature("@setupTenantedCosmosContainers", Order = 100000)]
         public static async Task TeardownCosmosDb(FeatureContext featureContext)
         {
-            await DeleteRepository(featureContext, WorkflowsRepository).ConfigureAwait(false);
-            await DeleteRepository(featureContext, WorkflowInstancesRepository).ConfigureAwait(false);
+            // TODO: How do we delete the workflow containers?
             await DeleteRepository(featureContext, TestDocumentsRepository).ConfigureAwait(false);
         }
 

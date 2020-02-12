@@ -20,7 +20,7 @@ namespace Marain.Workflows.Specs.Features
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Creating workflow instances")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
-    [NUnit.Framework.CategoryAttribute("setupCosmosDBRepository")]
+    [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainers")]
     public partial class CreatingWorkflowInstancesFeature
     {
         
@@ -37,7 +37,7 @@ namespace Marain.Workflows.Specs.Features
                     "at my workflow can create any supporting data necessary\r\n\t\t As a workflow design" +
                     "er\r\n\t\t I want to be able to put conditions and actions on the initial state", ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
-                        "setupCosmosDBRepository"});
+                        "setupTenantedCosmosContainers"});
             testRunner.OnFeatureStart(featureInfo);
         }
         

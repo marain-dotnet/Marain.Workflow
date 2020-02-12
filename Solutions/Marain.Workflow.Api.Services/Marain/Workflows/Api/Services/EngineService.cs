@@ -18,7 +18,7 @@ namespace Marain.Workflows.Api.Services
         private const string SendTriggerOperationId = "sendTrigger";
 
         private readonly ITenantProvider tenantProvider;
-        private readonly IWorkflowEngineFactory workflowEngineFactory;
+        private readonly ITenantedWorkflowEngineFactory workflowEngineFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EngineService"/> class.
@@ -26,7 +26,7 @@ namespace Marain.Workflows.Api.Services
         /// <param name="workflowEngineFactory">The workflow engine factory.</param>
         /// <param name="tenantProvider">The tenant provider.</param>
         public EngineService(
-            IWorkflowEngineFactory workflowEngineFactory,
+            ITenantedWorkflowEngineFactory workflowEngineFactory,
             ITenantProvider tenantProvider)
         {
             this.workflowEngineFactory = workflowEngineFactory;
