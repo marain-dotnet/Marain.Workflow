@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\Common.NetStandard_2_0.proj" />
+  
+  <PropertyGroup>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageDescription>
+    </PackageDescription>
+    <PackageTags>
+    </PackageTags>
+    <PackageReleaseNotes>
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+</Project>
