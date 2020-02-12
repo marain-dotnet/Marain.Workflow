@@ -18,8 +18,6 @@ namespace Marain.Workflows.Storage
     /// </summary>
     public class CosmosWorkflowInstanceStore : IWorkflowInstanceStore
     {
-        private readonly Container workflowInstanceContainer;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowEngine"/> class.
         /// </summary>
@@ -27,8 +25,13 @@ namespace Marain.Workflows.Storage
         public CosmosWorkflowInstanceStore(
             Container workflowInstanceContainer)
         {
-            this.workflowInstanceContainer = workflowInstanceContainer;
+            this.Container = workflowInstanceContainer;
         }
+
+        /// <summary>
+        /// Gets the underlying Cosmos <see cref="Container"/> for this workflow instance store.
+        /// </summary>
+        public Container Container { get; }
 
         /// <inheritdoc/>
         public async Task<WorkflowInstance> GetWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
@@ -36,7 +39,7 @@ namespace Marain.Workflows.Storage
             try
             {
                 return await Retriable.RetryAsync(() =>
-                    this.workflowInstanceContainer.ReadItemAsync<WorkflowInstance>(
+                    this.Container.ReadItemAsync<WorkflowInstance>(
                         workflowInstanceId,
                         new PartitionKey(partitionKey ?? workflowInstanceId)))
                     .ConfigureAwait(false);
@@ -53,7 +56,7 @@ namespace Marain.Workflows.Storage
         public Task UpsertWorkflowInstanceAsync(WorkflowInstance workflowInstance, string partitionKey = null)
         {
             return Retriable.RetryAsync(() =>
-                this.workflowInstanceContainer.UpsertItemAsync(
+                this.Container.UpsertItemAsync(
                     workflowInstance,
                     new PartitionKey(partitionKey ?? workflowInstance.Id),
                     new ItemRequestOptions { IfMatchEtag = workflowInstance.ETag }));
@@ -65,7 +68,7 @@ namespace Marain.Workflows.Storage
             try
             {
                 await Retriable.RetryAsync(() =>
-                    this.workflowInstanceContainer.DeleteItemAsync<WorkflowInstance>(
+                    this.Container.DeleteItemAsync<WorkflowInstance>(
                         workflowInstanceId,
                         new PartitionKey(partitionKey ?? workflowInstanceId)))
                     .ConfigureAwait(false);
@@ -84,7 +87,7 @@ namespace Marain.Workflows.Storage
         {
             QueryDefinition spec = BuildFindInstanceIdsSpec(subjects, pageSize, pageNumber);
 
-            FeedIterator<dynamic> iterator = this.workflowInstanceContainer.GetItemQueryIterator<dynamic>(spec);
+            FeedIterator<dynamic> iterator = this.Container.GetItemQueryIterator<dynamic>(spec);
 
             if (iterator.HasMoreResults)
             {
@@ -100,7 +103,7 @@ namespace Marain.Workflows.Storage
         {
             QueryDefinition spec = BuildFindInstanceIdsSpec(subjects, 1, 0, true);
 
-            FeedIterator<int> iterator = this.workflowInstanceContainer.GetItemQueryIterator<int>(spec, null, new QueryRequestOptions { MaxItemCount = 1 });
+            FeedIterator<int> iterator = this.Container.GetItemQueryIterator<int>(spec, null, new QueryRequestOptions { MaxItemCount = 1 });
 
             // There will always be a result so we don't need to check...
             FeedResponse<int> result = await Retriable.RetryAsync(() => iterator.ReadNextAsync()).ConfigureAwait(false);

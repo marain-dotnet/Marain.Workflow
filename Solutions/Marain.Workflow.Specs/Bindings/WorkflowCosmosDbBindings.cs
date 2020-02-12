@@ -12,6 +12,7 @@ namespace Marain.Workflows.Specs.Bindings
     using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
     using Marain.Workflows.Specs.Steps;
+    using Marain.Workflows.Storage;
     using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
@@ -72,24 +73,16 @@ namespace Marain.Workflows.Specs.Bindings
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
 
             ITenantedWorkflowStoreFactory workflowStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
-            IWorkflowStore workflowStore = await workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
-            var workflowStoreContainer = (Container)workflowStore.GetType()
-                .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
-                .First(x => x.FieldType == typeof(Container))
-                .GetValue(workflowStore);
+            var workflowStore = (CosmosWorkflowStore)await workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
-                () => workflowStoreContainer.DeleteContainerAsync()).ConfigureAwait(false);
+                () => workflowStore.Container.DeleteContainerAsync()).ConfigureAwait(false);
 
             ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
-            IWorkflowInstanceStore workflowInstanceStore = await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
-            var workflowInstanceStoreContainer = (Container)workflowInstanceStore.GetType()
-                .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
-                .First(x => x.FieldType == typeof(Container))
-                .GetValue(workflowInstanceStore);
+            var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
-                () => workflowInstanceStoreContainer.DeleteContainerAsync()).ConfigureAwait(false);
+                () => workflowInstanceStore.Container.DeleteContainerAsync()).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
                 () => featureContext.Get<Container>(TestDocumentsRepository).DeleteContainerAsync()).ConfigureAwait(false);

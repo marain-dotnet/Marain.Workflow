@@ -1,6 +1,7 @@
 ﻿#@perFeatureContainer
 #@useWorkflowMessageProcessingApi
 #@useWorkflowEngineApi
+#@useTransientTenant
 #@useChildObjects
 Feature: SendTriggerToInstance
 	In order to tell the workflow engine to carry out actions

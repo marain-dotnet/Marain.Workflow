@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflow.Functions.SpecFlow.Bindings
+namespace Marain.Workflow.Api.Specs.Bindings
 {
     using Microsoft.Azure.EventHubs.Processor;
     using TechTalk.SpecFlow;

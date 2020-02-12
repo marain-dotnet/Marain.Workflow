@@ -1,6 +1,7 @@
 ﻿#@perFeatureContainer
 #@useWorkflowMessageProcessingApi
 #@useWorkflowEngineApi
+#@useTransientTenant
 #@useChildObjects
 Feature: StartNewInstance
 	In order manage a new thing through a workflow

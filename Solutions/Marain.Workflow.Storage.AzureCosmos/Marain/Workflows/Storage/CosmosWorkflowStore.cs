@@ -15,8 +15,6 @@ namespace Marain.Workflows.Storage
     /// </summary>
     public class CosmosWorkflowStore : IWorkflowStore
     {
-        private readonly Container workflowContainer;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowEngine"/> class.
         /// </summary>
@@ -24,8 +22,13 @@ namespace Marain.Workflows.Storage
         public CosmosWorkflowStore(
             Container workflowContainer)
         {
-            this.workflowContainer = workflowContainer;
+            this.Container = workflowContainer;
         }
+
+        /// <summary>
+        /// Gets the underlying Cosmos <see cref="Container"/> for this workflow instance store.
+        /// </summary>
+        public Container Container { get; }
 
         /// <inheritdoc/>
         public async Task<Workflow> GetWorkflowAsync(string workflowId, string partitionKey = null)
@@ -33,7 +36,7 @@ namespace Marain.Workflows.Storage
             try
             {
                 ItemResponse<Workflow> itemResponse = await Retriable.RetryAsync(() =>
-                    this.workflowContainer.ReadItemAsync<Workflow>(
+                    this.Container.ReadItemAsync<Workflow>(
                         workflowId,
                         new PartitionKey(partitionKey ?? workflowId)))
                     .ConfigureAwait(false);
@@ -50,7 +53,7 @@ namespace Marain.Workflows.Storage
         public Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
         {
             return Retriable.RetryAsync(() =>
-                this.workflowContainer.UpsertItemAsync(
+                this.Container.UpsertItemAsync(
                     workflow,
                     new PartitionKey(partitionKey ?? workflow.Id),
                     new ItemRequestOptions { IfMatchEtag = workflow.ETag }));

@@ -19,10 +19,6 @@ namespace Marain.Workflows.Api.Specs.EndToEnd
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("SendTriggerToInstance")]
-    [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
-    [NUnit.Framework.CategoryAttribute("useWorkflowMessageProcessingApi")]
-    [NUnit.Framework.CategoryAttribute("useWorkflowEngineApi")]
-    [NUnit.Framework.CategoryAttribute("useChildObjects")]
     public partial class SendTriggerToInstanceFeature
     {
         
@@ -37,11 +33,7 @@ namespace Marain.Workflows.Api.Specs.EndToEnd
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "SendTriggerToInstance", "\tIn order to tell the workflow engine to carry out actions\r\n\tAs an external user " +
                     "of the workflow engine\r\n\tI want to send a trigger to a specific workflow instanc" +
-                    "e", ProgrammingLanguage.CSharp, new string[] {
-                        "perFeatureContainer",
-                        "useWorkflowMessageProcessingApi",
-                        "useWorkflowEngineApi",
-                        "useChildObjects"});
+                    "e", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -77,54 +69,6 @@ namespace Marain.Workflows.Api.Specs.EndToEnd
         public virtual void ScenarioCleanup()
         {
             testRunner.CollectScenarioErrors();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Send a trigger")]
-        public virtual void SendATrigger()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Send a trigger", null, ((string[])(null)));
-#line 10
-this.ScenarioInitialize(scenarioInfo);
-            this.ScenarioStart();
-#line 11
- testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
-                    "\'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 12
- testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Key",
-                        "Value"});
-            table1.AddRow(new string[] {
-                        "Claimant",
-                        "J George"});
-            table1.AddRow(new string[] {
-                        "CostCenter",
-                        "GD3724"});
-#line 13
- testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table1, "And ");
-#line 17
- testRunner.And("I have started an instance of the workflow \'simple-expenses-workflow\' with instan" +
-                    "ce id \'instance\' and using context object \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "TriggerName"});
-            table2.AddRow(new string[] {
-                        "Submit"});
-#line 18
- testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.trigger\' called" +
-                    " \'trigger\'", ((string)(null)), table2, "And ");
-#line 21
- testRunner.When("I post the object called \'trigger\' to the workflow message processing path \'/{ten" +
-                    "antId}/marain/workflow/messageprocessing/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 22
- testRunner.Then("I should have received a 202 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 23
- testRunner.And("the workflow instance with id \'instance\' should be in the state with name \'Waitin" +
-                    "g for approval\' within 180 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            this.ScenarioCleanup();
         }
     }
 }

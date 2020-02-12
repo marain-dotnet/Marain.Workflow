@@ -14,7 +14,7 @@ namespace Marain.Workflows
     public interface ITenantedWorkflowStoreFactory
     {
         /// <summary>
-        /// Retrieves an <see cref="IWorkflowStore"/> for the specified <see cref="Tenant"/>.
+        /// Retrieves an <see cref="global::Marain.Workflows.IWorkflowStore"/> for the specified <see cref="Tenant"/>.
         /// </summary>
         /// <param name="tenant">The tenant to retrieve a workflow store for.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
