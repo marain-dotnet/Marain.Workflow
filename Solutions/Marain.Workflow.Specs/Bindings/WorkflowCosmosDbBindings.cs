@@ -5,6 +5,8 @@
 namespace Marain.Workflows.Specs.Bindings
 {
     using System;
+    using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.SpecFlow.Extensions;
@@ -53,6 +55,7 @@ namespace Marain.Workflows.Specs.Bindings
                 () => factory.GetContainerForTenantAsync(
                     rootTenant,
                     new CosmosContainerDefinition("workflow", $"{containerBase}testdocuments", "/id"))).Result;
+
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
         }
 
@@ -64,26 +67,32 @@ namespace Marain.Workflows.Specs.Bindings
         [AfterFeature("@setupTenantedCosmosContainers", Order = 100000)]
         public static async Task TeardownCosmosDb(FeatureContext featureContext)
         {
-            // TODO: How do we delete the workflow containers?
-            await DeleteRepository(featureContext, TestDocumentsRepository).ConfigureAwait(false);
-        }
+            // Pretty nasty hack to get rid of the underlying containers for the stores.
+            IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
+            ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
 
-        /// <summary>
-        /// Helper method to delete a document collection from CosmosDb.
-        /// </summary>
-        /// <param name="featureContext">
-        /// The feature context.
-        /// </param>
-        /// <param name="contextKey">
-        /// The key used to retrieve the repository from the feature context.
-        /// </param>
-        /// <returns>
-        /// A <see cref="Task" /> that completes when the repository has been deleted.
-        /// </returns>
-        private static Task DeleteRepository(FeatureContext featureContext, string contextKey)
-        {
-            return featureContext.RunAndStoreExceptionsAsync(
-                async () => await featureContext.Get<Container>(contextKey).DeleteContainerAsync().ConfigureAwait(false));
+            ITenantedWorkflowStoreFactory workflowStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
+            IWorkflowStore workflowStore = await workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            var workflowStoreContainer = (Container)workflowStore.GetType()
+                .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .First(x => x.FieldType == typeof(Container))
+                .GetValue(workflowStore);
+
+            await featureContext.RunAndStoreExceptionsAsync(
+                () => workflowStoreContainer.DeleteContainerAsync()).ConfigureAwait(false);
+
+            ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
+            IWorkflowInstanceStore workflowInstanceStore = await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            var workflowInstanceStoreContainer = (Container)workflowInstanceStore.GetType()
+                .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .First(x => x.FieldType == typeof(Container))
+                .GetValue(workflowInstanceStore);
+
+            await featureContext.RunAndStoreExceptionsAsync(
+                () => workflowInstanceStoreContainer.DeleteContainerAsync()).ConfigureAwait(false);
+
+            await featureContext.RunAndStoreExceptionsAsync(
+                () => featureContext.Get<Container>(TestDocumentsRepository).DeleteContainerAsync()).ConfigureAwait(false);
         }
     }
 }
