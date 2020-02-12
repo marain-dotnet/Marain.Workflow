@@ -8,21 +8,21 @@ namespace Microsoft.Extensions.DependencyInjection
     using Marain.Workflows;
 
     /// <summary>
-    ///     Extension method for adding workflow objects tp the service
-    ///     collection so they can be serialized and deserialized by their
-    ///     content type.
+    /// Extension method for adding workflow objects tp the service
+    /// collection so they can be serialized and deserialized by their
+    /// content type.
     /// </summary>
     public static class WorkflowSerializationServiceCollectionExtensions
     {
         /// <summary>
-        ///     Adds the standard set of core workflow types, including standard
-        ///     actions and conditions, to the service collection.
+        /// Adds the standard set of core workflow types, including standard
+        /// actions and conditions, to the service collection.
         /// </summary>
         /// <param name="services">
-        ///     The <see cref="IServiceCollection" /> to add the types to.
+        /// The <see cref="IServiceCollection" /> to add the types to.
         /// </param>
         /// <returns>
-        ///     The <see cref="IServiceCollection" />.
+        /// The <see cref="IServiceCollection" />.
         /// </returns>
         public static IServiceCollection RegisterCoreWorkflowContentTypes(this IServiceCollection services)
         {

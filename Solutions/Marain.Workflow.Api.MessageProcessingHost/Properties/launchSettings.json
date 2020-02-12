@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Endjin.Workflow.Functions.MessagePreProcessingHost": {
+      "commandName": "Project",
+      "commandLineArgs": "host start -p 7073"
+    }
+  }
+}

@@ -19,8 +19,8 @@ namespace Marain.Workflows.Specs.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("InvokeExternalServiceCondition")]
+    [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     [NUnit.Framework.CategoryAttribute("setupCosmosDBRepository")]
-    [NUnit.Framework.CategoryAttribute("setupContainer")]
     public partial class InvokeExternalServiceConditionFeature
     {
         
@@ -36,8 +36,8 @@ namespace Marain.Workflows.Specs.Features
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "InvokeExternalServiceCondition", "    In order to be able to define a workflow that queries external HTTP endpoints" +
                     " to determine conditions\r\n    As a developer defining a workflow\r\n    I want to " +
                     "be able to define a workflow condition that invokes an external HTTP endpoint", ProgrammingLanguage.CSharp, new string[] {
-                        "setupCosmosDBRepository",
-                        "setupContainer"});
+                        "perFeatureContainer",
+                        "setupCosmosDBRepository"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -102,8 +102,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "dontinclude",
                         "value3"});
 #line 11
- testRunner.And("I have created and persisted a new instance with Id \"id1\" of the workflow with Id" +
-                    " \"external-condition-workflow\" and supplied the following context items", ((string)(null)), table46, "And ");
+ testRunner.And("I have created and persisted a new instance with Id \'id1\' of the workflow with Id" +
+                    " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table46, "And ");
 #line 16
     testRunner.And("the external service will return a 200 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 17
@@ -137,9 +137,9 @@ this.ScenarioInitialize(scenarioInfo);
 #line 30
     testRunner.And("the request body ContextProperties has 2 values", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 31
- testRunner.Then("the workflow instance with Id \"id1\" should have status \"Complete\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance with Id \'id1\' should have status \'Complete\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 32
- testRunner.And("the workflow instance with Id \"id1\" should be in the state called \"Done\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the workflow instance with Id \'id1\' should be in the state called \'Done\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -171,8 +171,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "dontinclude",
                         "value3"});
 #line 37
- testRunner.And("I have created and persisted a new instance with Id \"id2\" of the workflow with Id" +
-                    " \"external-condition-workflow\" and supplied the following context items", ((string)(null)), table47, "And ");
+ testRunner.And("I have created and persisted a new instance with Id \'id2\' of the workflow with Id" +
+                    " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table47, "And ");
 #line 42
     testRunner.And("the external service will return a 200 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 43
@@ -206,10 +206,10 @@ this.ScenarioInitialize(scenarioInfo);
 #line 56
     testRunner.And("the request body ContextProperties has 2 values", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 57
- testRunner.Then("the workflow instance with Id \"id2\" should have status \"Waiting\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance with Id \'id2\' should have status \'Waiting\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 58
- testRunner.And("the workflow instance with Id \"id2\" should be in the state called \"Waiting to run" +
-                    "\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the workflow instance with Id \'id2\' should be in the state called \'Waiting to run" +
+                    "\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -241,8 +241,8 @@ this.ScenarioInitialize(scenarioInfo);
                         "dontinclude",
                         "value3"});
 #line 63
- testRunner.And("I have created and persisted a new instance with Id \"id3\" of the workflow with Id" +
-                    " \"external-condition-workflow\" and supplied the following context items", ((string)(null)), table48, "And ");
+ testRunner.And("I have created and persisted a new instance with Id \'id3\' of the workflow with Id" +
+                    " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table48, "And ");
 #line 68
     testRunner.And("the external service will return a 500 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 69
@@ -256,10 +256,10 @@ this.ScenarioInitialize(scenarioInfo);
 #line 73
     testRunner.Then("the condition endpoint should have been invoked", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 74
- testRunner.Then("the workflow instance with Id \"id3\" should have status \"Faulted\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance with Id \'id3\' should have status \'Faulted\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 75
- testRunner.And("the workflow instance with Id \"id3\" should be in the state called \"Waiting to run" +
-                    "\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the workflow instance with Id \'id3\' should be in the state called \'Waiting to run" +
+                    "\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }

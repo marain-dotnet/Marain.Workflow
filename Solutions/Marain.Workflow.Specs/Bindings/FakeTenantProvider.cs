@@ -1,10 +1,18 @@
-﻿namespace Marain.Workflows.Specs.Bindings
+﻿// <copyright file="FakeTenantProvider.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
+// </copyright>
+
+namespace Marain.Workflows.Specs.Bindings
 {
     using System;
     using System.Threading.Tasks;
     using Corvus.Tenancy;
 
-    class FakeTenantProvider : ITenantProvider
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable SA1600 // Elements should be documented
+#pragma warning disable RCS1079 // Throwing of new NotImplementedException.
+
+    internal class FakeTenantProvider : ITenantProvider
     {
         public FakeTenantProvider(RootTenant rootTenant)
         {
@@ -44,3 +52,7 @@
         }
     }
 }
+
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning restore SA1600 // Elements should be documented
+#pragma warning restore RCS1079 // Throwing of new NotImplementedException.

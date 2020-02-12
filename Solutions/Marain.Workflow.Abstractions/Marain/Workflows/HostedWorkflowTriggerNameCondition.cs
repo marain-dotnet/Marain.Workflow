@@ -9,12 +9,12 @@ namespace Marain.Workflows
     using System.Threading.Tasks;
 
     /// <summary>
-    ///     A condition for hosted workflows that checks the TriggerName property of the trigger.
+    /// A condition for hosted workflows that checks the TriggerName property of the trigger.
     /// </summary>
     public class HostedWorkflowTriggerNameCondition : IWorkflowCondition
     {
         /// <summary>
-        ///     The content type that will be used when serializing/deserializing.
+        /// The content type that will be used when serializing/deserializing.
         /// </summary>
         public const string RegisteredContentType = "application/vnd.marain.workflows.hosted.triggernamecondition";
 
@@ -25,7 +25,7 @@ namespace Marain.Workflows
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
-        ///     Gets or sets the name of the trigger to look for.
+        /// Gets or sets the name of the trigger to look for.
         /// </summary>
         public string TriggerName { get; set; }
 

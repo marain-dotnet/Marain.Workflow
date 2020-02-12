@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "APPINSIGHTS_INSTRUMENTATIONKEY": "",
+    "AI:DeveloperMode": "true",
+    "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
+    "Operations:ControlServiceBaseUrl": "http://localhost:7078/",
+    "Workflow:EngineHostServiceBaseUrl": "http://localhost:7075"
+  }
+}

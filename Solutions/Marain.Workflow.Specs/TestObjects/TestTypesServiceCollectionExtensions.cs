@@ -1,5 +1,5 @@
-﻿// <copyright file="TestTypesServiceCollectionExtensions.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="TestTypesServiceCollectionExtensions.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -13,31 +13,31 @@ namespace Microsoft.Extensions.DependencyInjection
 
     public static class TestTypesServiceCollectionExtensions
     {
-        public static IServiceCollection RegisterTestContentTypes(this IServiceCollection services)
+        public static ContentFactory RegisterTestContentTypes(this ContentFactory contentFactory)
         {
-            services.AddContent(factory =>
-            {
-                factory.RegisterTransientContent<TraceAction>();
-                factory.RegisterTransientContent<ApplyCatalogItemPatchAction>();
-                factory.RegisterTransientContent<CreateCatalogItemAction>();
-                factory.RegisterTransientContent<SendCreateCatalogItemTriggerAction>();
-                factory.RegisterTransientContent<TriggerIdCondition>();
-                factory.RegisterTransientContent<BooleanCondition>();
-                factory.RegisterTransientContent<CatalogItemCompleteCondition>();
-                factory.RegisterTransientContent<CatalogItemIdCondition>();
-                factory.RegisterTransientContent<CatalogItemWillBeCompleteCondition>();
-                factory.RegisterTransientContent<ContextItemsPresentCondition>();
-                factory.RegisterTransientContent<CatalogItem>();
-                factory.RegisterTransientContent<CatalogItemPatch>();
-                factory.RegisterTransientContent<CreateCatalogItemTrigger>();
-                factory.RegisterTransientContent<DeleteCatalogItemTrigger>();
-                factory.RegisterTransientContent<DeprecateCatalogItemTrigger>();
-                factory.RegisterTransientContent<EditCatalogItemTrigger>();
-                factory.RegisterTransientContent<PublishCatalogItemTrigger>();
-                factory.RegisterTransientContent<CauseExternalInvocationTrigger>();
-            });
+            contentFactory.RegisterTransientContent<TraceAction>();
+            contentFactory.RegisterTransientContent<ApplyCatalogItemPatchAction>();
+            contentFactory.RegisterTransientContent<CreateCatalogItemAction>();
+            contentFactory.RegisterTransientContent<SendCreateCatalogItemTriggerAction>();
 
-            return services;
+            contentFactory.RegisterTransientContent<TriggerIdCondition>();
+            contentFactory.RegisterTransientContent<BooleanCondition>();
+            contentFactory.RegisterTransientContent<CatalogItemCompleteCondition>();
+            contentFactory.RegisterTransientContent<CatalogItemIdCondition>();
+            contentFactory.RegisterTransientContent<CatalogItemWillBeCompleteCondition>();
+            contentFactory.RegisterTransientContent<ContextItemsPresentCondition>();
+
+            contentFactory.RegisterTransientContent<CatalogItem>();
+            contentFactory.RegisterTransientContent<CatalogItemPatch>();
+
+            contentFactory.RegisterTransientContent<CreateCatalogItemTrigger>();
+            contentFactory.RegisterTransientContent<DeleteCatalogItemTrigger>();
+            contentFactory.RegisterTransientContent<DeprecateCatalogItemTrigger>();
+            contentFactory.RegisterTransientContent<EditCatalogItemTrigger>();
+            contentFactory.RegisterTransientContent<PublishCatalogItemTrigger>();
+            contentFactory.RegisterTransientContent<CauseExternalInvocationTrigger>();
+
+            return contentFactory;
         }
     }
 }

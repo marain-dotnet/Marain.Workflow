@@ -1,0 +1,5 @@
+{
+  "IsEncrypted": false,
+  "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
+  "Operations:ControlServiceBaseUrl": "http://localhost:7078/"
+}

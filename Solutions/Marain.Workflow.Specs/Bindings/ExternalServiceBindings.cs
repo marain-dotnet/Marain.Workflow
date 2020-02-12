@@ -1,5 +1,5 @@
-﻿// <copyright file="CreateCatalogItemTrigger.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="ExternalServiceBindings.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 namespace Marain.Workflows.Specs.Bindings
@@ -24,14 +24,9 @@ namespace Marain.Workflows.Specs.Bindings
     public static class ExternalServiceBindings
     {
         /// <summary>
-        /// Gets the external service associated with the current scenario.
-        /// </summary>
-        public static ExternalService GetExternalService (ScenarioContext context) => context.Get<ExternalService>(typeof(ExternalService).FullName);
-
-        /// <summary>
         /// Create a suitable Http listener.
         /// </summary>
-        /// <param name="scenarioContext"></param>
+        /// <param name="scenarioContext">The current scenario context.</param>
         [BeforeScenario("@externalServiceRequired")]
         public static void InitializeService(ScenarioContext scenarioContext)
         {
@@ -62,14 +57,21 @@ namespace Marain.Workflows.Specs.Bindings
             }
 
             var externalService = new ExternalService(listener);
-            scenarioContext.Add(typeof(ExternalService).FullName, externalService);
+            scenarioContext.Set(externalService);
         }
+
+        /// <summary>
+        /// Gets the external service associated with the current scenario.
+        /// </summary>
+        /// <param name="context">The current scenario context.</param>
+        /// <returns>The Extenrnal Service for the scenario.</returns>
+        public static ExternalService GetService(ScenarioContext context) => context.Get<ExternalService>();
 
         /// <summary>
         /// Ensure we tear down the listener.
         /// </summary>
-        /// <param name="scenarioContext"></param>
-        /// <returns></returns>
+        /// <param name="scenarioContext">The current scenario context.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [AfterScenario("@externalServiceRequired")]
         public static Task TearDownService(ScenarioContext scenarioContext)
         {
@@ -95,9 +97,9 @@ namespace Marain.Workflows.Specs.Bindings
             private readonly CancellationTokenSource cancellationSource = new CancellationTokenSource();
 
             /// <summary>
-            /// Creates a new instance of hte external service bindings for a specific http listener
+            /// Creates a new instance of the external service bindings for a specific http listener.
             /// </summary>
-            /// <param name="listener"></param>
+            /// <param name="listener">The listener for the external service.</param>
             public ExternalService(HttpListener listener)
             {
                 this.listener = listener;
@@ -123,7 +125,7 @@ namespace Marain.Workflows.Specs.Bindings
             public string ResponseBody { get; set; }
 
             /// <summary>
-            /// All of the requests made to this service.
+            /// Gets a list of the requests made to this service.
             /// </summary>
             public List<RequestInfo> Requests { get; } = new List<RequestInfo>();
 
@@ -134,15 +136,20 @@ namespace Marain.Workflows.Specs.Bindings
             public async Task StopAsync()
             {
                 this.cancellationSource.Cancel();
-                try
-                {
-                    this.listener.Stop();
-                    await this.mainLoopTask;
-                    ((IDisposable)this.listener).Dispose();
-                }
-                catch (ObjectDisposedException)
-                {
-                }
+                this.listener.Stop();
+                await this.mainLoopTask.ConfigureAwait(false);
+                ((IDisposable)this.listener).Dispose();
+            }
+
+            private static void WriteJsonResponse(HttpListenerResponse response, string responseString)
+            {
+                byte[] buffer = Encoding.UTF8.GetBytes(responseString);
+                response.ContentLength64 = buffer.Length;
+                Stream output = response.OutputStream;
+                output.Write(buffer, 0, buffer.Length);
+                output.Close();
+
+                response.ContentType = "application/json";
             }
 
             private async Task MainLoop(CancellationToken cancel)
@@ -156,7 +163,7 @@ namespace Marain.Workflows.Specs.Bindings
                         var info = new RequestInfo
                         {
                             Url = context.Request.Url,
-                            Verb = context.Request.HttpMethod.ToUpperInvariant()
+                            Verb = context.Request.HttpMethod.ToUpperInvariant(),
                         };
                         this.Requests.Add(info);
                         foreach (string headerName in context.Request.Headers.AllKeys)
@@ -170,6 +177,7 @@ namespace Marain.Workflows.Specs.Bindings
                             {
                                 info.RequestBody = r.ReadToEnd();
                             }
+
                             context.Request.InputStream.Close();
                         }
 
@@ -191,29 +199,18 @@ namespace Marain.Workflows.Specs.Bindings
                 }
             }
 
-            private static void WriteJsonResponse(HttpListenerResponse response, string responseString)
-            {
-                byte[] buffer = Encoding.UTF8.GetBytes(responseString);
-                response.ContentLength64 = buffer.Length;
-                Stream output = response.OutputStream;
-                output.Write(buffer, 0, buffer.Length);
-                output.Close();
-
-                response.ContentType = "application/json";
-            }
-
             /// <summary>
             /// Provides information about a request.
             /// </summary>
             public class RequestInfo
             {
                 /// <summary>
-                /// The URL to which the request was made.
+                /// Gets or sets the URL to which the request was made.
                 /// </summary>
                 public Uri Url { get; set; }
 
                 /// <summary>
-                /// The HTTP verb of the request.
+                /// Gets or sets the HTTP verb of the request.
                 /// </summary>
                 public string Verb { get; set; }
 
@@ -223,7 +220,7 @@ namespace Marain.Workflows.Specs.Bindings
                 public Dictionary<string, string> Headers { get; } = new Dictionary<string, string>();
 
                 /// <summary>
-                /// The request body.
+                /// Gets or sets the request body.
                 /// </summary>
                 public string RequestBody { get; set; }
             }

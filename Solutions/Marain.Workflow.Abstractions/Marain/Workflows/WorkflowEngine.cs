@@ -19,22 +19,27 @@ namespace Marain.Workflows
     /// <inheritdoc />
     public class WorkflowEngine : IWorkflowEngine
     {
-        private readonly Container workflowInstanceRepository;
-        private readonly Container workflowRepository;
+        private readonly Container workflowInstanceContainer;
+        private readonly Container workflowContainer;
         private readonly ILeaseProvider leaseProvider;
         private readonly ILogger<IWorkflowEngine> logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowEngine"/> class.
         /// </summary>
-        /// <param name="workflowInstanceRepository">The repository in which to store workflow instances.</param>
-        /// <param name="workflowRepository">The repository in which to store workflows.</param>
+        /// <param name="workflowInstanceContainer">The repository in which to store workflow instances.</param>
+        /// <param name="workflowContainer">The repository in which to store workflows.</param>
         /// <param name="leaseProvider">The lease provider.</param>
         /// <param name="logger">A logger for the workflow instance service.</param>
-        public WorkflowEngine(Container workflowInstanceRepository, Container workflowRepository, ILeaseProvider leaseProvider, ILogger<IWorkflowEngine> logger)
+        public WorkflowEngine(
+            Container workflowInstanceContainer,
+            Container workflowContainer,
+            ILeaseProvider leaseProvider,
+            ILogger<IWorkflowEngine> logger)
         {
-            this.workflowInstanceRepository = workflowInstanceRepository ?? throw new ArgumentNullException(nameof(workflowInstanceRepository));
-            this.workflowRepository = workflowRepository ?? throw new ArgumentNullException(nameof(workflowRepository));
+            this.workflowInstanceContainer =
+                workflowInstanceContainer ?? throw new ArgumentNullException(nameof(workflowInstanceContainer));
+            this.workflowContainer = workflowContainer ?? throw new ArgumentNullException(nameof(workflowContainer));
             this.leaseProvider = leaseProvider ?? throw new ArgumentNullException(nameof(leaseProvider));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -44,10 +49,13 @@ namespace Marain.Workflows
         {
             try
             {
-                ItemResponse<Workflow> instance = await Retriable.RetryAsync(() => this.workflowRepository.ReadItemAsync<Workflow>(workflowId, new PartitionKey(partitionKey ?? workflowId))).ConfigureAwait(false);
-                Workflow workflow = instance.Resource;
-                workflow.ETag = instance.ETag;
-                return workflow;
+                ItemResponse<Workflow> itemResponse = await Retriable.RetryAsync(() =>
+                    this.workflowContainer.ReadItemAsync<Workflow>(
+                        workflowId,
+                        new PartitionKey(partitionKey ?? workflowId)))
+                    .ConfigureAwait(false);
+
+                return itemResponse.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
@@ -56,9 +64,13 @@ namespace Marain.Workflows
         }
 
         /// <inheritdoc/>
-        public Task UpsertWorkflowAsync(Workflow workflow)
+        public Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
         {
-            return Retriable.RetryAsync(() => this.workflowRepository.UpsertItemAsync(workflow, null, new ItemRequestOptions { IfMatchEtag = workflow.ETag }));
+            return Retriable.RetryAsync(() =>
+                this.workflowContainer.UpsertItemAsync(
+                    workflow,
+                    new PartitionKey(partitionKey ?? workflow.Id),
+                    new ItemRequestOptions { IfMatchEtag = workflow.ETag }));
         }
 
         /// <inheritdoc/>
@@ -66,20 +78,40 @@ namespace Marain.Workflows
         {
             try
             {
-                return await Retriable.RetryAsync(() => this.workflowInstanceRepository.ReadItemAsync<WorkflowInstance>(workflowInstanceId, new PartitionKey(partitionKey ?? workflowInstanceId))).ConfigureAwait(false);
+                return await Retriable.RetryAsync(() =>
+                    this.workflowInstanceContainer.ReadItemAsync<WorkflowInstance>(
+                        workflowInstanceId,
+                        new PartitionKey(partitionKey ?? workflowInstanceId)))
+                    .ConfigureAwait(false);
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
-                throw new WorkflowInstanceNotFoundException($"The workflow instance with id {workflowInstanceId} was not found", ex);
+                throw new WorkflowInstanceNotFoundException(
+                    $"The workflow instance with id {workflowInstanceId} was not found",
+                    ex);
             }
         }
 
         /// <inheritdoc/>
-        public async Task DeleteWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null, string etag = null)
+        public Task UpsertWorkflowInstanceAsync(WorkflowInstance workflowInstance, string partitionKey = null)
+        {
+            return Retriable.RetryAsync(() =>
+                this.workflowInstanceContainer.UpsertItemAsync(
+                    workflowInstance,
+                    new PartitionKey(partitionKey ?? workflowInstance.Id),
+                    new ItemRequestOptions { IfMatchEtag = workflowInstance.ETag }));
+        }
+
+        /// <inheritdoc/>
+        public async Task DeleteWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
         {
             try
             {
-                await Retriable.RetryAsync(() => this.workflowInstanceRepository.DeleteItemAsync<WorkflowInstance>(workflowInstanceId, new PartitionKey(partitionKey ?? workflowInstanceId), new ItemRequestOptions { IfMatchEtag = etag })).ConfigureAwait(false);
+                await Retriable.RetryAsync(() =>
+                    this.workflowInstanceContainer.DeleteItemAsync<WorkflowInstance>(
+                        workflowInstanceId,
+                        new PartitionKey(partitionKey ?? workflowInstanceId)))
+                    .ConfigureAwait(false);
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
@@ -90,31 +122,46 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public Task<WorkflowInstance> StartWorkflowInstanceAsync(StartWorkflowInstanceRequest request)
         {
-            return this.CreateWorkflowInstanceAsync(request.WorkflowId, request.WorkflowPartitionKey, request.WorkflowInstanceId, request.Context);
+            return Retriable.RetryAsync(() => this.CreateWorkflowInstanceAsync(
+                request.WorkflowId,
+                null,
+                request.WorkflowInstanceId,
+                null,
+                request.Context));
         }
 
         /// <inheritdoc/>
-        public Task<WorkflowInstance> StartWorkflowInstanceAsync(string workflowId, string partitionKey = null, string instanceId = null, Dictionary<string, string> context = null)
+        public Task<WorkflowInstance> StartWorkflowInstanceAsync(
+            string workflowId,
+            string workflowPartitionKey = null,
+            string instanceId = null,
+            string instancePartitionKey = null,
+            IDictionary<string, string> context = null)
         {
-            return this.CreateWorkflowInstanceAsync(workflowId, partitionKey, instanceId, context);
+            return Retriable.RetryAsync(() =>
+            this.CreateWorkflowInstanceAsync(workflowId, workflowPartitionKey, instanceId, instancePartitionKey, context));
         }
 
         /// <inheritdoc/>
         public Task ProcessTriggerAsync(IWorkflowTrigger trigger, string workflowInstanceId, string partitionKey = null)
         {
-            return this.ProcessInstanceWithLeaseAsync(trigger, workflowInstanceId, partitionKey ?? workflowInstanceId);
+            return this.ProcessInstanceWithLeaseAsync(trigger, workflowInstanceId, partitionKey);
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<string>> GetMatchingWorkflowInstanceIdsForSubjectsAsync(IEnumerable<string> subjects, int pageSize, string continuationToken)
+        public async Task<IEnumerable<string>> GetMatchingWorkflowInstanceIdsForSubjectsAsync(
+            IEnumerable<string> subjects,
+            int pageSize,
+            int pageNumber)
         {
-            QueryDefinition spec = BuildFindInstanceIdsSpec(subjects);
+            QueryDefinition spec = BuildFindInstanceIdsSpec(subjects, pageSize, pageNumber);
 
-            FeedIterator<dynamic> results = this.workflowInstanceRepository.GetItemQueryIterator<dynamic>(spec, continuationToken, new QueryRequestOptions { MaxItemCount = pageSize });
-            if (results.HasMoreResults)
+            FeedIterator<dynamic> iterator = this.workflowInstanceContainer.GetItemQueryIterator<dynamic>(spec);
+
+            if (iterator.HasMoreResults)
             {
-                FeedResponse<dynamic> batch = await Retriable.RetryAsync(() => results.ReadNextAsync()).ConfigureAwait(false);
-                return batch.Resource.Select(r => (string)r.id).ToList();
+                FeedResponse<dynamic> results = await Retriable.RetryAsync(() => iterator.ReadNextAsync()).ConfigureAwait(false);
+                return results.Select(x => (string)x.id);
             }
 
             return Enumerable.Empty<string>();
@@ -123,59 +170,47 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<int> GetMatchingWorkflowInstanceCountForSubjectsAsync(IEnumerable<string> subjects)
         {
-            QueryDefinition spec = BuildFindInstanceIdsSpec(subjects, true);
+            QueryDefinition spec = BuildFindInstanceIdsSpec(subjects, 1, 0, true);
 
-            FeedIterator<int> results = this.workflowInstanceRepository.GetItemQueryIterator<int>(spec, null, new QueryRequestOptions { MaxItemCount = 1 });
-            if (results.HasMoreResults)
-            {
-                FeedResponse<int> batch = await Retriable.RetryAsync(() => results.ReadNextAsync()).ConfigureAwait(false);
-                if (batch.Resource.Any())
-                {
-                    return batch.Resource.First();
-                }
-            }
+            FeedIterator<int> iterator = this.workflowInstanceContainer.GetItemQueryIterator<int>(spec, null, new QueryRequestOptions { MaxItemCount = 1 });
 
-            return 0;
+            // There will always be a result so we don't need to check...
+            FeedResponse<int> result = await Retriable.RetryAsync(() => iterator.ReadNextAsync()).ConfigureAwait(false);
+            return result.First();
         }
 
-        private static QueryDefinition BuildFindInstanceIdsSpec(IEnumerable<string> subjects, bool countOnly = false)
+        private static QueryDefinition BuildFindInstanceIdsSpec(IEnumerable<string> subjects, int pageSize, int pageNumber, bool countOnly = false)
         {
             string[] subjectsArray = subjects?.ToArray();
 
             string query = countOnly ? "SELECT VALUE COUNT(root.id) FROM root" : "SELECT root.id FROM root";
-            QueryDefinition qd;
-
+            string offsetLimitClause = $" OFFSET {pageSize * pageNumber} LIMIT {pageSize}";
             if (subjectsArray?.Length > 0)
             {
-                (string where, IEnumerable<(string, object)> parameters) = GetSubjectClause(subjectsArray);
-                qd = new QueryDefinition($"{query} WHERE {where}");
-                foreach ((string, object) parameter in parameters)
-                {
-                    qd = qd.WithParameter(parameter.Item1, parameter.Item2);
-                }
-            }
-            else
-            {
-                qd = new QueryDefinition(query);
+                (string where, List<(string, string)> parameters) = GetSubjectClause(subjectsArray);
+                var result = new QueryDefinition($"{query} WHERE {where}" + offsetLimitClause);
+                parameters.ForEach(x => result.WithParameter(x.Item1, x.Item2));
+
+                return result;
             }
 
-            return qd;
+            return new QueryDefinition(query + offsetLimitClause);
         }
 
         /// <summary>
-        ///     Builds the subject clause to be used when subjects are supplied to <see cref="GetMatchingWorkflowInstanceIdsForSubjectsAsync" />.
+        /// Builds the subject clause to be used when subjects are supplied to <see cref="GetMatchingWorkflowInstanceIdsForSubjectsAsync" />.
         /// </summary>
         /// <param name="subjects">
-        ///     The list of subjects/.
+        /// The list of subjects/.
         /// </param>
         /// <returns>
-        ///     A <see cref="string" /> containing the WHERE clause and a <see cref="SqlParameterCollection" /> containing
-        ///     the parameters it should be supplied with.
+        /// A <see cref="string" /> containing the WHERE clause and a <see cref="SqlParameterCollection" /> containing
+        /// the parameters it should be supplied with.
         /// </returns>
-        private static (string, IEnumerable<(string, object)> parameters) GetSubjectClause(IEnumerable<string> subjects)
+        private static (string, List<(string, string)>) GetSubjectClause(IEnumerable<string> subjects)
         {
             var result = new StringBuilder();
-            var parameters = new List<(string, object)>();
+            var parameters = new List<(string, string)>();
 
             subjects.ForEachAtIndex(
                 (s, i) =>
@@ -193,39 +228,33 @@ namespace Marain.Workflows
         }
 
         /// <summary>
-        ///     Retrieves a single <see cref="WorkflowInstance" /> and passes it the trigger
-        ///     to process.
+        /// Retrieves a single <see cref="WorkflowInstance" /> and passes it the trigger
+        /// to process.
         /// </summary>
-        /// <param name="trigger">
-        ///     The trigger to process.
-        /// </param>
-        /// <param name="instanceId">
-        ///     The Id of the <see cref="WorkflowInstance" /> that will process the trigger.
-        /// </param>
-        /// <param name="partitionKey">The partition key.</param>
-        /// <returns>
-        ///     A <see cref="Task" /> that will complete when the instance has finished processing
-        ///     the trigger.
-        /// </returns>
+        /// <param name="trigger">The trigger to process.</param>
+        /// <param name="instanceId">The Id of the <see cref="WorkflowInstance" /> that will process the trigger.</param>
+        /// <param name="partitionKey">The partition key for the instance. If not supplied, the Id will be used.</param>
+        /// <returns>A <see cref="Task" /> that will complete when the instance has finished processing the trigger.</returns>
         /// <remarks>
-        ///     This method retrieves the workflow instance from storage, passes it the trigger
-        ///     and, if the instance has updated as a result of the trigger, puts it back in
-        ///     storage.
+        /// This method retrieves the workflow instance from storage, passes it the trigger
+        /// and, if the instance has updated as a result of the trigger, puts it back in
+        /// storage.
         /// </remarks>
         private async Task ProcessInstanceAsync(IWorkflowTrigger trigger, string instanceId, string partitionKey)
         {
-            ItemResponse<WorkflowInstance> item = null;
+            WorkflowInstance item = null;
 
             try
             {
-                item = await Retriable.RetryAsync(() => this.workflowInstanceRepository.ReadItemAsync<WorkflowInstance>(instanceId, new PartitionKey(partitionKey))).ConfigureAwait(false);
-                this.logger.LogDebug($"Accepting trigger {trigger.Id} in instance {item.Resource.Id}", trigger, item);
+                item = await this.GetWorkflowInstanceAsync(instanceId, partitionKey).ConfigureAwait(false);
 
-                await this.AcceptTriggerAsync(item.Resource, trigger).ConfigureAwait(false);
+                this.logger.LogDebug($"Accepting trigger {trigger.Id} in instance {item.Id}", trigger, item);
 
-                this.logger.LogDebug($"Accepted trigger {trigger.Id} in instance {item.Resource.Id}", trigger, item);
+                await this.AcceptTriggerAsync(item, trigger).ConfigureAwait(false);
+
+                this.logger.LogDebug($"Accepted trigger {trigger.Id} in instance {item.Id}", trigger, item);
             }
-            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            catch (WorkflowInstanceNotFoundException)
             {
                 // Bubble this specific exception out as the caller needs to know that they sent through an
                 // invalid workflow instance id.
@@ -233,48 +262,41 @@ namespace Marain.Workflows
                     new EventId(0),
                     $"Unable to locate the specified instance {instanceId} for trigger {trigger.Id}");
 
-                throw new WorkflowInstanceNotFoundException();
+                throw;
             }
             catch (Exception ex)
             {
                 this.logger.LogError(
                     new EventId(0),
                     ex,
-                    $"Error accepting trigger {trigger.Id} in instance {item?.Resource?.Id}");
+                    $"Error accepting trigger {trigger.Id} in instance {item?.Id}");
 
                 if (item != null)
                 {
-                    item.Resource.Status = WorkflowStatus.Faulted;
-                    item.Resource.IsDirty = true;
+                    item.Status = WorkflowStatus.Faulted;
+                    item.IsDirty = true;
                 }
             }
             finally
             {
-                if (item?.Resource.IsDirty == true)
+                if (item?.IsDirty == true)
                 {
-                    await Retriable.RetryAsync(() => this.workflowInstanceRepository.ReplaceItemAsync(item.Resource, item.Resource.Id, new PartitionKey(item.Resource.PartitionKey), new ItemRequestOptions { IfMatchEtag = item.ETag })).ConfigureAwait(false);
+                    await this.UpsertWorkflowInstanceAsync(item, partitionKey).ConfigureAwait(false);
                 }
             }
         }
 
         /// <summary>
-        ///     Wraps the <see cref="ProcessInstanceAsync" /> method to use the current <see cref="leaseProvider" />
-        ///     to take a lease on the workflow instance prior to processing.
+        /// Wraps the <see cref="ProcessInstanceAsync" /> method to use the current <see cref="leaseProvider" />
+        /// to take a lease on the workflow instance prior to processing.
         /// </summary>
-        /// <param name="trigger">
-        ///     The trigger to process.
-        /// </param>
-        /// <param name="instanceId">
-        ///     The Id of the <see cref="WorkflowInstance" /> that will process the trigger.
-        /// </param>
-        /// <param name="partitionKey">The partition key of the instance.</param>
-        /// <returns>
-        ///     A <see cref="Task" /> that will complete when the instance has finished processing
-        ///     the trigger.
-        /// </returns>
+        /// <param name="trigger">The trigger to process.</param>
+        /// <param name="instanceId">The Id of the <see cref="WorkflowInstance" /> that will process the trigger.</param>
+        /// <param name="partitionKey">The partition key for the instance. If not supplied, the Id will be used.</param>
+        /// <returns>A <see cref="Task" /> that will complete when the instance has finished processing the trigger.</returns>
         /// <remarks>
-        ///     If another instance of WorkflowEngine already has a lease on the WorkflowInstance,
-        ///     this method will wait for the lease to become available.
+        /// If another instance of WorkflowEngine already has a lease on the WorkflowInstance,
+        /// this method will wait for the lease to become available.
         /// </remarks>
         private Task ProcessInstanceWithLeaseAsync(IWorkflowTrigger trigger, string instanceId, string partitionKey)
         {
@@ -286,11 +308,17 @@ namespace Marain.Workflows
         /// Creates a workflow instance from a workflow.
         /// </summary>
         /// <param name="workflowId">The ID of the workflow.</param>
-        /// <param name="partitionKey">The partition key of the workflow.</param>
+        /// <param name="workflowPartitionKey">The partition key for the workflow. If not supplied, the Id will be used.</param>
         /// <param name="workflowInstanceId">The id of the workflow instance to create.</param>
+        /// <param name="workflowInstancePartitionKey">The partition key for the instance. If not supplied, the Id will be used.</param>
         /// <param name="context">The context for the workflow instance to create.</param>
         /// <returns>The new workflow instance.</returns>
-        private async Task<WorkflowInstance> CreateWorkflowInstanceAsync(string workflowId, string partitionKey = null, string workflowInstanceId = null, Dictionary<string, string> context = null)
+        private async Task<WorkflowInstance> CreateWorkflowInstanceAsync(
+            string workflowId,
+            string workflowPartitionKey = null,
+            string workflowInstanceId = null,
+            string workflowInstancePartitionKey = null,
+            IDictionary<string, string> context = null)
         {
             var instance = new WorkflowInstance();
 
@@ -299,7 +327,7 @@ namespace Marain.Workflows
                 instance.Id = workflowInstanceId;
             }
 
-            Workflow workflow = await this.GetWorkflowAsync(workflowId, partitionKey).ConfigureAwait(false);
+            Workflow workflow = await this.GetWorkflowAsync(workflowId, workflowPartitionKey).ConfigureAwait(false);
             if (workflow == null)
             {
                 throw new WorkflowNotFoundException();
@@ -308,9 +336,9 @@ namespace Marain.Workflows
             await this.leaseProvider.ExecuteWithMutexAsync(
                     async _ =>
                     {
-                        ItemResponse<WorkflowInstance> response = await Retriable.RetryAsync(() => this.workflowInstanceRepository.CreateItemAsync(instance, new PartitionKey(instance.Id))).ConfigureAwait(false);
-                        await Retriable.RetryAsync(() => this.InitializeInstanceAsync(instance, workflow, context)).ConfigureAwait(false);
-                        response = await Retriable.RetryAsync(() => this.workflowInstanceRepository.ReplaceItemAsync(instance, instance.Id, new PartitionKey(instance.Id), new ItemRequestOptions { IfMatchEtag = instance.ETag })).ConfigureAwait(false);
+                        await this.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
+                        await this.InitializeInstanceAsync(instance, workflow, context).ConfigureAwait(false);
+                        await this.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
                     },
                     instance.Id)
                 .ConfigureAwait(false);
@@ -355,103 +383,97 @@ namespace Marain.Workflows
         }
 
         /// <summary>
-        ///     Determines whether an <see cref="WorkflowState" /> is able to accept a trigger,
-        ///     and processes it if so.
+        /// Determines whether an <see cref="WorkflowState" /> is able to accept a trigger,
+        /// and processes it if so.
         /// </summary>
         /// <param name="workflow">The workflow that is in operation.</param>
-        /// <param name="state">
-        ///     The state that will process the trigger.
-        /// </param>
-        /// <param name="instance">
-        ///     The <see cref="WorkflowInstance" /> that is in this state.
-        /// </param>
-        /// <param name="trigger">
-        ///     The <see cref="IWorkflowTrigger" /> to process.
-        /// </param>
+        /// <param name="state">The state that will process the trigger.</param>
+        /// <param name="instance">The <see cref="WorkflowInstance" /> that is in this state.</param>
+        /// <param name="trigger">The <see cref="IWorkflowTrigger" /> to process.</param>
         /// <returns>
-        ///     A <see cref="Task" /> that will complete when the trigger has been
-        ///     processed, or it is determined that the trigger can't be processed
-        ///     for the given <see cref="WorkflowInstance" /> and <see cref="WorkflowState" />.
+        /// A <see cref="Task" /> that will complete when the trigger has been
+        /// processed, or it is determined that the trigger can't be processed
+        /// for the given <see cref="WorkflowInstance" /> and <see cref="WorkflowState" />.
         /// </returns>
         /// <remarks>
-        ///     <para>
-        ///         This method consists of three parts:
-        ///         <list type="bullet">
-        ///             <item>
-        ///                 <description>
-        ///                     Determining if the supplied trigger can be accepted by the
-        ///                     <see cref="WorkflowInstance" /> in its current state.
-        ///                 </description>
-        ///             </item>
-        ///             <item>
-        ///                 <description>
-        ///                     Executing the actions required to move to the new state.
-        ///                 </description>
-        ///             </item>
-        ///             <item>
-        ///                 <description>
-        ///                     Updating the <see cref="WorkflowInstance" /> with the new state and
-        ///                     associated interests.
-        ///                 </description>
-        ///             </item>
-        ///         </list>
-        ///     </para>
-        ///     <para>
-        ///         To determine the transition to use, the following steps are taken:
-        ///         <list type="bullet">
-        ///             <item>
-        ///                 <description>
-        ///                     Evaluate the exit conditions of the current state (from
-        ///                     <see cref="WorkflowState.ExitConditions" />. If any conditions
-        ///                     evaluate to false, processing ends.
-        ///                 </description>
-        ///             </item>
-        ///             <item>
-        ///                 <description>
-        ///                     Iterate the <see cref="WorkflowState.Transitions" /> collection
-        ///                     and select the first <see cref="WorkflowTransition" /> whose
-        ///                     <see cref="WorkflowTransition.Conditions" /> all evaluate to true.
-        ///                     If no transitions match, then processing ends.
-        ///                 </description>
-        ///             </item>
-        ///             <item>
-        ///                 <description>
-        ///                     Retrieve the target state from the transition, and evaluate its
-        ///                     entry conditions (from <see cref="WorkflowState.EntryConditions" />.
-        ///                     If any conditions evaluate to false, processing ends.
-        ///                 </description>
-        ///             </item>
-        ///         </list>
-        ///     </para>
-        ///     <para>
-        ///         Once it has been determined that the trigger can be processed, actions
-        ///         from the current state, transition and target state are executed in order:
-        ///         <list type="bullet">
-        ///             <item>
-        ///                 <description>
-        ///                     The current state's <see cref="WorkflowState.ExitActions" />.
-        ///                 </description>
-        ///             </item>
-        ///             <item>
-        ///                 <description>
-        ///                     The transition's <see cref="WorkflowTransition.Actions" />
-        ///                 </description>
-        ///             </item>
-        ///             <item>
-        ///                 <description>
-        ///                     The target state's <see cref="WorkflowState.ExitActions" />.
-        ///                 </description>
-        ///             </item>
-        ///         </list>
-        ///     </para>
-        ///     <para>
-        ///         Once all actions have been processed, the <see cref="WorkflowInstance" />s status
-        ///         is set back to <see cref="WorkflowStatus.Waiting" />, if the new current state
-        ///         contains any transitions. If the new current state doesn't contain any transitions,
-        ///         there is no way of leaving this state and the workflow status is set to
-        ///         <see cref="WorkflowStatus.Complete" />. Additionally, the <see cref="WorkflowInstance.IsDirty" />
-        ///         property is set to true to ensure that the instance is saved by the <see cref="IWorkflowEngine" />.
-        ///     </para>
+        /// <para>
+        /// This method consists of three parts:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>
+        ///             Determining if the supplied trigger can be accepted by the
+        ///             <see cref="WorkflowInstance" /> in its current state.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Executing the actions required to move to the new state.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Updating the <see cref="WorkflowInstance" /> with the new state and
+        ///             associated interests.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// To determine the transition to use, the following steps are taken:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>
+        ///             Evaluate the exit conditions of the current state (from
+        ///             <see cref="WorkflowState.ExitConditions" />. If any conditions
+        ///             evaluate to false, processing ends.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Iterate the <see cref="WorkflowState.Transitions" /> collection
+        ///             and select the first <see cref="WorkflowTransition" /> whose
+        ///             <see cref="WorkflowTransition.Conditions" /> all evaluate to true.
+        ///             If no transitions match, then processing ends.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             Retrieve the target state from the transition, and evaluate its
+        ///             entry conditions (from <see cref="WorkflowState.EntryConditions" />.
+        ///             If any conditions evaluate to false, processing ends.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Once it has been determined that the trigger can be processed, actions
+        /// from the current state, transition and target state are executed in order:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>
+        ///             The current state's <see cref="WorkflowState.ExitActions" />.
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             The transition's <see cref="WorkflowTransition.Actions" />
+        ///         </description>
+        ///     </item>
+        ///     <item>
+        ///         <description>
+        ///             The target state's <see cref="WorkflowState.ExitActions" />.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Once all actions have been processed, the <see cref="WorkflowInstance" />s status
+        /// is set back to <see cref="WorkflowStatus.Waiting" />, if the new current state
+        /// contains any transitions. If the new current state doesn't contain any transitions,
+        /// there is no way of leaving this state and the workflow status is set to
+        /// <see cref="WorkflowStatus.Complete" />. Additionally, the <see cref="WorkflowInstance.IsDirty" />
+        /// property is set to true to ensure that the instance is saved by the <see cref="IWorkflowEngine" />.
+        /// </para>
         /// </remarks>
         private async Task<WorkflowState> AcceptTriggerAsync(
             Workflow workflow,
@@ -535,28 +557,22 @@ namespace Marain.Workflows
         }
 
         /// <summary>
-        ///     Executes all of the actions in the supplied collection against the given
-        ///     <see cref="WorkflowInstance" /> with the context of the specified trigger.
+        /// Executes all of the actions in the supplied collection against the given
+        /// <see cref="WorkflowInstance" /> with the context of the specified trigger.
         /// </summary>
-        /// <param name="actions">
-        ///     The list of <see cref="IWorkflowAction" />s to execute.
-        /// </param>
-        /// <param name="instance">
-        ///     The <see cref="WorkflowInstance" /> to execute the actions against.
-        /// </param>
+        /// <param name="actions">The list of <see cref="IWorkflowAction" />s to execute.</param>
+        /// <param name="instance">The <see cref="WorkflowInstance" /> to execute the actions against.</param>
         /// <param name="trigger">
-        ///     The <see cref="IWorkflowTrigger" /> that is being processed to cause these actions to be
-        ///     executed. It is possible for this parameter to be null if the actions being executed
-        ///     are the entry actions for the initial state of a new <see cref="WorkflowInstance" />.
+        /// The <see cref="IWorkflowTrigger" /> that is being processed to cause these actions to be
+        /// executed. It is possible for this parameter to be null if the actions being executed
+        /// are the entry actions for the initial state of a new <see cref="WorkflowInstance" />.
         /// </param>
-        /// <returns>
-        ///     A <see cref="Task" /> that will complete when all actions have been run.
-        /// </returns>
+        /// <returns>A <see cref="Task" /> that will complete when all actions have been run.</returns>
         /// <remarks>
-        ///     The actions will be executed sequentially. If an action throws an
-        ///     exception, subsequent actions will not be executed.
-        ///     This is a helper method for internal use only. It is used to make code
-        ///     more readable when executing exit/transition/entry actions.
+        /// The actions will be executed sequentially. If an action throws an
+        /// exception, subsequent actions will not be executed.
+        /// This is a helper method for internal use only. It is used to make code
+        /// more readable when executing exit/transition/entry actions.
         /// </remarks>
         private async Task ExecuteAsync(
             IEnumerable<IWorkflowAction> actions,
@@ -573,15 +589,9 @@ namespace Marain.Workflows
         /// Finds the first <see cref="WorkflowTransition"/> in the supplied
         /// list that can accept the specified <see cref="IWorkflowTrigger"/>.
         /// </summary>
-        /// <param name="transitions">
-        /// The transitions to evaluate.
-        /// </param>
-        /// <param name="instance">
-        /// The <see cref="WorkflowInstance"/> to which the transition belongs.
-        /// </param>
-        /// <param name="trigger">
-        /// The trigger that is currently being processed.
-        /// </param>
+        /// <param name="transitions">The transitions to evaluate.</param>
+        /// <param name="instance">The <see cref="WorkflowInstance"/> to which the transition belongs.</param>
+        /// <param name="trigger">The trigger that is currently being processed.</param>
         /// <returns>
         /// A <see cref="Task"/> whose result will be the first transition
         /// from the list that can accept the trigger. If none of the transitions
@@ -608,28 +618,22 @@ namespace Marain.Workflows
         }
 
         /// <summary>
-        ///     Evaluates all of the conditions in the supplied collection against the given
-        ///     <see cref="WorkflowInstance" /> with the context of the specified trigger.
+        /// Evaluates all of the conditions in the supplied collection against the given
+        /// <see cref="WorkflowInstance" /> with the context of the specified trigger.
         /// </summary>
-        /// <param name="conditions">
-        ///     The list of <see cref="IWorkflowCondition" />s to evaluate.
-        /// </param>
-        /// <param name="instance">
-        ///     The <see cref="WorkflowInstance" /> to evaluate the conditions actions against.
-        /// </param>
+        /// <param name="conditions">The list of <see cref="IWorkflowCondition" />s to evaluate.</param>
+        /// <param name="instance">The <see cref="WorkflowInstance" /> to evaluate the conditions actions against.</param>
         /// <param name="trigger">
-        ///     The <see cref="IWorkflowTrigger" /> that is being processed to cause these conditions to be
-        ///     evaluated. It is possible for this parameter to be null if the conditions being evaluated
-        ///     are the entry conditions for the initial state of a new <see cref="WorkflowInstance" />.
+        /// The <see cref="IWorkflowTrigger" /> that is being processed to cause these conditions to be
+        /// evaluated. It is possible for this parameter to be null if the conditions being evaluated
+        /// are the entry conditions for the initial state of a new <see cref="WorkflowInstance" />.
         /// </param>
-        /// <returns>
-        ///     A <see cref="Task" /> that will complete when all conditions have been evaluated.
-        /// </returns>
+        /// <returns>A <see cref="Task" /> that will complete when all conditions have been evaluated.</returns>
         /// <remarks>
-        ///     The actions will be executed sequentially. If a condition is not met, remaining
-        ///     conditions will not be evaluated.
-        ///     This is a helper method for internal use only. It is used to make code
-        ///     more readable when evaluating exit/transition/entry conditions.
+        /// The actions will be executed sequentially. If a condition is not met, remaining
+        /// conditions will not be evaluated.
+        /// This is a helper method for internal use only. It is used to make code
+        /// more readable when evaluating exit/transition/entry conditions.
         /// </remarks>
         private async Task<bool> CheckConditionsAsync(
             IEnumerable<IWorkflowCondition> conditions,
@@ -653,35 +657,29 @@ namespace Marain.Workflows
         }
 
         /// <summary>
-        ///     Initializes a <see cref="WorkflowInstance" />. See Remarks for full details of this process.
+        /// Initializes a <see cref="WorkflowInstance" />. See Remarks for full details of this process.
         /// </summary>
         /// <param name="instance">The workflow instance.</param>
-        /// <param name="workflow">
-        ///     The <see cref="Workflow" /> that this is an instance of.
-        /// </param>
-        /// <param name="context">
-        ///     The dictionary of context values that was supplied when this instance was created.
-        /// </param>
-        /// <returns>
-        ///     A <see cref="Task" /> that completes when the instance is initialised.
-        /// </returns>
+        /// <param name="workflow">The <see cref="Workflow" /> that this is an instance of.</param>
+        /// <param name="context">The dictionary of context values that was supplied when this instance was created.</param>
+        /// <returns>A <see cref="Task" /> that completes when the instance is initialised.</returns>
         /// <remarks>
-        ///     <para>
-        ///         Initialization includes the following steps:
-        ///         - Setting the instance's <see cref="WorkflowInstance.Context" /> property to the supplied dictionary.
-        ///         - Setting the state of this instance to the workflow's initial state.
-        ///         - Validating the entry conditions of the initial state.
-        ///         - Executing the entry actions of the initial state.
-        ///     </para>
-        ///     <para>
-        ///         It is possible for an action executed as part of initialization to cause an
-        ///         <see cref="IWorkflowTrigger" /> to be created. If an action does do this, it should
-        ///         add it to the current <see cref="IWorkflowMessageQueue" />. As a result of this it
-        ///         is vitally important that the code creating and Initializing a workflow instance
-        ///         takes a shared lease at the earliest possible moment.
-        ///     </para>
+        /// <para>
+        /// Initialization includes the following steps:
+        /// - Setting the instance's <see cref="WorkflowInstance.Context" /> property to the supplied dictionary.
+        /// - Setting the state of this instance to the workflow's initial state.
+        /// - Validating the entry conditions of the initial state.
+        /// - Executing the entry actions of the initial state.
+        /// </para>
+        /// <para>
+        /// It is possible for an action executed as part of initialization to cause an
+        /// <see cref="IWorkflowTrigger" /> to be created. If an action does do this, it should
+        /// add it to the current <see cref="IWorkflowMessageQueue" />. As a result of this it
+        /// is vitally important that the code creating and Initializing a workflow instance
+        /// takes a shared lease at the earliest possible moment.
+        /// </para>
         /// </remarks>
-        private async Task InitializeInstanceAsync(WorkflowInstance instance, Workflow workflow, Dictionary<string, string> context = null)
+        private async Task InitializeInstanceAsync(WorkflowInstance instance, Workflow workflow, IDictionary<string, string> context = null)
         {
             instance.WorkflowId = workflow.Id;
             instance.Context = context;

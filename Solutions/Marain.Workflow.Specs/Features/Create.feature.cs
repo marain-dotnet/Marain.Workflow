@@ -19,8 +19,8 @@ namespace Marain.Workflows.Specs.Features
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Creating workflow instances")]
+    [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     [NUnit.Framework.CategoryAttribute("setupCosmosDBRepository")]
-    [NUnit.Framework.CategoryAttribute("setupContainer")]
     public partial class CreatingWorkflowInstancesFeature
     {
         
@@ -36,8 +36,8 @@ namespace Marain.Workflows.Specs.Features
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Creating workflow instances", "\t\t In order to ensure that my workflow instances are created correctly\r\n\t\t And th" +
                     "at my workflow can create any supporting data necessary\r\n\t\t As a workflow design" +
                     "er\r\n\t\t I want to be able to put conditions and actions on the initial state", ProgrammingLanguage.CSharp, new string[] {
-                        "setupCosmosDBRepository",
-                        "setupContainer"});
+                        "perFeatureContainer",
+                        "setupCosmosDBRepository"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -79,7 +79,7 @@ namespace Marain.Workflows.Specs.Features
         {
 #line 9
 #line 10
- testRunner.Given("I have created and persisted the DataCatalogWorkflow with Id \"dc-workflow\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have created and persisted the DataCatalogWorkflow with Id \'dc-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 11
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -106,23 +106,23 @@ this.FeatureBackground();
                         "Type",
                         "t1"});
 #line 14
- testRunner.When("I create and persist a new instance with Id \"new-instance\" of the workflow with I" +
-                    "d \"dc-workflow\" and supply the following context items", ((string)(null)), table11, "When ");
+ testRunner.When("I create and persist a new instance with Id \'new-instance\' of the workflow with I" +
+                    "d \'dc-workflow\' and supply the following context items", ((string)(null)), table11, "When ");
 #line 18
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 19
- testRunner.Then("the workflow instance with Id \"new-instance\" should have status \"Waiting\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance with Id \'new-instance\' should have status \'Waiting\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 20
- testRunner.And("the workflow instance with Id \"new-instance\" should be in the state called \"Waiti" +
-                    "ng for documentation\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the workflow instance with Id \'new-instance\' should be in the state called \'Waiti" +
+                    "ng for documentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 21
- testRunner.And("a new data catalog item with Id \"new-instance\" should have been added to the data" +
+ testRunner.And("a new data catalog item with Id \'new-instance\' should have been added to the data" +
                     " catalog store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 22
- testRunner.And("the data catalog item with Id \"new-instance\" should have an Identifier of \"identi" +
-                    "fier1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the data catalog item with Id \'new-instance\' should have an Identifier of \'identi" +
+                    "fier1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 23
- testRunner.And("the data catalog item with Id \"new-instance\" should have a Type of \"t1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the data catalog item with Id \'new-instance\' should have a Type of \'t1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
                         "Message"});
@@ -158,15 +158,15 @@ this.FeatureBackground();
                         "Type",
                         "t1"});
 #line 32
- testRunner.When("I create and persist a new instance with Id \"new-instance-incomplete\" of the work" +
-                    "flow with Id \"dc-workflow\" and supply the following context items", ((string)(null)), table13, "When ");
+ testRunner.When("I create and persist a new instance with Id \'new-instance-incomplete\' of the work" +
+                    "flow with Id \'dc-workflow\' and supply the following context items", ((string)(null)), table13, "When ");
 #line 35
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 36
- testRunner.Then("the workflow instance with Id \"new-instance-incomplete\" should have status \"Fault" +
-                    "ed\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance with Id \'new-instance-incomplete\' should have status \'Fault" +
+                    "ed\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 37
- testRunner.And("a new data catalog item with Id \"new-instance-incomplete\" should not have been ad" +
+ testRunner.And("a new data catalog item with Id \'new-instance-incomplete\' should not have been ad" +
                     "ded to the data catalog store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();

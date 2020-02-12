@@ -1,5 +1,5 @@
-﻿// <copyright file="TraceAction.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="TraceAction.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -33,11 +33,11 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
             return Task.CompletedTask;
         }
 
-        public static List<string> GetTraces()
+        public static IList<string> GetTraces()
         {
             if (ScenarioContext.Current.ContainsKey(ScenarioContextListName))
             {
-                return (List<string>)ScenarioContext.Current[ScenarioContextListName];
+                return (IList<string>)ScenarioContext.Current[ScenarioContextListName];
             }
 
             var log = new List<string>();

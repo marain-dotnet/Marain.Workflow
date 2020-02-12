@@ -41,12 +41,16 @@ namespace Marain.Workflows
         /// <summary>
         /// Initializes a new instance of the <see cref="InvokeExternalServiceAction"/> class.
         /// </summary>
-        /// <param name="serviceIdentityTokenSource">The identity token source.</param>
-        /// <param name="serializerSettingsProvider">The serializer settings provider.</param>
-        public InvokeExternalServiceAction(IServiceIdentityTokenSource serviceIdentityTokenSource, IJsonSerializerSettingsProvider serializerSettingsProvider)
+        /// <param name="serviceIdentityTokenSource">The token source to use when authenticating to third party services.</param>
+        /// <param name="serializerSettingsProvider">The serialization settings to use when serializing requests.</param>
+        public InvokeExternalServiceAction(
+            IServiceIdentityTokenSource serviceIdentityTokenSource,
+            IJsonSerializerSettingsProvider serializerSettingsProvider)
         {
-            this.serviceIdentityTokenSource = serviceIdentityTokenSource ?? throw new ArgumentNullException(nameof(serviceIdentityTokenSource));
-            this.serializerSettingsProvider = serializerSettingsProvider ?? throw new ArgumentNullException(nameof(serializerSettingsProvider));
+            this.serviceIdentityTokenSource =
+                serviceIdentityTokenSource ?? throw new ArgumentNullException(nameof(serviceIdentityTokenSource));
+            this.serializerSettingsProvider =
+                serializerSettingsProvider ?? throw new ArgumentNullException(nameof(serializerSettingsProvider));
         }
 
         /// <inheritdoc />
@@ -90,7 +94,8 @@ namespace Marain.Workflows
 
             if (this.AuthenticateWithManagedServiceIdentity)
             {
-                string token = await this.serviceIdentityTokenSource.GetAccessToken(this.MsiAuthenticationResource).ConfigureAwait(false);
+                string token = await this.serviceIdentityTokenSource.GetAccessToken(
+                    this.MsiAuthenticationResource).ConfigureAwait(false);
 
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
@@ -121,7 +126,13 @@ namespace Marain.Workflows
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new ExternalServiceInvocationException(this.ContentType, this.Id, instance.Id, trigger.Id, response.StatusCode, response.ReasonPhrase);
+                throw new ExternalServiceInvocationException(
+                    this.ContentType,
+                    this.Id,
+                    instance.Id,
+                    trigger.Id,
+                    response.StatusCode,
+                    response.ReasonPhrase);
             }
         }
     }

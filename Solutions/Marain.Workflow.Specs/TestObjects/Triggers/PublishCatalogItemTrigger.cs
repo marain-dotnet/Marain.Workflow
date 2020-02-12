@@ -1,5 +1,5 @@
-﻿// <copyright file="PublishCatalogItemTrigger.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="PublishCatalogItemTrigger.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -11,7 +11,7 @@ namespace Marain.Workflows.Specs.TestObjects.Triggers
 
     public class PublishCatalogItemTrigger : ICatalogItemTrigger
     {
-        public const string RegisteredContentType = "application/vnd.marain.datacatalog.publishcatalogitemtrigger";
+        public const string RegisteredContentType = "application/vnd.endjin.datacatalog.publishcatalogitemtrigger";
 
         public string CatalogItemId { get; set; }
 

@@ -6,7 +6,6 @@ namespace Marain.Workflows
 {
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
-    using Corvus.Extensions.Cosmos;
     using Corvus.Leasing;
     using Corvus.Tenancy;
     using Microsoft.Azure.Cosmos;
@@ -24,7 +23,7 @@ namespace Marain.Workflows
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowEngineFactory"/> class.
         /// </summary>
-        /// <param name="repositoryFactory">The <see cref="ICosmosClientBuilderFactory"/>.</param>
+        /// <param name="repositoryFactory">The <see cref="ITenantCosmosContainerFactory"/>.</param>
         /// <param name="leaseProvider">The lease provider.</param>
         /// <param name="logger">The logger.</param>
         public WorkflowEngineFactory(
@@ -32,22 +31,29 @@ namespace Marain.Workflows
             ILeaseProvider leaseProvider,
             ILogger<IWorkflowEngine> logger)
         {
-            this.repositoryFactory = repositoryFactory ?? throw new System.ArgumentNullException(nameof(repositoryFactory));
-            this.leaseProvider = leaseProvider ?? throw new System.ArgumentNullException(nameof(leaseProvider));
-            this.logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
+            this.repositoryFactory = repositoryFactory;
+            this.leaseProvider = leaseProvider;
+            this.logger = logger;
         }
 
         /// <inheritdoc/>
-        public CosmosContainerDefinition WorkflowInstanceRepositoryDefinition { get; set; } = new CosmosContainerDefinition("workflow", "workflowinstances", "/partitionKey");
+        public CosmosContainerDefinition WorkflowInstanceCosmosContainerDefinition { get; set; } =
+            new CosmosContainerDefinition("workflow", "workflowinstances", "/id");
 
         /// <inheritdoc/>
-        public CosmosContainerDefinition WorkflowRepositoryDefinition { get; set; } = new CosmosContainerDefinition("workflow", "workflows", "/partitionKey");
+        public CosmosContainerDefinition WorkflowCosmosContainerDefinition { get; set; } =
+            new CosmosContainerDefinition("workflow", "workflows", "/id");
 
         /// <inheritdoc/>
         public async Task<IWorkflowEngine> GetWorkflowEngineAsync(ITenant tenant)
         {
-            Container workflowInstanceRepository = await this.repositoryFactory.GetContainerForTenantAsync(tenant, this.WorkflowInstanceRepositoryDefinition).ConfigureAwait(false);
-            Container workflowRepository = await this.repositoryFactory.GetContainerForTenantAsync(tenant, this.WorkflowRepositoryDefinition).ConfigureAwait(false);
+            Container workflowInstanceRepository = await this.repositoryFactory.GetContainerForTenantAsync(
+                tenant,
+                this.WorkflowInstanceCosmosContainerDefinition).ConfigureAwait(false);
+
+            Container workflowRepository = await this.repositoryFactory.GetContainerForTenantAsync(
+                tenant,
+                this.WorkflowCosmosContainerDefinition).ConfigureAwait(false);
 
             return new WorkflowEngine(workflowInstanceRepository, workflowRepository, this.leaseProvider, this.logger);
         }

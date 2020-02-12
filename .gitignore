@@ -54,6 +54,9 @@ project.fragment.lock.json
 artifacts/
 **/Properties/launchSettings.json
 
+# Web/functions app settings
+local.settings.json
+
 # StyleCop
 StyleCopReport.xml
 
@@ -328,3 +331,9 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+# Cobertura code coverage file
+coverage.cobertura.xml
+
+# VS Code config files
+/.vscode

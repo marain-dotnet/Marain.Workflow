@@ -1,5 +1,5 @@
-﻿@setupCosmosDBRepository
-@setupContainer
+﻿@perFeatureContainer
+@setupCosmosDBRepository
 Feature: InvokeExternalServiceAction
     In order to be able to define a workflow that invokes external HTTP endpoints
     As a developer defining a workflow
@@ -8,7 +8,7 @@ Feature: InvokeExternalServiceAction
 @externalServiceRequired
 Scenario: External action invoked
     Given I have created and persisted a workflow containing an external action with id 'external-action-workflow'
-	And I have created and persisted a new instance with Id "id1" of the workflow with Id "external-action-workflow" and supplied the following context items
+	And I have created and persisted a new instance with Id 'id1' of the workflow with Id 'external-action-workflow' and supplied the following context items
 	| Key                              | Value  |
 	| include1                         | value1 |
 	| include2                         | value2 |
@@ -27,13 +27,13 @@ Scenario: External action invoked
     And the request body ContextProperties key 'include1' has the value 'value1'
     And the request body ContextProperties key 'include2' has the value 'value2'
     And the request body ContextProperties has 2 values
-	Then the workflow instance with Id "id1" should have status "Complete"
-	And the workflow instance with Id "id1" should be in the state called "Done"
+	Then the workflow instance with Id 'id1' should have status 'Complete'
+	And the workflow instance with Id 'id1' should be in the state called 'Done'
 
 @externalServiceRequired
 Scenario: External action returns a 500 status code
     Given I have created and persisted a workflow containing an external action with id 'external-action-workflow'
-	And I have created and persisted a new instance with Id "id2" of the workflow with Id "external-action-workflow" and supplied the following context items
+	And I have created and persisted a new instance with Id 'id2' of the workflow with Id 'external-action-workflow' and supplied the following context items
 	| Key                              | Value  |
 	| include1                         | value1 |
 	| include2                         | value2 |
@@ -43,5 +43,5 @@ Scenario: External action returns a 500 status code
     When I send a trigger that will execute the action with a trigger id of 'id2'
 	And I wait for all triggers to be processed
     Then the action endpoint should have been invoked
-	Then the workflow instance with Id "id2" should have status "Faulted"
-	And the workflow instance with Id "id2" should be in the state called "Waiting to run"
+	Then the workflow instance with Id 'id2' should have status 'Faulted'
+	And the workflow instance with Id 'id2' should be in the state called 'Waiting to run'

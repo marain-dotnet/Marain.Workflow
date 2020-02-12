@@ -1,5 +1,5 @@
-﻿// <copyright file="ApplyCatalogItemPatchAction.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="ApplyCatalogItemPatchAction.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 #pragma warning disable
@@ -15,7 +15,7 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
 
     public class ApplyCatalogItemPatchAction : IWorkflowAction
     {
-        public const string RegisteredContentType = "application/vnd.marain.datacatalog.applycatalogitempatchaction";
+        public const string RegisteredContentType = "application/vnd.endjin.datacatalog.applycatalogitempatchaction";
 
         private readonly DataCatalogItemRepositoryFactory repositoryFactory;
 
@@ -39,9 +39,14 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
         protected async Task ExecuteAsync(WorkflowInstance instance, CatalogItemPatch content)
         {
             var repository = this.repositoryFactory.GetRepository();
-            var existingCatalogItem = await repository.ReadItemAsync<CatalogItem>(content.Id, new PartitionKey(content.Id)).ConfigureAwait(false);
-            var newCatalogItem = content.ApplyTo(existingCatalogItem.Resource);
-            await repository.UpsertItemAsync(newCatalogItem, new PartitionKey(newCatalogItem.PartitionKey)).ConfigureAwait(false);
+
+            var existingCatalogItem = await repository
+                .ReadItemAsync<CatalogItem>(content.Id, new PartitionKey(content.Id))
+                .ConfigureAwait(false);
+
+            var newCatalogItem = content.ApplyTo(existingCatalogItem);
+
+            await repository.UpsertItemAsync(newCatalogItem).ConfigureAwait(false);
         }
     }
 }
