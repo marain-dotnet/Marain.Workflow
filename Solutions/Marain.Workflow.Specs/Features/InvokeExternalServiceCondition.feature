@@ -1,5 +1,5 @@
 ﻿@perFeatureContainer
-@setupCosmosDBRepository
+@setupTenantedCosmosContainers
 Feature: InvokeExternalServiceCondition
     In order to be able to define a workflow that queries external HTTP endpoints to determine conditions
     As a developer defining a workflow

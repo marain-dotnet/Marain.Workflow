@@ -39,6 +39,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.Message
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.EngineHost.Client", "Marain.Workflow.Api.EngineHost.Client\Marain.Workflow.Api.EngineHost.Client.csproj", "{4EF18979-2FEA-4CC4-9CBB-11B78E088201}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tenancy", "Tenancy", "{D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Tenancy.AzureCosmos", "Marain.Workflow.Tenancy.AzureCosmos\Marain.Workflow.Tenancy.AzureCosmos.csproj", "{A834E43F-37A6-48B7-BCB9-E2AD5B64D25E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Tenancy.Abstractions", "Marain.Workflow.Tenancy.Abstractions\Marain.Workflow.Tenancy.Abstractions.csproj", "{C2D81D36-F6FA-4EA6-9AC2-D28A36F96AA3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Storage.AzureCosmos", "Marain.Workflow.Storage.AzureCosmos\Marain.Workflow.Storage.AzureCosmos.csproj", "{C4F6B6DF-AFE2-45C7-9A3C-38F6AA129307}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +85,18 @@ Global
 		{4EF18979-2FEA-4CC4-9CBB-11B78E088201}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EF18979-2FEA-4CC4-9CBB-11B78E088201}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EF18979-2FEA-4CC4-9CBB-11B78E088201}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A834E43F-37A6-48B7-BCB9-E2AD5B64D25E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A834E43F-37A6-48B7-BCB9-E2AD5B64D25E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A834E43F-37A6-48B7-BCB9-E2AD5B64D25E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A834E43F-37A6-48B7-BCB9-E2AD5B64D25E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2D81D36-F6FA-4EA6-9AC2-D28A36F96AA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2D81D36-F6FA-4EA6-9AC2-D28A36F96AA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2D81D36-F6FA-4EA6-9AC2-D28A36F96AA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2D81D36-F6FA-4EA6-9AC2-D28A36F96AA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4F6B6DF-AFE2-45C7-9A3C-38F6AA129307}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4F6B6DF-AFE2-45C7-9A3C-38F6AA129307}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4F6B6DF-AFE2-45C7-9A3C-38F6AA129307}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4F6B6DF-AFE2-45C7-9A3C-38F6AA129307}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +108,8 @@ Global
 		{1299E881-7001-4A0F-95E4-692E6B6139CC} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 		{AD2E284B-2F33-4C0D-8E4F-CC84456A0828} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 		{4EF18979-2FEA-4CC4-9CBB-11B78E088201} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
+		{A834E43F-37A6-48B7-BCB9-E2AD5B64D25E} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
+		{C2D81D36-F6FA-4EA6-9AC2-D28A36F96AA3} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EED79307-5690-4CE6-A80D-F41857C97EFF}

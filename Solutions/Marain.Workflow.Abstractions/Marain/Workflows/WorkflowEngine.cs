@@ -19,104 +19,31 @@ namespace Marain.Workflows
     /// <inheritdoc />
     public class WorkflowEngine : IWorkflowEngine
     {
-        private readonly Container workflowInstanceContainer;
-        private readonly Container workflowContainer;
         private readonly ILeaseProvider leaseProvider;
         private readonly ILogger<IWorkflowEngine> logger;
+
+        private readonly IWorkflowInstanceStore workflowInstanceStore;
+        private readonly IWorkflowStore workflowStore;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowEngine"/> class.
         /// </summary>
-        /// <param name="workflowInstanceContainer">The repository in which to store workflow instances.</param>
-        /// <param name="workflowContainer">The repository in which to store workflows.</param>
+        /// <param name="workflowStore">The repository in which to store workflows.</param>
+        /// <param name="workflowInstanceStore">The repository in which to store workflow instances.</param>
         /// <param name="leaseProvider">The lease provider.</param>
         /// <param name="logger">A logger for the workflow instance service.</param>
         public WorkflowEngine(
-            Container workflowInstanceContainer,
-            Container workflowContainer,
+            IWorkflowStore workflowStore,
+            IWorkflowInstanceStore workflowInstanceStore,
             ILeaseProvider leaseProvider,
             ILogger<IWorkflowEngine> logger)
         {
-            this.workflowInstanceContainer =
-                workflowInstanceContainer ?? throw new ArgumentNullException(nameof(workflowInstanceContainer));
-            this.workflowContainer = workflowContainer ?? throw new ArgumentNullException(nameof(workflowContainer));
+            this.workflowStore = workflowStore ?? throw new ArgumentNullException(nameof(workflowStore));
+            this.workflowInstanceStore =
+                workflowInstanceStore ?? throw new ArgumentNullException(nameof(workflowInstanceStore));
+
             this.leaseProvider = leaseProvider ?? throw new ArgumentNullException(nameof(leaseProvider));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
-
-        /// <inheritdoc/>
-        public async Task<Workflow> GetWorkflowAsync(string workflowId, string partitionKey = null)
-        {
-            try
-            {
-                ItemResponse<Workflow> itemResponse = await Retriable.RetryAsync(() =>
-                    this.workflowContainer.ReadItemAsync<Workflow>(
-                        workflowId,
-                        new PartitionKey(partitionKey ?? workflowId)))
-                    .ConfigureAwait(false);
-
-                return itemResponse.Resource;
-            }
-            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                throw new WorkflowNotFoundException($"The workflow with id {workflowId} was not found", ex);
-            }
-        }
-
-        /// <inheritdoc/>
-        public Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
-        {
-            return Retriable.RetryAsync(() =>
-                this.workflowContainer.UpsertItemAsync(
-                    workflow,
-                    new PartitionKey(partitionKey ?? workflow.Id),
-                    new ItemRequestOptions { IfMatchEtag = workflow.ETag }));
-        }
-
-        /// <inheritdoc/>
-        public async Task<WorkflowInstance> GetWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
-        {
-            try
-            {
-                return await Retriable.RetryAsync(() =>
-                    this.workflowInstanceContainer.ReadItemAsync<WorkflowInstance>(
-                        workflowInstanceId,
-                        new PartitionKey(partitionKey ?? workflowInstanceId)))
-                    .ConfigureAwait(false);
-            }
-            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                throw new WorkflowInstanceNotFoundException(
-                    $"The workflow instance with id {workflowInstanceId} was not found",
-                    ex);
-            }
-        }
-
-        /// <inheritdoc/>
-        public Task UpsertWorkflowInstanceAsync(WorkflowInstance workflowInstance, string partitionKey = null)
-        {
-            return Retriable.RetryAsync(() =>
-                this.workflowInstanceContainer.UpsertItemAsync(
-                    workflowInstance,
-                    new PartitionKey(partitionKey ?? workflowInstance.Id),
-                    new ItemRequestOptions { IfMatchEtag = workflowInstance.ETag }));
-        }
-
-        /// <inheritdoc/>
-        public async Task DeleteWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
-        {
-            try
-            {
-                await Retriable.RetryAsync(() =>
-                    this.workflowInstanceContainer.DeleteItemAsync<WorkflowInstance>(
-                        workflowInstanceId,
-                        new PartitionKey(partitionKey ?? workflowInstanceId)))
-                    .ConfigureAwait(false);
-            }
-            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                throw new WorkflowInstanceNotFoundException($"The workflow instance with id {workflowInstanceId} was not found", ex);
-            }
         }
 
         /// <inheritdoc/>
@@ -148,85 +75,6 @@ namespace Marain.Workflows
             return this.ProcessInstanceWithLeaseAsync(trigger, workflowInstanceId, partitionKey);
         }
 
-        /// <inheritdoc/>
-        public async Task<IEnumerable<string>> GetMatchingWorkflowInstanceIdsForSubjectsAsync(
-            IEnumerable<string> subjects,
-            int pageSize,
-            int pageNumber)
-        {
-            QueryDefinition spec = BuildFindInstanceIdsSpec(subjects, pageSize, pageNumber);
-
-            FeedIterator<dynamic> iterator = this.workflowInstanceContainer.GetItemQueryIterator<dynamic>(spec);
-
-            if (iterator.HasMoreResults)
-            {
-                FeedResponse<dynamic> results = await Retriable.RetryAsync(() => iterator.ReadNextAsync()).ConfigureAwait(false);
-                return results.Select(x => (string)x.id);
-            }
-
-            return Enumerable.Empty<string>();
-        }
-
-        /// <inheritdoc/>
-        public async Task<int> GetMatchingWorkflowInstanceCountForSubjectsAsync(IEnumerable<string> subjects)
-        {
-            QueryDefinition spec = BuildFindInstanceIdsSpec(subjects, 1, 0, true);
-
-            FeedIterator<int> iterator = this.workflowInstanceContainer.GetItemQueryIterator<int>(spec, null, new QueryRequestOptions { MaxItemCount = 1 });
-
-            // There will always be a result so we don't need to check...
-            FeedResponse<int> result = await Retriable.RetryAsync(() => iterator.ReadNextAsync()).ConfigureAwait(false);
-            return result.First();
-        }
-
-        private static QueryDefinition BuildFindInstanceIdsSpec(IEnumerable<string> subjects, int pageSize, int pageNumber, bool countOnly = false)
-        {
-            string[] subjectsArray = subjects?.ToArray();
-
-            string query = countOnly ? "SELECT VALUE COUNT(root.id) FROM root" : "SELECT root.id FROM root";
-            string offsetLimitClause = $" OFFSET {pageSize * pageNumber} LIMIT {pageSize}";
-            if (subjectsArray?.Length > 0)
-            {
-                (string where, List<(string, string)> parameters) = GetSubjectClause(subjectsArray);
-                var result = new QueryDefinition($"{query} WHERE {where}" + offsetLimitClause);
-                parameters.ForEach(x => result.WithParameter(x.Item1, x.Item2));
-
-                return result;
-            }
-
-            return new QueryDefinition(query + offsetLimitClause);
-        }
-
-        /// <summary>
-        /// Builds the subject clause to be used when subjects are supplied to <see cref="GetMatchingWorkflowInstanceIdsForSubjectsAsync" />.
-        /// </summary>
-        /// <param name="subjects">
-        /// The list of subjects/.
-        /// </param>
-        /// <returns>
-        /// A <see cref="string" /> containing the WHERE clause and a <see cref="SqlParameterCollection" /> containing
-        /// the parameters it should be supplied with.
-        /// </returns>
-        private static (string, List<(string, string)>) GetSubjectClause(IEnumerable<string> subjects)
-        {
-            var result = new StringBuilder();
-            var parameters = new List<(string, string)>();
-
-            subjects.ForEachAtIndex(
-                (s, i) =>
-                {
-                    if (i > 0)
-                    {
-                        result.Append(" OR ");
-                    }
-
-                    result.Append("ARRAY_CONTAINS(root.interests, @subject").Append(i).Append(")");
-                    parameters.Add(($"@subject{i}", s));
-                });
-
-            return (result.ToString(), parameters);
-        }
-
         /// <summary>
         /// Retrieves a single <see cref="WorkflowInstance" /> and passes it the trigger
         /// to process.
@@ -246,7 +94,7 @@ namespace Marain.Workflows
 
             try
             {
-                item = await this.GetWorkflowInstanceAsync(instanceId, partitionKey).ConfigureAwait(false);
+                item = await this.workflowInstanceStore.GetWorkflowInstanceAsync(instanceId, partitionKey).ConfigureAwait(false);
 
                 this.logger.LogDebug($"Accepting trigger {trigger.Id} in instance {item.Id}", trigger, item);
 
@@ -281,7 +129,7 @@ namespace Marain.Workflows
             {
                 if (item?.IsDirty == true)
                 {
-                    await this.UpsertWorkflowInstanceAsync(item, partitionKey).ConfigureAwait(false);
+                    await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(item, partitionKey).ConfigureAwait(false);
                 }
             }
         }
@@ -327,7 +175,7 @@ namespace Marain.Workflows
                 instance.Id = workflowInstanceId;
             }
 
-            Workflow workflow = await this.GetWorkflowAsync(workflowId, workflowPartitionKey).ConfigureAwait(false);
+            Workflow workflow = await this.workflowStore.GetWorkflowAsync(workflowId, workflowPartitionKey).ConfigureAwait(false);
             if (workflow == null)
             {
                 throw new WorkflowNotFoundException();
@@ -336,9 +184,9 @@ namespace Marain.Workflows
             await this.leaseProvider.ExecuteWithMutexAsync(
                     async _ =>
                     {
-                        await this.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
+                        await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
                         await this.InitializeInstanceAsync(instance, workflow, context).ConfigureAwait(false);
-                        await this.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
+                        await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
                     },
                     instance.Id)
                 .ConfigureAwait(false);
@@ -366,7 +214,7 @@ namespace Marain.Workflows
             WorkflowInstance instance,
             IWorkflowTrigger trigger)
         {
-            Workflow workflow = await this.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
+            Workflow workflow = await this.workflowStore.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
             WorkflowState state = workflow.GetState(instance.StateId);
 
             if (instance.Status == WorkflowStatus.Faulted)

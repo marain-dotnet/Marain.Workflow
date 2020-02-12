@@ -20,7 +20,7 @@ namespace Marain.Workflows.Specs.Features
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Edit catalog item")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
-    [NUnit.Framework.CategoryAttribute("setupCosmosDBRepository")]
+    [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainers")]
     public partial class EditCatalogItemFeature
     {
         
@@ -35,7 +35,7 @@ namespace Marain.Workflows.Specs.Features
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Edit catalog item", null, ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
-                        "setupCosmosDBRepository"});
+                        "setupTenantedCosmosContainers"});
             testRunner.OnFeatureStart(featureInfo);
         }
         

@@ -18,6 +18,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     using Corvus.Extensions.Json;
     using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Marain.ContentManagement.Specs.Bindings;
     using Marain.Workflows.Api.Specs.Bindings;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
@@ -70,10 +71,7 @@ namespace Marain.Workflows.Api.Specs.Steps
 
         private void PostContextObjectToEndpoint(string instanceName, string url)
         {
-            ITenantProvider tenantProvider =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<ITenantProvider>();
-
-            string tenantId = tenantProvider.Root.Id;
+            string tenantId = this.featureContext.GetTransientTenantId();
 
             url = url.Replace("{tenantId}", tenantId);
 

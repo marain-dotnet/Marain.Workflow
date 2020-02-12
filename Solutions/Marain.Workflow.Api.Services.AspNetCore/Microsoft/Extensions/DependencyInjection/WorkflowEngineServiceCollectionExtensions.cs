@@ -69,7 +69,7 @@ namespace Microsoft.Extensions.DependencyInjection
             IConfiguration configuration)
         {
             // Verify that these services aren't already present
-            Type engineFactoryServiceType = typeof(IWorkflowEngineFactory);
+            Type engineFactoryServiceType = typeof(ITenantedWorkflowEngineFactory);
 
             // If any of the workflow are already installed, assume we've already completed installation and return.
             if (services.Any(services => engineFactoryServiceType.IsAssignableFrom(services.ImplementationType)))
@@ -83,7 +83,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTenantProviderBlobStore();
 
             services.AddTenantCosmosContainerFactory(configuration);
-            services.AddWorkflowEngineFactory();
+            services.AddTenantedWorkflowEngineFactory();
+            services.AddTenantedAzureCosmosWorkflowStore(configuration);
+            services.AddTenantedAzureCosmosWorkflowInstanceStore(configuration);
 
             services.RegisterCoreWorkflowContentTypes();
 

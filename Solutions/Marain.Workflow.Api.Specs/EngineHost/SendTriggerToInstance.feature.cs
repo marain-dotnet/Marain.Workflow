@@ -21,6 +21,8 @@ namespace Marain.Workflows.Api.Specs.EngineHost
     [NUnit.Framework.DescriptionAttribute("SendTriggerToInstance")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     [NUnit.Framework.CategoryAttribute("useWorkflowEngineApi")]
+    [NUnit.Framework.CategoryAttribute("useTransientTenant")]
+    [NUnit.Framework.CategoryAttribute("useChildObjects")]
     public partial class SendTriggerToInstanceFeature
     {
         
@@ -37,7 +39,9 @@ namespace Marain.Workflows.Api.Specs.EngineHost
                     "of the workflow engine\r\n\tI want to send a trigger to a specific workflow instanc" +
                     "e", ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
-                        "useWorkflowEngineApi"});
+                        "useWorkflowEngineApi",
+                        "useTransientTenant",
+                        "useChildObjects"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -77,18 +81,16 @@ namespace Marain.Workflows.Api.Specs.EngineHost
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Send a trigger")]
-        [NUnit.Framework.CategoryAttribute("useChildObjects")]
         public virtual void SendATrigger()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Send a trigger", null, new string[] {
-                        "useChildObjects"});
-#line 9
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Send a trigger", null, ((string[])(null)));
+#line 10
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 10
+#line 11
  testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
                     "\'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 11
+#line 12
  testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -100,9 +102,9 @@ this.ScenarioInitialize(scenarioInfo);
             table1.AddRow(new string[] {
                         "CostCenter",
                         "GD3724"});
-#line 12
+#line 13
  testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table1, "And ");
-#line 16
+#line 17
  testRunner.And("I have started an instance of the workflow \'simple-expenses-workflow\' with instan" +
                     "ce id \'instance\' and using context object \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -110,15 +112,15 @@ this.ScenarioInitialize(scenarioInfo);
                         "TriggerName"});
             table2.AddRow(new string[] {
                         "Submit"});
-#line 17
+#line 18
  testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.trigger\' called" +
                     " \'trigger\'", ((string)(null)), table2, "And ");
-#line 20
+#line 21
  testRunner.When("I post the object called \'trigger\' to the workflow engine path \'/{tenantId}/marai" +
                     "n/workflow/engine/workflowinstances/instance/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 21
- testRunner.Then("I should have received a 200 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 22
+ testRunner.Then("I should have received a 200 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 23
  testRunner.And("the workflow instance with id \'instance\' should be in the state with name \'Waitin" +
                     "g for approval\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -130,7 +132,7 @@ this.ScenarioInitialize(scenarioInfo);
         public virtual void SendATriggerWithAnInvalidWorkflowInstanceId()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Send a trigger with an invalid workflow instance Id", null, ((string[])(null)));
-#line 24
+#line 25
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line hidden
@@ -138,13 +140,13 @@ this.ScenarioInitialize(scenarioInfo);
                         "TriggerName"});
             table3.AddRow(new string[] {
                         "Submit"});
-#line 25
+#line 26
  testRunner.Given("I have an object of type \'application/vnd.marain.workflows.hosted.trigger\' called" +
                     " \'trigger\'", ((string)(null)), table3, "Given ");
-#line 28
+#line 29
  testRunner.When("I post the object called \'trigger\' to the workflow engine path \'/{tenantId}/marai" +
                     "n/workflow/engine/workflowinstances/a-non-existant-workflow-id/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 29
+#line 30
  testRunner.Then("I should have received a 404 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();

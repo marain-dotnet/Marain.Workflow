@@ -48,14 +48,14 @@ namespace Marain.Workflows.Specs.Steps
                 ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowMessageQueue>();
             Workflow workflow = DataCatalogWorkflowFactory.Create(workflowId, workflowMessageQueue);
 
-            IWorkflowEngineFactory engineFactory =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowEngineFactory>();
+            ITenantedWorkflowStoreFactory storeFactory =
+                ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantedWorkflowStoreFactory>();
             ITenantProvider tenantProvider =
                 ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantProvider>();
 
-            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
+            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => engine.UpsertWorkflowAsync(workflow)).ConfigureAwait(false);
+            await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => store.UpsertWorkflowAsync(workflow)).ConfigureAwait(false);
         }
 
         [Then("a new data catalog item with Id '(.*)' should have been added to the data catalog store")]
@@ -177,19 +177,22 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the workflow instance with Id '(.*)' should be in the state called '(.*)'")]
         public async Task ThenTheWorkflowInstanceWithIdShouldBeInTheStateCalled(string instanceId, string stateName)
         {
-            IWorkflowEngineFactory engineFactory = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                                    .GetService<IWorkflowEngineFactory>();
+            ITenantedWorkflowStoreFactory storeFactory = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                                    .GetService<ITenantedWorkflowStoreFactory>();
+            ITenantedWorkflowInstanceStoreFactory instanceStoreFactory = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                                    .GetService<ITenantedWorkflowInstanceStoreFactory>();
 
             ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext)
                                                               .GetService<ITenantProvider>();
 
-            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
+            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
             WorkflowInstance instance = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => engine.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
+                () => instanceStore.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
 
             Workflow workflow = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => engine.GetWorkflowAsync(instance.WorkflowId)).ConfigureAwait(false);
+                () => store.GetWorkflowAsync(instance.WorkflowId)).ConfigureAwait(false);
 
             WorkflowState currentState = workflow.GetState(instance.StateId);
 
@@ -199,16 +202,16 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the workflow instance with Id '(.*)' should have status '(.*)'")]
         public async Task ThenTheWorkflowInstanceWithIdShouldHaveStatus(string instanceId, string expectedStatus)
         {
-            IWorkflowEngineFactory engineFactory = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                                    .GetService<IWorkflowEngineFactory>();
+            ITenantedWorkflowInstanceStoreFactory instanceStoreFactory = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                                    .GetService<ITenantedWorkflowInstanceStoreFactory>();
 
             ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext)
                                                               .GetService<ITenantProvider>();
 
-            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
+            IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
             WorkflowInstance instance = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => engine.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
+                () => instanceStore.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
 
             Assert.AreEqual(expectedStatus, instance.Status.ToString());
         }

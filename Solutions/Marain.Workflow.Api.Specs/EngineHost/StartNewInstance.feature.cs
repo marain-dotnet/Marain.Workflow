@@ -21,6 +21,7 @@ namespace Marain.Workflows.Api.Specs.EngineHost
     [NUnit.Framework.DescriptionAttribute("StartNewInstance")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     [NUnit.Framework.CategoryAttribute("useWorkflowEngineApi")]
+    [NUnit.Framework.CategoryAttribute("useTransientTenant")]
     [NUnit.Framework.CategoryAttribute("useChildObjects")]
     public partial class StartNewInstanceFeature
     {
@@ -38,6 +39,7 @@ namespace Marain.Workflows.Api.Specs.EngineHost
                     "flow engine\r\n\tI want to be able to start a new instance of a workflow", ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
                         "useWorkflowEngineApi",
+                        "useTransientTenant",
                         "useChildObjects"});
             testRunner.OnFeatureStart(featureInfo);
         }
@@ -81,13 +83,13 @@ namespace Marain.Workflows.Api.Specs.EngineHost
         public virtual void StartANewInstanceWithASpecifiedInstanceId()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Start a new instance with a specified instance id", null, ((string[])(null)));
-#line 9
+#line 10
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 10
+#line 11
  testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
                     "\'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 11
+#line 12
  testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
@@ -99,7 +101,7 @@ this.ScenarioInitialize(scenarioInfo);
             table4.AddRow(new string[] {
                         "CostCenter",
                         "GD3724"});
-#line 12
+#line 13
  testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table4, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
@@ -110,21 +112,21 @@ this.ScenarioInitialize(scenarioInfo);
                         "simple-expenses-workflow",
                         "instance",
                         "{context}"});
-#line 16
+#line 17
  testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.startworkflowin" +
                     "stancerequest\' called \'request\'", ((string)(null)), table5, "And ");
-#line 19
+#line 20
  testRunner.When("I post the object called \'request\' to the workflow engine path \'/{tenantId}/marai" +
                     "n/workflow/engine/workflowinstances\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 20
- testRunner.Then("I should have received a 201 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 21
+ testRunner.Then("I should have received a 201 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 22
  testRunner.And("there should be a workflow instance with the id \'instance\' in the workflow instan" +
                     "ce store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 22
+#line 23
  testRunner.And("the workflow instance with id \'instance\' should be an instance of the workflow wi" +
                     "th id \'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 23
+#line 24
  testRunner.And("the workflow instance with id \'instance\' should have a context dictionary that ma" +
                     "tches \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -136,13 +138,13 @@ this.ScenarioInitialize(scenarioInfo);
         public virtual void StartANewInstanceWithoutSpecifyingAnInstanceId()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Start a new instance without specifying an instance id", null, ((string[])(null)));
-#line 25
+#line 26
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 26
+#line 27
  testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
                     "\'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 27
+#line 28
  testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -154,7 +156,7 @@ this.ScenarioInitialize(scenarioInfo);
             table6.AddRow(new string[] {
                         "CostCenter",
                         "GD3724"});
-#line 28
+#line 29
  testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table6, "And ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
@@ -163,15 +165,15 @@ this.ScenarioInitialize(scenarioInfo);
             table7.AddRow(new string[] {
                         "simple-expenses-workflow",
                         "{context}"});
-#line 32
+#line 33
  testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.startworkflowin" +
                     "stancerequest\' called \'request\'", ((string)(null)), table7, "And ");
-#line 35
+#line 36
  testRunner.When("I post the object called \'request\' to the workflow engine path \'/{tenantId}/marai" +
                     "n/workflow/engine/workflowinstances\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 36
- testRunner.Then("I should have received a 201 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 37
+ testRunner.Then("I should have received a 201 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 38
  testRunner.And("there should be 1 workflow instance in the workflow instance store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
@@ -182,7 +184,7 @@ this.ScenarioInitialize(scenarioInfo);
         public virtual void StartANewInstanceWithANon_ExistentWorkflowId()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Start a new instance with a non-existent workflow id", null, ((string[])(null)));
-#line 39
+#line 40
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
 #line hidden
@@ -190,13 +192,13 @@ this.ScenarioInitialize(scenarioInfo);
                         "WorkflowId"});
             table8.AddRow(new string[] {
                         "4629f9f3-a706-4901-a215-df8313376b52"});
-#line 40
+#line 41
  testRunner.Given("I have an object of type \'application/vnd.marain.workflows.hosted.startworkflowin" +
                     "stancerequest\' called \'request\'", ((string)(null)), table8, "Given ");
-#line 43
+#line 44
  testRunner.When("I post the object called \'request\' to the workflow engine path \'/{tenantId}/marai" +
                     "n/workflow/engine/workflowinstances\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 44
+#line 45
  testRunner.Then("I should have received a 404 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();

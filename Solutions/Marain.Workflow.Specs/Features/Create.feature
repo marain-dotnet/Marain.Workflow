@@ -1,5 +1,5 @@
 ﻿@perFeatureContainer
-@setupCosmosDBRepository
+@setupTenantedCosmosContainers
 Feature: Creating workflow instances
 		 In order to ensure that my workflow instances are created correctly
 		 And that my workflow can create any supporting data necessary
