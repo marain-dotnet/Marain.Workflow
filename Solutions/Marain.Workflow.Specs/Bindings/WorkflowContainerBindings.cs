@@ -37,7 +37,7 @@ namespace Marain.Workflows.Specs.Bindings
                         .AddEnvironmentVariables()
                         .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true);
 
-                    IConfigurationRoot root = configurationBuilder.Build();
+                    IConfiguration root = configurationBuilder.Build();
 
                     services.AddSingleton(root);
 
@@ -61,8 +61,8 @@ namespace Marain.Workflows.Specs.Bindings
 
                     services.RegisterCoreWorkflowContentTypes();
                     services.AddTenantedWorkflowEngineFactory();
-                    services.AddTenantedAzureCosmosWorkflowStore(root);
-                    services.AddTenantedAzureCosmosWorkflowInstanceStore(root);
+                    services.AddTenantedAzureCosmosWorkflowStore();
+                    services.AddTenantedAzureCosmosWorkflowInstanceStore();
 
                     services.AddContent(factory => factory.RegisterTestContentTypes());
 

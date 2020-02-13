@@ -8,6 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
     using System.Linq;
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Azure.Storage.Tenancy;
+    using Corvus.Leasing;
     using Marain.Workflows;
     using Marain.Workflows.Api.Services;
     using Menes;
@@ -23,14 +24,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds services required by workflow engine API.
         /// </summary>
         /// <param name="services">The service collection.</param>
-        /// <param name="configuration">
-        /// Configuration section to read root tenant default repository settings from.
-        /// </param>
         /// <param name="configureHost">Optional callback for additional host configuration.</param>
         /// <returns>The service collection, to enable chaining.</returns>
         public static IServiceCollection AddTenantedWorkflowEngineApi(
             this IServiceCollection services,
-            IConfiguration configuration,
             Action<IOpenApiHostConfiguration> configureHost = null)
         {
             // Verify that these services aren't already present
@@ -42,7 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            services.AddTenantedWorkflowEngine(configuration);
+            services.AddTenantedWorkflowEngine();
 
             services.AddOpenApiHttpRequestHosting<SimpleOpenApiContext>(config =>
             {
@@ -63,13 +60,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds services required by to use the workflow engine.
         /// </summary>
         /// <param name="services">The service collection.</param>
-        /// <param name="configuration">
-        /// Configuration section to read root tenant default repository settings from.
-        /// </param>
         /// <returns>The service collection, to enable chaining.</returns>
         public static IServiceCollection AddTenantedWorkflowEngine(
-            this IServiceCollection services,
-            IConfiguration configuration)
+            this IServiceCollection services)
         {
             // Verify that these services aren't already present
             Type engineFactoryServiceType = typeof(ITenantedWorkflowEngineFactory);
@@ -112,12 +105,19 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             services.AddTenantedWorkflowEngineFactory();
-            services.AddTenantedAzureCosmosWorkflowStore(configuration);
-            services.AddTenantedAzureCosmosWorkflowInstanceStore(configuration);
+            services.AddTenantedAzureCosmosWorkflowStore();
+            services.AddTenantedAzureCosmosWorkflowInstanceStore();
 
             services.RegisterCoreWorkflowContentTypes();
 
-            services.AddAzureLeasing(c => c.ConnectionStringKey = "LeasingStorageAccountConnectionString");
+            services.AddAzureLeasing(svc =>
+            {
+                IConfiguration config = svc.GetRequiredService<IConfiguration>();
+                return new AzureLeaseProviderOptions
+                {
+                    StorageAccountConnectionString = config["LeasingStorageAccountConnectionString"],
+                };
+            });
 
             return services;
         }

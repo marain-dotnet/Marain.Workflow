@@ -4,6 +4,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    using System;
     using System.Net.Http;
     using Marain.Workflow.Api.EngineHost.Client;
 
@@ -16,18 +17,20 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds the workflow engine client to the service collection.
         /// </summary>
         /// <param name="services">The service collection to add to.</param>
-        /// <param name="configuration">Config for the workflow engine client.</param>
+        /// <param name="getConfiguration">Callback to obtain config for the workflow engine client.</param>
         /// <returns>The service collection (for chaining).</returns>
         public static IServiceCollection AddTenantedWorkflowEngineClient(
             this IServiceCollection services,
-            WorkflowEngineClientConfiguration configuration)
+            Func<IServiceProvider, WorkflowEngineClientConfiguration> getConfiguration)
         {
-            var client = new WorkflowEngineClient(new HttpClient())
+            services.AddSingleton<IWorkflowEngineClient>(sp =>
             {
-                BaseUrl = configuration.BaseUrl,
-            };
-
-            services.AddSingleton<IWorkflowEngineClient>(client);
+                WorkflowEngineClientConfiguration config = getConfiguration(sp);
+                return new WorkflowEngineClient(new HttpClient())
+                {
+                    BaseUrl = config.BaseUrl,
+                };
+            });
 
             return services;
         }

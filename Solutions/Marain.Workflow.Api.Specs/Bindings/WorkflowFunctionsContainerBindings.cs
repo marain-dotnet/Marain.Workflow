@@ -6,6 +6,7 @@ namespace Marain.Workflow.Api.Specs.Bindings
 {
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Azure.Storage.Tenancy;
+    using Corvus.Leasing;
     using Corvus.SpecFlow.Extensions;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +34,7 @@ namespace Marain.Workflow.Api.Specs.Bindings
                         .AddEnvironmentVariables()
                         .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true);
 
-                    IConfigurationRoot root = configurationBuilder.Build();
+                    IConfiguration root = configurationBuilder.Build();
 
                     services.AddSingleton(root);
                     services.AddJsonSerializerSettings();
@@ -72,12 +73,19 @@ namespace Marain.Workflow.Api.Specs.Bindings
                     });
 
                     services.AddTenantedWorkflowEngineFactory();
-                    services.AddTenantedAzureCosmosWorkflowStore(root);
-                    services.AddTenantedAzureCosmosWorkflowInstanceStore(root);
+                    services.AddTenantedAzureCosmosWorkflowStore();
+                    services.AddTenantedAzureCosmosWorkflowInstanceStore();
 
                     services.RegisterCoreWorkflowContentTypes();
 
-                    services.AddAzureLeasing(c => c.ConnectionStringKey = "LeasingStorageAccountConnectionString");
+                    services.AddAzureLeasing(svc =>
+                    {
+                        IConfiguration config = svc.GetRequiredService<IConfiguration>();
+                        return new AzureLeaseProviderOptions
+                        {
+                            StorageAccountConnectionString = config["LeasingStorageAccountConnectionString"],
+                        };
+                    });
                 });
         }
     }
