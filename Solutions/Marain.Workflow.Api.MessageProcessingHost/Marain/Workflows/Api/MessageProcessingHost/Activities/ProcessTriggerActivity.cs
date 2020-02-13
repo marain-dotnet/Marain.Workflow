@@ -9,9 +9,10 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
     using System.Linq;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
-    using Marain.Workflow.Api.EngineHost.Client;
     using Marain.Workflows;
     using Marain.Workflows.Api.MessageProcessingHost.Shared;
+    using Marain.Workflows.Client;
+    using Marain.Workflows.Client.Models;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Extensions.Configuration;
@@ -24,7 +25,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
     public class ProcessTriggerActivity
     {
         private readonly ITenantedWorkflowEngineFactory workflowEngineFactory;
-        private readonly IWorkflowEngineClient client;
+        private readonly IMarainWorkflowEngine client;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
         public ProcessTriggerActivity(
             ITenantedWorkflowEngineFactory workflowEngineFactory,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
-            IWorkflowEngineClient client)
+            IMarainWorkflowEngine client)
         {
             this.workflowEngineFactory = workflowEngineFactory;
             this.client = client;
@@ -80,7 +81,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
                 Parameters = workflowTrigger.Parameters,
             };
 
-            await this.client.SendTriggerAsync(body, envelope.TenantId, instanceId);
+            await this.client.SendTriggerAsync(envelope.TenantId, instanceId, body);
         }
     }
 }

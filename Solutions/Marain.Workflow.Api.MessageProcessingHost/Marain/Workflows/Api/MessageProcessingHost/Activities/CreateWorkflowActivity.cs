@@ -7,8 +7,9 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
 {
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
-    using Marain.Workflow.Api.EngineHost.Client;
     using Marain.Workflows.Api.MessageProcessingHost.Shared;
+    using Marain.Workflows.Client;
+    using Marain.Workflows.Client.Models;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Extensions.Configuration;
@@ -20,7 +21,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
     public class CreateWorkflowActivity
     {
         private readonly IConfiguration configuration;
-        private readonly IWorkflowEngineClient engineClient;
+        private readonly IMarainWorkflowEngine engineClient;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
         /// <summary>
@@ -32,7 +33,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
         public CreateWorkflowActivity(
             IConfiguration configuration,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
-            IWorkflowEngineClient engineClient)
+            IMarainWorkflowEngine engineClient)
         {
             // TODO: Replace with custom config class.
             // https://github.com/marain-dotnet/Marain.Workflow/issues/45

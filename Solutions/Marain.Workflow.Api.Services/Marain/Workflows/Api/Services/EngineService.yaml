@@ -160,6 +160,8 @@ components:
           format: url
         validationErrors: 
           type: array
+          items:
+            type: object
       additionalProperties: true
       
   parameters:
@@ -173,7 +175,8 @@ components:
         type: string
     workflowInstanceId:
       name: workflowInstanceId
-      in: "path"
+      in: path
+      x-ms-parameter-location: method
       description: The Id of the workflow instance to apply the trigger to
       required: true
       schema:
