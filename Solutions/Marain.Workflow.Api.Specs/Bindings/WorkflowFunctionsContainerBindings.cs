@@ -4,6 +4,8 @@
 
 namespace Marain.Workflow.Api.Specs.Bindings
 {
+    using Corvus.Azure.Cosmos.Tenancy;
+    using Corvus.Azure.Storage.Tenancy;
     using Corvus.SpecFlow.Extensions;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -38,10 +40,27 @@ namespace Marain.Workflow.Api.Specs.Bindings
 
                     services.AddLogging();
 
-                    services.AddTenantCloudBlobContainerFactory(root);
+                    string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
+                    services.AddTenantCloudBlobContainerFactory(new TenantCloudBlobContainerFactoryOptions
+                    {
+                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                    });
                     services.AddTenantProviderBlobStore();
 
-                    services.AddTenantCosmosContainerFactory(root);
+                    services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
+                    {
+                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                    });
+                    services.AddTenantCosmosContainerFactory(sp =>
+                    {
+                        IConfiguration config = sp.GetRequiredService<IConfiguration>();
+
+                        return new TenantCosmosContainerFactoryOptions
+                        {
+                            AzureServicesAuthConnectionString = config["AzureServicesAuthConnectionString"],
+                        };
+                    });
+
                     services.AddTenantedWorkflowEngineFactory();
                     services.AddTenantedAzureCosmosWorkflowStore(root);
                     services.AddTenantedAzureCosmosWorkflowInstanceStore(root);

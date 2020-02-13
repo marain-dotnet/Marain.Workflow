@@ -37,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var containerDefinition = new CosmosContainerDefinition("workflow", "workflows", "/id");
 
-            services.AddTenantCosmosContainerFactory(configuration);
+            services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions());
             services.AddSingleton<ITenantedWorkflowStoreFactory>(svc => new TenantedCosmosWorkflowStoreFactory(
                 svc.GetRequiredService<ITenantCosmosContainerFactory>(),
                 containerDefinition));
@@ -67,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var containerDefinition = new CosmosContainerDefinition("workflow", "workflowinstances", "/id");
 
-            services.AddTenantCosmosContainerFactory(configuration);
+            services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions());
             services.AddSingleton<ITenantedWorkflowInstanceStoreFactory>(svc => new TenantedCosmosWorkflowInstanceStoreFactory(
                 svc.GetRequiredService<ITenantCosmosContainerFactory>(),
                 containerDefinition));

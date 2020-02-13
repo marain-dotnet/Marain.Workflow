@@ -4,6 +4,7 @@
 
 namespace Marain.Workflows.Specs.Bindings
 {
+    using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
@@ -45,7 +46,10 @@ namespace Marain.Workflows.Specs.Bindings
                     services.AddJsonSerializerSettings();
 
                     services.AddSingleton<ITenantProvider, FakeTenantProvider>();
-                    services.AddTenantCosmosContainerFactory(root);
+                    services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
+                    {
+                        AzureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"],
+                    });
 
                     services.AddInMemoryWorkflowTriggerQueue();
                     services.AddInMemoryLeasing();

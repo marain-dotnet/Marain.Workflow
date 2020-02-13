@@ -6,10 +6,13 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     using System;
     using System.Linq;
+    using Corvus.Azure.Cosmos.Tenancy;
+    using Corvus.Azure.Storage.Tenancy;
     using Marain.Workflows;
     using Marain.Workflows.Api.Services;
     using Menes;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Extension methods for configuring DI for the the Workflow Engine OpenApi services.
@@ -79,10 +82,42 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddLogging();
 
-            services.AddTenantCloudBlobContainerFactory(configuration);
+            services.AddTenantCloudBlobContainerFactory(sp =>
+            {
+                IConfiguration config = sp.GetRequiredService<IConfiguration>();
+                ILogger<TenantCloudBlobContainerFactoryOptions> logger = sp.GetRequiredService<ILogger<TenantCloudBlobContainerFactoryOptions>>();
+                var options = new TenantCloudBlobContainerFactoryOptions
+                {
+                    AzureServicesAuthConnectionString = config["AzureServicesAuthConnectionString"],
+                };
+
+                if (string.IsNullOrEmpty(options.AzureServicesAuthConnectionString))
+                {
+                    logger.LogWarning("Initialising TenantCloudBlobContainerFactoryOptions without a value for AzureServicesAuthConnectionString");
+                }
+
+                return options;
+            });
             services.AddTenantProviderBlobStore();
 
-            services.AddTenantCosmosContainerFactory(configuration);
+            services.AddTenantCosmosContainerFactory(sp =>
+            {
+                IConfiguration config = sp.GetRequiredService<IConfiguration>();
+                ILogger<TenantCloudBlobContainerFactoryOptions> logger = sp.GetRequiredService<ILogger<TenantCloudBlobContainerFactoryOptions>>();
+
+                var options = new TenantCosmosContainerFactoryOptions
+                {
+                    AzureServicesAuthConnectionString = config["AzureServicesAuthConnectionString"],
+                };
+
+                if (string.IsNullOrEmpty(options.AzureServicesAuthConnectionString))
+                {
+                    logger.LogWarning("Initialising TenantCosmosContainerFactoryOptions without a value for AzureServicesAuthConnectionString");
+                }
+
+                return options;
+            });
+
             services.AddTenantedWorkflowEngineFactory();
             services.AddTenantedAzureCosmosWorkflowStore(configuration);
             services.AddTenantedAzureCosmosWorkflowInstanceStore(configuration);
