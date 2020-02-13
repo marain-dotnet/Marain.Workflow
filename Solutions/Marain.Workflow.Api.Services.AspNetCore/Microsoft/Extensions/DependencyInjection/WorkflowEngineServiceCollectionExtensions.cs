@@ -85,37 +85,30 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTenantCloudBlobContainerFactory(sp =>
             {
                 IConfiguration config = sp.GetRequiredService<IConfiguration>();
-                ILogger<TenantCloudBlobContainerFactoryOptions> logger = sp.GetRequiredService<ILogger<TenantCloudBlobContainerFactoryOptions>>();
-                var options = new TenantCloudBlobContainerFactoryOptions
+
+                var blobStorageConfiguration = new BlobStorageConfiguration();
+                config.Bind("ROOTTENANTBLOBSTORAGECONFIGURATIONOPTIONS", blobStorageConfiguration);
+
+                return new TenantCloudBlobContainerFactoryOptions
                 {
                     AzureServicesAuthConnectionString = config["AzureServicesAuthConnectionString"],
+                    RootTenantBlobStorageConfiguration = blobStorageConfiguration,
                 };
-
-                if (string.IsNullOrEmpty(options.AzureServicesAuthConnectionString))
-                {
-                    logger.LogWarning("Initialising TenantCloudBlobContainerFactoryOptions without a value for AzureServicesAuthConnectionString");
-                }
-
-                return options;
             });
             services.AddTenantProviderBlobStore();
 
             services.AddTenantCosmosContainerFactory(sp =>
             {
                 IConfiguration config = sp.GetRequiredService<IConfiguration>();
-                ILogger<TenantCloudBlobContainerFactoryOptions> logger = sp.GetRequiredService<ILogger<TenantCloudBlobContainerFactoryOptions>>();
 
-                var options = new TenantCosmosContainerFactoryOptions
+                var cosmosConfiguration = new CosmosConfiguration();
+                config.Bind("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS", cosmosConfiguration);
+
+                return new TenantCosmosContainerFactoryOptions
                 {
                     AzureServicesAuthConnectionString = config["AzureServicesAuthConnectionString"],
+                    RootTenantCosmosConfiguration = cosmosConfiguration,
                 };
-
-                if (string.IsNullOrEmpty(options.AzureServicesAuthConnectionString))
-                {
-                    logger.LogWarning("Initialising TenantCosmosContainerFactoryOptions without a value for AzureServicesAuthConnectionString");
-                }
-
-                return options;
             });
 
             services.AddTenantedWorkflowEngineFactory();

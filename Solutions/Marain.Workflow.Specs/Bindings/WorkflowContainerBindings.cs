@@ -46,9 +46,14 @@ namespace Marain.Workflows.Specs.Bindings
                     services.AddJsonSerializerSettings();
 
                     services.AddSingleton<ITenantProvider, FakeTenantProvider>();
+
+                    var cosmosConfiguration = new CosmosConfiguration();
+                    root.Bind("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS", cosmosConfiguration);
+
                     services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
                     {
                         AzureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"],
+                        RootTenantCosmosConfiguration = cosmosConfiguration,
                     });
 
                     services.AddInMemoryWorkflowTriggerQueue();

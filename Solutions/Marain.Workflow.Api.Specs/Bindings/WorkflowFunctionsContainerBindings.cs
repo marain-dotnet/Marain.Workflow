@@ -41,16 +41,26 @@ namespace Marain.Workflow.Api.Specs.Bindings
                     services.AddLogging();
 
                     string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
+
+                    var blobStorageConfiguration = new BlobStorageConfiguration();
+                    root.Bind("ROOTTENANTBLOBSTORAGECONFIGURATIONOPTIONS", blobStorageConfiguration);
+
                     services.AddTenantCloudBlobContainerFactory(new TenantCloudBlobContainerFactoryOptions
                     {
                         AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                        RootTenantBlobStorageConfiguration = blobStorageConfiguration,
                     });
                     services.AddTenantProviderBlobStore();
+
+                    var cosmosConfiguration = new CosmosConfiguration();
+                    root.Bind("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS", cosmosConfiguration);
 
                     services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
                     {
                         AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                        RootTenantCosmosConfiguration = cosmosConfiguration,
                     });
+
                     services.AddTenantCosmosContainerFactory(sp =>
                     {
                         IConfiguration config = sp.GetRequiredService<IConfiguration>();
