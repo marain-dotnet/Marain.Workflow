@@ -6,12 +6,10 @@ namespace Marain.ContentManagement.Specs.Bindings
 {
     using System;
     using System.Threading.Tasks;
-    using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
     using Marain.Workflows;
     using Marain.Workflows.Storage;
-    using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
 

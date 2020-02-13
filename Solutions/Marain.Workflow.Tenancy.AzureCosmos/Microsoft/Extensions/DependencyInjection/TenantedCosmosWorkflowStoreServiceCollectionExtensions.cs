@@ -8,7 +8,6 @@ namespace Microsoft.Extensions.DependencyInjection
     using Corvus.Azure.Cosmos.Tenancy;
     using Marain.Workflows;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Service collection extensions to add the Cosmos implementation of workflow stores.

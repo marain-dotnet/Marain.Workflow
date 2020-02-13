@@ -1,24 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\Common.NetStandard_2_0.proj" />
-  
+
   <PropertyGroup>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <PackageDescription>
+      Adds support for SQL Server databases as a storage sink for Marain.Workflow
     </PackageDescription>
     <PackageTags>
+      workflow;orchestration;marain;endjin
     </PackageTags>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.19.0" />
-    <PackageReference Include="Corvus.Extensions.CosmosClient" Version="0.6.0" />
+    <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
