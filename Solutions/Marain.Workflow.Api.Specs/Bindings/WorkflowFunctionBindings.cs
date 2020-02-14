@@ -42,7 +42,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
                 null,
                 "Marain.Workflow.Api.EngineHost",
                 EngineHostPort,
-                "netstandard2.0");
+                "netcoreapp3.1");
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
                 null,
                 "Marain.Workflow.Api.MessageProcessingHost",
                 MessageProcessingHostPort,
-                "netstandard2.0");
+                "netcoreapp3.1");
         }
 
         /// <summary>

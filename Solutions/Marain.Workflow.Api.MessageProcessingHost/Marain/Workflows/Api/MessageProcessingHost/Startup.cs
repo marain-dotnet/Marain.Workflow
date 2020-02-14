@@ -38,28 +38,27 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
             var uri = new Uri(root["Operations:ControlServiceBaseUrl"]);
             services.AddOperationsControlClient(uri);
 
-            var workflowEngineClientConfig = new WorkflowEngineClientConfiguration
+            services.AddTenantedWorkflowEngineClient(sp =>
             {
-                BaseUrl = root["Workflow:EngineHostServiceBaseUrl"],
-            };
+                IConfiguration config = sp.GetRequiredService<IConfiguration>();
 
-            services.AddTenantedWorkflowEngineClient(workflowEngineClientConfig);
+                return new WorkflowEngineClientConfiguration
+                {
+                    BaseUrl = config["Workflow:EngineHostServiceBaseUrl"],
+                };
+            });
 
-            services.AddTenantedWorkflowEngine(root);
-            AddMessageProcessingMenesServices(services, root);
+            services.AddTenantedWorkflowEngine();
+            AddMessageProcessingMenesServices(services);
         }
 
         /// <summary>
         /// Adds services required by workflow engine API.
         /// </summary>
         /// <param name="services">The service collection.</param>
-        /// <param name="configuration">
-        /// Configuration section to read root tenant default repository settings from.
-        /// </param>
         /// <returns>The service collection, to enable chaining.</returns>
         private static IServiceCollection AddMessageProcessingMenesServices(
-            IServiceCollection services,
-            IConfiguration configuration)
+            IServiceCollection services)
         {
             // Verify that these services aren't already present
             Type ingestionServiceType = typeof(MessageIngestionService);
@@ -70,7 +69,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
                 return services;
             }
 
-            services.AddTenantedWorkflowEngine(configuration);
+            services.AddTenantedWorkflowEngine();
 
             services.AddOpenApiHttpRequestHosting<DurableFunctionsOpenApiContext>(config =>
             {

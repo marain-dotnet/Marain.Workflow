@@ -18,7 +18,7 @@
   
   <ItemGroup>
     <PackageReference Include="Marain.Operations.ControlClient" Version="0.8.0" />
-    <PackageReference Include="Menes.Abstractions" Version="0.10.0-preview.8" />
+    <PackageReference Include="Menes.Abstractions" Version="0.10.0" />
   </ItemGroup>
   
   <ItemGroup>

@@ -4,6 +4,9 @@
 
 namespace Marain.Workflow.Api.Specs.Bindings
 {
+    using Corvus.Azure.Cosmos.Tenancy;
+    using Corvus.Azure.Storage.Tenancy;
+    using Corvus.Leasing;
     using Corvus.SpecFlow.Extensions;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -31,24 +34,58 @@ namespace Marain.Workflow.Api.Specs.Bindings
                         .AddEnvironmentVariables()
                         .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true);
 
-                    IConfigurationRoot root = configurationBuilder.Build();
+                    IConfiguration root = configurationBuilder.Build();
 
                     services.AddSingleton(root);
                     services.AddJsonSerializerSettings();
 
                     services.AddLogging();
 
-                    services.AddTenantCloudBlobContainerFactory(root);
+                    string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
+
+                    var blobStorageConfiguration = new BlobStorageConfiguration();
+                    root.Bind("ROOTTENANTBLOBSTORAGECONFIGURATIONOPTIONS", blobStorageConfiguration);
+
+                    services.AddTenantCloudBlobContainerFactory(new TenantCloudBlobContainerFactoryOptions
+                    {
+                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                        RootTenantBlobStorageConfiguration = blobStorageConfiguration,
+                    });
                     services.AddTenantProviderBlobStore();
 
-                    services.AddTenantCosmosContainerFactory(root);
+                    var cosmosConfiguration = new CosmosConfiguration();
+                    root.Bind("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS", cosmosConfiguration);
+
+                    services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
+                    {
+                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                        RootTenantCosmosConfiguration = cosmosConfiguration,
+                    });
+
+                    services.AddTenantCosmosContainerFactory(sp =>
+                    {
+                        IConfiguration config = sp.GetRequiredService<IConfiguration>();
+
+                        return new TenantCosmosContainerFactoryOptions
+                        {
+                            AzureServicesAuthConnectionString = config["AzureServicesAuthConnectionString"],
+                        };
+                    });
+
                     services.AddTenantedWorkflowEngineFactory();
-                    services.AddTenantedAzureCosmosWorkflowStore(root);
-                    services.AddTenantedAzureCosmosWorkflowInstanceStore(root);
+                    services.AddTenantedAzureCosmosWorkflowStore();
+                    services.AddTenantedAzureCosmosWorkflowInstanceStore();
 
                     services.RegisterCoreWorkflowContentTypes();
 
-                    services.AddAzureLeasing(c => c.ConnectionStringKey = "LeasingStorageAccountConnectionString");
+                    services.AddAzureLeasing(svc =>
+                    {
+                        IConfiguration config = svc.GetRequiredService<IConfiguration>();
+                        return new AzureLeaseProviderOptions
+                        {
+                            StorageAccountConnectionString = config["LeasingStorageAccountConnectionString"],
+                        };
+                    });
                 });
         }
     }
