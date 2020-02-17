@@ -25,7 +25,7 @@
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="0.2.0-preview.5" />
     <PackageReference Include="Corvus.SpecFlow.Extensions" Version="0.7.0-preview.6" />
     <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="0.20.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
