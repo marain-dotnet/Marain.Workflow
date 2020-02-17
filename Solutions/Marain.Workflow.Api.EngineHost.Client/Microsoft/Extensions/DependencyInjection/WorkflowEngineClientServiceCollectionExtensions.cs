@@ -21,7 +21,6 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds the workflow engine client to a service collection.
         /// </summary>
         /// <param name="services">The service collection.</param>
-        /// <param name="baseUri">The base URI of the workflow engine service.</param>
         /// <param name="resourceIdForMsiAuthentication">
         /// The resource id to use when obtaining an authentication token representing the
         /// hosting service's identity. Pass null to run without authentication.
@@ -29,7 +28,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>The modified service collection.</returns>
         public static IServiceCollection AddMarainWorkflowEngineClient(
             this IServiceCollection services,
-            Uri baseUri,
+            Func<IServiceProvider, MarainWorkflowEngineOptions> getOptions,
             string resourceIdForMsiAuthentication = null)
         {
             if (services.Any(s => s.ServiceType == typeof(IMarainWorkflowEngine)))
@@ -38,10 +37,17 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             return resourceIdForMsiAuthentication == null
-                ? services.AddSingleton<IMarainWorkflowEngine>(new UnauthenticatedMarainWorkflowEngine(baseUri))
+                ? services.AddSingleton<IMarainWorkflowEngine>(sp =>
+                {
+                    MarainWorkflowEngineOptions options = getOptions(sp);
+                    var service  = new UnauthenticatedMarainWorkflowEngine(options.BaseUri);
+
+                    return service;
+                })
                 : services.AddSingleton<IMarainWorkflowEngine>(sp =>
                 {
-                    var service = new MarainWorkflowEngine(baseUri, new TokenCredentials(
+                    MarainWorkflowEngineOptions options = getOptions(sp);
+                    var service = new MarainWorkflowEngine(options.BaseUri, new TokenCredentials(
                         new ServiceIdentityTokenProvider(
                             sp.GetRequiredService<IServiceIdentityTokenSource>(),
                             resourceIdForMsiAuthentication)));

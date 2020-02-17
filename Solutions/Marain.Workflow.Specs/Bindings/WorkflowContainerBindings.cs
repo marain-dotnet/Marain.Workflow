@@ -47,8 +47,8 @@ namespace Marain.Workflows.Specs.Bindings
 
                     services.AddSingleton<ITenantProvider, FakeTenantProvider>();
 
-                    var cosmosConfiguration = new CosmosConfiguration();
-                    root.Bind("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS", cosmosConfiguration);
+                    CosmosConfiguration cosmosConfiguration = root.GetSection("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS").Get<CosmosConfiguration>()
+                        ?? new CosmosConfiguration();
 
                     services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
                     {

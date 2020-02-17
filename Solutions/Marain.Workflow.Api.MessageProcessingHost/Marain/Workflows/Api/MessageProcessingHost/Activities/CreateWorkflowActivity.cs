@@ -20,24 +20,20 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
     /// </summary>
     public class CreateWorkflowActivity
     {
-        private readonly IConfiguration configuration;
         private readonly IMarainWorkflowEngine engineClient;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateWorkflowActivity"/> class.
         /// </summary>
-        /// <param name="configuration">The current configuration.</param>
         /// <param name="serializerSettingsProvider">The serialization settings provider.</param>
         /// <param name="engineClient">The current client.</param>
         public CreateWorkflowActivity(
-            IConfiguration configuration,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             IMarainWorkflowEngine engineClient)
         {
             // TODO: Replace with custom config class.
             // https://github.com/marain-dotnet/Marain.Workflow/issues/45
-            this.configuration = configuration;
             this.engineClient = engineClient;
             this.serializerSettingsProvider = serializerSettingsProvider;
         }
