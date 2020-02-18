@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 MarainWorkflowEngineClientOptions options = getOptions(sp);
 
-                if (string.IsNullOrEmpty(options.ResourceIdForMsiAuthentication))
+                if (string.IsNullOrEmpty(options.ResourceIdForAuthentication))
                 {
                     return new UnauthenticatedMarainWorkflowEngine(options.BaseUrl);
                 }
@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var service = new MarainWorkflowEngine(options.BaseUrl, new TokenCredentials(
                     new ServiceIdentityTokenProvider(
                         sp.GetRequiredService<IServiceIdentityTokenSource>(),
-                        options.ResourceIdForMsiAuthentication)));
+                        options.ResourceIdForAuthentication)));
 
                 sp.GetRequiredService<IJsonSerializerSettingsProvider>().Instance.Converters.ForEach(service.SerializationSettings.Converters.Add);
 

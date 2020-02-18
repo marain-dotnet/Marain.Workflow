@@ -20,8 +20,8 @@ namespace Marain.Workflows.Client
 
         /// <summary>
         /// Gets or sets the resource ID of the AAD app used for the easyAuth for
-        /// the message processing host which the MSI needs to authenticate to.
+        /// the engine host.
         /// </summary>
-        public string ResourceIdForMsiAuthentication { get; set; }
+        public string ResourceIdForAuthentication { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
             {
                 IConfiguration config = sp.GetRequiredService<IConfiguration>();
 
-                return config.GetSection("Workflow:Client").Get<MarainWorkflowEngineClientOptions>();
+                return config.GetSection("Workflow:EngineClient").Get<MarainWorkflowEngineClientOptions>();
             });
 
             services.AddTenantedWorkflowEngine();
