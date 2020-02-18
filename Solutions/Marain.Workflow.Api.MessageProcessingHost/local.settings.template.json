@@ -8,6 +8,7 @@
     "AI:DeveloperMode": "true",
     "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
     "Operations:ControlServiceBaseUrl": "http://localhost:7078/",
-    "Workflow:EngineHostServiceBaseUrl": "http://localhost:7075"
+    "Workflow:EngineClient:BaseUrl": "http://localhost:7075",
+    "Workflow:EngineClient:ResourceIdForAuthentication": ""
   }
 }
