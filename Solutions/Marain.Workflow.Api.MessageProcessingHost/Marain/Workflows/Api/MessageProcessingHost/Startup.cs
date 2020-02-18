@@ -9,8 +9,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
     using System;
     using System.Linq;
     using Marain.Operations.Client.OperationsControl;
-    using Marain.Workflow.Api.EngineHost.Client;
     using Marain.Workflows.Api.MessageProcessingHost.OpenApi;
+    using Marain.Workflows.Client;
     using Menes;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Hosting;
@@ -38,14 +38,11 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
             var uri = new Uri(root["Operations:ControlServiceBaseUrl"]);
             services.AddOperationsControlClient(uri);
 
-            services.AddTenantedWorkflowEngineClient(sp =>
+            services.AddMarainWorkflowEngineClient(sp =>
             {
                 IConfiguration config = sp.GetRequiredService<IConfiguration>();
 
-                return new WorkflowEngineClientConfiguration
-                {
-                    BaseUrl = config["Workflow:EngineHostServiceBaseUrl"],
-                };
+                return config.GetSection("Workflow:EngineClient").Get<MarainWorkflowEngineClientOptions>();
             });
 
             services.AddTenantedWorkflowEngine();

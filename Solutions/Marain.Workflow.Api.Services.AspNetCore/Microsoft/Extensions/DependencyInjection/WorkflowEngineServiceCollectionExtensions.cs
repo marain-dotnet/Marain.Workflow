@@ -79,8 +79,8 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 IConfiguration config = sp.GetRequiredService<IConfiguration>();
 
-                var blobStorageConfiguration = new BlobStorageConfiguration();
-                config.Bind("ROOTTENANTBLOBSTORAGECONFIGURATIONOPTIONS", blobStorageConfiguration);
+                BlobStorageConfiguration blobStorageConfiguration = config.GetSection("ROOTTENANTBLOBSTORAGECONFIGURATIONOPTIONS").Get<BlobStorageConfiguration>()
+                    ?? new BlobStorageConfiguration();
 
                 return new TenantCloudBlobContainerFactoryOptions
                 {
@@ -94,8 +94,8 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 IConfiguration config = sp.GetRequiredService<IConfiguration>();
 
-                var cosmosConfiguration = new CosmosConfiguration();
-                config.Bind("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS", cosmosConfiguration);
+                CosmosConfiguration cosmosConfiguration = config.GetSection("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS").Get<CosmosConfiguration>()
+                    ?? new CosmosConfiguration();
 
                 return new TenantCosmosContainerFactoryOptions
                 {

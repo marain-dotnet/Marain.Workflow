@@ -43,8 +43,8 @@ namespace Marain.Workflow.Api.Specs.Bindings
 
                     string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
 
-                    var blobStorageConfiguration = new BlobStorageConfiguration();
-                    root.Bind("ROOTTENANTBLOBSTORAGECONFIGURATIONOPTIONS", blobStorageConfiguration);
+                    BlobStorageConfiguration blobStorageConfiguration = root.GetSection("ROOTTENANTBLOBSTORAGECONFIGURATIONOPTIONS").Get<BlobStorageConfiguration>()
+                        ?? new BlobStorageConfiguration();
 
                     services.AddTenantCloudBlobContainerFactory(new TenantCloudBlobContainerFactoryOptions
                     {
@@ -53,8 +53,8 @@ namespace Marain.Workflow.Api.Specs.Bindings
                     });
                     services.AddTenantProviderBlobStore();
 
-                    var cosmosConfiguration = new CosmosConfiguration();
-                    root.Bind("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS", cosmosConfiguration);
+                    CosmosConfiguration cosmosConfiguration = root.GetSection("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS").Get<CosmosConfiguration>()
+                        ?? new CosmosConfiguration();
 
                     services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
                     {
