@@ -32,8 +32,6 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             IMarainWorkflowEngine engineClient)
         {
-            // TODO: Replace with custom config class.
-            // https://github.com/marain-dotnet/Marain.Workflow/issues/45
             this.engineClient = engineClient;
             this.serializerSettingsProvider = serializerSettingsProvider;
         }
