@@ -1,5 +1,5 @@
 ﻿
-# This requires the Tenancy function to be running locally on its default port of 7071
+# This requires the Tenancy function to be running locally on its default port of 7075
 $tmp = (New-TemporaryFile).FullName
 Invoke-WebRequest http://localhost:7075/swagger -o $tmp
 
