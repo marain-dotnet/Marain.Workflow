@@ -54,7 +54,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
         public static Task StartWorkflowMessageProcessingFunctionAsync(FeatureContext context)
         {
             FunctionConfiguration config = GetFunctionConfiguration(context);
-            config.EnvironmentVariables.Add("Workflow:Client:BaseUrl", EngineHostBaseUrl);
+            config.EnvironmentVariables.Add("Workflow:EngineClient:BaseUrl", EngineHostBaseUrl);
             return GetFunctionsController(context).StartFunctionsInstance(
                 context,
                 null,
