@@ -67,6 +67,8 @@
     <Build Include="GetMatchingWorkflowInstancesForSubjects.sql" />
     <Build Include="Workflow.sql" />
     <Build Include="UpsertWorkflow.sql" />
+    <Build Include="GetWorkflowInstance.sql" />
+    <Build Include="GetWorkflow.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Marain.Workflow.Storage.Sql.Database.refactorlog" />

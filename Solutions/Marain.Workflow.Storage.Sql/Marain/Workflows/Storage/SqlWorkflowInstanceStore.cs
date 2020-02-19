@@ -20,12 +20,6 @@ namespace Marain.Workflows.Storage
     /// </summary>
     public class SqlWorkflowInstanceStore : IWorkflowInstanceStore
     {
-        private const string WorkflowInstanceTable = "WorkflowInstance";
-
-        private const string SerializedInstanceColumn = "SerializedInstance";
-        private const string WorkflowInstanceETagColumn = "ETag";
-        private const string WorkflowInstanceIdColumn = "WorkflowInstanceId";
-
         private readonly Func<SqlConnection> connectionFactory;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
@@ -125,7 +119,8 @@ namespace Marain.Workflows.Storage
 
             using SqlCommand command = connection.CreateCommand();
             command.Parameters.AddWithValue("@workflowInstanceId", workflowInstanceId);
-            command.CommandText = $"SELECT TOP 1 [{WorkflowInstanceETagColumn}] as ETag, [{SerializedInstanceColumn}] AS SerializedWorkflowInstance FROM [{WorkflowInstanceTable}] WHERE [{WorkflowInstanceIdColumn}] = @{nameof(workflowInstanceId)}";
+            command.CommandText = "GetWorkflowInstance";
+            command.CommandType = CommandType.StoredProcedure;
             await connection.OpenAsync().ConfigureAwait(false);
             SqlDataReader reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
