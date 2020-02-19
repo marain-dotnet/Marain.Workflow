@@ -67,7 +67,6 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "RCS1015:Use nameof operator.", Justification = "We want these to match the parameter names in the SPROC.")]
         public async Task<IEnumerable<string>> GetMatchingWorkflowInstanceIdsForSubjectsAsync(
             IEnumerable<string> subjects,
             int pageSize,
@@ -79,12 +78,13 @@ namespace Marain.Workflows.Storage
             using SqlCommand command = connection.CreateCommand();
             command.CommandText = "GetMatchingWorkflowInstanceCountForSubjects";
             command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("subjects", subjectTable);
-            command.Parameters.AddWithValue("pageSize", pageSize);
-            command.Parameters.AddWithValue("pageIndex", pageNumber);
+            command.Parameters.AddWithValue("@subjects", subjectTable);
+            command.Parameters.AddWithValue("@pageSize", pageSize);
+            command.Parameters.AddWithValue("@pageIndex", pageNumber);
 
             var resultSet = new List<string>(pageSize);
 
+            await connection.OpenAsync().ConfigureAwait(false);
             SqlDataReader reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
             while (await reader.ReadAsync().ConfigureAwait(false))
             {
@@ -95,7 +95,6 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "RCS1015:Use nameof operator.", Justification = "We want these to match the parameter names in the SPROC.")]
         public async Task<int> GetMatchingWorkflowInstanceCountForSubjectsAsync(IEnumerable<string> subjects)
         {
             DataTable subjectTable = BuildInterests(subjects);
@@ -104,7 +103,9 @@ namespace Marain.Workflows.Storage
             using SqlCommand command = connection.CreateCommand();
             command.CommandText = "GetMatchingWorkflowInstanceCountForSubjects";
             command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("subjects", subjectTable);
+            command.Parameters.AddWithValue("@subjects", subjectTable);
+
+            await connection.OpenAsync().ConfigureAwait(false);
             object result = await command.ExecuteScalarAsync().ConfigureAwait(false);
             return (int)result;
         }
@@ -127,7 +128,7 @@ namespace Marain.Workflows.Storage
             using SqlConnection connection = this.connectionFactory();
 
             using SqlCommand command = connection.CreateCommand();
-            command.Parameters.AddWithValue(nameof(workflowInstanceId), workflowInstanceId);
+            command.Parameters.AddWithValue("@workflowInstanceId", workflowInstanceId);
             command.CommandText = $"SELECT TOP 1 [{WorkflowInstanceETagColumn}] as ETag, [{SerializedInstanceColumn}] AS SerializedWorkflowInstance FROM [{WorkflowInstanceTable}] WHERE [{WorkflowInstanceIdColumn}] = @{nameof(workflowInstanceId)}";
             await connection.OpenAsync().ConfigureAwait(false);
             SqlDataReader reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
@@ -148,19 +149,20 @@ namespace Marain.Workflows.Storage
             return instance;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "RCS1015:Use nameof operator.", Justification = "We want these to match the parameter names in the SPROC.")]
         private async Task DeleteWorkflowInstanceCoreAsync(string workflowInstanceId)
         {
             using SqlConnection connection = this.connectionFactory();
 
             using SqlCommand command = connection.CreateCommand();
-            command.Parameters.AddWithValue("workflowInstanceId", workflowInstanceId);
+            command.Parameters.AddWithValue("@workflowInstanceId", workflowInstanceId);
 
-            SqlParameter returnValue = command.Parameters.Add("returnValue", SqlDbType.Int);
+            SqlParameter returnValue = command.Parameters.Add("@returnValue", SqlDbType.Int);
             returnValue.Direction = ParameterDirection.ReturnValue;
 
             command.CommandText = "DeleteWorkflowInstance";
             command.CommandType = CommandType.StoredProcedure;
+
+            await connection.OpenAsync().ConfigureAwait(false);
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
 
             if ((int)returnValue.Value == 404)
@@ -178,17 +180,19 @@ namespace Marain.Workflows.Storage
             using SqlConnection connection = this.connectionFactory();
 
             using SqlCommand command = connection.CreateCommand();
-            command.Parameters.AddWithValue("workflowInstanceId", workflowInstance.Id);
-            command.Parameters.AddWithValue("etag", workflowInstance.ETag);
-            command.Parameters.AddWithValue("newetag", newetag);
-            command.Parameters.AddWithValue("serializedInstance", serializedInstance);
-            command.Parameters.AddWithValue("interests", interests);
+            command.Parameters.AddWithValue("@workflowInstanceId", workflowInstance.Id);
+            command.Parameters.AddWithValue("@etag", workflowInstance.ETag);
+            command.Parameters.AddWithValue("@newetag", newetag);
+            command.Parameters.AddWithValue("@serializedInstance", serializedInstance);
+            command.Parameters.AddWithValue("@interests", interests);
 
-            SqlParameter returnValue = command.Parameters.Add("returnValue", SqlDbType.Int);
+            SqlParameter returnValue = command.Parameters.Add("@returnValue", SqlDbType.Int);
             returnValue.Direction = ParameterDirection.ReturnValue;
 
             command.CommandText = "UpsertWorkflowInstance";
             command.CommandType = CommandType.StoredProcedure;
+
+            await connection.OpenAsync().ConfigureAwait(false);
             await command.ExecuteNonQueryAsync().ConfigureAwait(false);
 
             if ((int)returnValue.Value == 409)

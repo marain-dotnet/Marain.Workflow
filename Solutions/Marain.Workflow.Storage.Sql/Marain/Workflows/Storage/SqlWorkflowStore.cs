@@ -5,11 +5,13 @@
 namespace Marain.Workflows.Storage
 {
     using System;
+    using System.Data;
     using System.Data.SqlClient;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Corvus.Retry;
     using Marain.Workflows;
+    using Marain.Workflows.Storage.Internal;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -49,7 +51,8 @@ namespace Marain.Workflows.Storage
         /// <inheritdoc/>
         public Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
         {
-            throw new NotImplementedException();
+            return Retriable.RetryAsync(() =>
+                this.UpsertWorkflowCoreAsync(workflow));
         }
 
         private async Task<Workflow> GetWorkflowCoreAsync(string workflowId)
@@ -57,7 +60,7 @@ namespace Marain.Workflows.Storage
             using SqlConnection connection = this.connectionFactory();
 
             using SqlCommand command = connection.CreateCommand();
-            command.Parameters.AddWithValue(nameof(workflowId), workflowId);
+            command.Parameters.AddWithValue("@workflowId", workflowId);
             command.CommandText = $"SELECT TOP 1 [{WorkflowETagColumn}] as ETag, [{SerializedWorkflowColumn}] AS SerializedWorkflow FROM [{WorkflowTable}] WHERE [{WorkflowIdColumn}] = @{nameof(workflowId)}";
             await connection.OpenAsync().ConfigureAwait(false);
             SqlDataReader reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
@@ -76,6 +79,34 @@ namespace Marain.Workflows.Storage
             Workflow instance = JsonConvert.DeserializeObject<Workflow>(serializedResult, this.serializerSettingsProvider.Instance);
             instance.ETag = etag;
             return instance;
+        }
+
+        private async Task UpsertWorkflowCoreAsync(Workflow workflow)
+        {
+            string serializedWorkflow = JsonConvert.SerializeObject(workflow, this.serializerSettingsProvider.Instance);
+            string newetag = EtagHelper.BuildEtag(nameof(SqlWorkflowStore), serializedWorkflow);
+
+            using SqlConnection connection = this.connectionFactory();
+
+            using SqlCommand command = connection.CreateCommand();
+            command.Parameters.AddWithValue("@workflowId", workflow.Id);
+            command.Parameters.AddWithValue("@etag", workflow.ETag);
+            command.Parameters.AddWithValue("@newetag", newetag);
+            command.Parameters.AddWithValue("@serializedInstance", serializedWorkflow);
+
+            SqlParameter returnValue = command.Parameters.Add("@returnValue", SqlDbType.Int);
+            returnValue.Direction = ParameterDirection.ReturnValue;
+
+            command.CommandText = "UpsertWorkflow";
+            command.CommandType = CommandType.StoredProcedure;
+
+            await connection.OpenAsync().ConfigureAwait(false);
+            await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+            if ((int)returnValue.Value == 409)
+            {
+                throw new WorkflowInstanceConflictException($"The workflow with id {workflow.Id} was already modified.");
+            }
         }
     }
 }
