@@ -1,5 +1,6 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿// <copyright file="ETagHelper.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
+// </copyright>
 
 namespace Marain.Workflows.Storage.Internal
 {

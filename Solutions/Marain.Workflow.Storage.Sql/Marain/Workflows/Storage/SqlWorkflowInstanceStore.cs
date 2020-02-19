@@ -67,6 +67,7 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "RCS1015:Use nameof operator.", Justification = "We want these to match the parameter names in the SPROC.")]
         public async Task<IEnumerable<string>> GetMatchingWorkflowInstanceIdsForSubjectsAsync(
             IEnumerable<string> subjects,
             int pageSize,
@@ -94,6 +95,7 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "RCS1015:Use nameof operator.", Justification = "We want these to match the parameter names in the SPROC.")]
         public async Task<int> GetMatchingWorkflowInstanceCountForSubjectsAsync(IEnumerable<string> subjects)
         {
             DataTable subjectTable = BuildInterests(subjects);
@@ -146,6 +148,7 @@ namespace Marain.Workflows.Storage
             return instance;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "RCS1015:Use nameof operator.", Justification = "We want these to match the parameter names in the SPROC.")]
         private async Task DeleteWorkflowInstanceCoreAsync(string workflowInstanceId)
         {
             using SqlConnection connection = this.connectionFactory();

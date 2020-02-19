@@ -49,6 +49,7 @@ namespace Marain.Workflows.Storage
         /// <inheritdoc/>
         public Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
         {
+            throw new NotImplementedException();
         }
 
         private async Task<Workflow> GetWorkflowCoreAsync(string workflowId)
@@ -76,6 +77,5 @@ namespace Marain.Workflows.Storage
             instance.ETag = etag;
             return instance;
         }
-
     }
 }
