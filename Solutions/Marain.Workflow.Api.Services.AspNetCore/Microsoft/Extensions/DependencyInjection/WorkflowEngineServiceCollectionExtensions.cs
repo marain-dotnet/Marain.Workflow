@@ -13,7 +13,6 @@ namespace Microsoft.Extensions.DependencyInjection
     using Marain.Workflows.Api.Services;
     using Menes;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Extension methods for configuring DI for the the Workflow Engine OpenApi services.

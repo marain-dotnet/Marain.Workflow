@@ -12,7 +12,6 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
     using Marain.Workflows.Client.Models;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
