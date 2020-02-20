@@ -1,4 +1,5 @@
 ﻿@perFeatureContainer
+@useCosmosStores
 @setupTenantedCosmosContainers
 Feature: Deprecate an item
 

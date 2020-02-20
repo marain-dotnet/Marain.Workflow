@@ -22,6 +22,7 @@ namespace Marain.Workflows.Specs.Features
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Conditions")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
+    [NUnit.Framework.CategoryAttribute("useCosmosStores")]
     [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainers")]
     public partial class ConditionsFeature
     {
@@ -30,6 +31,7 @@ namespace Marain.Workflows.Specs.Features
         
         private string[] _featureTags = new string[] {
                 "perFeatureContainer",
+                "useCosmosStores",
                 "setupTenantedCosmosContainers"};
         
 #line 1 "Conditions.feature"
@@ -41,6 +43,7 @@ namespace Marain.Workflows.Specs.Features
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Conditions", null, ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
+                        "useCosmosStores",
                         "setupTenantedCosmosContainers"});
             testRunner.OnFeatureStart(featureInfo);
         }
@@ -90,7 +93,7 @@ namespace Marain.Workflows.Specs.Features
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("An unmet exit condition on the current state prevents a transition being selected" +
                     "", null, new string[] {
                         "useChildObjects"});
-#line 6
+#line 7
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -110,10 +113,10 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 7
+#line 8
  testRunner.Given("I have created and persisted the DataCatalogWorkflow with Id \'dc-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 8
+#line 9
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -128,7 +131,7 @@ this.ScenarioInitialize(scenarioInfo);
                 table1.AddRow(new string[] {
                             "AllowPublishedEntry",
                             "x"});
-#line 9
+#line 10
  testRunner.And("I have created and persisted a new instance with Id \'id1\' of the workflow with Id" +
                         " \'dc-workflow\' and supplied the following context items", ((string)(null)), table1, "And ");
 #line hidden
@@ -140,7 +143,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "id1",
                             "The new notes",
                             "The new description"});
-#line 14
+#line 15
  testRunner.And("I have an object of type \'application/vnd.endjin.datacatalog.catalogitempatchdeta" +
                         "ils\' called \'patch\'", ((string)(null)), table2, "And ");
 #line hidden
@@ -148,7 +151,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "PatchDetails"});
                 table3.AddRow(new string[] {
                             "{patch}"});
-#line 17
+#line 18
  testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
                         "alog.editcatalogitemtrigger\'", ((string)(null)), table3, "And ");
 #line hidden
@@ -156,17 +159,17 @@ this.ScenarioInitialize(scenarioInfo);
                             "CatalogItemId"});
                 table4.AddRow(new string[] {
                             "id1"});
-#line 20
+#line 21
  testRunner.When("I send the workflow engine a trigger of type \'application/vnd.endjin.datacatalog." +
                         "publishcatalogitemtrigger\'", ((string)(null)), table4, "When ");
 #line hidden
-#line 23
+#line 24
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 24
+#line 25
  testRunner.Then("the workflow instance with Id \'id1\' should have status \'Waiting\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 25
+#line 26
  testRunner.And("the workflow instance with Id \'id1\' should be in the state called \'Waiting for do" +
                         "cumentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -174,7 +177,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "Message"});
                 table5.AddRow(new string[] {
                             "Entering state \'Waiting for documentation\'"});
-#line 26
+#line 27
  testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table5, "And ");
 #line hidden
             }
@@ -190,7 +193,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "useChildObjects"};
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("An unmet entry condition on a target state prevents a transition being selected", null, new string[] {
                         "useChildObjects"});
-#line 31
+#line 32
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -210,10 +213,10 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 32
+#line 33
  testRunner.Given("I have created and persisted the DataCatalogWorkflow with Id \'dc-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 33
+#line 34
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
@@ -228,7 +231,7 @@ this.ScenarioInitialize(scenarioInfo);
                 table6.AddRow(new string[] {
                             "AllowWaitingForDocumentationExit",
                             "x"});
-#line 34
+#line 35
  testRunner.And("I have created and persisted a new instance with Id \'id2\' of the workflow with Id" +
                         " \'dc-workflow\' and supplied the following context items", ((string)(null)), table6, "And ");
 #line hidden
@@ -240,7 +243,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "id2",
                             "The new notes",
                             "The new description"});
-#line 39
+#line 40
  testRunner.And("I have an object of type \'application/vnd.endjin.datacatalog.catalogitempatchdeta" +
                         "ils\' called \'patch\'", ((string)(null)), table7, "And ");
 #line hidden
@@ -248,7 +251,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "PatchDetails"});
                 table8.AddRow(new string[] {
                             "{patch}"});
-#line 42
+#line 43
  testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
                         "alog.editcatalogitemtrigger\'", ((string)(null)), table8, "And ");
 #line hidden
@@ -256,17 +259,17 @@ this.ScenarioInitialize(scenarioInfo);
                             "CatalogItemId"});
                 table9.AddRow(new string[] {
                             "id2"});
-#line 45
+#line 46
  testRunner.When("I send the workflow engine a trigger of type \'application/vnd.endjin.datacatalog." +
                         "publishcatalogitemtrigger\'", ((string)(null)), table9, "When ");
 #line hidden
-#line 48
+#line 49
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 49
+#line 50
  testRunner.Then("the workflow instance with Id \'id2\' should have status \'Waiting\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 50
+#line 51
  testRunner.And("the workflow instance with Id \'id2\' should be in the state called \'Waiting for do" +
                         "cumentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -274,7 +277,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "Message"});
                 table10.AddRow(new string[] {
                             "Entering state \'Waiting for documentation\'"});
-#line 51
+#line 52
  testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table10, "And ");
 #line hidden
             }

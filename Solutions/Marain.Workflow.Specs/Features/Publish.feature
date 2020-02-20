@@ -1,4 +1,5 @@
 ﻿@perFeatureContainer
+@useCosmosStores
 @setupTenantedCosmosContainers
 Feature: Publish an item
 

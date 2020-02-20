@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Storage.Sql
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Marain.Workflow.Storage.Sql.Database", "Marain.Workflow.Storage.Sql.Database\Marain.Workflow.Storage.Sql.Database.sqlproj", "{CC85CEDB-DF9D-443E-99EB-A1E663DB69DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marain.Workflow.Tenancy.Sql", "Marain.Workflow.Tenancy.Sql\Marain.Workflow.Tenancy.Sql.csproj", "{96379438-8F88-4F73-BFEF-18D84CFD3F82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{CC85CEDB-DF9D-443E-99EB-A1E663DB69DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC85CEDB-DF9D-443E-99EB-A1E663DB69DB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{CC85CEDB-DF9D-443E-99EB-A1E663DB69DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96379438-8F88-4F73-BFEF-18D84CFD3F82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96379438-8F88-4F73-BFEF-18D84CFD3F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96379438-8F88-4F73-BFEF-18D84CFD3F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96379438-8F88-4F73-BFEF-18D84CFD3F82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +128,7 @@ Global
 		{4EF18979-2FEA-4CC4-9CBB-11B78E088201} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 		{A834E43F-37A6-48B7-BCB9-E2AD5B64D25E} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
 		{C2D81D36-F6FA-4EA6-9AC2-D28A36F96AA3} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
+		{96379438-8F88-4F73-BFEF-18D84CFD3F82} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EED79307-5690-4CE6-A80D-F41857C97EFF}

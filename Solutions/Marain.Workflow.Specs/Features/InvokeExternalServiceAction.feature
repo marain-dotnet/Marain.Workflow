@@ -1,4 +1,5 @@
 ﻿@perFeatureContainer
+@useCosmosStores
 @setupTenantedCosmosContainers
 Feature: InvokeExternalServiceAction
     In order to be able to define a workflow that invokes external HTTP endpoints

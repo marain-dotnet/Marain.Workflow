@@ -20,7 +20,7 @@ namespace Marain.Workflows.Storage
     public class SqlWorkflowStore : IWorkflowStore
     {
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
-        private readonly Func<SqlConnection> connectionFactory;
+        private readonly Func<Task<SqlConnection>> connectionFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowEngine"/> class.
@@ -28,7 +28,7 @@ namespace Marain.Workflows.Storage
         /// <param name="serializerSettingsProvider">The serializer settings provider for the store.</param>
         /// <param name="connectionFactory">A factory method to create a sqlconnection for the workflow store.</param>
         public SqlWorkflowStore(
-            IJsonSerializerSettingsProvider serializerSettingsProvider, Func<SqlConnection> connectionFactory)
+            IJsonSerializerSettingsProvider serializerSettingsProvider, Func<Task<SqlConnection>> connectionFactory)
         {
             this.serializerSettingsProvider = serializerSettingsProvider;
             this.connectionFactory = connectionFactory;
@@ -51,7 +51,7 @@ namespace Marain.Workflows.Storage
 
         private async Task<Workflow> GetWorkflowCoreAsync(string workflowId)
         {
-            using SqlConnection connection = this.connectionFactory();
+            using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
             using SqlCommand command = connection.CreateCommand();
             command.Parameters.AddWithValue("@workflowId", workflowId);
@@ -82,7 +82,7 @@ namespace Marain.Workflows.Storage
             string serializedWorkflow = JsonConvert.SerializeObject(workflow, this.serializerSettingsProvider.Instance);
             string newetag = EtagHelper.BuildEtag(nameof(SqlWorkflowStore), serializedWorkflow);
 
-            using SqlConnection connection = this.connectionFactory();
+            using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
             using SqlCommand command = connection.CreateCommand();
             command.Parameters.AddWithValue("@workflowId", workflow.Id);

@@ -20,7 +20,7 @@ namespace Marain.Workflows.Storage
     /// </summary>
     public class SqlWorkflowInstanceStore : IWorkflowInstanceStore
     {
-        private readonly Func<SqlConnection> connectionFactory;
+        private readonly Func<Task<SqlConnection>> connectionFactory;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Marain.Workflows.Storage
         /// </summary>
         /// <param name="serializerSettingsProvider">The serializer settings provider for the store.</param>
         /// <param name="connectionFactory">A factory method to create a sqlconnection for the workflow store.</param>
-        public SqlWorkflowInstanceStore(IJsonSerializerSettingsProvider serializerSettingsProvider, Func<SqlConnection> connectionFactory)
+        public SqlWorkflowInstanceStore(IJsonSerializerSettingsProvider serializerSettingsProvider, Func<Task<SqlConnection>> connectionFactory)
         {
             this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
             this.serializerSettingsProvider = serializerSettingsProvider;
@@ -63,7 +63,7 @@ namespace Marain.Workflows.Storage
             int pageNumber)
         {
             DataTable subjectTable = BuildInterests(subjects);
-            using SqlConnection connection = this.connectionFactory();
+            using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
             using SqlCommand command = connection.CreateCommand();
             command.CommandText = "GetMatchingWorkflowInstanceCountForSubjects";
@@ -88,7 +88,7 @@ namespace Marain.Workflows.Storage
         public async Task<int> GetMatchingWorkflowInstanceCountForSubjectsAsync(IEnumerable<string> subjects)
         {
             DataTable subjectTable = BuildInterests(subjects);
-            using SqlConnection connection = this.connectionFactory();
+            using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
             using SqlCommand command = connection.CreateCommand();
             command.CommandText = "GetMatchingWorkflowInstanceCountForSubjects";
@@ -115,7 +115,7 @@ namespace Marain.Workflows.Storage
 
         private async Task<WorkflowInstance> GetWorkflowInstanceCoreAsync(string workflowInstanceId)
         {
-            using SqlConnection connection = this.connectionFactory();
+            using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
             using SqlCommand command = connection.CreateCommand();
             command.Parameters.AddWithValue("@workflowInstanceId", workflowInstanceId);
@@ -142,7 +142,7 @@ namespace Marain.Workflows.Storage
 
         private async Task DeleteWorkflowInstanceCoreAsync(string workflowInstanceId)
         {
-            using SqlConnection connection = this.connectionFactory();
+            using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
             using SqlCommand command = connection.CreateCommand();
             command.Parameters.AddWithValue("@workflowInstanceId", workflowInstanceId);
@@ -168,7 +168,7 @@ namespace Marain.Workflows.Storage
             string newetag = EtagHelper.BuildEtag(nameof(SqlWorkflowInstanceStore), serializedInstance);
             DataTable interests = BuildInterests(workflowInstance.Interests);
 
-            using SqlConnection connection = this.connectionFactory();
+            using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
             using SqlCommand command = connection.CreateCommand();
             command.Parameters.AddWithValue("@workflowInstanceId", workflowInstance.Id);
