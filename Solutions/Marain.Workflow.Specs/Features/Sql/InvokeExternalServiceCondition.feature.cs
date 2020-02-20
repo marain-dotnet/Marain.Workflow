@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Specs.Features.Cosmos
+namespace Marain.Workflows.Specs.Features.Sql
 {
     using TechTalk.SpecFlow;
     using System;
@@ -20,19 +20,19 @@ namespace Marain.Workflows.Specs.Features.Cosmos
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("InvokeExternalServiceCondition with Cosmos")]
+    [NUnit.Framework.DescriptionAttribute("InvokeExternalServiceCondition with SQL")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
-    [NUnit.Framework.CategoryAttribute("useCosmosStores")]
-    [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainers")]
-    public partial class InvokeExternalServiceConditionWithCosmosFeature
+    [NUnit.Framework.CategoryAttribute("useSqlStores")]
+    [NUnit.Framework.CategoryAttribute("setupTenantedSqlDatabase")]
+    public partial class InvokeExternalServiceConditionWithSQLFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
                 "perFeatureContainer",
-                "useCosmosStores",
-                "setupTenantedCosmosContainers"};
+                "useSqlStores",
+                "setupTenantedSqlDatabase"};
         
 #line 1 "InvokeExternalServiceCondition.feature"
 #line hidden
@@ -41,12 +41,12 @@ namespace Marain.Workflows.Specs.Features.Cosmos
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "InvokeExternalServiceCondition with Cosmos", "    In order to be able to define a workflow that queries external HTTP endpoints" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "InvokeExternalServiceCondition with SQL", "    In order to be able to define a workflow that queries external HTTP endpoints" +
                     " to determine conditions\r\n    As a developer defining a workflow\r\n    I want to " +
                     "be able to define a workflow condition that invokes an external HTTP endpoint", ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
-                        "useCosmosStores",
-                        "setupTenantedCosmosContainers"});
+                        "useSqlStores",
+                        "setupTenantedSqlDatabase"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -117,21 +117,21 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have created and persisted a workflow containing an external condition with id " +
                         "\'external-condition-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table46 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table99 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table46.AddRow(new string[] {
+                table99.AddRow(new string[] {
                             "include1",
                             "value1"});
-                table46.AddRow(new string[] {
+                table99.AddRow(new string[] {
                             "include2",
                             "value2"});
-                table46.AddRow(new string[] {
+                table99.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
 #line 12
  testRunner.And("I have created and persisted a new instance with Id \'id1\' of the workflow with Id" +
-                        " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table46, "And ");
+                        " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table99, "And ");
 #line hidden
 #line 17
     testRunner.And("the external service will return a 200 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -223,21 +223,21 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have created and persisted a workflow containing an external condition with id " +
                         "\'external-condition-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table47 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table100 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table47.AddRow(new string[] {
+                table100.AddRow(new string[] {
                             "include1",
                             "value1"});
-                table47.AddRow(new string[] {
+                table100.AddRow(new string[] {
                             "include2",
                             "value2"});
-                table47.AddRow(new string[] {
+                table100.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
 #line 38
  testRunner.And("I have created and persisted a new instance with Id \'id2\' of the workflow with Id" +
-                        " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table47, "And ");
+                        " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table100, "And ");
 #line hidden
 #line 43
     testRunner.And("the external service will return a 200 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -330,21 +330,21 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have created and persisted a workflow containing an external condition with id " +
                         "\'external-condition-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table48 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table101 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table48.AddRow(new string[] {
+                table101.AddRow(new string[] {
                             "include1",
                             "value1"});
-                table48.AddRow(new string[] {
+                table101.AddRow(new string[] {
                             "include2",
                             "value2"});
-                table48.AddRow(new string[] {
+                table101.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
 #line 64
  testRunner.And("I have created and persisted a new instance with Id \'id3\' of the workflow with Id" +
-                        " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table48, "And ");
+                        " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table101, "And ");
 #line hidden
 #line 69
     testRunner.And("the external service will return a 500 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

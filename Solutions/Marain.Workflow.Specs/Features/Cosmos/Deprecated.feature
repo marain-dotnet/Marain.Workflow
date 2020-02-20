@@ -1,7 +1,7 @@
 ﻿@perFeatureContainer
 @useCosmosStores
 @setupTenantedCosmosContainers
-Feature: Deprecate an item
+Feature: Deprecate an item with Cosmos
 
 @useChildObjects
 Scenario: Deprecate item when it is in the published state

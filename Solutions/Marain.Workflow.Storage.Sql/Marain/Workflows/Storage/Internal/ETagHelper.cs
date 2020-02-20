@@ -23,10 +23,10 @@ namespace Marain.Workflows.Storage.Internal
 
             foreach (string current in etags)
             {
-                hashCode = (hashCode * -179424319) + current.GetHashCode();
+                hashCode = (hashCode * 179424319) + current.GetHashCode();
             }
 
-            return string.Concat("\"", hashCode.ToString(), "\"");
+            return string.Concat("\"", ((uint)hashCode).ToString(), "\"");
         }
     }
 }

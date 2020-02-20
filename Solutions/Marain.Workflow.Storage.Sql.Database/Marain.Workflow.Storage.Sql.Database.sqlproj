@@ -75,5 +75,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Marain.Workflow.Storage.Sql.Database.publish.xml" />
+    <None Include="Marain.Workflow.Storage.Sql.Database.TestTenant.publish.xml" />
   </ItemGroup>
 </Project>

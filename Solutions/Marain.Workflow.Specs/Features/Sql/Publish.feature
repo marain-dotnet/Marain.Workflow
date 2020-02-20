@@ -1,7 +1,7 @@
 ﻿@perFeatureContainer
-@useCosmosStores
-@setupTenantedCosmosContainers
-Feature: Publish an item with Cosmos
+@useSqlStores
+@setupTenantedSqlDatabase
+Feature: Publish an item with SQL
 
 @useChildObjects
 Scenario: Publish item when it is in the waiting for documentation state and it is complete

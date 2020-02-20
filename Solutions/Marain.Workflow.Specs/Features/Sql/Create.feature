@@ -1,7 +1,7 @@
 ﻿@perFeatureContainer
-@useCosmosStores
-@setupTenantedCosmosContainers
-Feature: Creating workflow instances with Cosmos
+@useSqlStores
+@setupTenantedSqlDatabase
+Feature: Creating workflow instances with SQL
 		 In order to ensure that my workflow instances are created correctly
 		 And that my workflow can create any supporting data necessary
 		 As a workflow designer

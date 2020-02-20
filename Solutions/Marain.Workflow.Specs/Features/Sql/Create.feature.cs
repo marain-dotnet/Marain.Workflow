@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Specs.Features.Cosmos
+namespace Marain.Workflows.Specs.Features.Sql
 {
     using TechTalk.SpecFlow;
     using System;
@@ -20,19 +20,19 @@ namespace Marain.Workflows.Specs.Features.Cosmos
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Creating workflow instances with Cosmos")]
+    [NUnit.Framework.DescriptionAttribute("Creating workflow instances with SQL")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
-    [NUnit.Framework.CategoryAttribute("useCosmosStores")]
-    [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainers")]
-    public partial class CreatingWorkflowInstancesWithCosmosFeature
+    [NUnit.Framework.CategoryAttribute("useSqlStores")]
+    [NUnit.Framework.CategoryAttribute("setupTenantedSqlDatabase")]
+    public partial class CreatingWorkflowInstancesWithSQLFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
                 "perFeatureContainer",
-                "useCosmosStores",
-                "setupTenantedCosmosContainers"};
+                "useSqlStores",
+                "setupTenantedSqlDatabase"};
         
 #line 1 "Create.feature"
 #line hidden
@@ -41,12 +41,12 @@ namespace Marain.Workflows.Specs.Features.Cosmos
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Creating workflow instances with Cosmos", "\t\t In order to ensure that my workflow instances are created correctly\r\n\t\t And th" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Creating workflow instances with SQL", "\t\t In order to ensure that my workflow instances are created correctly\r\n\t\t And th" +
                     "at my workflow can create any supporting data necessary\r\n\t\t As a workflow design" +
                     "er\r\n\t\t I want to be able to put conditions and actions on the initial state", ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
-                        "useCosmosStores",
-                        "setupTenantedCosmosContainers"});
+                        "useSqlStores",
+                        "setupTenantedSqlDatabase"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -125,18 +125,18 @@ this.ScenarioInitialize(scenarioInfo);
 #line 10
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table64 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table11.AddRow(new string[] {
+                table64.AddRow(new string[] {
                             "Identifier",
                             "identifier1"});
-                table11.AddRow(new string[] {
+                table64.AddRow(new string[] {
                             "Type",
                             "t1"});
 #line 15
  testRunner.When("I create and persist a new instance with Id \'new-instance\' of the workflow with I" +
-                        "d \'dc-workflow\' and supply the following context items", ((string)(null)), table11, "When ");
+                        "d \'dc-workflow\' and supply the following context items", ((string)(null)), table64, "When ");
 #line hidden
 #line 19
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -159,18 +159,18 @@ this.FeatureBackground();
 #line 24
  testRunner.And("the data catalog item with Id \'new-instance\' should have a Type of \'t1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table65 = new TechTalk.SpecFlow.Table(new string[] {
                             "Message"});
-                table12.AddRow(new string[] {
+                table65.AddRow(new string[] {
                             "Entering state \'Waiting for initialization\'"});
-                table12.AddRow(new string[] {
+                table65.AddRow(new string[] {
                             "Exiting state \'Waiting for initialization\'"});
-                table12.AddRow(new string[] {
+                table65.AddRow(new string[] {
                             "Executing transition \'Create catalog item\'"});
-                table12.AddRow(new string[] {
+                table65.AddRow(new string[] {
                             "Entering state \'Waiting for documentation\'"});
 #line 25
- testRunner.And("the following trace messages should have been recorded", ((string)(null)), table12, "And ");
+ testRunner.And("the following trace messages should have been recorded", ((string)(null)), table65, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -205,15 +205,15 @@ this.ScenarioInitialize(scenarioInfo);
 #line 10
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table66 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table13.AddRow(new string[] {
+                table66.AddRow(new string[] {
                             "Type",
                             "t1"});
 #line 33
  testRunner.When("I create and persist a new instance with Id \'new-instance-incomplete\' of the work" +
-                        "flow with Id \'dc-workflow\' and supply the following context items", ((string)(null)), table13, "When ");
+                        "flow with Id \'dc-workflow\' and supply the following context items", ((string)(null)), table66, "When ");
 #line hidden
 #line 36
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

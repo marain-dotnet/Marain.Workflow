@@ -3,15 +3,15 @@
 -- No changes will be made in the event of a conflict
 CREATE PROCEDURE [dbo].[UpsertWorkflowInstance]
 -- The id of the workflow instance to upsert
-	@workflowInstanceId nvarchar(50) NOT NULL,
+	@workflowInstanceId nvarchar(50),
 -- The etag of the old version of the document (or NULL if this is a new instance)
 	@etag nvarchar(50),
 -- The etag of the version to be inserted
-	@newetag nvarchar(50) NOT NULL,
+	@newetag nvarchar(50),
 -- The serialized workflow instance
-	@serializedInstance nvarchar(MAX) NOT NULL,
+	@serializedInstance nvarchar(MAX),
 -- A list of the interests of the workflow instance
-	@interests WorkflowInstanceInterestTableType NOT NULL READONLY
+	@interests WorkflowInstanceInterestTableType READONLY
 AS
 
 DECLARE @id INT;
@@ -32,7 +32,7 @@ BEGIN
 	END
 
 	-- All is good, so insert the record and stash away its identity
-	INSERT INTO [WorkflowInstance]([WorkflowInstanceId], SerializedInstance, ETag) VALUES (@workflowInstanceId, @serializedInstance, @etag);
+	INSERT INTO [WorkflowInstance]([WorkflowInstanceId], SerializedInstance, ETag) VALUES (@workflowInstanceId, @serializedInstance, @newetag);
 	SET @id = @@IDENTITY;
 END
 ELSE

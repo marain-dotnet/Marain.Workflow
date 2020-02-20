@@ -1,7 +1,7 @@
 ﻿@perFeatureContainer
 @useCosmosStores
 @setupTenantedCosmosContainers
-Feature: Delete an item
+Feature: Delete an item with Cosmos
 
 @useChildObjects
 Scenario: Delete item when it is in the published state

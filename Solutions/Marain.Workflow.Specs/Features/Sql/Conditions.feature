@@ -1,7 +1,7 @@
 ﻿@perFeatureContainer
-@useCosmosStores
-@setupTenantedCosmosContainers
-Feature: Conditions with Cosmos
+@useSqlStores
+@setupTenantedSqlDatabase
+Feature: Conditions with SQL
 
 @useChildObjects
 Scenario: An unmet exit condition on the current state prevents a transition being selected

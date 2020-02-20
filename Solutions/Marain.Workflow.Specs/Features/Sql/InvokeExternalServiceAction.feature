@@ -1,7 +1,7 @@
 ﻿@perFeatureContainer
-@useCosmosStores
-@setupTenantedCosmosContainers
-Feature: InvokeExternalServiceAction with Cosmos
+@useSqlStores
+@setupTenantedSqlDatabase
+Feature: InvokeExternalServiceAction with SQL
     In order to be able to define a workflow that invokes external HTTP endpoints
     As a developer defining a workflow
     I want to be able to define a workflow action that invokes an external HTTP endpoint

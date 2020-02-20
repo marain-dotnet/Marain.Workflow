@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[DeleteWorkflowInstance]
-	@workflowInstanceId nvarchar(50) NOT NULL
+	@workflowInstanceId nvarchar(50)
 AS
 	
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE

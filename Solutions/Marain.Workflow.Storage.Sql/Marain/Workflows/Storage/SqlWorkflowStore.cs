@@ -54,26 +54,27 @@ namespace Marain.Workflows.Storage
             using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
             using SqlCommand command = connection.CreateCommand();
-            command.Parameters.AddWithValue("@workflowId", workflowId);
+            command.Parameters.Add("@workflowId", SqlDbType.NVarChar, 50).Value = workflowId;
             command.CommandText = "GetWorkflow";
             command.CommandType = CommandType.StoredProcedure;
 
             await connection.OpenAsync().ConfigureAwait(false);
-            SqlDataReader reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+            using SqlDataReader reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
 
             if (!reader.HasRows)
             {
                 throw new WorkflowInstanceNotFoundException($"The workflow with id {workflowId} was not found.");
             }
 
+            await reader.ReadAsync().ConfigureAwait(false);
             string serializedResult = reader.GetString(0);
             string etag = reader.GetString(1);
+            Workflow instance = JsonConvert.DeserializeObject<Workflow>(serializedResult, this.serializerSettingsProvider.Instance);
+            instance.ETag = etag;
 
             reader.Close();
             connection.Close();
 
-            Workflow instance = JsonConvert.DeserializeObject<Workflow>(serializedResult, this.serializerSettingsProvider.Instance);
-            instance.ETag = etag;
             return instance;
         }
 
@@ -85,10 +86,10 @@ namespace Marain.Workflows.Storage
             using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
             using SqlCommand command = connection.CreateCommand();
-            command.Parameters.AddWithValue("@workflowId", workflow.Id);
-            command.Parameters.AddWithValue("@etag", workflow.ETag);
-            command.Parameters.AddWithValue("@newetag", newetag);
-            command.Parameters.AddWithValue("@serializedInstance", serializedWorkflow);
+            command.Parameters.Add("@workflowId", SqlDbType.NVarChar, 50).Value = workflow.Id;
+            command.Parameters.Add("@etag", SqlDbType.NVarChar, 50).Value = workflow.ETag ?? (object)DBNull.Value;
+            command.Parameters.Add("@newetag", SqlDbType.NVarChar, 50).Value = newetag;
+            command.Parameters.Add("@serializedWorkflow", SqlDbType.NVarChar, -1).Value = serializedWorkflow;
 
             SqlParameter returnValue = command.Parameters.Add("@returnValue", SqlDbType.Int);
             returnValue.Direction = ParameterDirection.ReturnValue;
@@ -103,6 +104,8 @@ namespace Marain.Workflows.Storage
             {
                 throw new WorkflowInstanceConflictException($"The workflow with id {workflow.Id} was already modified.");
             }
+
+            workflow.ETag = newetag;
         }
     }
 }

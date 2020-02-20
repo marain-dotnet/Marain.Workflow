@@ -63,12 +63,12 @@ namespace Marain.Workflows.Specs.Bindings
                     services.RegisterCoreWorkflowContentTypes();
                     services.AddTenantedWorkflowEngineFactory();
 
-                    if (featureContext.FeatureInfo.Tags.Any(t => t == "@useCosmosStores"))
+                    if (featureContext.FeatureInfo.Tags.Any(t => t == "useCosmosStores"))
                     {
                         services.AddTenantedAzureCosmosWorkflowStore();
                         services.AddTenantedAzureCosmosWorkflowInstanceStore();
                     }
-                    else if (featureContext.FeatureInfo.Tags.Any(t => t == "@useSqlStores"))
+                    else if (featureContext.FeatureInfo.Tags.Any(t => t == "useSqlStores"))
                     {
                         services.AddTenantedSqlWorkflowStore();
                         services.AddTenantedSqlWorkflowInstanceStore();

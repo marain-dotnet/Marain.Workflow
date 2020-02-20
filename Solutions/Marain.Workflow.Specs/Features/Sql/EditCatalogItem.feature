@@ -1,7 +1,7 @@
 ﻿@perFeatureContainer
-@useCosmosStores
-@setupTenantedCosmosContainers
-Feature: Edit catalog item with Cosmos
+@useSqlStores
+@setupTenantedSqlDatabase
+Feature: Edit catalog item with SQL
 
 @useChildObjects
 Scenario: Edit item in the Waiting for Documentation state

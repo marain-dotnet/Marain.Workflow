@@ -1,7 +1,7 @@
 ﻿@perFeatureContainer
-@useCosmosStores
-@setupTenantedCosmosContainers
-Feature: InvokeExternalServiceCondition with Cosmos
+@useSqlStores
+@setupTenantedSqlDatabase
+Feature: InvokeExternalServiceCondition with SQL
     In order to be able to define a workflow that queries external HTTP endpoints to determine conditions
     As a developer defining a workflow
     I want to be able to define a workflow condition that invokes an external HTTP endpoint

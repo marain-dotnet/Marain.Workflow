@@ -20,11 +20,11 @@ namespace Marain.Workflows.Specs.Features.Cosmos
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Publish an item")]
+    [NUnit.Framework.DescriptionAttribute("Publish an item with Cosmos")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     [NUnit.Framework.CategoryAttribute("useCosmosStores")]
     [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainers")]
-    public partial class PublishAnItemFeature
+    public partial class PublishAnItemWithCosmosFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
@@ -41,7 +41,7 @@ namespace Marain.Workflows.Specs.Features.Cosmos
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Publish an item", null, ProgrammingLanguage.CSharp, new string[] {
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Publish an item with Cosmos", null, ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
                         "useCosmosStores",
                         "setupTenantedCosmosContainers"});
