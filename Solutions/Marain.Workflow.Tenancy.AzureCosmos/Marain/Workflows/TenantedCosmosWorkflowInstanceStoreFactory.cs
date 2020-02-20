@@ -19,7 +19,7 @@ namespace Marain.Workflows
         private readonly CosmosContainerDefinition containerDefinition;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TenantedCosmosWorkflowStoreFactory"/> class.
+        /// Initializes a new instance of the <see cref="TenantedCosmosWorkflowInstanceStoreFactory"/> class.
         /// </summary>
         /// <param name="containerFactory">The <see cref="ITenantCosmosContainerFactory"/> that will be used to create
         /// underlying <see cref="Container"/> instances for the content stores.</param>
