@@ -24,6 +24,20 @@
       "type": "string",
       "minLength": 1
     },
+    "operationsControlResourceIdForMsiAuthentication": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenancyStorageAccountName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenancyKeyVaultName": {
+      "type": "string"
+    },
+    "tenancyStorageAccountKeyName": {
+      "type": "string"
+    },
     "_artifactsLocation": {
       "type": "string"
     },
@@ -37,8 +51,11 @@
     "keyVaultName": "[substring(concat(variables('defaultName'), uniqueString(resourceGroup().id)), 0, 24)]",
     "keyVaultDiagnosticStorageAccountName": "[substring(concat(variables('resourceNameRoot'), parameters('appName'), 'kvdiag', uniqueString(resourceGroup().id)), 0, 24)]",
     "cosmosDbName": "[substring(concat(variables('defaultName'), uniqueString(resourceGroup().id)), 0, 24)]",
+    "leasingStorageAccountName": "[substring(concat(variables('resourceNameRoot'), parameters('appName'), 'lease', uniqueString(resourceGroup().id)), 0, 24)]",
+    "workflowCosmosAccountKeySecretName": "CosmosDbAccountKey",
+    "workflowCosmosDatabaseName": "workflow",
     "messageIngestionFunctionsAppName": "[substring(concat(variables('defaultName'), 'mi', uniqueString(resourceGroup().id)), 0, 24)]",
-    "engineFunctionsAppName": "[substring(concat(variables('defaultName'), 'mi', uniqueString(resourceGroup().id)), 0, 24)]",
+    "engineFunctionsAppName": "[substring(concat(variables('defaultName'), 'eng', uniqueString(resourceGroup().id)), 0, 24)]",
     "tenantId": "[subscription().tenantID]",
     "workflowEngineClientBaseUrl": "[concat('https://', variables('engineFunctionsAppName'), '.azurewebsites.net')]"
   },
@@ -83,7 +100,7 @@
         },
         "parameters": {
           "secretName": {
-            "value": "CosmosDbAccountKey"
+            "value": "[variables('workflowCosmosAccountKeySecretName')]"
           },
           "keyVaultName": {
             "value": "[variables('keyVaultName')]"
@@ -126,6 +143,24 @@
         "parameters": {
           "accountName": {
             "value": "[variables('cosmosDbName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "storage-leasing",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/storage-account.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountName": {
+            "value": "[variables('leasingStorageAccountName')]"
           }
         }
       }
@@ -178,7 +213,7 @@
       }
     },
     {
-      "name": "functions-app-message-ingestion-settings",
+      "name": "functions-app-settings-message-ingestion",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [ "functions-app-message-ingestion", "storage-leasing" ],
@@ -195,8 +230,53 @@
           "applicationInsightsInstrumentationKey": { "value": "[parameters('appInsightsInstrumentationKey')]" },
           "leasingStorageAccountConnectionString": { "value": "[reference('storage-leasing', '2016-09-01').outputs.storageAccountConnectionString.value]" },
           "operationsControlServiceBaseUrl": { "value": "[parameters('operationsControlServiceBaseUrl')]" },
+          "operationsControlResourceIdForMsiAuthentication": { "value": "[parameters('operationsControlResourceIdForMsiAuthentication')]" },
           "workflowEngineClientBaseUrl": { "value": "[variables('workflowEngineClientBaseUrl')]" },
-          "workflowEngineClientResourceIdForMsiAuthentication": "[parameters('engineFunctionAuthAadClientId')]"
+          "workflowEngineClientResourceIdForMsiAuthentication": "[parameters('engineFunctionAuthAadClientId')]",
+          "tenancyStorageAccountName": "[parameters('tenancyStorageAccountName')]",
+          "tenancyKeyVaultName": "[parameters('tenancyKeyVaultName')]",
+          "tenancyStorageAccountKeyName": "[parameters('tenancyStorageAccountKeyName')]",
+          "workflowCosmosAccountUri": "[concat('https://', variables('cosmosDbName'), '.documents.azure.com/')]",
+          "workflowCosmosKeyVaultName": "[variables('keyVaultName')]",
+          "workflowCosmosAccountKeySecretName": "[variables('workflowCosmosAccountKeySecretName')]",
+          "workflowCosmosDatabaseName": "[variables('workflowCosmosDatabaseName')]"
+        }
+      }
+    },
+    {
+      "name": "function-key-vault-access-message-ingestion",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "operations-status-functions-app",
+        "key-vault"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/key-vault-access-policy.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          },
+          "objectName": {
+            "value": "[variables('messageIngestionFunctionsAppName')]"
+          },
+          "objectResourceGroup": {
+            "value": "[resourceGroup().name]"
+          },
+          "objectResourceType": {
+            "value": "Microsoft.Web/sites"
+          },
+          "permissions": {
+            "value": {
+              "secrets": [
+                "get"
+              ]
+            }
+          }
         }
       }
     },
@@ -248,7 +328,7 @@
       }
     },
     {
-      "name": "functions-app-engine-settings",
+      "name": "functions-app-settings-engine",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [ "functions-app-engine", "storage-leasing" ],
@@ -266,11 +346,63 @@
           "leasingStorageAccountConnectionString": { "value": "[reference('storage-leasing', '2016-09-01').outputs.storageAccountConnectionString.value]" },
           "operationsControlServiceBaseUrl": { "value": "[parameters('operationsControlServiceBaseUrl')]" },
           "workflowEngineClientBaseUrl": { "value": "[variables('workflowEngineClientBaseUrl')]" },
-          "workflowEngineClientResourceIdForMsiAuthentication": "[parameters('engineFunctionAuthAadClientId')]"
+          "workflowEngineClientResourceIdForMsiAuthentication": "[parameters('engineFunctionAuthAadClientId')]",
+          "tenancyStorageAccountName": "[parameters('tenancyStorageAccountName')]",
+          "tenancyKeyVaultName": "[parameters('tenancyKeyVaultName')]",
+          "tenancyStorageAccountKeyName": "[parameters('tenancyStorageAccountKeyName')]",
+          "workflowCosmosAccountUri": "[concat('https://', variables('cosmosDbName'), '.documents.azure.com/')]",
+          "workflowCosmosKeyVaultName": "[variables('keyVaultName')]",
+          "workflowCosmosAccountKeySecretName": "[variables('workflowCosmosAccountKeySecretName')]",
+          "workflowCosmosDatabaseName": "[variables('workflowCosmosDatabaseName')]"
         }
       }
     },
-    "Don't forget to add the leasing storage"
+    {
+      "name": "function-key-vault-access-engine",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "operations-status-functions-app",
+        "key-vault"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/key-vault-access-policy.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          },
+          "objectName": {
+            "value": "[variables('engineFunctionsAppName')]"
+          },
+          "objectResourceGroup": {
+            "value": "[resourceGroup().name]"
+          },
+          "objectResourceType": {
+            "value": "Microsoft.Web/sites"
+          },
+          "permissions": {
+            "value": {
+              "secrets": [
+                "get"
+              ]
+            }
+          }
+        }
+      }
+    }
   ],
-  "outputs": {}
+  "outputs": {
+    "messageIngestionFunctionServicePrincipalId": {
+      "type": "string",
+      "value": "[reference('functions-app-message-ingestion').outputs.servicePrincipalId.value]"
+    },
+    "engineFunctionServicePrincipalId": {
+      "type": "string",
+      "value": "[reference('functions-app-engine').outputs.servicePrincipalId.value]"
+    }
+  }
 }

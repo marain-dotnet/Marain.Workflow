@@ -25,10 +25,25 @@
       "type": "string",
       "minLength": 1
     },
-    "workflowEngineClientBaseUrl": {
+    "tenancyStorageAccountName": {
       "type": "string"
     },
-    "workflowEngineClientResourceIdForMsiAuthentication": {
+    "tenancyKeyVaultName": {
+      "type": "string"
+    },
+    "tenancyStorageAccountKeyName": {
+      "type": "string"
+    },
+    "workflowCosmosAccountUri": {
+      "type": "string"
+    },
+    "workflowCosmosKeyVaultName": {
+      "type": "string"
+    },
+    "workflowCosmosAccountKeySecretName": {
+      "type": "string"
+    },
+    "workflowCosmosDatabaseName": {
       "type": "string"
     }
   },
@@ -60,9 +75,10 @@
         "TenantCloudBlobContainerFactoryOptions:RootTenantBlobStorageConfiguration:KeyVaultName": "[parameters('tenancyKeyVaultName')]",
         "TenantCloudBlobContainerFactoryOptions:RootTenantBlobStorageConfiguration:AccountKeySecretName": "[parameters('tenancyStorageAccountKeyName')]",
 
-        "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountUri": "[parameters('storageAccountName')]",
-        "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:KeyVaultName": "[parameters('keyVaultName')]",
-        "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountKeySecretName": "[parameters('storageAccountKeyName')]"
+        "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountUri": "[parameters('workflowCosmosAccountUri')]",
+        "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:KeyVaultName": "[parameters('workflowCosmosKeyVaultName')]",
+        "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountKeySecretName": "[parameters('workflowCosmosAccountKeySecretName')]",
+        "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:DatabaseName": "[parameters('workflowCosmosDatabaseName')]"
       }
     }
   ],
