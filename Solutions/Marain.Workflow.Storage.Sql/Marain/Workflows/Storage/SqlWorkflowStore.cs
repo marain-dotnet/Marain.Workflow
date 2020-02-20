@@ -63,7 +63,7 @@ namespace Marain.Workflows.Storage
 
             if (!reader.HasRows)
             {
-                throw new WorkflowInstanceNotFoundException($"The workflow with id {workflowId} was not found.");
+                throw new WorkflowNotFoundException($"The workflow with id {workflowId} was not found.");
             }
 
             await reader.ReadAsync().ConfigureAwait(false);
@@ -102,7 +102,7 @@ namespace Marain.Workflows.Storage
 
             if ((int)returnValue.Value == 409)
             {
-                throw new WorkflowInstanceConflictException($"The workflow with id {workflow.Id} was already modified.");
+                throw new WorkflowConflictException($"The workflow with id {workflow.Id} was already modified.");
             }
 
             workflow.ETag = newetag;
