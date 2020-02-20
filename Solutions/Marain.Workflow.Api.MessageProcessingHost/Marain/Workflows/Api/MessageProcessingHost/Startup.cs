@@ -45,7 +45,6 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
                 return config.GetSection("Workflow:EngineClient").Get<MarainWorkflowEngineClientOptions>();
             });
 
-            services.AddTenantedWorkflowEngine();
             AddMessageProcessingMenesServices(services);
         }
 
@@ -65,8 +64,6 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
             {
                 return services;
             }
-
-            services.AddTenantedWorkflowEngine();
 
             services.AddOpenApiHttpRequestHosting<DurableFunctionsOpenApiContext>(config =>
             {

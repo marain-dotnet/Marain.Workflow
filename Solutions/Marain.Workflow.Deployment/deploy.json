@@ -1,0 +1,276 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "marainPrefix": {
+      "type": "string"
+    },
+    "appName": {
+      "type": "string"
+    },
+    "environmentSuffix": {
+      "type": "string"
+    },
+    "appInsightsInstrumentationKey": {
+      "type": "string"
+    },
+    "messageIngestionFunctionAuthAadClientId": {
+      "type": "string"
+    },
+    "engineFunctionAuthAadClientId": {
+      "type": "string"
+    },
+    "operationsControlServiceBaseUrl": {
+      "type": "string",
+      "minLength": 1
+    },
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "resourceNameRoot": "[concat(parameters('marainPrefix'), parameters('environmentSuffix'))]",
+    "defaultName": "[concat(variables('resourceNameRoot'), parameters('appName'))]",
+    "keyVaultName": "[substring(concat(variables('defaultName'), uniqueString(resourceGroup().id)), 0, 24)]",
+    "keyVaultDiagnosticStorageAccountName": "[substring(concat(variables('resourceNameRoot'), parameters('appName'), 'kvdiag', uniqueString(resourceGroup().id)), 0, 24)]",
+    "cosmosDbName": "[substring(concat(variables('defaultName'), uniqueString(resourceGroup().id)), 0, 24)]",
+    "messageIngestionFunctionsAppName": "[substring(concat(variables('defaultName'), 'mi', uniqueString(resourceGroup().id)), 0, 24)]",
+    "engineFunctionsAppName": "[substring(concat(variables('defaultName'), 'mi', uniqueString(resourceGroup().id)), 0, 24)]",
+    "tenantId": "[subscription().tenantID]",
+    "workflowEngineClientBaseUrl": "[concat('https://', variables('engineFunctionsAppName'), '.azurewebsites.net')]"
+  },
+  "resources": [
+    {
+      "name": "key-vault",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ "key-vault-diagnostics-storage-account" ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/key-vault.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "tenantId": {
+            "value": "[variables('tenantId')]"
+          },
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          },
+          "diagnosticsStorageAccountName": {
+            "value": "[variables('keyVaultDiagnosticStorageAccountName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "key-vault-secret-cosmos",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments/', 'key-vault')]",
+        "[resourceId('Microsoft.Resources/deployments/', 'cosmos-db')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/key-vault-secret.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "secretName": {
+            "value": "CosmosDbAccountKey"
+          },
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          },
+          "contentValue": {
+            "value": "[reference('cosmos-db').outputs.primaryKey.value]"
+          }
+        }
+      }
+    },
+    {
+      "name": "key-vault-diagnostics-storage-account",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/storage-account.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountName": {
+            "value": "[variables('keyVaultDiagnosticStorageAccountName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "cosmos-db",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/cosmos-db.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "accountName": {
+            "value": "[variables('cosmosDbName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "functions-app-message-ingestion",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": { "value": "[variables('messageIngestionFunctionsAppName')]" },
+          "_artifactsLocation": { "value": "[parameters('_artifactsLocation')]" },
+          "_artifactsLocationSasToken": { "value": "[parameters('_artifactsLocationSasToken')]" }
+        }
+      }
+    },
+    {
+      "name": "functions-app-auth-settings-message-ingestion",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "functions-app-message-ingestion"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-auth-settings.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": {
+            "value": "[variables('messageIngestionFunctionsAppName')]"
+          },
+          "aadTenantId": {
+            "value": "[variables('tenantId')]"
+          },
+          "aadClientId": {
+            "value": "[parameters('messageIngestionFunctionAuthAadClientId')]"
+          },
+          "unauthenticatedClientAction": {
+            "value": "RedirectToLoginPage"
+          }
+        }
+      }
+    },
+    {
+      "name": "functions-app-message-ingestion-settings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ "functions-app-message-ingestion", "storage-leasing" ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-settings-message-ingestion-host.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountConnectionString": { "value": "[reference('functions-app-message-ingestion', '2016-09-01').outputs.storageAccountConnectionString.value]" },
+          "runFromPackage": { "value": "1" },
+          "functionsAppName": { "value": "[variables('messageIngestionFunctionsAppName')]" },
+          "applicationInsightsInstrumentationKey": { "value": "[parameters('appInsightsInstrumentationKey')]" },
+          "leasingStorageAccountConnectionString": { "value": "[reference('storage-leasing', '2016-09-01').outputs.storageAccountConnectionString.value]" },
+          "operationsControlServiceBaseUrl": { "value": "[parameters('operationsControlServiceBaseUrl')]" },
+          "workflowEngineClientBaseUrl": { "value": "[variables('workflowEngineClientBaseUrl')]" },
+          "workflowEngineClientResourceIdForMsiAuthentication": "[parameters('engineFunctionAuthAadClientId')]"
+        }
+      }
+    },
+    {
+      "name": "functions-app-engine",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": { "value": "[variables('engineFunctionsAppName')]" },
+          "_artifactsLocation": { "value": "[parameters('_artifactsLocation')]" },
+          "_artifactsLocationSasToken": { "value": "[parameters('_artifactsLocationSasToken')]" }
+        }
+      }
+    },
+    {
+      "name": "functions-app-auth-settings-engine",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "functions-app-engine"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-auth-settings.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": {
+            "value": "[variables('engineFunctionsAppName')]"
+          },
+          "aadTenantId": {
+            "value": "[variables('tenantId')]"
+          },
+          "aadClientId": {
+            "value": "[parameters('engineFunctionAuthAadClientId')]"
+          },
+          "unauthenticatedClientAction": {
+            "value": "RedirectToLoginPage"
+          }
+        }
+      }
+    },
+    {
+      "name": "functions-app-engine-settings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ "functions-app-engine", "storage-leasing" ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-settings-engine-host.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountConnectionString": { "value": "[reference('functions-app-engine', '2016-09-01').outputs.storageAccountConnectionString.value]" },
+          "runFromPackage": { "value": "1" },
+          "functionsAppName": { "value": "[variables('engineFunctionsAppName')]" },
+          "applicationInsightsInstrumentationKey": { "value": "[parameters('appInsightsInstrumentationKey')]" },
+          "leasingStorageAccountConnectionString": { "value": "[reference('storage-leasing', '2016-09-01').outputs.storageAccountConnectionString.value]" },
+          "operationsControlServiceBaseUrl": { "value": "[parameters('operationsControlServiceBaseUrl')]" },
+          "workflowEngineClientBaseUrl": { "value": "[variables('workflowEngineClientBaseUrl')]" },
+          "workflowEngineClientResourceIdForMsiAuthentication": "[parameters('engineFunctionAuthAadClientId')]"
+        }
+      }
+    },
+    "Don't forget to add the leasing storage"
+  ],
+  "outputs": {}
+}

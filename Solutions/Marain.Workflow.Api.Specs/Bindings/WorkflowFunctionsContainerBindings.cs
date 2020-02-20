@@ -43,24 +43,24 @@ namespace Marain.Workflow.Api.Specs.Bindings
 
                     string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
 
-                    BlobStorageConfiguration blobStorageConfiguration = root.GetSection("ROOTTENANTBLOBSTORAGECONFIGURATIONOPTIONS").Get<BlobStorageConfiguration>()
-                        ?? new BlobStorageConfiguration();
-
-                    services.AddTenantCloudBlobContainerFactory(new TenantCloudBlobContainerFactoryOptions
+                    TenantCloudBlobContainerFactoryOptions blobStorageConfiguration = root.GetSection("TenantCloudBlobContainerFactoryOptions").Get<TenantCloudBlobContainerFactoryOptions>()
+                        ?? new TenantCloudBlobContainerFactoryOptions();
+                    if (blobStorageConfiguration.RootTenantBlobStorageConfiguration == null)
                     {
-                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
-                        RootTenantBlobStorageConfiguration = blobStorageConfiguration,
-                    });
+                        blobStorageConfiguration.RootTenantBlobStorageConfiguration = new BlobStorageConfiguration();
+                    }
+
+                    services.AddTenantCloudBlobContainerFactory(blobStorageConfiguration);
                     services.AddTenantProviderBlobStore();
 
-                    CosmosConfiguration cosmosConfiguration = root.GetSection("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS").Get<CosmosConfiguration>()
-                        ?? new CosmosConfiguration();
-
-                    services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
+                    TenantCosmosContainerFactoryOptions cosmosConfiguration = root.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
+                        ?? new TenantCosmosContainerFactoryOptions();
+                    if (cosmosConfiguration.RootTenantCosmosConfiguration == null)
                     {
-                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
-                        RootTenantCosmosConfiguration = cosmosConfiguration,
-                    });
+                        cosmosConfiguration.RootTenantCosmosConfiguration = new CosmosConfiguration();
+                    }
+
+                    services.AddTenantCosmosContainerFactory(cosmosConfiguration);
 
                     services.AddTenantCosmosContainerFactory(sp =>
                     {
