@@ -24,10 +24,10 @@ jobs:
       - powershell: |
           Write-Host "##vso[task.setvariable variable=AzureServicesAuthConnectionString]$Env:ENDJIN_AZURESERVICESAUTHCONNECTIONSTRING"
           Write-Host "##vso[task.setvariable variable=AzureWebJobsStorage]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
-          Write-Host "##vso[task.setvariable variable=RootTenantBlobStorageConfigurationOptions__AccountName]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
-          Write-Host "##vso[task.setvariable variable=RootTenantCosmosConfigurationOptions__AccountUri]$Env:ENDJIN_COSMOSDBACCOUNTURI"
-          Write-Host "##vso[task.setvariable variable=RootTenantCosmosConfigurationOptions__AccountKeySecretName]$Env:ENDJIN_COSMOSACCOUNTKEYSECRETNAME"
-          Write-Host "##vso[task.setvariable variable=RootTenantCosmosConfigurationOptions__KeyVaultName]$Env:ENDJIN_KEYVAULTNAME"
+          Write-Host "##vso[task.setvariable variable=TenantCloudBlobContainerFactoryOptions__RootTenantBlobStorageConfiguration__AccountName]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
+          Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__AccountUri]$Env:ENDJIN_COSMOSDBACCOUNTURI"
+          Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__AccountKeySecretName]$Env:ENDJIN_COSMOSACCOUNTKEYSECRETNAME"
+          Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__KeyVaultName]$Env:ENDJIN_KEYVAULTNAME"
           Write-Host "##vso[task.setvariable variable=LeasingStorageAccountConnectionString]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
         displayName: 'Set Custom Environment Variables'
         env:
