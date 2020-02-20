@@ -171,6 +171,8 @@ components:
           format: url
         validationErrors: 
           type: array
+          items:
+            type: object
       additionalProperties: true
       
   parameters:

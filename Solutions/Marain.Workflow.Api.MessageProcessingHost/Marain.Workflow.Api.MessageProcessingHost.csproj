@@ -35,6 +35,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Api.EngineHost.Client\Marain.Workflow.Api.EngineHost.Client.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Api.MessageHost.Client\Marain.Workflow.Api.MessageHost.Client.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Api.Services.AspNetCore\Marain.Workflow.Api.Services.AspNetCore.csproj" />
   </ItemGroup>
   <ItemGroup>

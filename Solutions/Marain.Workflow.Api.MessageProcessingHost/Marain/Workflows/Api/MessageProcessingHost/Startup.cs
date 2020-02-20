@@ -58,7 +58,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
             IServiceCollection services)
         {
             // Verify that these services aren't already present
-            Type ingestionServiceType = typeof(MessageIngestionService);
+            Type ingestionServiceType = typeof(IMarainWorkflowMessageIngestion);
 
             // If any of the OpenApi services are already installed, assume we've already completed installation and return.
             if (services.Any(services => ingestionServiceType.IsAssignableFrom(services.ImplementationType)))
@@ -66,19 +66,14 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
                 return services;
             }
 
-            services.AddTenantedWorkflowEngine();
-
-            services.AddOpenApiHttpRequestHosting<DurableFunctionsOpenApiContext>(config =>
+            services.AddMarainWorkflowMessageIngestionClient(sp =>
             {
-                config.Documents.RegisterOpenApiServiceWithEmbeddedDefinition<MessageIngestionService>();
+                IConfiguration config = sp.GetRequiredService<IConfiguration>();
 
-                config.Documents.AddSwaggerEndpoint();
-
-                config.Exceptions.Map<WorkflowNotFoundException>(404);
-                config.Exceptions.Map<WorkflowInstanceNotFoundException>(404);
+                return config.GetSection("Workflow:MessageIngestionClient").Get<MarainWorkflowMessageIngestionClientOptions>();
             });
 
-            services.AddSingleton<IOpenApiService, MessageIngestionService>();
+            services.AddTenantedWorkflowEngine();
 
             return services;
         }

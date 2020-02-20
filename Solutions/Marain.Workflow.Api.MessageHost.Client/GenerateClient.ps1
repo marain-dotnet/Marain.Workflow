@@ -1,7 +1,7 @@
 ﻿
-# This requires the Engine Host function to be running locally on its default port of 7075
+# This requires the Message Host function to be running locally on its default port of 7073
 $tmp = (New-TemporaryFile).FullName
-Invoke-WebRequest http://localhost:7075/swagger -o $tmp
+Invoke-WebRequest http://localhost:7073/swagger -o $tmp
 
 $OutputFolder = Join-Path $PSScriptRoot "Marain\Workflows\Client\"
 
