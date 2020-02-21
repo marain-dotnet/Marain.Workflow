@@ -36,7 +36,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
             });
 
             var uri = new Uri(root["Operations:ControlServiceBaseUrl"]);
-            services.AddOperationsControlClient(uri);
+            string resourceId = root["Operations:ResourceIdForMsiAuthentication"];
+            services.AddOperationsControlClient(uri, resourceId);
 
             services.AddMarainWorkflowEngineClient(sp =>
             {

@@ -1,0 +1,40 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "functionsAppName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "aadClientId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "aadTenantId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "unauthenticatedClientAction": {
+      "defaultValue": "AllowAnonymous",
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[concat(parameters('functionsAppName'), '/authsettings')]",
+      "apiVersion": "2016-08-01",
+      "type": "Microsoft.Web/sites/config",
+      "properties": {
+        "enabled": true,
+        "unauthenticatedClientAction": "[parameters('unauthenticatedClientAction')]",
+        "tokenStoreEnabled": true,
+        "defaultProvider": "AzureActiveDirectory",
+        "clientId": "[parameters('aadClientId')]",
+        "issuer": "[concat('https://sts.windows.net/', parameters('aadTenantId'), '/')]"
+      }
+    }
+  ],
+  "outputs": {}
+}
