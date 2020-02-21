@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Marain.Workflows.Client
+namespace Marain.Workflows.MessageHost.Client
 {
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
@@ -18,11 +18,13 @@ namespace Marain.Workflows.Client
     using System.Threading.Tasks;
 
     /// <summary>
-    /// This is the main host function for the Marain Workflow service.
-    /// Triggers can be POSTed to the provided endpoint to be enqueued and
-    /// executed by the engine.
+    /// This is an entry point for new messages into the Marain Workflow
+    /// service. Messages can be POSTed to the provided endpoint to be enqueued
+    /// and executed by the engine. This endpoint should be used in
+    /// high-traffic scenarios as it is designed to use a queuing mechanism
+    /// that can deal with large amounts of incoming traffic.
     /// </summary>
-    public partial class MarainWorkflowEngine : ServiceClient<MarainWorkflowEngine>, IMarainWorkflowEngine
+    public partial class MarainWorkflowMessageIngestion : ServiceClient<MarainWorkflowMessageIngestion>, IMarainWorkflowMessageIngestion
     {
         /// <summary>
         /// The base URI of the service.
@@ -45,31 +47,31 @@ namespace Marain.Workflows.Client
         public ServiceClientCredentials Credentials { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowEngine class.
+        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
         /// </summary>
         /// <param name='httpClient'>
         /// HttpClient to be used
         /// </param>
         /// <param name='disposeHttpClient'>
-        /// True: will dispose the provided httpClient on calling MarainWorkflowEngine.Dispose(). False: will not dispose provided httpClient</param>
-        protected MarainWorkflowEngine(HttpClient httpClient, bool disposeHttpClient) : base(httpClient, disposeHttpClient)
+        /// True: will dispose the provided httpClient on calling MarainWorkflowMessageIngestion.Dispose(). False: will not dispose provided httpClient</param>
+        protected MarainWorkflowMessageIngestion(HttpClient httpClient, bool disposeHttpClient) : base(httpClient, disposeHttpClient)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowEngine class.
+        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
         /// </summary>
         /// <param name='handlers'>
         /// Optional. The delegating handlers to add to the http client pipeline.
         /// </param>
-        protected MarainWorkflowEngine(params DelegatingHandler[] handlers) : base(handlers)
+        protected MarainWorkflowMessageIngestion(params DelegatingHandler[] handlers) : base(handlers)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowEngine class.
+        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
         /// </summary>
         /// <param name='rootHandler'>
         /// Optional. The http client handler used to handle http transport.
@@ -77,13 +79,13 @@ namespace Marain.Workflows.Client
         /// <param name='handlers'>
         /// Optional. The delegating handlers to add to the http client pipeline.
         /// </param>
-        protected MarainWorkflowEngine(HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : base(rootHandler, handlers)
+        protected MarainWorkflowMessageIngestion(HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : base(rootHandler, handlers)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowEngine class.
+        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
         /// </summary>
         /// <param name='baseUri'>
         /// Optional. The base URI of the service.
@@ -94,7 +96,7 @@ namespace Marain.Workflows.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        protected MarainWorkflowEngine(System.Uri baseUri, params DelegatingHandler[] handlers) : this(handlers)
+        protected MarainWorkflowMessageIngestion(System.Uri baseUri, params DelegatingHandler[] handlers) : this(handlers)
         {
             if (baseUri == null)
             {
@@ -104,7 +106,7 @@ namespace Marain.Workflows.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowEngine class.
+        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
         /// </summary>
         /// <param name='baseUri'>
         /// Optional. The base URI of the service.
@@ -118,7 +120,7 @@ namespace Marain.Workflows.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        protected MarainWorkflowEngine(System.Uri baseUri, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
+        protected MarainWorkflowMessageIngestion(System.Uri baseUri, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
         {
             if (baseUri == null)
             {
@@ -128,7 +130,7 @@ namespace Marain.Workflows.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowEngine class.
+        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
         /// </summary>
         /// <param name='credentials'>
         /// Required. Subscription credentials which uniquely identify client subscription.
@@ -139,7 +141,7 @@ namespace Marain.Workflows.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public MarainWorkflowEngine(ServiceClientCredentials credentials, params DelegatingHandler[] handlers) : this(handlers)
+        public MarainWorkflowMessageIngestion(ServiceClientCredentials credentials, params DelegatingHandler[] handlers) : this(handlers)
         {
             if (credentials == null)
             {
@@ -153,7 +155,7 @@ namespace Marain.Workflows.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowEngine class.
+        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
         /// </summary>
         /// <param name='credentials'>
         /// Required. Subscription credentials which uniquely identify client subscription.
@@ -162,11 +164,11 @@ namespace Marain.Workflows.Client
         /// HttpClient to be used
         /// </param>
         /// <param name='disposeHttpClient'>
-        /// True: will dispose the provided httpClient on calling MarainWorkflowEngine.Dispose(). False: will not dispose provided httpClient</param>
+        /// True: will dispose the provided httpClient on calling MarainWorkflowMessageIngestion.Dispose(). False: will not dispose provided httpClient</param>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public MarainWorkflowEngine(ServiceClientCredentials credentials, HttpClient httpClient, bool disposeHttpClient) : this(httpClient, disposeHttpClient)
+        public MarainWorkflowMessageIngestion(ServiceClientCredentials credentials, HttpClient httpClient, bool disposeHttpClient) : this(httpClient, disposeHttpClient)
         {
             if (credentials == null)
             {
@@ -180,7 +182,7 @@ namespace Marain.Workflows.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowEngine class.
+        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
         /// </summary>
         /// <param name='credentials'>
         /// Required. Subscription credentials which uniquely identify client subscription.
@@ -194,7 +196,7 @@ namespace Marain.Workflows.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public MarainWorkflowEngine(ServiceClientCredentials credentials, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
+        public MarainWorkflowMessageIngestion(ServiceClientCredentials credentials, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
         {
             if (credentials == null)
             {
@@ -208,7 +210,7 @@ namespace Marain.Workflows.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowEngine class.
+        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
         /// </summary>
         /// <param name='baseUri'>
         /// Optional. The base URI of the service.
@@ -222,7 +224,7 @@ namespace Marain.Workflows.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public MarainWorkflowEngine(System.Uri baseUri, ServiceClientCredentials credentials, params DelegatingHandler[] handlers) : this(handlers)
+        public MarainWorkflowMessageIngestion(System.Uri baseUri, ServiceClientCredentials credentials, params DelegatingHandler[] handlers) : this(handlers)
         {
             if (baseUri == null)
             {
@@ -241,7 +243,7 @@ namespace Marain.Workflows.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowEngine class.
+        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
         /// </summary>
         /// <param name='baseUri'>
         /// Optional. The base URI of the service.
@@ -258,7 +260,7 @@ namespace Marain.Workflows.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public MarainWorkflowEngine(System.Uri baseUri, ServiceClientCredentials credentials, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
+        public MarainWorkflowMessageIngestion(System.Uri baseUri, ServiceClientCredentials credentials, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
         {
             if (baseUri == null)
             {
@@ -285,7 +287,7 @@ namespace Marain.Workflows.Client
         /// </summary>
         private void Initialize()
         {
-            BaseUri = new System.Uri("https://workflow-engine.marain.io");
+            BaseUri = new System.Uri("https://workflow.marain.io");
             SerializationSettings = new JsonSerializerSettings
             {
                 Formatting = Newtonsoft.Json.Formatting.Indented,
@@ -314,150 +316,10 @@ namespace Marain.Workflows.Client
             CustomInitialize();
         }
         /// <summary>
-        /// Start a new instance of a workflow
+        /// Send a new trigger into the workflow engine
         /// </summary>
         /// <param name='tenantId'>
         /// The tenant within which the request should operate
-        /// </param>
-        /// <param name='body'>
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="HttpOperationException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationResponse> StartWorkflowInstanceWithHttpMessagesAsync(string tenantId, StartWorkflowRequest body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (tenantId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "tenantId");
-            }
-            if (body == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "body");
-            }
-            if (body != null)
-            {
-                body.Validate();
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("tenantId", tenantId);
-                tracingParameters.Add("body", body);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "StartWorkflowInstance", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "{tenantId}/marain/workflow/engine/workflowinstances").ToString();
-            _url = _url.Replace("{tenantId}", System.Uri.EscapeDataString(tenantId));
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("POST");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            if(body != null)
-            {
-                _requestContent = SafeJsonConvert.SerializeObject(body, SerializationSettings);
-                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
-            }
-            // Set Credentials
-            if (Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 201 && (int)_statusCode != 301 && (int)_statusCode != 400 && (int)_statusCode != 404)
-            {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                }
-                else {
-                    _responseContent = string.Empty;
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationResponse();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
-        /// Dispatch a trigger for processing by a specific workflow instance.
-        /// </summary>
-        /// <param name='tenantId'>
-        /// The tenant within which the request should operate
-        /// </param>
-        /// <param name='workflowInstanceId'>
-        /// The Id of the workflow instance to apply the trigger to
         /// </param>
         /// <param name='body'>
         /// New trigger to be processed by the engine
@@ -480,15 +342,11 @@ namespace Marain.Workflows.Client
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse> SendTriggerWithHttpMessagesAsync(string tenantId, string workflowInstanceId, Trigger body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationHeaderResponse<SendTriggerHeaders>> SendTriggerWithHttpMessagesAsync(string tenantId, Trigger body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (tenantId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "tenantId");
-            }
-            if (workflowInstanceId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "workflowInstanceId");
             }
             if (body == null)
             {
@@ -506,16 +364,14 @@ namespace Marain.Workflows.Client
                 _invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
                 tracingParameters.Add("tenantId", tenantId);
-                tracingParameters.Add("workflowInstanceId", workflowInstanceId);
                 tracingParameters.Add("body", body);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "SendTrigger", tracingParameters);
             }
             // Construct URL
             var _baseUrl = BaseUri.AbsoluteUri;
-            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "{tenantId}/marain/workflow/engine/workflowinstances/{workflowInstanceId}/triggers").ToString();
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "{tenantId}/marain/workflow/messageprocessing/triggers").ToString();
             _url = _url.Replace("{tenantId}", System.Uri.EscapeDataString(tenantId));
-            _url = _url.Replace("{workflowInstanceId}", System.Uri.EscapeDataString(workflowInstanceId));
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
@@ -564,7 +420,7 @@ namespace Marain.Workflows.Client
             HttpStatusCode _statusCode = _httpResponse.StatusCode;
             cancellationToken.ThrowIfCancellationRequested();
             string _responseContent = null;
-            if ((int)_statusCode != 200 && (int)_statusCode != 400 && (int)_statusCode != 404)
+            if ((int)_statusCode != 202 && (int)_statusCode != 400)
             {
                 var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
                 if (_httpResponse.Content != null) {
@@ -587,9 +443,173 @@ namespace Marain.Workflows.Client
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse();
+            var _result = new HttpOperationHeaderResponse<SendTriggerHeaders>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
+            try
+            {
+                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<SendTriggerHeaders>(JsonSerializer.Create(DeserializationSettings));
+            }
+            catch (JsonException ex)
+            {
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw new SerializationException("Unable to deserialize the headers.", _httpResponse.GetHeadersAsJson().ToString(), ex);
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// Send a request to start a new workflow instance into the workflow engine
+        /// </summary>
+        /// <param name='tenantId'>
+        /// The tenant within which the request should operate
+        /// </param>
+        /// <param name='body'>
+        /// Details of the new workflow instance to be started
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="HttpOperationException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationHeaderResponse<SendStartNewWorkflowInstanceRequestHeaders>> SendStartNewWorkflowInstanceRequestWithHttpMessagesAsync(string tenantId, StartNewWorkflowInstanceRequest body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (tenantId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "tenantId");
+            }
+            if (body == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "body");
+            }
+            if (body != null)
+            {
+                body.Validate();
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("tenantId", tenantId);
+                tracingParameters.Add("body", body);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "SendStartNewWorkflowInstanceRequest", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = BaseUri.AbsoluteUri;
+            var _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "{tenantId}/marain/workflow/messageprocessing/startnewworkflowinstancerequests").ToString();
+            _url = _url.Replace("{tenantId}", System.Uri.EscapeDataString(tenantId));
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("POST");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            if(body != null)
+            {
+                _requestContent = SafeJsonConvert.SerializeObject(body, SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
+            // Set Credentials
+            if (Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 202 && (int)_statusCode != 400)
+            {
+                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                if (_httpResponse.Content != null) {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                }
+                else {
+                    _responseContent = string.Empty;
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationHeaderResponse<SendStartNewWorkflowInstanceRequestHeaders>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            try
+            {
+                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<SendStartNewWorkflowInstanceRequestHeaders>(JsonSerializer.Create(DeserializationSettings));
+            }
+            catch (JsonException ex)
+            {
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw new SerializationException("Unable to deserialize the headers.", _httpResponse.GetHeadersAsJson().ToString(), ex);
+            }
             if (_shouldTrace)
             {
                 ServiceClientTracing.Exit(_invocationId, _result);

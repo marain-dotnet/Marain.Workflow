@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Marain.Workflows.MessageHost.Client
 {
     public class MarainWorkflowMessageIngestionClientOptions
     {

@@ -21,12 +21,22 @@ namespace Marain.Workflows.Api.Specs.EndToEnd
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("StartNewInstance")]
+    [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
+    [NUnit.Framework.CategoryAttribute("useWorkflowMessageProcessingApi")]
+    [NUnit.Framework.CategoryAttribute("useWorkflowEngineApi")]
+    [NUnit.Framework.CategoryAttribute("useTransientTenant")]
+    [NUnit.Framework.CategoryAttribute("useChildObjects")]
     public partial class StartNewInstanceFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
-        private string[] _featureTags = ((string[])(null));
+        private string[] _featureTags = new string[] {
+                "perFeatureContainer",
+                "useWorkflowMessageProcessingApi",
+                "useWorkflowEngineApi",
+                "useTransientTenant",
+                "useChildObjects"};
         
 #line 1 "StartNewInstance.feature"
 #line hidden
@@ -36,7 +46,12 @@ namespace Marain.Workflows.Api.Specs.EndToEnd
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "StartNewInstance", "\tIn order manage a new thing through a workflow\r\n\tAs an external user of the work" +
-                    "flow engine\r\n\tI want to be able to start a new instance of a workflow", ProgrammingLanguage.CSharp, ((string[])(null)));
+                    "flow engine\r\n\tI want to be able to start a new instance of a workflow", ProgrammingLanguage.CSharp, new string[] {
+                        "perFeatureContainer",
+                        "useWorkflowMessageProcessingApi",
+                        "useWorkflowEngineApi",
+                        "useTransientTenant",
+                        "useChildObjects"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -72,6 +87,86 @@ namespace Marain.Workflows.Api.Specs.EndToEnd
         public virtual void ScenarioCleanup()
         {
             testRunner.CollectScenarioErrors();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Start a new instance with a specified instance id")]
+        public virtual void StartANewInstanceWithASpecifiedInstanceId()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Start a new instance with a specified instance id", null, ((string[])(null)));
+#line 11
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 12
+ testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
+                        "\'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 13
+ testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Key",
+                            "Value"});
+                table3.AddRow(new string[] {
+                            "Claimant",
+                            "J George"});
+                table3.AddRow(new string[] {
+                            "CostCenter",
+                            "GD3724"});
+#line 14
+ testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table3, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                            "WorkflowId",
+                            "WorkflowInstanceId",
+                            "Context"});
+                table4.AddRow(new string[] {
+                            "simple-expenses-workflow",
+                            "instance",
+                            "{context}"});
+#line 18
+ testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.startworkflowin" +
+                        "stancerequest\' called \'request\'", ((string)(null)), table4, "And ");
+#line hidden
+#line 21
+ testRunner.When("I post the object called \'request\' to the workflow message processing path \'/{ten" +
+                        "antId}/marain/workflow/messageprocessing/startnewworkflowinstancerequests\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 22
+ testRunner.Then("I should have received a 202 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 23
+ testRunner.And("there should be a workflow instance with the id \'instance\' in the workflow instan" +
+                        "ce store within 300 seconds", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 24
+ testRunner.And("the workflow instance with id \'instance\' should be an instance of the workflow wi" +
+                        "th id \'simple-expenses-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 25
+ testRunner.And("the workflow instance with id \'instance\' should have a context dictionary that ma" +
+                        "tches \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
         }
     }
 }

@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Marain.Workflows.Client
+namespace Marain.Workflows.MessageHost.Client
 {
     using Microsoft.Rest;
     using Models;

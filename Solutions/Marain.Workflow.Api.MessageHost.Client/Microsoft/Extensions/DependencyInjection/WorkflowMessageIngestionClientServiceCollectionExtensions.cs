@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
     using System.Linq;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
-    using Marain.Workflows.Client;
+    using Marain.Workflows.MessageHost.Client;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Rest;
 

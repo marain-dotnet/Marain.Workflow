@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Client
+namespace Marain.Workflows.MessageHost.Client
 {
     using System;
     using System.Net.Http;

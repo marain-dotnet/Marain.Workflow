@@ -10,7 +10,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
     using System.Linq;
     using Marain.Operations.Client.OperationsControl;
     using Marain.Workflows.Api.MessageProcessingHost.OpenApi;
-    using Marain.Workflows.Client;
+    using Marain.Workflows.EngineHost.Client;
+    using Marain.Workflows.MessageHost.Client;
     using Menes;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Hosting;
@@ -59,7 +60,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
             IServiceCollection services)
         {
             // Verify that these services aren't already present
-            Type ingestionServiceType = typeof(IMarainWorkflowMessageIngestion);
+            Type ingestionServiceType = typeof(MessageIngestionService);
 
             // If any of the OpenApi services are already installed, assume we've already completed installation and return.
             if (services.Any(services => ingestionServiceType.IsAssignableFrom(services.ImplementationType)))
@@ -67,14 +68,19 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
                 return services;
             }
 
-            services.AddMarainWorkflowMessageIngestionClient(sp =>
-            {
-                IConfiguration config = sp.GetRequiredService<IConfiguration>();
+            services.AddTenantedWorkflowEngine();
 
-                return config.GetSection("Workflow:MessageIngestionClient").Get<MarainWorkflowMessageIngestionClientOptions>();
+            services.AddOpenApiHttpRequestHosting<DurableFunctionsOpenApiContext>(config =>
+            {
+                config.Documents.RegisterOpenApiServiceWithEmbeddedDefinition<MessageIngestionService>();
+
+                config.Documents.AddSwaggerEndpoint();
+
+                config.Exceptions.Map<WorkflowNotFoundException>(404);
+                config.Exceptions.Map<WorkflowInstanceNotFoundException>(404);
             });
 
-            services.AddTenantedWorkflowEngine();
+            services.AddSingleton<IOpenApiService, MessageIngestionService>();
 
             return services;
         }

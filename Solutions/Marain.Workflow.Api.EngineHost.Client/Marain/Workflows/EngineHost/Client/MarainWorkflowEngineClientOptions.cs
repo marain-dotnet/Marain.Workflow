@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Marain.Workflows.Client
+namespace Marain.Workflows.EngineHost.Client
 {
     /// <summary>
     /// A class for storing the configuration for setting up the workflow engine client.
