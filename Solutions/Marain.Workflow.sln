@@ -47,6 +47,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Tenancy.Abs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Storage.AzureCosmos", "Marain.Workflow.Storage.AzureCosmos\Marain.Workflow.Storage.AzureCosmos.csproj", "{C4F6B6DF-AFE2-45C7-9A3C-38F6AA129307}"
 EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "Marain.Workflow.Deployment", "Marain.Workflow.Deployment\Marain.Workflow.Deployment.deployproj", "{3C88450E-1BD4-4305-BCCF-01A457F15AFB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,10 @@ Global
 		{C4F6B6DF-AFE2-45C7-9A3C-38F6AA129307}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4F6B6DF-AFE2-45C7-9A3C-38F6AA129307}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4F6B6DF-AFE2-45C7-9A3C-38F6AA129307}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C88450E-1BD4-4305-BCCF-01A457F15AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C88450E-1BD4-4305-BCCF-01A457F15AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C88450E-1BD4-4305-BCCF-01A457F15AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C88450E-1BD4-4305-BCCF-01A457F15AFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,6 +116,7 @@ Global
 		{4EF18979-2FEA-4CC4-9CBB-11B78E088201} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 		{A834E43F-37A6-48B7-BCB9-E2AD5B64D25E} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
 		{C2D81D36-F6FA-4EA6-9AC2-D28A36F96AA3} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
+		{3C88450E-1BD4-4305-BCCF-01A457F15AFB} = {D29CABE7-467E-4CF6-B44B-3C58AB76145A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EED79307-5690-4CE6-A80D-F41857C97EFF}
