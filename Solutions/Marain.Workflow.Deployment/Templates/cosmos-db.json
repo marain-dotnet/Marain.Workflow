@@ -19,9 +19,9 @@
     },
     "defaultExperience": {
       "type": "string",
-      "defaultValue": "DocumentDB",
+      "defaultValue": "Core (SQL)",
       "allowedValues": [
-        "DocumentDB",
+        "Core (SQL)",
         "MongoDB",
         "Gremlin",
         "Table"
@@ -56,12 +56,17 @@
       "type": "Microsoft.DocumentDB/databaseAccounts",
       "kind": "GlobalDocumentDB",
       "name": "[parameters('accountName')]",
-      "apiVersion": "2015-04-08",
+      "apiVersion": "2019-12-12",
       "location": "[resourceGroup().location]",
       "tags": "[variables('tags')]",
       "scale": null,
       "properties": {
         "databaseAccountOfferType": "[parameters('databaseAccountOfferType')]",
+        "locations": [
+          {
+            "locationName": "[resourceGroup().location]"
+          }
+        ],
         "consistencyPolicy": {
           "defaultConsistencyLevel": "[parameters('defaultConsistency')]",
           "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]",
@@ -74,8 +79,9 @@
   ],
 
   "outputs": {
-    "primaryKey":{
+    "primaryKey": {
       "type": "string",
       "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('accountName')), '2015-11-06').primaryMasterKey]"
     }
+  }
 }

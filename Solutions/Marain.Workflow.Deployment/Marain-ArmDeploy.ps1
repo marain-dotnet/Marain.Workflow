@@ -6,7 +6,7 @@ script. It is our opportunity to create Azure resources.
 # Marain.Instance expects us to define just this one function.
 Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentContext) {
 
-    [MarainAppService]$OperationsService = $ServiceDeploymentContext.InstanceContext.GetCommonAppService("Marain.Operations")
+    [MarainAppService]$OperationsService = $ServiceDeploymentContext.InstanceContext.GetCommonAppService("Marain.Tenancy.Operations.Control")
 
     # This is temporary - once https://github.com/marain-dotnet/Marain.Workflow/issues/50 is done, these
     # hard-coded values will no longer be needed

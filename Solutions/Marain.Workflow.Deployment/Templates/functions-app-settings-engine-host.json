@@ -21,10 +21,6 @@
       "type": "string",
       "minLength": 1
     },
-    "operationsControlServiceBaseUrl": {
-      "type": "string",
-      "minLength": 1
-    },
     "tenancyStorageAccountName": {
       "type": "string"
     },

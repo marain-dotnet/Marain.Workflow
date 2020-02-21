@@ -17,7 +17,7 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
 
     $EngineControllerAppRoleId = "37a5c4e2-38e2-47de-8576-6b1ce7cc0ca2"
     $EngineApp.EnsureAppRolesContain(
-        $ControllerAppRoleId,
+        $EngineControllerAppRoleId,
         "Workflow Engine controller",
         "Able to create workflow instances, and send triggers",
         "WorkflowController",

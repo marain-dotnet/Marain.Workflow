@@ -54,8 +54,8 @@
     "leasingStorageAccountName": "[substring(concat(variables('resourceNameRoot'), parameters('appName'), 'lease', uniqueString(resourceGroup().id)), 0, 24)]",
     "workflowCosmosAccountKeySecretName": "CosmosDbAccountKey",
     "workflowCosmosDatabaseName": "workflow",
-    "messageIngestionFunctionsAppName": "[substring(concat(variables('defaultName'), 'mi', uniqueString(resourceGroup().id)), 0, 24)]",
-    "engineFunctionsAppName": "[substring(concat(variables('defaultName'), 'eng', uniqueString(resourceGroup().id)), 0, 24)]",
+    "messageIngestionFunctionsAppName": "[concat(variables('defaultName'), 'mi')]",
+    "engineFunctionsAppName": "[concat(variables('defaultName'), 'eng')]",
     "tenantId": "[subscription().tenantID]",
     "workflowEngineClientBaseUrl": "[concat('https://', variables('engineFunctionsAppName'), '.azurewebsites.net')]"
   },
@@ -232,14 +232,14 @@
           "operationsControlServiceBaseUrl": { "value": "[parameters('operationsControlServiceBaseUrl')]" },
           "operationsControlResourceIdForMsiAuthentication": { "value": "[parameters('operationsControlResourceIdForMsiAuthentication')]" },
           "workflowEngineClientBaseUrl": { "value": "[variables('workflowEngineClientBaseUrl')]" },
-          "workflowEngineClientResourceIdForMsiAuthentication": "[parameters('engineFunctionAuthAadClientId')]",
-          "tenancyStorageAccountName": "[parameters('tenancyStorageAccountName')]",
-          "tenancyKeyVaultName": "[parameters('tenancyKeyVaultName')]",
-          "tenancyStorageAccountKeyName": "[parameters('tenancyStorageAccountKeyName')]",
-          "workflowCosmosAccountUri": "[concat('https://', variables('cosmosDbName'), '.documents.azure.com/')]",
-          "workflowCosmosKeyVaultName": "[variables('keyVaultName')]",
-          "workflowCosmosAccountKeySecretName": "[variables('workflowCosmosAccountKeySecretName')]",
-          "workflowCosmosDatabaseName": "[variables('workflowCosmosDatabaseName')]"
+          "workflowEngineClientResourceIdForMsiAuthentication": { "value": "[parameters('engineFunctionAuthAadClientId')]" },
+          "tenancyStorageAccountName": { "value": "[parameters('tenancyStorageAccountName')]" },
+          "tenancyKeyVaultName": { "value": "[parameters('tenancyKeyVaultName')]" },
+          "tenancyStorageAccountKeyName": { "value": "[parameters('tenancyStorageAccountKeyName')]" },
+          "workflowCosmosAccountUri": { "value": "[concat('https://', variables('cosmosDbName'), '.documents.azure.com/')]" },
+          "workflowCosmosKeyVaultName": { "value": "[variables('keyVaultName')]" },
+          "workflowCosmosAccountKeySecretName": { "value": "[variables('workflowCosmosAccountKeySecretName')]" },
+          "workflowCosmosDatabaseName": { "value": "[variables('workflowCosmosDatabaseName')]" }
         }
       }
     },
@@ -248,7 +248,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [
-        "operations-status-functions-app",
+        "functions-app-message-ingestion",
         "key-vault"
       ],
       "properties": {
@@ -344,16 +344,13 @@
           "functionsAppName": { "value": "[variables('engineFunctionsAppName')]" },
           "applicationInsightsInstrumentationKey": { "value": "[parameters('appInsightsInstrumentationKey')]" },
           "leasingStorageAccountConnectionString": { "value": "[reference('storage-leasing', '2016-09-01').outputs.storageAccountConnectionString.value]" },
-          "operationsControlServiceBaseUrl": { "value": "[parameters('operationsControlServiceBaseUrl')]" },
-          "workflowEngineClientBaseUrl": { "value": "[variables('workflowEngineClientBaseUrl')]" },
-          "workflowEngineClientResourceIdForMsiAuthentication": "[parameters('engineFunctionAuthAadClientId')]",
-          "tenancyStorageAccountName": "[parameters('tenancyStorageAccountName')]",
-          "tenancyKeyVaultName": "[parameters('tenancyKeyVaultName')]",
-          "tenancyStorageAccountKeyName": "[parameters('tenancyStorageAccountKeyName')]",
-          "workflowCosmosAccountUri": "[concat('https://', variables('cosmosDbName'), '.documents.azure.com/')]",
-          "workflowCosmosKeyVaultName": "[variables('keyVaultName')]",
-          "workflowCosmosAccountKeySecretName": "[variables('workflowCosmosAccountKeySecretName')]",
-          "workflowCosmosDatabaseName": "[variables('workflowCosmosDatabaseName')]"
+          "tenancyStorageAccountName": { "value": "[parameters('tenancyStorageAccountName')]" },
+          "tenancyKeyVaultName": { "value": "[parameters('tenancyKeyVaultName')]" },
+          "tenancyStorageAccountKeyName": { "value": "[parameters('tenancyStorageAccountKeyName')]" },
+          "workflowCosmosAccountUri": { "value": "[concat('https://', variables('cosmosDbName'), '.documents.azure.com/')]" },
+          "workflowCosmosKeyVaultName": { "value": "[variables('keyVaultName')]" },
+          "workflowCosmosAccountKeySecretName": { "value": "[variables('workflowCosmosAccountKeySecretName')]" },
+          "workflowCosmosDatabaseName": { "value": "[variables('workflowCosmosDatabaseName')]" }
         }
       }
     },
@@ -362,7 +359,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [
-        "operations-status-functions-app",
+        "functions-app-engine",
         "key-vault"
       ],
       "properties": {
