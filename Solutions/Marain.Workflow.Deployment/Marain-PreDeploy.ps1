@@ -3,7 +3,7 @@ This is called during Marain.Instance infrastructure deployment prior to the Mar
 script. It is our opportunity to perform initialization that needs to complete before any Azure
 resources are created.
 
-We create the Azure AD Application that the Operations Control function will use to authenticate incoming
+We create the Azure AD Applications that the Workflow functions will use to authenticate incoming
 requests. (Currently, this application is used with Azure Easy Auth, but the service could also
 use it directly.)
 
