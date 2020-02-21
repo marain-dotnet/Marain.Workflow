@@ -9,6 +9,20 @@
     "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
     "Operations:ControlServiceBaseUrl": "http://localhost:7078/",
     "Workflow:EngineClient:BaseUrl": "http://localhost:7075",
-    "Workflow:EngineClient:ResourceIdForAuthentication": ""
+    "Workflow:EngineClient:ResourceIdForAuthentication": "",
+
+    // If running with a local tenancy service, point TenancyClient__TenancyServiceBaseUri at the localhost address for that
+    "TenancyClient__TenancyServiceBaseUri": "https://mardevtenancy.azurewebsites.net/"
+
+    // If instead you point TenancyClient__TenancyServiceBaseUri at an instance in Azure, this local service will need to
+    // authenticate, which means you'll need to set this this:
+    // "TenancyClient__ResourceIdForMsiAuthentication": "AppIdSecuringAccessToTenancyFunction"
+    //
+    // And for that to work, you won't be able to use tne normal az cli-based AzureServicesAuthConnectionString
+    // (because az cli is only able to obtain tokens for a fixed set of known Microsoft resource; it can't be
+    // used to obtain tokens for arbitrary applications that we've defined). Instead, you'll need to create
+    // a suitable service principle in AAD, grant that service principle access to the tenancy service, and
+    // set up the credentials like this instead of the setting above:
+    //  "AzureServicesAuthConnectionString": "RunAs=App;AppId=AppIdForYourServicePrinciple;TenantId=0f621c67-98a0-4ed5-b5bd-31a35be41e29;AppKey=YourAppSecretHere"
   }
 }
