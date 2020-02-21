@@ -11,7 +11,6 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
     using Marain.Operations.Client.OperationsControl;
     using Marain.Workflows.Api.MessageProcessingHost.OpenApi;
     using Marain.Workflows.EngineHost.Client;
-    using Marain.Workflows.MessageHost.Client;
     using Menes;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Hosting;
