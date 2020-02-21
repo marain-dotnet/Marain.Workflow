@@ -1,4 +1,5 @@
-﻿@perFeatureContainer
+﻿@ignore
+@perFeatureContainer
 @useSqlStores
 @setupTenantedSqlDatabase
 Feature: Deprecate an item with SQL

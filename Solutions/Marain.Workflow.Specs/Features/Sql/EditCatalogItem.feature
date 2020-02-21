@@ -1,4 +1,5 @@
-﻿@perFeatureContainer
+﻿@ignore
+@perFeatureContainer
 @useSqlStores
 @setupTenantedSqlDatabase
 Feature: Edit catalog item with SQL

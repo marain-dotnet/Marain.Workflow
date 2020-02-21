@@ -1,4 +1,5 @@
-﻿@perFeatureContainer
+﻿@ignore
+@perFeatureContainer
 @useSqlStores
 @setupTenantedSqlDatabase
 Feature: Publish an item with SQL

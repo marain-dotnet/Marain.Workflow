@@ -21,6 +21,7 @@ namespace Marain.Workflows.Specs.Features.Sql
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Creating workflow instances with SQL")]
+    [NUnit.Framework.CategoryAttribute("ignore")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     [NUnit.Framework.CategoryAttribute("useSqlStores")]
     [NUnit.Framework.CategoryAttribute("setupTenantedSqlDatabase")]
@@ -30,6 +31,7 @@ namespace Marain.Workflows.Specs.Features.Sql
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
+                "ignore",
                 "perFeatureContainer",
                 "useSqlStores",
                 "setupTenantedSqlDatabase"};
@@ -44,6 +46,7 @@ namespace Marain.Workflows.Specs.Features.Sql
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Creating workflow instances with SQL", "\t\t In order to ensure that my workflow instances are created correctly\r\n\t\t And th" +
                     "at my workflow can create any supporting data necessary\r\n\t\t As a workflow design" +
                     "er\r\n\t\t I want to be able to put conditions and actions on the initial state", ProgrammingLanguage.CSharp, new string[] {
+                        "ignore",
                         "perFeatureContainer",
                         "useSqlStores",
                         "setupTenantedSqlDatabase"});
@@ -86,12 +89,12 @@ namespace Marain.Workflows.Specs.Features.Sql
         
         public virtual void FeatureBackground()
         {
-#line 10
-#line hidden
 #line 11
- testRunner.Given("I have created and persisted the DataCatalogWorkflow with Id \'dc-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 12
+ testRunner.Given("I have created and persisted the DataCatalogWorkflow with Id \'dc-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 13
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
         }
@@ -102,7 +105,7 @@ namespace Marain.Workflows.Specs.Features.Sql
         {
             string[] tagsOfScenario = ((string[])(null));
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a new instance", null, ((string[])(null)));
-#line 14
+#line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -122,7 +125,7 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 10
+#line 11
 this.FeatureBackground();
 #line hidden
                 TechTalk.SpecFlow.Table table64 = new TechTalk.SpecFlow.Table(new string[] {
@@ -134,29 +137,29 @@ this.FeatureBackground();
                 table64.AddRow(new string[] {
                             "Type",
                             "t1"});
-#line 15
+#line 16
  testRunner.When("I create and persist a new instance with Id \'new-instance\' of the workflow with I" +
                         "d \'dc-workflow\' and supply the following context items", ((string)(null)), table64, "When ");
 #line hidden
-#line 19
+#line 20
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 20
+#line 21
  testRunner.Then("the workflow instance with Id \'new-instance\' should have status \'Waiting\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 21
+#line 22
  testRunner.And("the workflow instance with Id \'new-instance\' should be in the state called \'Waiti" +
                         "ng for documentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 22
+#line 23
  testRunner.And("a new data catalog item with Id \'new-instance\' should have been added to the data" +
                         " catalog store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 23
+#line 24
  testRunner.And("the data catalog item with Id \'new-instance\' should have an Identifier of \'identi" +
                         "fier1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 24
+#line 25
  testRunner.And("the data catalog item with Id \'new-instance\' should have a Type of \'t1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table65 = new TechTalk.SpecFlow.Table(new string[] {
@@ -169,7 +172,7 @@ this.FeatureBackground();
                             "Executing transition \'Create catalog item\'"});
                 table65.AddRow(new string[] {
                             "Entering state \'Waiting for documentation\'"});
-#line 25
+#line 26
  testRunner.And("the following trace messages should have been recorded", ((string)(null)), table65, "And ");
 #line hidden
             }
@@ -182,7 +185,7 @@ this.FeatureBackground();
         {
             string[] tagsOfScenario = ((string[])(null));
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a new instance with incomplete data", null, ((string[])(null)));
-#line 32
+#line 33
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -202,7 +205,7 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 10
+#line 11
 this.FeatureBackground();
 #line hidden
                 TechTalk.SpecFlow.Table table66 = new TechTalk.SpecFlow.Table(new string[] {
@@ -211,18 +214,18 @@ this.FeatureBackground();
                 table66.AddRow(new string[] {
                             "Type",
                             "t1"});
-#line 33
+#line 34
  testRunner.When("I create and persist a new instance with Id \'new-instance-incomplete\' of the work" +
                         "flow with Id \'dc-workflow\' and supply the following context items", ((string)(null)), table66, "When ");
 #line hidden
-#line 36
+#line 37
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 37
+#line 38
  testRunner.Then("the workflow instance with Id \'new-instance-incomplete\' should have status \'Fault" +
                         "ed\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 38
+#line 39
  testRunner.And("a new data catalog item with Id \'new-instance-incomplete\' should not have been ad" +
                         "ded to the data catalog store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
