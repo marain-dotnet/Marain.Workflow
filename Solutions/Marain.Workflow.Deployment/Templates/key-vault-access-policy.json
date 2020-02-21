@@ -1,0 +1,54 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVaultName": {
+      "type": "string"
+    },
+    "objectName": {
+      "type": "string",
+      "metadata": {
+        "description": "The object from which to get the id from"
+      }
+    },
+    "objectResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the object"
+      }
+    },
+    "objectResourceType": {
+      "type": "string",
+      "metadata": {
+        "description": "The object from which to get the id from"
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "metadata": {
+        "description": "Access policies for the vault."
+      }
+    }
+  },
+  "variables": {
+    "resourceId": "[resourceId(parameters('objectResourceGroup'), parameters('objectResourceType'), parameters('objectName'))]",
+    "tenantId": "[subscription().tenantID]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.KeyVault/vaults/accessPolicies",
+      "name": "[concat(parameters('keyVaultName'), '/add')]",
+      "apiVersion": "2016-10-01",
+      "properties": {
+        "accessPolicies": [
+          {
+            "tenantId": "[variables('tenantId')]",
+            "objectId": "[reference(concat(variables('resourceId'), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-PREVIEW').principalId]",
+            "permissions": "[parameters('permissions')]"
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {}
+}
