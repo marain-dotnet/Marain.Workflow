@@ -36,6 +36,8 @@ namespace Marain.Workflows.Specs.Bindings
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
 
             SqlConfiguration config = tenantProvider.Root.GetDefaultSqlConfiguration();
+            config.DisableTenantIdPrefix = true;
+
             tenantProvider.Root.SetDefaultSqlConfiguration(config);
         }
 
