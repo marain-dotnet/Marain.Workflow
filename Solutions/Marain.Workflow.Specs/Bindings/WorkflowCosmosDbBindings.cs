@@ -5,8 +5,6 @@
 namespace Marain.Workflows.Specs.Bindings
 {
     using System;
-    using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.SpecFlow.Extensions;

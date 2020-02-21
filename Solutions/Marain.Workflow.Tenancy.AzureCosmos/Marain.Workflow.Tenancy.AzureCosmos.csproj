@@ -13,6 +13,10 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.22.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Storage.AzureCosmos\Marain.Workflow.Storage.AzureCosmos.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.Abstractions\Marain.Workflow.Tenancy.Abstractions.csproj" />
   </ItemGroup>

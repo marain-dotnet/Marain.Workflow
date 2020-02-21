@@ -8,7 +8,6 @@ namespace Marain.Workflows.Specs.Steps
     using System.Threading;
     using System.Threading.Tasks;
     using Corvus.Retry;
-    using Corvus.Retry.Policies;
     using Corvus.Retry.Strategies;
 
     /// <summary>

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\Common.NetStandard_2_0.proj" />
+
+  <PropertyGroup>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageDescription>
+      Adds support for SQL Server databases as a storage sink for Marain.Workflow
+    </PackageDescription>
+    <PackageTags>
+      workflow;orchestration;marain;endjin
+    </PackageTags>
+    <PackageReleaseNotes>
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

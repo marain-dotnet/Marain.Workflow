@@ -6,14 +6,9 @@ namespace Marain.Workflows
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Text;
     using System.Threading.Tasks;
-    using Corvus.Extensions;
     using Corvus.Leasing;
     using Corvus.Retry;
-    using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.Logging;
 
     /// <inheritdoc />

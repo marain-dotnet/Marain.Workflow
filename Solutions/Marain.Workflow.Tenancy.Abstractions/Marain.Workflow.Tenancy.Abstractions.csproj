@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Corvus.Tenancy.Abstractions" Version="0.22.0" />
+  </ItemGroup>
+
 </Project>

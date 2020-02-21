@@ -19,7 +19,7 @@ namespace Marain.Workflows.Storage
     public class CosmosWorkflowInstanceStore : IWorkflowInstanceStore
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowEngine"/> class.
+        /// Initializes a new instance of the <see cref="CosmosWorkflowInstanceStore"/> class.
         /// </summary>
         /// <param name="workflowInstanceContainer">The repository in which to store workflow instances.</param>
         public CosmosWorkflowInstanceStore(
@@ -53,13 +53,21 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public Task UpsertWorkflowInstanceAsync(WorkflowInstance workflowInstance, string partitionKey = null)
+        public async Task UpsertWorkflowInstanceAsync(WorkflowInstance workflowInstance, string partitionKey = null)
         {
-            return Retriable.RetryAsync(() =>
-                this.Container.UpsertItemAsync(
-                    workflowInstance,
-                    new PartitionKey(partitionKey ?? workflowInstance.Id),
-                    new ItemRequestOptions { IfMatchEtag = workflowInstance.ETag }));
+            try
+            {
+                await Retriable.RetryAsync(() =>
+                    this.Container.UpsertItemAsync(
+                        workflowInstance,
+                        new PartitionKey(partitionKey ?? workflowInstance.Id),
+                        new ItemRequestOptions { IfMatchEtag = workflowInstance.ETag }))
+                    .ConfigureAwait(false);
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new WorkflowInstanceConflictException($"The workflow instance with id {workflowInstance.Id} was already modified.", ex);
+            }
         }
 
         /// <inheritdoc/>

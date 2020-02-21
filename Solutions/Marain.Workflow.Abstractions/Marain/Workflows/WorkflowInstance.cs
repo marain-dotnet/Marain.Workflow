@@ -88,7 +88,7 @@ namespace Marain.Workflows
         /// current trigger's subjects (see <see cref="IWorkflowTrigger.GetSubjects" />).
         /// </para>
         /// </remarks>
-        public IEnumerable<string> Interests { get; set; }
+        public IEnumerable<string> Interests { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets or sets a value indicating whether the instance has changed since it was loaded.

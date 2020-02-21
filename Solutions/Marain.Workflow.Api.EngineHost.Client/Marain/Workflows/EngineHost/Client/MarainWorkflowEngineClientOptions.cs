@@ -3,8 +3,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Marain.Workflows.EngineHost.Client
 {
