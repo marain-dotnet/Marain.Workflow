@@ -80,6 +80,14 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
                 config.Exceptions.Map<WorkflowInstanceNotFoundException>(404);
             });
 
+            services.AddMarainWorkflowMessageIngestionClient(sp =>
+            {
+                IConfiguration config = sp.GetRequiredService<IConfiguration>();
+                return config.GetSection("Workflow:MessageIngestionClient").Get<MarainWorkflowMessageIngestionClientOptions>();
+            });
+
+            services.AddTenantedWorkflowEngine();
+
             services.AddSingleton<IOpenApiService, MessageIngestionService>();
 
             return services;
