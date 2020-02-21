@@ -4,8 +4,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    using System;
-    using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Leasing;
     using Marain.Workflows;
     using Microsoft.Extensions.Logging;

@@ -13,7 +13,6 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
     using Marain.Workflows.Api.MessageProcessingHost.Shared;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// The create workflow activity.

@@ -20,11 +20,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.20.0" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\Sql\Conditions.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\Sql\Create.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\Sql\Delete.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\Sql\Deprecated.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\Sql\EditCatalogItem.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\Sql\InvokeExternalServiceAction.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\Sql\InvokeExternalServiceCondition.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\Sql\Publish.feature.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.22.0" />
     <PackageReference Include="Corvus.Leasing.InMemory" Version="0.5.0-preview.5" />
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="0.2.0-preview.5" />
     <PackageReference Include="Corvus.SpecFlow.Extensions" Version="0.7.0-preview.6" />
-    <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="0.20.0" />
+    <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="0.22.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
@@ -47,6 +58,7 @@
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.Abstractions\Marain.Workflow.Tenancy.Abstractions.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureCosmos\Marain.Workflow.Tenancy.AzureCosmos.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Tenancy.Sql\Marain.Workflow.Tenancy.Sql.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,6 +68,65 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Features\Sql\Conditions.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Sql\Create.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Sql\Delete.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Sql\Deprecated.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Sql\EditCatalogItem.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Sql\InvokeExternalServiceAction.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Sql\InvokeExternalServiceCondition.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\Sql\Publish.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\Sql\Conditions.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\Sql\Create.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\Sql\Delete.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\Sql\Deprecated.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\Sql\EditCatalogItem.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\Sql\InvokeExternalServiceAction.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\Sql\InvokeExternalServiceCondition.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\Sql\Publish.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
   </ItemGroup>
 
 </Project>

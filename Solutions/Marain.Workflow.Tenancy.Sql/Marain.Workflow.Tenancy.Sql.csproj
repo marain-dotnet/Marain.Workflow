@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\Common.NetStandard_2_0.proj" />
+
+  <PropertyGroup>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageDescription>
+    </PackageDescription>
+    <PackageTags>
+    </PackageTags>
+    <PackageReleaseNotes>
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Corvus.Sql.Tenancy" Version="0.22.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Marain.Workflow.Storage.Sql\Marain.Workflow.Storage.Sql.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Tenancy.Abstractions\Marain.Workflow.Tenancy.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
