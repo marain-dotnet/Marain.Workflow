@@ -13,12 +13,12 @@ namespace Microsoft.Extensions.DependencyInjection
     using Microsoft.Rest;
 
     /// <summary>
-    /// DI initialization for clients of the workflow engine service.
+    /// DI initialization for clients of the workflow message ingestion service.
     /// </summary>
     public static class WorkflowMessageIngestionClientServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds the workflow engine client to a service collection.
+        /// Adds the workflow message ingestion client to a service collection.
         /// </summary>
         /// <param name="services">The service collection.</param>
         /// <returns>The modified service collection.</returns>
