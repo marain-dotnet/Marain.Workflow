@@ -41,9 +41,16 @@ jobs:
         env:
           ENDJIN_AZURESERVICESAUTHCONNECTIONSTRING: $(Endjin_AzureServicesAuthConnectionString)
           ENDJIN_AZURESTORAGECONNECTIONSTRING: $(Endjin_AzureStorageConnectionString)
+          ENDJIN_MARAINTENANCYBASEURL: $(Endjin_MarainTenancyBaseUrl)
+          ENDJIN_MARAINTENANCYRESOURCEIDFORMSIAUTHENTICATION: $(Endjin_MarainTenancyResourceIdForMsiAuthentication)
+          ENDJIN_MARAINOPERATIONSCONTROLBASEURL: $(Endjin_MarainOperationsControlBaseUrl)
+          ENDJIN_MARAINOPERATIONSCONTROLRESOURCEID: $(Endjin_MarainOperationsControlResourceIdForMsiAuthentication)
+          ENDJIN_MARAINTENANCYSTORAGECONNECTIONSTRING: $(Endjin_MarainTenancyStorageConnectionString)
           ENDJIN_COSMOSDBACCOUNTURI: $(Endjin_CosmosDbAccountUri)
           ENDJIN_COSMOSACCOUNTKEYSECRETNAME: $(Endjin_CosmosDbKeySecretName)
           ENDJIN_KEYVAULTNAME: $(Endjin_KeyVaultName)
+          ENDJIN_SQLDBDATABASE: $(Endjin_SqlDbDatabase)
+          ENDJIN_SQLDBCONNECTIONSTRINGSECRETNAME: $(Endjin_SqlDbConnectionStringSecretName)
       - task: Npm@1
         displayName: 'Install Latest Azure Functions V3 Runtime'
         inputs:
