@@ -2,11 +2,11 @@
 // Copyright (c) Endjin. All rights reserved.
 // </copyright>
 
-using System;
-
-namespace Marain.Workflows.MessageHost.Client
+namespace Marain.Workflows.Api.Client
 {
-    public class MarainWorkflowMessageIngestionClientOptions
+    using System;
+
+    public class MarainWorkflowServiceOptions
     {
         /// <summary>
         /// Gets or sets the URI for the workflow message ingestion host.

@@ -8,14 +8,13 @@ namespace Microsoft.Extensions.DependencyInjection
     using System.Linq;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
-    using Marain.Workflows.MessageHost.Client;
-    using Microsoft.Extensions.DependencyInjection;
+    using Marain.Workflows.Api.Client;
     using Microsoft.Rest;
 
     /// <summary>
     /// DI initialization for clients of the workflow message ingestion service.
     /// </summary>
-    public static class WorkflowMessageIngestionClientServiceCollectionExtensions
+    public static class MarainWorkflowServiceServiceCollectionExtensions
     {
         /// <summary>
         /// Adds the workflow message ingestion client to a service collection.
@@ -24,23 +23,23 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>The modified service collection.</returns>
         public static IServiceCollection AddMarainWorkflowMessageIngestionClient(
             this IServiceCollection services,
-            Func<IServiceProvider, MarainWorkflowMessageIngestionClientOptions> getOptions)
+            Func<IServiceProvider, MarainWorkflowServiceOptions> getOptions)
         {
-            if (services.Any(s => s.ServiceType == typeof(IMarainWorkflowMessageIngestion)))
+            if (services.Any(s => s.ServiceType == typeof(IMarainWorkflowService)))
             {
                 return services;
             }
 
-            services.AddSingleton<IMarainWorkflowMessageIngestion>(sp =>
+            services.AddSingleton<IMarainWorkflowService>(sp =>
             {
-                MarainWorkflowMessageIngestionClientOptions options = getOptions(sp);
+                MarainWorkflowServiceOptions options = getOptions(sp);
 
                 if (string.IsNullOrEmpty(options.ResourceIdForAuthentication))
                 {
-                    return new UnauthenticatedMarainWorkflowMessageIngestion(options.BaseUrl);
+                    return new UnauthenticatedMarainWorkflowService(options.BaseUrl);
                 }
 
-                var service = new MarainWorkflowMessageIngestion(options.BaseUrl, new TokenCredentials(
+                var service = new MarainWorkflowService(options.BaseUrl, new TokenCredentials(
                     new ServiceIdentityTokenProvider(
                         sp.GetRequiredService<IServiceIdentityTokenSource>(),
                         options.ResourceIdForAuthentication)));

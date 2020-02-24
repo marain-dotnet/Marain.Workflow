@@ -1,8 +1,8 @@
-﻿// <copyright file="UnauthenticatedMarainWorkflowEngine.cs" company="Endjin Limited">
+﻿// <copyright file="UnauthenticatedMarainWorkflowService.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.MessageHost.Client
+namespace Marain.Workflows.Api.Client
 {
     using System;
     using System.Net.Http;
@@ -17,14 +17,14 @@ namespace Marain.Workflows.MessageHost.Client
     /// through protected constructors. This type makes a suitable constructor available publicly.
     /// </para>
     /// </remarks>
-    public class UnauthenticatedMarainWorkflowMessageIngestion : MarainWorkflowMessageIngestion
+    public class UnauthenticatedMarainWorkflowService : MarainWorkflowService
     {
         /// <summary>
-        /// Create an <see cref="UnauthenticatedMarainWorkflowMessageIngestion"/>.
+        /// Create an <see cref="UnauthenticatedMarainWorkflowService"/>.
         /// </summary>
         /// <param name="baseUri">The base URI of the workflow engine service.</param>
         /// <param name="handlers">Optional request processing handlers.</param>
-        public UnauthenticatedMarainWorkflowMessageIngestion(Uri baseUri, params DelegatingHandler[] handlers)
+        public UnauthenticatedMarainWorkflowService(Uri baseUri, params DelegatingHandler[] handlers)
             : base(baseUri, handlers)
         {
         }

@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Marain.Workflows.MessageHost.Client
+namespace Marain.Workflows.Api.Client
 {
     using Microsoft.Rest;
     using Models;
@@ -21,7 +21,7 @@ namespace Marain.Workflows.MessageHost.Client
     /// high-traffic scenarios as it is designed to use a queuing mechanism
     /// that can deal with large amounts of incoming traffic.
     /// </summary>
-    public partial interface IMarainWorkflowMessageIngestion : System.IDisposable
+    public partial interface IMarainWorkflowService : System.IDisposable
     {
         /// <summary>
         /// The base URI of the service.
@@ -60,7 +60,7 @@ namespace Marain.Workflows.MessageHost.Client
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationHeaderResponse<SendTriggerHeaders>> SendTriggerWithHttpMessagesAsync(string tenantId, Trigger body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationHeaderResponse<RaiseTriggerHeaders>> RaiseTriggerWithHttpMessagesAsync(string tenantId, Trigger body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Send a request to start a new workflow instance into the workflow

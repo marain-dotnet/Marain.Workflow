@@ -4,32 +4,30 @@
 // regenerated.
 // </auto-generated>
 
-namespace Marain.Workflows.MessageHost.Client.Models
+namespace Marain.Workflows.Api.Client.Models
 {
     using Newtonsoft.Json;
     using System.Linq;
 
     /// <summary>
-    /// Defines headers for sendStartNewWorkflowInstanceRequest operation.
+    /// Defines headers for sendTrigger operation.
     /// </summary>
-    public partial class SendStartNewWorkflowInstanceRequestHeaders
+    public partial class SendTriggerHeaders
     {
         /// <summary>
-        /// Initializes a new instance of the
-        /// SendStartNewWorkflowInstanceRequestHeaders class.
+        /// Initializes a new instance of the SendTriggerHeaders class.
         /// </summary>
-        public SendStartNewWorkflowInstanceRequestHeaders()
+        public SendTriggerHeaders()
         {
             CustomInit();
         }
 
         /// <summary>
-        /// Initializes a new instance of the
-        /// SendStartNewWorkflowInstanceRequestHeaders class.
+        /// Initializes a new instance of the SendTriggerHeaders class.
         /// </summary>
-        /// <param name="location">A link to endpoint in the Operations Status
-        /// API for this operation</param>
-        public SendStartNewWorkflowInstanceRequestHeaders(string location = default(string))
+        /// <param name="location">A link to the endpoint in the Operations
+        /// Status API for this operation</param>
+        public SendTriggerHeaders(string location = default(string))
         {
             Location = location;
             CustomInit();
@@ -41,8 +39,8 @@ namespace Marain.Workflows.MessageHost.Client.Models
         partial void CustomInit();
 
         /// <summary>
-        /// Gets or sets a link to endpoint in the Operations Status API for
-        /// this operation
+        /// Gets or sets a link to the endpoint in the Operations Status API
+        /// for this operation
         /// </summary>
         [JsonProperty(PropertyName = "Location")]
         public string Location { get; set; }

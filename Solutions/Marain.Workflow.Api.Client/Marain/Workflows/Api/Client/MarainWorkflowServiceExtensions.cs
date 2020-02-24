@@ -4,16 +4,16 @@
 // regenerated.
 // </auto-generated>
 
-namespace Marain.Workflows.MessageHost.Client
+namespace Marain.Workflows.Api.Client
 {
     using Models;
     using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Extension methods for MarainWorkflowMessageIngestion.
+    /// Extension methods for MarainWorkflowService.
     /// </summary>
-    public static partial class MarainWorkflowMessageIngestionExtensions
+    public static partial class MarainWorkflowServiceExtensions
     {
             /// <summary>
             /// Send a new trigger into the workflow engine
@@ -27,9 +27,9 @@ namespace Marain.Workflows.MessageHost.Client
             /// <param name='body'>
             /// New trigger to be processed by the engine
             /// </param>
-            public static SendTriggerHeaders SendTrigger(this IMarainWorkflowMessageIngestion operations, string tenantId, Trigger body)
+            public static RaiseTriggerHeaders RaiseTrigger(this IMarainWorkflowService operations, string tenantId, Trigger body)
             {
-                return operations.SendTriggerAsync(tenantId, body).GetAwaiter().GetResult();
+                return operations.RaiseTriggerAsync(tenantId, body).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -47,9 +47,9 @@ namespace Marain.Workflows.MessageHost.Client
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<SendTriggerHeaders> SendTriggerAsync(this IMarainWorkflowMessageIngestion operations, string tenantId, Trigger body, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<RaiseTriggerHeaders> RaiseTriggerAsync(this IMarainWorkflowService operations, string tenantId, Trigger body, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.SendTriggerWithHttpMessagesAsync(tenantId, body, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.RaiseTriggerWithHttpMessagesAsync(tenantId, body, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Headers;
                 }
@@ -67,7 +67,7 @@ namespace Marain.Workflows.MessageHost.Client
             /// <param name='body'>
             /// Details of the new workflow instance to be started
             /// </param>
-            public static SendStartNewWorkflowInstanceRequestHeaders SendStartNewWorkflowInstanceRequest(this IMarainWorkflowMessageIngestion operations, string tenantId, StartNewWorkflowInstanceRequest body)
+            public static SendStartNewWorkflowInstanceRequestHeaders SendStartNewWorkflowInstanceRequest(this IMarainWorkflowService operations, string tenantId, StartNewWorkflowInstanceRequest body)
             {
                 return operations.SendStartNewWorkflowInstanceRequestAsync(tenantId, body).GetAwaiter().GetResult();
             }
@@ -87,7 +87,7 @@ namespace Marain.Workflows.MessageHost.Client
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<SendStartNewWorkflowInstanceRequestHeaders> SendStartNewWorkflowInstanceRequestAsync(this IMarainWorkflowMessageIngestion operations, string tenantId, StartNewWorkflowInstanceRequest body, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<SendStartNewWorkflowInstanceRequestHeaders> SendStartNewWorkflowInstanceRequestAsync(this IMarainWorkflowService operations, string tenantId, StartNewWorkflowInstanceRequest body, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.SendStartNewWorkflowInstanceRequestWithHttpMessagesAsync(tenantId, body, null, cancellationToken).ConfigureAwait(false))
                 {
@@ -104,7 +104,7 @@ namespace Marain.Workflows.MessageHost.Client
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
-            public static object GetSwagger(this IMarainWorkflowMessageIngestion operations)
+            public static object GetSwagger(this IMarainWorkflowService operations)
             {
                 return operations.GetSwaggerAsync().GetAwaiter().GetResult();
             }
@@ -121,7 +121,7 @@ namespace Marain.Workflows.MessageHost.Client
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<object> GetSwaggerAsync(this IMarainWorkflowMessageIngestion operations, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<object> GetSwaggerAsync(this IMarainWorkflowService operations, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.GetSwaggerWithHttpMessagesAsync(null, cancellationToken).ConfigureAwait(false))
                 {

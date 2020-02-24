@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Marain.Workflows.MessageHost.Client
+namespace Marain.Workflows.Api.Client
 {
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
@@ -24,7 +24,7 @@ namespace Marain.Workflows.MessageHost.Client
     /// high-traffic scenarios as it is designed to use a queuing mechanism
     /// that can deal with large amounts of incoming traffic.
     /// </summary>
-    public partial class MarainWorkflowMessageIngestion : ServiceClient<MarainWorkflowMessageIngestion>, IMarainWorkflowMessageIngestion
+    public partial class MarainWorkflowService : ServiceClient<MarainWorkflowService>, IMarainWorkflowService
     {
         /// <summary>
         /// The base URI of the service.
@@ -47,31 +47,31 @@ namespace Marain.Workflows.MessageHost.Client
         public ServiceClientCredentials Credentials { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
+        /// Initializes a new instance of the MarainWorkflowService class.
         /// </summary>
         /// <param name='httpClient'>
         /// HttpClient to be used
         /// </param>
         /// <param name='disposeHttpClient'>
-        /// True: will dispose the provided httpClient on calling MarainWorkflowMessageIngestion.Dispose(). False: will not dispose provided httpClient</param>
-        protected MarainWorkflowMessageIngestion(HttpClient httpClient, bool disposeHttpClient) : base(httpClient, disposeHttpClient)
+        /// True: will dispose the provided httpClient on calling MarainWorkflowService.Dispose(). False: will not dispose provided httpClient</param>
+        protected MarainWorkflowService(HttpClient httpClient, bool disposeHttpClient) : base(httpClient, disposeHttpClient)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
+        /// Initializes a new instance of the MarainWorkflowService class.
         /// </summary>
         /// <param name='handlers'>
         /// Optional. The delegating handlers to add to the http client pipeline.
         /// </param>
-        protected MarainWorkflowMessageIngestion(params DelegatingHandler[] handlers) : base(handlers)
+        protected MarainWorkflowService(params DelegatingHandler[] handlers) : base(handlers)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
+        /// Initializes a new instance of the MarainWorkflowService class.
         /// </summary>
         /// <param name='rootHandler'>
         /// Optional. The http client handler used to handle http transport.
@@ -79,13 +79,13 @@ namespace Marain.Workflows.MessageHost.Client
         /// <param name='handlers'>
         /// Optional. The delegating handlers to add to the http client pipeline.
         /// </param>
-        protected MarainWorkflowMessageIngestion(HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : base(rootHandler, handlers)
+        protected MarainWorkflowService(HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : base(rootHandler, handlers)
         {
             Initialize();
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
+        /// Initializes a new instance of the MarainWorkflowService class.
         /// </summary>
         /// <param name='baseUri'>
         /// Optional. The base URI of the service.
@@ -96,7 +96,7 @@ namespace Marain.Workflows.MessageHost.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        protected MarainWorkflowMessageIngestion(System.Uri baseUri, params DelegatingHandler[] handlers) : this(handlers)
+        protected MarainWorkflowService(System.Uri baseUri, params DelegatingHandler[] handlers) : this(handlers)
         {
             if (baseUri == null)
             {
@@ -106,7 +106,7 @@ namespace Marain.Workflows.MessageHost.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
+        /// Initializes a new instance of the MarainWorkflowService class.
         /// </summary>
         /// <param name='baseUri'>
         /// Optional. The base URI of the service.
@@ -120,7 +120,7 @@ namespace Marain.Workflows.MessageHost.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        protected MarainWorkflowMessageIngestion(System.Uri baseUri, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
+        protected MarainWorkflowService(System.Uri baseUri, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
         {
             if (baseUri == null)
             {
@@ -130,7 +130,7 @@ namespace Marain.Workflows.MessageHost.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
+        /// Initializes a new instance of the MarainWorkflowService class.
         /// </summary>
         /// <param name='credentials'>
         /// Required. Subscription credentials which uniquely identify client subscription.
@@ -141,7 +141,7 @@ namespace Marain.Workflows.MessageHost.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public MarainWorkflowMessageIngestion(ServiceClientCredentials credentials, params DelegatingHandler[] handlers) : this(handlers)
+        public MarainWorkflowService(ServiceClientCredentials credentials, params DelegatingHandler[] handlers) : this(handlers)
         {
             if (credentials == null)
             {
@@ -155,7 +155,7 @@ namespace Marain.Workflows.MessageHost.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
+        /// Initializes a new instance of the MarainWorkflowService class.
         /// </summary>
         /// <param name='credentials'>
         /// Required. Subscription credentials which uniquely identify client subscription.
@@ -164,11 +164,11 @@ namespace Marain.Workflows.MessageHost.Client
         /// HttpClient to be used
         /// </param>
         /// <param name='disposeHttpClient'>
-        /// True: will dispose the provided httpClient on calling MarainWorkflowMessageIngestion.Dispose(). False: will not dispose provided httpClient</param>
+        /// True: will dispose the provided httpClient on calling MarainWorkflowService.Dispose(). False: will not dispose provided httpClient</param>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public MarainWorkflowMessageIngestion(ServiceClientCredentials credentials, HttpClient httpClient, bool disposeHttpClient) : this(httpClient, disposeHttpClient)
+        public MarainWorkflowService(ServiceClientCredentials credentials, HttpClient httpClient, bool disposeHttpClient) : this(httpClient, disposeHttpClient)
         {
             if (credentials == null)
             {
@@ -182,7 +182,7 @@ namespace Marain.Workflows.MessageHost.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
+        /// Initializes a new instance of the MarainWorkflowService class.
         /// </summary>
         /// <param name='credentials'>
         /// Required. Subscription credentials which uniquely identify client subscription.
@@ -196,7 +196,7 @@ namespace Marain.Workflows.MessageHost.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public MarainWorkflowMessageIngestion(ServiceClientCredentials credentials, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
+        public MarainWorkflowService(ServiceClientCredentials credentials, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
         {
             if (credentials == null)
             {
@@ -210,7 +210,7 @@ namespace Marain.Workflows.MessageHost.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
+        /// Initializes a new instance of the MarainWorkflowService class.
         /// </summary>
         /// <param name='baseUri'>
         /// Optional. The base URI of the service.
@@ -224,7 +224,7 @@ namespace Marain.Workflows.MessageHost.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public MarainWorkflowMessageIngestion(System.Uri baseUri, ServiceClientCredentials credentials, params DelegatingHandler[] handlers) : this(handlers)
+        public MarainWorkflowService(System.Uri baseUri, ServiceClientCredentials credentials, params DelegatingHandler[] handlers) : this(handlers)
         {
             if (baseUri == null)
             {
@@ -243,7 +243,7 @@ namespace Marain.Workflows.MessageHost.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the MarainWorkflowMessageIngestion class.
+        /// Initializes a new instance of the MarainWorkflowService class.
         /// </summary>
         /// <param name='baseUri'>
         /// Optional. The base URI of the service.
@@ -260,7 +260,7 @@ namespace Marain.Workflows.MessageHost.Client
         /// <exception cref="System.ArgumentNullException">
         /// Thrown when a required parameter is null
         /// </exception>
-        public MarainWorkflowMessageIngestion(System.Uri baseUri, ServiceClientCredentials credentials, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
+        public MarainWorkflowService(System.Uri baseUri, ServiceClientCredentials credentials, HttpClientHandler rootHandler, params DelegatingHandler[] handlers) : this(rootHandler, handlers)
         {
             if (baseUri == null)
             {
@@ -342,7 +342,7 @@ namespace Marain.Workflows.MessageHost.Client
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationHeaderResponse<SendTriggerHeaders>> SendTriggerWithHttpMessagesAsync(string tenantId, Trigger body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationHeaderResponse<RaiseTriggerHeaders>> RaiseTriggerWithHttpMessagesAsync(string tenantId, Trigger body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (tenantId == null)
             {
@@ -366,7 +366,7 @@ namespace Marain.Workflows.MessageHost.Client
                 tracingParameters.Add("tenantId", tenantId);
                 tracingParameters.Add("body", body);
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "SendTrigger", tracingParameters);
+                ServiceClientTracing.Enter(_invocationId, this, "RaiseTrigger", tracingParameters);
             }
             // Construct URL
             var _baseUrl = BaseUri.AbsoluteUri;
@@ -443,12 +443,12 @@ namespace Marain.Workflows.MessageHost.Client
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationHeaderResponse<SendTriggerHeaders>();
+            var _result = new HttpOperationHeaderResponse<RaiseTriggerHeaders>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             try
             {
-                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<SendTriggerHeaders>(JsonSerializer.Create(DeserializationSettings));
+                _result.Headers = _httpResponse.GetHeadersAsJson().ToObject<RaiseTriggerHeaders>(JsonSerializer.Create(DeserializationSettings));
             }
             catch (JsonException ex)
             {

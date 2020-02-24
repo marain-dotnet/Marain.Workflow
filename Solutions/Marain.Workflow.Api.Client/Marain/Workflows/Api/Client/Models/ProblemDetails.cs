@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Marain.Workflows.MessageHost.Client.Models
+namespace Marain.Workflows.Api.Client.Models
 {
     using Microsoft.Rest;
     using Newtonsoft.Json;
