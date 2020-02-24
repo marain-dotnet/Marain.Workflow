@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Marain.Workflows.Client.Models
+namespace Marain.Workflows.Api.Client.Models
 {
     using Microsoft.Rest;
     using Newtonsoft.Json;
@@ -12,6 +12,9 @@ namespace Marain.Workflows.Client.Models
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// Information about a failed operation
+    /// </summary>
     public partial class ProblemDetails
     {
         /// <summary>
