@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
-    <ProjectReference Include="..\Marain.Workflow.Api.EngineHost\Marain.Workflow.Api.EngineHost.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Api.Services.AspNetCore\Marain.Workflow.Api.Services.AspNetCore.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.Abstractions\Marain.Workflow.Tenancy.Abstractions.csproj" />
   </ItemGroup>
 
@@ -48,5 +48,5 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
+  
 </Project>
