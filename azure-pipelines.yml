@@ -26,7 +26,7 @@ jobs:
           Write-Host "##vso[task.setvariable variable=AzureWebJobsStorage]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
           Write-Host "##vso[task.setvariable variable=TenantCloudBlobContainerFactoryOptions__RootTenantBlobStorageConfiguration__AccountName]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
           Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__AccountUri]$Env:ENDJIN_COSMOSDBACCOUNTURI"
-          Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__AccountKeySecretName]$Env:ENDJIN_COSMOSACCOUNTKEYSECRETNAME"
+          Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__AccountKeySecretName]$Env:ENDJIN_COSMOSDBKEYSECRETNAME"
           Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__KeyVaultName]$Env:ENDJIN_KEYVAULTNAME"
           Write-Host "##vso[task.setvariable variable=TenantSqlConnectionFactoryOptions__RootTenantSqlConfiguration__Database]$Env:ENDJIN_SQLDBDATABASE"
           Write-Host "##vso[task.setvariable variable=TenantSqlConnectionFactoryOptions__RootTenantSqlConfiguration__ConnectionStringSecretName]$Env:ENDJIN_SQLDBCONNECTIONSTRINGSECRETNAME"
