@@ -31,22 +31,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.21.0" />
+    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.22.0" />
     <PackageReference Include="Corvus.Leasing.InMemory" Version="0.5.0-preview.5" />
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="0.2.0-preview.5" />
     <PackageReference Include="Corvus.SpecFlow.Extensions" Version="0.7.0-preview.6" />
-    <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="0.20.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.2.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+    <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="0.22.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.2" />
+    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="150.4573.2" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="150.18208.0" />
     <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SpecFlow.NUnit" Version="3.1.82" />
-    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.1.82" />
+    <PackageReference Include="SpecFlow.NUnit" Version="3.1.86" />
+    <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.1.86" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="coverlet.msbuild" Version="2.8.0">
       <PrivateAssets>all</PrivateAssets>
