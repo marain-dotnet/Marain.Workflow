@@ -8,8 +8,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Marain.Workflows.Api.MessageProcessingHost.Shared;
-    using Marain.Workflows.Client;
-    using Marain.Workflows.Client.Models;
+    using Marain.Workflows.EngineHost.Client;
+    using Marain.Workflows.EngineHost.Client.Models;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Extensions.Logging;

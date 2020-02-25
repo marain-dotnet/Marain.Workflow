@@ -4,7 +4,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Marain.Workflows.Client
+namespace Marain.Workflows.EngineHost.Client
 {
     using Models;
     using System.Threading;

@@ -8,6 +8,7 @@ namespace Marain.Workflows.Specs.Bindings
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.SpecFlow.Extensions;
+    using Corvus.Sql.Tenancy;
     using Corvus.Tenancy;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Subjects;
@@ -48,14 +49,23 @@ namespace Marain.Workflows.Specs.Bindings
 
                     services.AddSingleton<ITenantProvider, FakeTenantProvider>();
 
-                    CosmosConfiguration cosmosConfiguration = root.GetSection("ROOTTENANTCOSMOSCONFIGURATIONOPTIONS").Get<CosmosConfiguration>()
-                        ?? new CosmosConfiguration();
-
-                    services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
+                    TenantCosmosContainerFactoryOptions cosmosConfiguration = root.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
+                        ?? new TenantCosmosContainerFactoryOptions();
+                    if (cosmosConfiguration.RootTenantCosmosConfiguration == null)
                     {
-                        AzureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"],
-                        RootTenantCosmosConfiguration = cosmosConfiguration,
-                    });
+                        cosmosConfiguration.RootTenantCosmosConfiguration = new CosmosConfiguration();
+                    }
+
+                    services.AddTenantCosmosContainerFactory(cosmosConfiguration);
+
+                    TenantSqlConnectionFactoryOptions sqlConfiguration = root.GetSection("TenantSqlConnectionFactoryOptions").Get<TenantSqlConnectionFactoryOptions>()
+                        ?? new TenantSqlConnectionFactoryOptions();
+                    if (sqlConfiguration.RootTenantSqlConfiguration == null)
+                    {
+                        sqlConfiguration.RootTenantSqlConfiguration = new SqlConfiguration();
+                    }
+
+                    services.AddTenantSqlConnectionFactory(sqlConfiguration);
 
                     services.AddInMemoryWorkflowTriggerQueue();
                     services.AddInMemoryLeasing();

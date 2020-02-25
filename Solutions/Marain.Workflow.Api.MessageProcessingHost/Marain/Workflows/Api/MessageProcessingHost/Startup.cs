@@ -10,7 +10,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
     using System.Linq;
     using Marain.Operations.Client.OperationsControl;
     using Marain.Workflows.Api.MessageProcessingHost.OpenApi;
-    using Marain.Workflows.Client;
+    using Marain.Workflows.EngineHost.Client;
     using Menes;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Hosting;
@@ -36,7 +36,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
             });
 
             var uri = new Uri(root["Operations:ControlServiceBaseUrl"]);
-            services.AddOperationsControlClient(uri);
+            string resourceId = root["Operations:ResourceIdForMsiAuthentication"];
+            services.AddOperationsControlClient(uri, resourceId);
 
             services.AddMarainWorkflowEngineClient(sp =>
             {
