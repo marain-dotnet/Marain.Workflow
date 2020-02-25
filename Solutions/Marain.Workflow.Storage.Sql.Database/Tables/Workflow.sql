@@ -9,7 +9,3 @@
 GO 
 
 CREATE INDEX [IX_Workflow_WorkflowId] ON [dbo].[Workflow] ([WorkflowId])
-
-GO
-
-CREATE INDEX [IX_Workflow_WorkflowAndEtag] ON [dbo].[Workflow] ([WorkflowId], [ETag])
