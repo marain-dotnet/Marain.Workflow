@@ -51,7 +51,6 @@ jobs:
       - task: CopyFiles@2
         displayName: 'Copy DACPACs To Release Folder'
         inputs:
-          SourceFolder: '$(Build.SourcesDirectory)/**/bin/$(BuildConfiguration)'
           Contents: |
-            **/*.dacpac
+            **/bin/$(BuildConfiguration)/*.dacpac
           TargetFolder: '$(Build.ArtifactStagingDirectory)/Release/DACPACs'
