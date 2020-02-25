@@ -13,7 +13,6 @@ namespace Marain.Workflows.Storage
     using Corvus.Retry;
     using Marain.Workflows;
     using Marain.Workflows.Storage.Internal;
-    using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -133,9 +132,6 @@ namespace Marain.Workflows.Storage
             await reader.ReadAsync().ConfigureAwait(false);
             string serializedResult = reader.GetString(0);
             string etag = reader.GetString(1);
-
-            reader.Close();
-            connection.Close();
 
             WorkflowInstance instance = JsonConvert.DeserializeObject<WorkflowInstance>(serializedResult, this.serializerSettingsProvider.Instance);
             instance.ETag = etag;

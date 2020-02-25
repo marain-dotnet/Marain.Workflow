@@ -21,7 +21,6 @@ namespace Marain.Workflows.Specs.Features.Sql
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("InvokeExternalServiceCondition with SQL")]
-    [NUnit.Framework.CategoryAttribute("ignore")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     [NUnit.Framework.CategoryAttribute("useSqlStores")]
     [NUnit.Framework.CategoryAttribute("setupTenantedSqlDatabase")]
@@ -31,7 +30,6 @@ namespace Marain.Workflows.Specs.Features.Sql
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
-                "ignore",
                 "perFeatureContainer",
                 "useSqlStores",
                 "setupTenantedSqlDatabase"};
@@ -46,7 +44,6 @@ namespace Marain.Workflows.Specs.Features.Sql
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "InvokeExternalServiceCondition with SQL", "    In order to be able to define a workflow that queries external HTTP endpoints" +
                     " to determine conditions\r\n    As a developer defining a workflow\r\n    I want to " +
                     "be able to define a workflow condition that invokes an external HTTP endpoint", ProgrammingLanguage.CSharp, new string[] {
-                        "ignore",
                         "perFeatureContainer",
                         "useSqlStores",
                         "setupTenantedSqlDatabase"});
@@ -96,7 +93,7 @@ namespace Marain.Workflows.Specs.Features.Sql
                     "externalServiceRequired"};
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("External condition returns true", null, new string[] {
                         "externalServiceRequired"});
-#line 11
+#line 10
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -116,7 +113,7 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 12
+#line 11
     testRunner.Given("I have created and persisted a workflow containing an external condition with id " +
                         "\'external-condition-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
@@ -132,61 +129,61 @@ this.ScenarioInitialize(scenarioInfo);
                 table99.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
-#line 13
+#line 12
  testRunner.And("I have created and persisted a new instance with Id \'id1\' of the workflow with Id" +
                         " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table99, "And ");
 #line hidden
-#line 18
+#line 17
     testRunner.And("the external service will return a 200 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 19
+#line 18
     testRunner.And("the external service response body will contain \'true\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 20
+#line 19
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 21
+#line 20
     testRunner.When("I send a trigger that will execute the condition with a trigger id of \'id1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 22
+#line 21
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 23
+#line 22
     testRunner.Then("the condition endpoint should have been invoked", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 24
+#line 23
     testRunner.And("the Authorization header should be of type Bearer, using a token representing the" +
                         " managed service identity with the resource specified by the condition", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 25
+#line 24
     testRunner.And("the Content-Type header should be \'application/vnd.marain.workflows.externalservi" +
                         "cerequest\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 26
+#line 25
     testRunner.And("the request body WorkflowId should be \'external-condition-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 27
+#line 26
     testRunner.And("the request body WorkflowInstanceId should be \'id1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 28
+#line 27
     testRunner.And("the request body InvokedById should match the condition id", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 29
+#line 28
     testRunner.And("the request body Trigger matches the input trigger", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 30
+#line 29
     testRunner.And("the request body ContextProperties key \'include1\' has the value \'value1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 31
+#line 30
     testRunner.And("the request body ContextProperties key \'include2\' has the value \'value2\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 32
+#line 31
     testRunner.And("the request body ContextProperties has 2 values", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 33
+#line 32
  testRunner.Then("the workflow instance with Id \'id1\' should have status \'Complete\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 34
+#line 33
  testRunner.And("the workflow instance with Id \'id1\' should be in the state called \'Done\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -202,7 +199,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "externalServiceRequired"};
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("External condition returns false", null, new string[] {
                         "externalServiceRequired"});
-#line 37
+#line 36
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -222,7 +219,7 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 38
+#line 37
     testRunner.Given("I have created and persisted a workflow containing an external condition with id " +
                         "\'external-condition-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
@@ -238,61 +235,61 @@ this.ScenarioInitialize(scenarioInfo);
                 table100.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
-#line 39
+#line 38
  testRunner.And("I have created and persisted a new instance with Id \'id2\' of the workflow with Id" +
                         " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table100, "And ");
 #line hidden
-#line 44
+#line 43
     testRunner.And("the external service will return a 200 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 45
+#line 44
     testRunner.And("the external service response body will contain \'false\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 46
+#line 45
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 47
+#line 46
     testRunner.When("I send a trigger that will execute the condition with a trigger id of \'id2\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 48
+#line 47
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 49
+#line 48
     testRunner.Then("the condition endpoint should have been invoked", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 50
+#line 49
     testRunner.And("the Authorization header should be of type Bearer, using a token representing the" +
                         " managed service identity with the resource specified by the condition", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 51
+#line 50
     testRunner.And("the Content-Type header should be \'application/vnd.marain.workflows.externalservi" +
                         "cerequest\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 52
+#line 51
     testRunner.And("the request body WorkflowId should be \'external-condition-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 53
+#line 52
     testRunner.And("the request body WorkflowInstanceId should be \'id2\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 54
+#line 53
     testRunner.And("the request body InvokedById should match the condition id", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 55
+#line 54
     testRunner.And("the request body Trigger matches the input trigger", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 56
+#line 55
     testRunner.And("the request body ContextProperties key \'include1\' has the value \'value1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 57
+#line 56
     testRunner.And("the request body ContextProperties key \'include2\' has the value \'value2\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 58
+#line 57
     testRunner.And("the request body ContextProperties has 2 values", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 59
+#line 58
  testRunner.Then("the workflow instance with Id \'id2\' should have status \'Waiting\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 60
+#line 59
  testRunner.And("the workflow instance with Id \'id2\' should be in the state called \'Waiting to run" +
                         "\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -309,7 +306,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "externalServiceRequired"};
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("External condition returns a 500 status code", null, new string[] {
                         "externalServiceRequired"});
-#line 63
+#line 62
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -329,7 +326,7 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 64
+#line 63
     testRunner.Given("I have created and persisted a workflow containing an external condition with id " +
                         "\'external-condition-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
@@ -345,32 +342,32 @@ this.ScenarioInitialize(scenarioInfo);
                 table101.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
-#line 65
+#line 64
  testRunner.And("I have created and persisted a new instance with Id \'id3\' of the workflow with Id" +
                         " \'external-condition-workflow\' and supplied the following context items", ((string)(null)), table101, "And ");
 #line hidden
-#line 70
+#line 69
     testRunner.And("the external service will return a 500 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 71
+#line 70
     testRunner.And("the external service response body will contain \'\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 72
+#line 71
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 73
+#line 72
     testRunner.When("I send a trigger that will execute the condition with a trigger id of \'id3\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 74
+#line 73
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 75
+#line 74
     testRunner.Then("the condition endpoint should have been invoked", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 76
+#line 75
  testRunner.Then("the workflow instance with Id \'id3\' should have status \'Faulted\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 77
+#line 76
  testRunner.And("the workflow instance with Id \'id3\' should be in the state called \'Waiting to run" +
                         "\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden

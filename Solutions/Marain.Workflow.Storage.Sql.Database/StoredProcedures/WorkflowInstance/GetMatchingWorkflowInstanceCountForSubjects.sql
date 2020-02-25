@@ -4,6 +4,6 @@ CREATE PROCEDURE [dbo].[GetMatchingWorkflowInstanceCountForSubjects]
 	@subjects WorkflowInstanceInterestTableType READONLY
 AS
 	SELECT COUNT(DISTINCT [WorkflowInstance].Id) FROM [WorkflowInstance]
-		JOIN [WorkflowInstanceInterest] ON [WorkflowInstance].Id = [WorkflowInstanceInterest].Id
+		JOIN [WorkflowInstanceInterest] ON [WorkflowInstance].Id = [WorkflowInstanceInterest].WorkflowInstance
 	WHERE [WorkflowInstanceInterest].Interest IN (SELECT Interest FROM @subjects)
 RETURN 0

@@ -21,7 +21,6 @@ namespace Marain.Workflows.Specs.Features.Sql
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
     [NUnit.Framework.DescriptionAttribute("Delete an item with SQL")]
-    [NUnit.Framework.CategoryAttribute("ignore")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
     [NUnit.Framework.CategoryAttribute("useSqlStores")]
     [NUnit.Framework.CategoryAttribute("setupTenantedSqlDatabase")]
@@ -31,7 +30,6 @@ namespace Marain.Workflows.Specs.Features.Sql
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
-                "ignore",
                 "perFeatureContainer",
                 "useSqlStores",
                 "setupTenantedSqlDatabase"};
@@ -44,7 +42,6 @@ namespace Marain.Workflows.Specs.Features.Sql
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
             TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Delete an item with SQL", null, ProgrammingLanguage.CSharp, new string[] {
-                        "ignore",
                         "perFeatureContainer",
                         "useSqlStores",
                         "setupTenantedSqlDatabase"});
@@ -94,7 +91,7 @@ namespace Marain.Workflows.Specs.Features.Sql
                     "useChildObjects"};
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete item when it is in the published state", null, new string[] {
                         "useChildObjects"});
-#line 8
+#line 7
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -114,10 +111,10 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 9
+#line 8
  testRunner.Given("I have created and persisted the DataCatalogWorkflow with Id \'dc-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 10
+#line 9
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table67 = new TechTalk.SpecFlow.Table(new string[] {
@@ -135,7 +132,7 @@ this.ScenarioInitialize(scenarioInfo);
                 table67.AddRow(new string[] {
                             "AllowPublishedEntry",
                             "x"});
-#line 11
+#line 10
  testRunner.And("I have created and persisted a new instance with Id \'id1\' of the workflow with Id" +
                         " \'dc-workflow\' and supplied the following context items", ((string)(null)), table67, "And ");
 #line hidden
@@ -147,7 +144,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "id1",
                             "The new notes",
                             "The new description"});
-#line 17
+#line 16
  testRunner.And("I have an object of type \'application/vnd.endjin.datacatalog.catalogitempatchdeta" +
                         "ils\' called \'patch\'", ((string)(null)), table68, "And ");
 #line hidden
@@ -155,7 +152,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "PatchDetails"});
                 table69.AddRow(new string[] {
                             "{patch}"});
-#line 20
+#line 19
  testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
                         "alog.editcatalogitemtrigger\'", ((string)(null)), table69, "And ");
 #line hidden
@@ -163,7 +160,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "CatalogItemId"});
                 table70.AddRow(new string[] {
                             "id1"});
-#line 23
+#line 22
  testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
                         "alog.publishcatalogitemtrigger\'", ((string)(null)), table70, "And ");
 #line hidden
@@ -171,17 +168,17 @@ this.ScenarioInitialize(scenarioInfo);
                             "CatalogItemId"});
                 table71.AddRow(new string[] {
                             "id1"});
-#line 26
+#line 25
  testRunner.When("I send the workflow engine a trigger of type \'application/vnd.endjin.datacatalog." +
                         "deletecatalogitemtrigger\'", ((string)(null)), table71, "When ");
 #line hidden
-#line 29
+#line 28
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 30
+#line 29
  testRunner.Then("the workflow instance with Id \'id1\' should have status \'Complete\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 31
+#line 30
  testRunner.And("the workflow instance with Id \'id1\' should be in the state called \'Deleted\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table72 = new TechTalk.SpecFlow.Table(new string[] {
@@ -192,7 +189,7 @@ this.ScenarioInitialize(scenarioInfo);
                             "Executing transition \'Delete\'"});
                 table72.AddRow(new string[] {
                             "Entering state \'Deleted\'"});
-#line 32
+#line 31
  testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table72, "And ");
 #line hidden
             }

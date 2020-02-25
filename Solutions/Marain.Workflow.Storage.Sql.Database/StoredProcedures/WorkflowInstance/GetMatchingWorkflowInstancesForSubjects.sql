@@ -8,7 +8,7 @@ CREATE PROCEDURE [dbo].[GetMatchingWorkflowInstancesForSubjects]
 	@pageIndex int
 AS
 	SELECT DISTINCT [WorkflowInstance].WorkflowInstanceId FROM [WorkflowInstance]
-		JOIN [WorkflowInstanceInterest] ON [WorkflowInstance].Id = [WorkflowInstanceInterest].Id
+		JOIN [WorkflowInstanceInterest] ON [WorkflowInstance].Id = [WorkflowInstanceInterest].WorkflowInstance
 	WHERE [WorkflowInstanceInterest].Interest IN (SELECT Interest FROM @subjects)
 	ORDER BY [WorkflowInstance].WorkflowInstanceId
 	OFFSET (@pageSize * @pageIndex) ROWS
