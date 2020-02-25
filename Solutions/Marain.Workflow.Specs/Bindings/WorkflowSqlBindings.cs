@@ -44,6 +44,8 @@ namespace Marain.Workflows.Specs.Bindings
 
             config.ConnectionString = "Server=(localdb)\\mssqllocaldb;Trusted_Connection=True;MultipleActiveResultSets=true";
             config.Database = $"workflow-{containerBase}";
+            config.ConnectionStringSecretName = null;
+            config.KeyVaultName = null;
             config.IsLocalDatabase = true;
             config.DisableTenantIdPrefix = true;
             tenantProvider.Root.SetDefaultSqlConfiguration(config);
