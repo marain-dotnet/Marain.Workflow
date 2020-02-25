@@ -133,9 +133,6 @@ namespace Marain.Workflows.Storage
             string serializedResult = reader.GetString(0);
             string etag = reader.GetString(1);
 
-            reader.Close();
-            connection.Close();
-
             WorkflowInstance instance = JsonConvert.DeserializeObject<WorkflowInstance>(serializedResult, this.serializerSettingsProvider.Instance);
             instance.ETag = etag;
             return instance;
