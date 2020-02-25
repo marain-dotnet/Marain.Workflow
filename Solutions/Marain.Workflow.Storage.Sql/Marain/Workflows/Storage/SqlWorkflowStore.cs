@@ -72,9 +72,6 @@ namespace Marain.Workflows.Storage
             Workflow instance = JsonConvert.DeserializeObject<Workflow>(serializedResult, this.serializerSettingsProvider.Instance);
             instance.ETag = etag;
 
-            reader.Close();
-            connection.Close();
-
             return instance;
         }
 

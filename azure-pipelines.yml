@@ -57,28 +57,41 @@ jobs:
           command: custom
           verbose: false
           customCommand: 'install -g azure-functions-core-tools@3 --unsafe-perm true'
+      - task: MSBuild@1
+        displayName: 'Build SQL DACPAC'
+        inputs:
+          solution: '**/Marain.Workflow.SqlDatabase.sln' 
+          configuration: $(BuildConfiguration)
     postSpecs:
-    - task: ArchiveFiles@2
-      displayName: 'Archive Message Ingestion Host Function App'
-      inputs:
-        rootFolderOrFile: 'Solutions/Marain.Workflow.Api.MessageProcessingHost/bin/Release/netcoreapp3.1/'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Api.MessageProcessingHost.zip'
-        replaceExistingArchive: true
-    - task: ArchiveFiles@2
-      displayName: 'Archive Engine Host Function App'
-      inputs:
-        rootFolderOrFile: 'Solutions/Marain.Workflow.Api.EngineHost/bin/Release/netcoreapp3.1/'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Api.EngineHost.zip'
-        replaceExistingArchive: true
-    - task: ArchiveFiles@2
-      displayName: 'Archive Deployment Artifacts'
-      inputs:
-        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/Marain.Workflow.Deployment'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Deployment.zip'
-        replaceExistingArchive: true
+      - task: ArchiveFiles@2
+        displayName: 'Archive Message Ingestion Host Function App'
+        inputs:
+          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.MessageProcessingHost/bin/Release/netcoreapp3.1/'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Api.MessageProcessingHost.zip'
+          replaceExistingArchive: true
+      - task: ArchiveFiles@2
+        displayName: 'Archive Engine Host Function App'
+        inputs:
+          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.EngineHost/bin/Release/netcoreapp3.1/'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Api.EngineHost.zip'
+          replaceExistingArchive: true
+      - task: ArchiveFiles@2
+        displayName: 'Archive Deployment Artifacts'
+        inputs:
+          rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/Marain.Workflow.Deployment'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Deployment.zip'
+          replaceExistingArchive: true
+    postPack:
+      - task: CopyFiles@2
+        displayName: 'Copy DACPACs To Release Folder'
+        inputs:
+          Contents: |
+            **/bin/$(BuildConfiguration)/*.dacpac
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/Release/DACPACs'
+          flattenFolders: true
