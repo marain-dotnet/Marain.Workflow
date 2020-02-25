@@ -54,3 +54,4 @@ jobs:
           Contents: |
             **/bin/$(BuildConfiguration)/*.dacpac
           TargetFolder: '$(Build.ArtifactStagingDirectory)/Release/DACPACs'
+          flattenFolders: true
