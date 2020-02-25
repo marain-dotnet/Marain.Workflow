@@ -49,11 +49,11 @@ BEGIN
 	UPDATE [WorkflowInstance] SET @id = [Id], [ETag] = @newetag, [SerializedInstance] = @serializedInstance WHERE [WorkflowInstanceId] = @workflowInstanceId AND [ETag] = @etag;
 
 	-- And delete the existing interests
-	DELETE FROM [WorkflowInstanceInterest] WHERE Id = @id;
+	DELETE FROM [WorkflowInstanceInterest] WHERE WorkflowInstance = @id;
 END
 
 -- Now we have upserted (and cleaned up previous interests) we can INSERT the new interests
-INSERT INTO [WorkflowInstanceInterest](Id, Interest) SELECT @id, Interest FROM @interests
+INSERT INTO [WorkflowInstanceInterest](WorkflowInstance, Interest) SELECT @id, Interest FROM @interests
 
 -- Everyone's happy, so commit the transaction and return 200 (We are borrowing the HTTP error codes here for ease)
 COMMIT TRANSACTION;

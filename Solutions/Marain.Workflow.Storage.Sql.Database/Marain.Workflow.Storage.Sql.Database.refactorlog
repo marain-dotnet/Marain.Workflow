@@ -28,4 +28,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="SerializedWorkflow" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="c461901b-fc70-40c5-9bb4-c297304c659d" ChangeDateTime="02/25/2020 11:45:35">
+    <Property Name="ElementName" Value="[dbo].[WorkflowInstanceInterest].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[WorkflowInstanceInterest]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="WorkflowInstanceId" />
+  </Operation>
 </Operations>
