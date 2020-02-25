@@ -12,7 +12,7 @@ paths:
   /{tenantId}/marain/workflow/messageprocessing/triggers:
     post:
       summary: Send a new trigger into the workflow engine
-      operationId: sendTrigger
+      operationId: raiseTrigger
       parameters:
         - $ref: '#/components/parameters/tenantId'
       requestBody:
@@ -171,6 +171,8 @@ components:
           format: url
         validationErrors: 
           type: array
+          items:
+            type: object
       additionalProperties: true
       
   parameters:

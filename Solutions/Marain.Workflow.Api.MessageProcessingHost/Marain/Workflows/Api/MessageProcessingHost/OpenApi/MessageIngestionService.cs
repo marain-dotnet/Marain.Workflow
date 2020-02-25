@@ -20,7 +20,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.OpenApi
     public class MessageIngestionService : IOpenApiService
     {
         private const string StartNewWorkflowOperationId = "sendStartNewWorkflowInstanceRequest";
-        private const string TriggerWorkflowOperationId = "sendTrigger";
+        private const string TriggerWorkflowOperationId = "raiseTrigger";
 
         private readonly IMarainOperationsControl operationsControl;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;

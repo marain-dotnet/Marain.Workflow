@@ -10,7 +10,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
     using System.Linq;
     using Marain.Operations.Client.OperationsControl;
     using Marain.Workflows.Api.MessageProcessingHost.OpenApi;
-    using Marain.Workflows.Client;
+    using Marain.Workflows.EngineHost.Client;
     using Menes;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Hosting;
