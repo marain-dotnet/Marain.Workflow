@@ -56,19 +56,23 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="StoredProcedures" />
+    <Folder Include="StoredProcedures\Workflow" />
+    <Folder Include="StoredProcedures\WorkflowInstance" />
+    <Folder Include="Tables" />
+    <Folder Include="DataTypes" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="WorkflowInstance.sql" />
-    <Build Include="WorkflowInstanceInterest.sql" />
-    <Build Include="WorkflowInstanceInterestTableType.sql" />
-    <Build Include="UpsertWorkflowInstance.sql" />
-    <Build Include="DeleteWorkflowInstance.sql" />
-    <Build Include="GetMatchingWorkflowInstanceCountForSubjects.sql" />
-    <Build Include="GetMatchingWorkflowInstancesForSubjects.sql" />
-    <Build Include="Workflow.sql" />
-    <Build Include="UpsertWorkflow.sql" />
-    <Build Include="GetWorkflowInstance.sql" />
-    <Build Include="GetWorkflow.sql" />
+    <Build Include="StoredProcedures\WorkflowInstance\DeleteWorkflowInstance.sql" />
+    <Build Include="StoredProcedures\WorkflowInstance\GetMatchingWorkflowInstanceCountForSubjects.sql" />
+    <Build Include="StoredProcedures\WorkflowInstance\GetMatchingWorkflowInstancesForSubjects.sql" />
+    <Build Include="StoredProcedures\WorkflowInstance\GetWorkflowInstance.sql" />
+    <Build Include="StoredProcedures\Workflow\GetWorkflow.sql" />
+    <Build Include="StoredProcedures\Workflow\UpsertWorkflow.sql" />
+    <Build Include="StoredProcedures\WorkflowInstance\UpsertWorkflowInstance.sql" />
+    <Build Include="Tables\Workflow.sql" />
+    <Build Include="Tables\WorkflowInstance.sql" />
+    <Build Include="DataTypes\WorkflowInstanceInterestTableType.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Marain.Workflow.Storage.Sql.Database.refactorlog" />
@@ -76,5 +80,8 @@
   <ItemGroup>
     <None Include="Marain.Workflow.Storage.Sql.Database.publish.xml" />
     <None Include="Marain.Workflow.Storage.Sql.Database.TestTenant.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\WorkflowInstanceInterest.sql" />
   </ItemGroup>
 </Project>
