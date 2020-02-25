@@ -42,3 +42,8 @@ jobs:
           command: custom
           verbose: false
           customCommand: 'install -g azure-functions-core-tools@3 --unsafe-perm true'
+      - task: MSBuild@1
+        displayName: 'Build SQL DACPAC'
+        inputs:
+          solution: '**/Marain.Workflow.SqlDatabase.sln' 
+          configuration: $(BuildConfiguration)
