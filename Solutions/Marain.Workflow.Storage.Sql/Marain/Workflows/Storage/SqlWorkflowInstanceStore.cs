@@ -13,7 +13,6 @@ namespace Marain.Workflows.Storage
     using Corvus.Retry;
     using Marain.Workflows;
     using Marain.Workflows.Storage.Internal;
-    using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
 
     /// <summary>
