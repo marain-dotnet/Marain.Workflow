@@ -8,7 +8,7 @@
 
 GO 
 
-CREATE INDEX [IX_Workflow[WorkflowId] ON [dbo].[Workflow] ([WorkflowId])
+CREATE INDEX [IX_Workflow_WorkflowId] ON [dbo].[Workflow] ([WorkflowId])
 
 GO
 
