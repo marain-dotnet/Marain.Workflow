@@ -61,7 +61,13 @@ namespace Marain.Workflows.Specs.Bindings
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
 
             // And now, deploy the sql server for this instance.
-            SqlHelpers.SetupDatabaseFromDacPac(config.ConnectionString, config.Database, @"C:\Users\matth\Source\Repos\marain-dotnet\Marain.Workflow\Solutions\Marain.Workflow.Storage.Sql.Database\bin\Debug\Marain.Workflow.Storage.Sql.Database.dacpac");
+#if DEBUG
+            const string BUILD = "debug";
+#else
+            const string BUILD = "release";
+#endif
+
+            SqlHelpers.SetupDatabaseFromDacPac(config.ConnectionString, config.Database, @$"..\..\..\..\Marain.Workflow.Storage.Sql.Database\bin\{BUILD}\Marain.Workflow.Storage.Sql.Database.dacpac");
         }
 
         /// <summary>
