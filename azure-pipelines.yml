@@ -47,3 +47,11 @@ jobs:
         inputs:
           solution: '**/Marain.Workflow.SqlDatabase.sln' 
           configuration: $(BuildConfiguration)
+    postPack:
+      - task: CopyFiles@2
+        displayName: 'Copy DACPACs To Release Folder'
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/**/bin/$(BuildConfiguration)'
+          Contents: |
+            **/*.dacpac
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/Release/DACPACs'
