@@ -6,13 +6,8 @@ script. It is our opportunity to create Azure resources.
 # Marain.Instance expects us to define just this one function.
 Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentContext) {
 
+    [MarainAppService]$TenancyService = $ServiceDeploymentContext.InstanceContext.GetCommonAppService("Marain.Tenancy")
     [MarainAppService]$OperationsService = $ServiceDeploymentContext.InstanceContext.GetCommonAppService("Marain.Tenancy.Operations.Control")
-
-    # This is temporary - once https://github.com/marain-dotnet/Marain.Workflow/issues/50 is done, these
-    # hard-coded values will no longer be needed
-    $TenancyStorageAccountName = "mardevtenancyyn7robbeb3r"
-    $TenancyKeyVaultName = "mardevtenancyyn7robbeb3r"
-    $TenancyStorageAccountKeyName = "TenancyStorageAccountKey"
 
     $EngineAppId = $ServiceDeploymentContext.GetAppId("eng")
     $MessageIngestionAppId = $ServiceDeploymentContext.GetAppId("mi")
@@ -22,9 +17,8 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
         messageIngestionFunctionAuthAadClientId=$MessageIngestionAppId
         operationsControlServiceBaseUrl=$OperationsService.BaseUrl
         operationsControlResourceIdForMsiAuthentication=$OperationsService.AuthAppId
-        tenancyStorageAccountName=$TenancyStorageAccountName
-        tenancyKeyVaultName=$TenancyKeyVaultName
-        tenancyStorageAccountKeyName=$TenancyStorageAccountKeyName
+        tenancyServiceResourceIdForMsiAuthentication=$TenancyService.AuthAppId
+        tenancyServiceBaseUri=$TenancyService.BaseUrl
         appInsightsInstrumentationKey=$ServiceDeploymentContext.InstanceContext.ApplicationInsightsInstrumentationKey
     }
     $InstanceResourceGroupName = $InstanceDeploymentContext.MakeResourceGroupName("workflow")

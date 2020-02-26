@@ -7,8 +7,8 @@ namespace Microsoft.Extensions.DependencyInjection
     using System;
     using System.Linq;
     using Corvus.Azure.Cosmos.Tenancy;
-    using Corvus.Azure.Storage.Tenancy;
     using Corvus.Leasing;
+    using Marain.Tenancy.Client;
     using Marain.Workflows;
     using Marain.Workflows.Api.Services;
     using Menes;
@@ -74,20 +74,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddLogging();
 
-            services.AddTenantCloudBlobContainerFactory(sp =>
-            {
-                IConfiguration config = sp.GetRequiredService<IConfiguration>();
+            // Work around the fact that the tenancy client currently tries to fetch the root tenant on startup.
+            services.AddRootTenant();
 
-                TenantCloudBlobContainerFactoryOptions blobStorageConfiguration = config.GetSection("TenantCloudBlobContainerFactoryOptions").Get<TenantCloudBlobContainerFactoryOptions>()
-                    ?? new TenantCloudBlobContainerFactoryOptions();
-                if (blobStorageConfiguration.RootTenantBlobStorageConfiguration == null)
-                {
-                    blobStorageConfiguration.RootTenantBlobStorageConfiguration = new BlobStorageConfiguration();
-                }
-
-                return blobStorageConfiguration;
-            });
-            services.AddTenantProviderBlobStore();
+            services.AddSingleton(sp => sp.GetRequiredService<IConfiguration>().GetSection("TenancyClient").Get<TenancyClientOptions>());
+            services.AddAzureManagedIdentityBasedTokenSource();
+            services.AddTenantProviderServiceClient();
 
             services.AddTenantCosmosContainerFactory(sp =>
             {

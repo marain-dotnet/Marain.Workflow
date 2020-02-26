@@ -16,6 +16,7 @@
   
   <ItemGroup>
     <PackageReference Include="Corvus.SpecFlow.Extensions" Version="0.7.0-preview.6" />
+    <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="0.22.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
@@ -32,7 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
-    <ProjectReference Include="..\Marain.Workflow.Api.EngineHost\Marain.Workflow.Api.EngineHost.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Api.Services.AspNetCore\Marain.Workflow.Api.Services.AspNetCore.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.Abstractions\Marain.Workflow.Tenancy.Abstractions.csproj" />
   </ItemGroup>
 
@@ -48,5 +49,5 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
+  
 </Project>

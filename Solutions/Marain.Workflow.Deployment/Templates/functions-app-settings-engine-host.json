@@ -21,15 +21,6 @@
       "type": "string",
       "minLength": 1
     },
-    "tenancyStorageAccountName": {
-      "type": "string"
-    },
-    "tenancyKeyVaultName": {
-      "type": "string"
-    },
-    "tenancyStorageAccountKeyName": {
-      "type": "string"
-    },
     "workflowCosmosAccountUri": {
       "type": "string"
     },
@@ -40,6 +31,12 @@
       "type": "string"
     },
     "workflowCosmosDatabaseName": {
+      "type": "string"
+    },
+    "tenancyServiceBaseUri": {
+      "type": "string"
+    },
+    "tenancyServiceResourceIdForMsiAuthentication": {
       "type": "string"
     }
   },
@@ -67,14 +64,13 @@
 
         "LeasingStorageAccountConnectionString": "[parameters('leasingStorageAccountConnectionString')]",
 
-        "TenantCloudBlobContainerFactoryOptions:RootTenantBlobStorageConfiguration:AccountName": "[parameters('tenancyStorageAccountName')]",
-        "TenantCloudBlobContainerFactoryOptions:RootTenantBlobStorageConfiguration:KeyVaultName": "[parameters('tenancyKeyVaultName')]",
-        "TenantCloudBlobContainerFactoryOptions:RootTenantBlobStorageConfiguration:AccountKeySecretName": "[parameters('tenancyStorageAccountKeyName')]",
-
         "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountUri": "[parameters('workflowCosmosAccountUri')]",
         "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:KeyVaultName": "[parameters('workflowCosmosKeyVaultName')]",
         "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountKeySecretName": "[parameters('workflowCosmosAccountKeySecretName')]",
-        "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:DatabaseName": "[parameters('workflowCosmosDatabaseName')]"
+        "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:DatabaseName": "[parameters('workflowCosmosDatabaseName')]",
+
+        "TenancyClient:TenancyServiceBaseUri": "[parameters('tenancyServiceBaseUri')]",
+        "TenancyClient:ResourceIdForMsiAuthentication": "[parameters('tenancyServiceResourceIdForMsiAuthentication')]"
       }
     }
   ],
