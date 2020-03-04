@@ -17,8 +17,8 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
         $TenancyReaderAppRoleId,
         "mi"
     )
-    $ServiceDeploymentContext.AssignServicePrincipalToCommonServiceAppRole(
-        "Marain.Workflow.Hack.Engine",
+    $ServiceDeploymentContext.AssignServicePrincipalToInternalServiceAppRole(
+        "eng",
         $EngineControllerAppRoleId,
         "mi"
     )

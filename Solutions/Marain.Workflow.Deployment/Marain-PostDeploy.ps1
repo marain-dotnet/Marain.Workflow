@@ -7,9 +7,6 @@ have been deployed.
 # Marain.Instance expects us to define just this one function.
 Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentContext) {
 
-    # Temporary workaround until https://github.com/marain-dotnet/Marain.Instance/issues/12 implemented
-    $ServiceDeploymentContext.MakeAppServiceCommonService("Marain.Workflow.Hack.Engine", "eng")
-
     Write-Host 'Uploading function code packages'
 
     $ServiceDeploymentContext.UploadReleaseAssetAsAppServiceSitePackage(
