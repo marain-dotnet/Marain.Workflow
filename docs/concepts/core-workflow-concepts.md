@@ -9,33 +9,36 @@ This document explains the core concepts that are needed to understand the workf
 A workflow is the definition of a process. It is made up of states and transitions between those states. The following diagram shows a  workflow representing a simple expense claim process:
 
 ```
-            +--------------+  Cancel      +--------------+
-            |              +-------------->              |
-            | In progress  |              |   Deleted    |
-     +------>   (start)    <-------+      |    (end)     |
-     |      |              |       |      |              |
-Edit |      +--+----+------+       |      +--------------+
-     |         |    |              |
-     +---------+    | Submit       |
-                    |              | Reject
-            +-------v------+       |
-            |              |       |
-            | Waiting for  |       |
-            | approval     +-------+
-            |              |
-            +-------+------+
-                    |
-                    | Approve
-                    |
-            +-------v------+              +--------------+
-            |              |              |              |
-            | Waiting for  |   Paid       |    Paid      |
-            | payment      +-------------->    (end)     |
-            |              |              |              |
-            +--------------+              +--------------+
+                              +--------------+  Cancel      +--------------+
+                              |              +-------------->              |
+                              | In progress  |              |   Deleted    |
+                       +------>   (start)    <-------+      |    (end)     |
+                       |      |              |       |      |              |
+                  Edit |      +--+----+------+       |      +--------------+
+                       |         |    |              |
+                       +---------+    | Submit       |
+                                      |              | Reject
+                              +-------v------+       |
+                              |              |       |
+        Approve (claim >£500) | Waiting for  |       |
+        +---------------------+ approval     +-------+
+        |                     |              |
+        |                     +-------+------+
+        |                             |
+        |                             | Approve (claim <£500)
+        |                             |
++-------v------+              +-------v------+              +--------------+
+| Waiting for  |              |              |              |              |
+| senior       |   Approve    | Waiting for  |   Paid       |    Paid      |
+| approval     +--------------> payment      +-------------->    (end)     |
+|              |              ^              |              |              |
++--------------+              +--------------+              +--------------+
+
+Close
+
 ```
 
-This workflow contains five states and 6 transitions. The states are represented by boxes, and the transitions by the lines between them.
+This workflow contains six states and 8 transitions. The states are represented by boxes, and the transitions by the lines between them.
 
 As you can see from the diagram, the workflow starts with the "In progress" state and finishes when either the "Paid" or "Deleted" states are reached. Transitions allow the item to cycle between the "In Progress" and "Waiting for approval" states.
 
@@ -61,7 +64,11 @@ States can have Conditions and Actions associated with them, which allow busines
 
 Entry and Exit actions can be used in a similar way - for example, there might be a rule that says when an item reaches the "Waiting for approval" state, the person responsible for approving the claim is notified by email. By making this an entry action we ensure that this always happens.
 
-As mentioned in the introduction, these entry and exit conditions and actions come into their own as the workflow evolves, or if manual state changes are needed. Because the business rules remain associated with the state, it makes it much less likely that we will introduce bugs where those rules are not enforced when we introduce new states, transitions and so on.
+It's worth noting that it's possible to design your workflow so that all of the conditions and actions are attached to transitions rather than states. However, having the option to use both transition-based actions/conditions and state-based actions/conditions allow you to better model the business rules. As an example, in the diagram above, there are two transitions into the state "Waiting for payment" - one from "Waiting for approval" and one from "Waiting for senior" approval. It's reasonable to assume that when an expense claim (i.e. workflow instance) enters the "Awaiting Payment" state, some other process is triggered that ends with a bank transfer. We have two choices as to where to put the action that makes this happen: we can put it on the incoming transitions, or we can make it an entry action to the "Awaiting payment" state.
+
+Adding the action to the incoming transitions will work. But what happens if we add another transition into the "Awaiting payment" state? For example, we might add a state to deal with the scenario where the payment fails, and that state might have a transition back to "Awaiting payment" to indicate that we're retrying the failed payment process. In this situation, we'd need to add the action to start the payment process to that new transition as well. However, if we make it an entry action to the "Awaiting payment" state, we know that regardless of how we enter that state, the action to start the payment process will always run.
+
+This highlights one of the big advantages of choosing to explicitly model workflows in this way: identifying the correct locations for conditions and actions, be they attached to states or transitions, means that as the workflow evolves it is much less likely that we will introduce bugs due to introducing new code paths that are missing constraints or rules.
 
 ### Transition
 
@@ -84,7 +91,7 @@ Examples of actions are:
 - Submitting an item to a search index
 - Raising a trigger into, or creating, another workflow instance
 
-The workflow engine contains two pre-defined actions: LogAction, which writes a diagnostic message based on the workflow instance data, and InvokeExternalServiceAction which sends a POST request to an external endpoint to run the action.
+The workflow engine contains two pre-defined actions: LogAction, which writes a diagnostic message based on the workflow instance data, and InvokeExternalServiceAction which sends a POST request to an external endpoint to run the action. If the external service responds with anything other than a success status code (i.e. a 2xx) then an exception is thrown.
 
 If executing an action fails, the workflow instance will be placed into the Faulted status.
 
@@ -94,7 +101,7 @@ A condition is a test that's evaluated to determine whether a workflow instance 
 
 When evaluated, conditions are provided with the workflow instance and the trigger that has caused the evaluation. It is a simple true/false test, and the workflow engine contains the following pre-defined conditions:
 - TriggerContentTypeCondition - validates that the content type of the incoming trigger exactly matches a given content type.
-- InvokeExternalServiceCondition - performs a GET or POST request (the method is configurable) to an external endpoint and evaluates the return value, which is expected to be a string containing either "true" or "false".
+- InvokeExternalServiceCondition - performs a GET or POST request (the method is configurable) to an external endpoint and evaluates the return value, which is expected to be a string containing either "true" or "false". Anything other than a 200 status code results in an exception being thrown.
 
 If evaluating a condition fails (evaluating to "false" is not considered a failure), the workflow instance will be placed in a faulted state.
 

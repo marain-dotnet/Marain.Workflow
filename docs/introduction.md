@@ -30,7 +30,7 @@ It also results in much simpler code; defining your workflow's state changes in 
 
 Business applications tend to fall into categories, from long running processes that require minimal or no user interaction, to highly interactive UI-based tools that allow users to carry out day-to-day business activities.
 
-On closer inspection, a high percentage of business systems essentially workflow-driven data management tools, even if that is never explicitly acknowledged.
+On closer inspection, a high percentage of business systems are essentially workflow-driven data management tools, even if that is never explicitly acknowledged.
 
 While it can be difficult to justify adopting a workflow engine when building these systems, the real value comes when the underlying business processes - the workflows - need to be modified. Since the workflows themselves are modelled within the system, they are the focal point for changes; should new conditions or actions be needed to support the changes, they are straightforward to add to the codebase.
 

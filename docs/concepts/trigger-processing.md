@@ -43,8 +43,8 @@ When the workflow engine receives a request to apply a trigger to an instance, i
     1. The workflow instance state is updated.
     1. If the workflow instance is now in a state that has no transitions, it's Status is set to Completed.
     1. Entry actions for the new state are executed.
-1. If an exception was thrown at any point whilst processing the trigger, put the instance into the Faulted status.
-1. If the instance has been modified, save it back to storage.
+1. If an exception was thrown at any point whilst processing the trigger, put the instance into the Faulted status. Note that if external services invoked by `InvokeExternalServiceAction` or `InvokeExternalServiceCondition` return anything other than success status codes, this will result in an exception being thrown which will put the instance into the Faulted status.
+1. If the instance has been modified (a transition has been run, or the status has been changed), save it back to storage. 
 
 There is extensive logging during this process, so if an exception is thrown during processing and the workflow instance does end up in a Faulted state, it should be possible to determine the cause of the failure by reviewing log messages.
 
@@ -52,4 +52,4 @@ However, with that said, it is clear from the above that conditions and actions 
 
 - Prior to raising a trigger, as much validation as needed should take place so that calling code can be confident that trigger processing will succeed.
 - Manual intervention will be needed to move the workflow instance out of the Faulted state. This may result in some actions and/or conditions, such as the entry conditions/actions for the state that the instance is returned to, being re-run. As such, you should make sure that your actions can safely be invoked multiple times without negative impact.
-- A workflow instance can decide not to process a trigger without throwing an exception. That means that if you raise a trigger that's targetted at a specific workflow instance via the Subjects collection and that instance does not process the trigger, you will need your own means of determining this.
+- If a workflow instance does not invoke any transitions as a result of receiving the trigger (i.e. nothing changes), no exception will be thrown. That means that if you raise a trigger that's targetted at a specific workflow instance via the Subjects collection and that instance does not process the trigger, you will need your own means of determining this.
