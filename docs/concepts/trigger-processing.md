@@ -1,12 +1,12 @@
 # Trigger Processing
 
-When a request is sent into the workflow engine, a number of steps need to happen. Normally these are expected to happen as part of a long running operation and the Marain.Operations service is leveraged to support this.
+When a request is sent into the workflow engine, a number of steps need to happen. This processing happens asynchronously, with the API implementing the long running operation pattern for HTTP endpoints. Specifically, when a request is sent into the workflow engine, the API will respond with an acknowledgement (an HTTP 202 Accepted code) and a URL that can be used to access the status of the operation. This endpoint can be polled to determine when the operation has completed.
 
 When running using the hosting functions provided, the majority of this process is orchestrated using an Azure Durable Function. It's possible to run the workflow engine in-process, but there are some drawbacks and gotchas that are covered later in this document.
 
 Regardless of how the engine is being hosted, the following steps need to take place:
 
-1. Identify the workflow instances that should be able to process the trigger.
+1. Identify the workflow instances that may be able to process the trigger.
 2. For each candidate workflow instance, rehydrate it from storage and pass it the trigger to process.
 3. If the workflow instance has changed as a result of processing the trigger, persist it back to storage.
 
@@ -34,10 +34,10 @@ When the workflow engine receives a request to apply a trigger to an instance, i
 1. Retrieve the instance from storage
 1. Tell the instance to process the trigger
     1. Retrieve the workflow for the instance from storage.
-    1. If the instance is faulted or completed, it can't process the trigger, so processing is halted. Note that, as with the remainder of these steps, processing halting due to conditions not being met *does not result in an exception being thrown* because this is a perfectly legitimate outcome.
-    1. Exit conditions for the current state of the instance are evaluated to ensure that the workflow instance can transition out of that state. If any of them evaulate to false, processing is halted.
-    1. Transitions for the current state are evaluated to find a transition that can be executed as a result of the trigger. This is done by iterating the available transitions and choosing the first one whose conditions all evaluate to true. If no transition is found, processing is halted.
-    1. Entry conditions for the transition's target state are evaluated to determine if it is acceptable to move to the new state. If any of the entry conditions evaluate to false, processing is halted.
+    1. If the instance is faulted or completed, it can't process the trigger, so processing is finished for this workflow instance. Note that, as with the remainder of these steps, processing completing for an instance due to conditions not being met *does not result in an exception being thrown* because this is a perfectly legitimate outcome.
+    1. Exit conditions for the current state of the instance are evaluated to ensure that the workflow instance can transition out of that state. If any of them evaulate to false, processing is complete.
+    1. Transitions for the current state are evaluated to find a transition that can be executed as a result of the trigger. This is done by iterating the available transitions and choosing the first one whose conditions all evaluate to true. If no transition is found, processing is complete.
+    1. Entry conditions for the transition's target state are evaluated to determine if it is acceptable to move to the new state. If any of the entry conditions evaluate to false, processing is complete.
     1. Exit actions for the current state are executed.
     1. Actions for the transition are executed.
     1. The workflow instance state is updated.
