@@ -60,6 +60,8 @@ namespace Marain.Workflow.Api.Specs.Bindings
                         cosmosConfiguration.RootTenantCosmosConfiguration = new CosmosConfiguration();
                     }
 
+                    cosmosConfiguration.AzureServicesAuthConnectionString = azureServicesAuthConnectionString;
+
                     services.AddTenantCosmosContainerFactory(cosmosConfiguration);
 
                     services.AddTenantedWorkflowEngineFactory();
