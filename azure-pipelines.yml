@@ -37,6 +37,7 @@ jobs:
           Write-Host "##vso[task.setvariable variable=TenantSqlConnectionFactoryOptions__RootTenantSqlConfiguration__ConnectionStringSecretName]$Env:ENDJIN_SQLDBCONNECTIONSTRINGSECRETNAME"
           Write-Host "##vso[task.setvariable variable=TenantSqlConnectionFactoryOptions__RootTenantSqlConfiguration__KeyVaultName]$Env:ENDJIN_KEYVAULTNAME"
           Write-Host "##vso[task.setvariable variable=LeasingStorageAccountConnectionString]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
+          Write-Host "##vso[task.setvariable variable=TransientTenantBindings__ParentTenantId]$Env:ENDJIN_INTEGRATIONTESTPARENTTENANTID"
         displayName: 'Set Custom Environment Variables'
         env:
           ENDJIN_AZURESERVICESAUTHCONNECTIONSTRING: $(Endjin_AzureServicesAuthConnectionString)
@@ -51,6 +52,7 @@ jobs:
           ENDJIN_KEYVAULTNAME: $(Endjin_KeyVaultName)
           ENDJIN_SQLDBDATABASE: $(Endjin_SqlDbDatabase)
           ENDJIN_SQLDBCONNECTIONSTRINGSECRETNAME: $(Endjin_SqlDbConnectionStringSecretName)
+          ENDJIN_INTEGRATIONTESTPARENTTENANTID: $(Endjin_IntegrationTestParentTenantId)
       - task: Npm@1
         displayName: 'Install Latest Azure Functions V3 Runtime'
         inputs:
