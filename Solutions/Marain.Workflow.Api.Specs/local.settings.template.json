@@ -1,6 +1,11 @@
 {
   "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
 
+  // If using TransientTenantBindings in your spec, you should provide a parent for the tenants that are created and deleted
+  // in each test. Ideally this will be a sub-tenant of your organisation's main tenant that's reserved to parent for test
+  // tenants.
+  "TransientTenantBindings:ParentTenantId": "032d3c5dab96634fa4c5fffcd1b793182ba8fa6de57ad848993a193039de7aa5",
+
   // If running with a local tenancy service, point TenancyClient:TenancyServiceBaseUri at the localhost address for that
   // and set the ResourceIdForMsiAuthentication to an empty string.
   "TenancyClient:TenancyServiceBaseUri": "https://mardevtenancy.azurewebsites.net/",

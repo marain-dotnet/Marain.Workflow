@@ -9,6 +9,7 @@ namespace Marain.ContentManagement.Specs.Bindings
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
 
@@ -40,13 +41,22 @@ namespace Marain.ContentManagement.Specs.Bindings
             // HACK: This is a hack until we can come up with a better way of handling deferred initialisation.
             provider.GetRequiredService<ITenantCosmosContainerFactory>();
 
-            ITenant rootTenant = tenantProvider.Root;
-            ITenant transientTenant = await tenantProvider.CreateChildTenantAsync(rootTenant.Id).ConfigureAwait(false);
+            IConfiguration configuration = provider.GetRequiredService<IConfiguration>();
+            string parentTenantId = configuration["TransientTenantBindings:ParentTenantId"];
 
-            CosmosConfiguration config = rootTenant.GetDefaultCosmosConfiguration() ?? new CosmosConfiguration();
-            config.DatabaseName = "endjinspecssharedthroughput";
-            config.DisableTenantIdPrefix = true;
-            transientTenant.SetDefaultCosmosConfiguration(config);
+            if (string.IsNullOrEmpty(parentTenantId))
+            {
+                throw new Exception("In order to use Transient Tenant Bindings, your configuration must contain a value for setting 'TransientTenantBindings:ParentTenantId'.");
+            }
+
+            ITenant transientTenant = await tenantProvider.CreateChildTenantAsync(parentTenantId).ConfigureAwait(false);
+
+            transientTenant.Properties.Set("name", $"Marain.Workflow.Api.Specs test run for feature '{context.FeatureInfo.Title}' on {DateTimeOffset.UtcNow.ToString("f")}");
+
+            CosmosConfiguration cosmosConfiguration = tenantProvider.Root.GetDefaultCosmosConfiguration() ?? new CosmosConfiguration();
+            cosmosConfiguration.DatabaseName = "endjinspecssharedthroughput";
+            cosmosConfiguration.DisableTenantIdPrefix = true;
+            transientTenant.SetDefaultCosmosConfiguration(cosmosConfiguration);
 
             await tenantProvider.UpdateTenantAsync(transientTenant).ConfigureAwait(false);
 
@@ -67,7 +77,8 @@ namespace Marain.ContentManagement.Specs.Bindings
                 ITenantProvider tenantProvider = provider.GetRequiredService<ITenantProvider>();
 
                 ITenant tenant = context.Get<ITenant>();
-                return tenantProvider.DeleteTenantAsync(tenant.Id);
+                ////return tenantProvider.DeleteTenantAsync(tenant.Id);
+                return Task.CompletedTask;
             });
         }
 

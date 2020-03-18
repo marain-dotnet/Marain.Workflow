@@ -4,10 +4,12 @@
 
 namespace Marain.Workflow.Api.Specs.Bindings
 {
+    using System;
     using Corvus.Azure.Cosmos.Tenancy;
-    using Corvus.Azure.Storage.Tenancy;
+    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.Leasing;
     using Corvus.SpecFlow.Extensions;
+    using Marain.Tenancy.Client;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
@@ -43,15 +45,20 @@ namespace Marain.Workflow.Api.Specs.Bindings
 
                     string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
 
-                    TenantCloudBlobContainerFactoryOptions blobStorageConfiguration = root.GetSection("TenantCloudBlobContainerFactoryOptions").Get<TenantCloudBlobContainerFactoryOptions>()
-                        ?? new TenantCloudBlobContainerFactoryOptions();
-                    if (blobStorageConfiguration.RootTenantBlobStorageConfiguration == null)
+                    var msiTokenSourceOptions = new AzureManagedIdentityTokenSourceOptions
                     {
-                        blobStorageConfiguration.RootTenantBlobStorageConfiguration = new BlobStorageConfiguration();
-                    }
+                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                    };
 
-                    services.AddTenantCloudBlobContainerFactory(blobStorageConfiguration);
-                    services.AddTenantProviderBlobStore();
+                    services.AddAzureManagedIdentityBasedTokenSource(msiTokenSourceOptions);
+
+                    services.AddSingleton(new TenancyClientOptions
+                    {
+                        TenancyServiceBaseUri = new Uri(root["TenancyClient:TenancyServiceBaseUri"]),
+                        ResourceIdForMsiAuthentication = root["TenancyClient:ResourceIdForMsiAuthentication"],
+                    });
+
+                    services.AddTenantProviderServiceClient();
 
                     TenantCosmosContainerFactoryOptions cosmosConfiguration = root.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
                         ?? new TenantCosmosContainerFactoryOptions();
