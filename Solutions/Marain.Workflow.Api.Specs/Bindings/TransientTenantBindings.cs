@@ -49,18 +49,28 @@ namespace Marain.ContentManagement.Specs.Bindings
                 throw new Exception("In order to use Transient Tenant Bindings, your configuration must contain a value for setting 'TransientTenantBindings:ParentTenantId'.");
             }
 
+            string transientTenantName = $"Marain.Workflow.Api.Specs test run for feature '{context.FeatureInfo.Title}' on {DateTimeOffset.UtcNow.ToString("f")}";
+
+            Console.WriteLine($"Creating transient tenant as child of '{parentTenantId}' for feature '{context.FeatureInfo.Title}'");
+
             ITenant transientTenant = await tenantProvider.CreateChildTenantAsync(parentTenantId).ConfigureAwait(false);
 
-            transientTenant.Properties.Set("name", $"Marain.Workflow.Api.Specs test run for feature '{context.FeatureInfo.Title}' on {DateTimeOffset.UtcNow.ToString("f")}");
+            Console.WriteLine($"Adding name and default Cosmos configuration to transient tenant with Id '{transientTenant.Id}'");
+
+            transientTenant.Properties.Set("name", transientTenantName);
 
             CosmosConfiguration cosmosConfiguration = tenantProvider.Root.GetDefaultCosmosConfiguration() ?? new CosmosConfiguration();
             cosmosConfiguration.DatabaseName = "endjinspecssharedthroughput";
             cosmosConfiguration.DisableTenantIdPrefix = true;
             transientTenant.SetDefaultCosmosConfiguration(cosmosConfiguration);
 
+            Console.WriteLine($"Updating transient tenant with Id '{transientTenant.Id}'");
+
             await tenantProvider.UpdateTenantAsync(transientTenant).ConfigureAwait(false);
 
             context.Set(transientTenant);
+
+            Console.WriteLine("Transient tenant setup complete");
         }
 
         /// <summary>
@@ -73,11 +83,17 @@ namespace Marain.ContentManagement.Specs.Bindings
         {
             return context.RunAndStoreExceptionsAsync(() =>
             {
+                Console.WriteLine($"Tearing down transient tenant for feature '{context.FeatureInfo.Title}'");
+
                 IServiceProvider provider = ContainerBindings.GetServiceProvider(context);
                 ITenantProvider tenantProvider = provider.GetRequiredService<ITenantProvider>();
 
-                ITenant tenant = context.Get<ITenant>();
-                ////return tenantProvider.DeleteTenantAsync(tenant.Id);
+                if (context.TryGetValue<ITenant>(out ITenant tenant))
+                {
+                    return tenantProvider.DeleteTenantAsync(tenant.Id);
+                }
+
+                Console.WriteLine("No transient tenant has been created for this feature.");
                 return Task.CompletedTask;
             });
         }

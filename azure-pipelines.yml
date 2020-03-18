@@ -28,7 +28,6 @@ jobs:
           Write-Host "##vso[task.setvariable variable=TenancyClient__ResourceIdForMsiAuthentication]$Env:ENDJIN_MARAINTENANCYRESOURCEIDFORMSIAUTHENTICATION"
           Write-Host "##vso[task.setvariable variable=Operations__ControlServiceBaseUrl]$Env:ENDJIN_MARAINOPERATIONSCONTROLBASEURL"
           Write-Host "##vso[task.setvariable variable=Operations__ResourceIdForMsiAuthentication]$Env:ENDJIN_MARAINOPERATIONSCONTROLRESOURCEID"
-          Write-Host "##vso[task.setvariable variable=TenantCloudBlobContainerFactoryOptions__RootTenantBlobStorageConfiguration__AccountName]$Env:ENDJIN_MARAINTENANCYSTORAGECONNECTIONSTRING"
           Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__AccountUri]$Env:ENDJIN_COSMOSDBACCOUNTURI"
           Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__AccountKeySecretName]$Env:ENDJIN_COSMOSDBKEYSECRETNAME"
           Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__KeyVaultName]$Env:ENDJIN_KEYVAULTNAME"

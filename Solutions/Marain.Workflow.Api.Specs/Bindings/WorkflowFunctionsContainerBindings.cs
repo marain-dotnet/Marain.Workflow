@@ -52,6 +52,8 @@ namespace Marain.Workflow.Api.Specs.Bindings
 
                     services.AddAzureManagedIdentityBasedTokenSource(msiTokenSourceOptions);
 
+                    Console.WriteLine($"Configuring Tenant Provider Service Client with TenancyServiceBaseUri = '{root["TenancyClient:TenancyServiceBaseUri"]}'");
+
                     services.AddSingleton(new TenancyClientOptions
                     {
                         TenancyServiceBaseUri = new Uri(root["TenancyClient:TenancyServiceBaseUri"]),
