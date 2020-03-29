@@ -8,4 +8,4 @@ Workflow storage is the simpler of the two, only requiring the ability to store 
 
 Two possible storage mechanisms are available in the solution: CosmosDB and SQL Server/Azure SQL.
 
-// TODO - how do we switch between the two? Need an ADR for this.
+TODO: how do we switch between the two? Issue https://github.com/marain-dotnet/Marain.Workflow/issues/101 covers this.
