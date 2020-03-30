@@ -6,7 +6,7 @@ This document explains the core concepts that are needed to understand the workf
 
 ## Workflow
 
-A workflow is the definition of a process. It is made up of states and transitions between those states. The following diagram shows a  workflow representing a simple expense claim process:
+A workflow is the definition of a process. It is made up of states and transitions between those states. The following diagram shows a workflow representing a simple expense claim process:
 
 ```
                               +--------------+  Cancel      +--------------+
@@ -33,9 +33,6 @@ A workflow is the definition of a process. It is made up of states and transitio
 | approval     +--------------> payment      +-------------->    (end)     |
 |              |              ^              |              |              |
 +--------------+              +--------------+              +--------------+
-
-Close
-
 ```
 
 This workflow contains six states and 8 transitions. The states are represented by boxes, and the transitions by the lines between them.
@@ -64,7 +61,7 @@ States can have Conditions and Actions associated with them, which allow busines
 
 Entry and Exit actions can be used in a similar way - for example, there might be a rule that says when an item reaches the "Waiting for approval" state, the person responsible for approving the claim is notified by email. By making this an entry action we ensure that this always happens.
 
-It's worth noting that it's possible to design your workflow so that all of the conditions and actions are attached to transitions rather than states. However, having the option to use both transition-based actions/conditions and state-based actions/conditions allow you to better model the business rules. As an example, in the diagram above, there are two transitions into the state "Waiting for payment" - one from "Waiting for approval" and one from "Waiting for senior" approval. It's reasonable to assume that when an expense claim (i.e. workflow instance) enters the "Awaiting Payment" state, some other process is triggered that ends with a bank transfer. We have two choices as to where to put the action that makes this happen: we can put it on the incoming transitions, or we can make it an entry action to the "Awaiting payment" state.
+It's worth noting that it's possible to design your workflow so that all of the conditions and actions are attached to transitions rather than states. However, having the option to use both transition-based actions/conditions and state-based actions/conditions allow you to better model the business rules. As an example, in the diagram above, there are two transitions into the state "Waiting for payment" - one from "Waiting for approval" and one from "Waiting for senior approval". It's reasonable to assume that when an expense claim (i.e. workflow instance) enters the "Awaiting Payment" state, some other process is triggered that ends with a bank transfer. We have two choices as to where to put the action that makes this happen: we can put it on the incoming transitions, or we can make it an entry action to the "Awaiting payment" state.
 
 Adding the action to the incoming transitions will work. But what happens if we add another transition into the "Awaiting payment" state? For example, we might add a state to deal with the scenario where the payment fails, and that state might have a transition back to "Awaiting payment" to indicate that we're retrying the failed payment process. In this situation, we'd need to add the action to start the payment process to that new transition as well. However, if we make it an entry action to the "Awaiting payment" state, we know that regardless of how we enter that state, the action to start the payment process will always run.
 
@@ -128,4 +125,4 @@ When raising a trigger into the workflow engine, you can provide a list of Subje
 
 Note that the matching process looks for 1 or more matches between the lists of Subjects and Interests; it does not expect them all to match.
 
-This means that if a trigger is intended for a specific workflow instance, maximum efficiency in the matching process is achieved by simply adding the target workflow instance's Id to the triggers list of subjects.
+This means that if a trigger is intended for a specific workflow instance, maximum efficiency in the matching process is achieved by simply adding the target workflow instance's Id to the trigger's list of subjects.

@@ -34,14 +34,14 @@ When the workflow engine receives a request to apply a trigger to an instance, i
 1. Retrieve the instance from storage
 1. Tell the instance to process the trigger
     1. Retrieve the workflow for the instance from storage.
-    1. If the instance is faulted or completed, it can't process the trigger, so processing is finished for this workflow instance. Note that, as with the remainder of these steps, processing completing for an instance due to conditions not being met *does not result in an exception being thrown* because this is a perfectly legitimate outcome.
+    1. If the instance is faulted or completed, it can't process the trigger, so processing is finished for this workflow instance. Note that, as with the remainder of these steps, processing completing for an instance due to conditions not being met is **not** considered to be an error scenario (which would put the workflow instance in the Faulted state) because this is a perfectly legitimate outcome.
     1. Exit conditions for the current state of the instance are evaluated to ensure that the workflow instance can transition out of that state. If any of them evaulate to false, processing is complete.
     1. Transitions for the current state are evaluated to find a transition that can be executed as a result of the trigger. This is done by iterating the available transitions and choosing the first one whose conditions all evaluate to true. If no transition is found, processing is complete.
     1. Entry conditions for the transition's target state are evaluated to determine if it is acceptable to move to the new state. If any of the entry conditions evaluate to false, processing is complete.
     1. Exit actions for the current state are executed.
     1. Actions for the transition are executed.
     1. The workflow instance state is updated.
-    1. If the workflow instance is now in a state that has no transitions, it's Status is set to Completed.
+    1. If the workflow instance is now in a state that has no transitions, its Status is set to Completed.
     1. Entry actions for the new state are executed.
 1. If an exception was thrown at any point whilst processing the trigger, put the instance into the Faulted status. Note that if external services invoked by `InvokeExternalServiceAction` or `InvokeExternalServiceCondition` return anything other than success status codes, this will result in an exception being thrown which will put the instance into the Faulted status.
 1. If the instance has been modified (a transition has been run, or the status has been changed), save it back to storage. 

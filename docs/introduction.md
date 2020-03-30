@@ -4,7 +4,7 @@ Marain Workflow is a highly scalable workflow service built on the .NET framewor
 
 ## Background
 
-Despite the fact that a large percentage of business applications represent some kind of workflow based system, this is rarely acknowledged. Instead, domain objects are given status properties, normally using boolean and enumable data types which, when used together, represent different states that an entity can be in.
+Despite the fact that a large percentage of business applications represent some kind of workflow based system, this is rarely acknowledged. Instead, domain objects are given status properties, normally using boolean and enumerable data types which, when used together, represent different states that an entity can be in.
 
 When the underlying workflow changes, this often means changes in multiple areas of the system to ensure that everywhere bespoke state checking is used, it is still correct.
 
@@ -20,7 +20,7 @@ With these four simple constructs, it is straightforward to model business proce
 
 ## Why use a workflow engine?
 
-When building a system that is essentially driven by workflow, a common approach is make the workflow implementation part of the domain model. This can be done using something like the [GoF State pattern](https://en.wikipedia.org/wiki/State_pattern).
+When building a system that is essentially driven by workflow, a common approach is to make the workflow implementation part of the domain model. This can be done using something like the [GoF State pattern](https://en.wikipedia.org/wiki/State_pattern).
 
 A more flexible approach is to use a workflow engine to model the workflow and manage instances of it. This allows the workflow to be modified independently of the code that implements the different conditions and actions that are required as workflow instances move through the different states.
 
