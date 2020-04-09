@@ -90,7 +90,7 @@ Examples of actions are:
 
 The workflow engine contains two pre-defined actions: LogAction, which writes a diagnostic message based on the workflow instance data, and InvokeExternalServiceAction which sends a POST request to an external endpoint to run the action. If the external service responds with anything other than a success status code (i.e. a 2xx) then an exception is thrown.
 
-If executing an action fails, the workflow instance will be placed into the Faulted status.
+If executing an action causes an exception to be thrown, the workflow instance will be placed into the Faulted status.
 
 ### Condition
 
@@ -98,9 +98,9 @@ A condition is a test that's evaluated to determine whether a workflow instance 
 
 When evaluated, conditions are provided with the workflow instance and the trigger that has caused the evaluation. It is a simple true/false test, and the workflow engine contains the following pre-defined conditions:
 - TriggerContentTypeCondition - validates that the content type of the incoming trigger exactly matches a given content type.
-- InvokeExternalServiceCondition - performs a GET or POST request (the method is configurable) to an external endpoint and evaluates the return value, which is expected to be a string containing either "true" or "false". Anything other than a 200 status code results in an exception being thrown.
+- InvokeExternalServiceCondition - performs a GET or POST request (the method is configurable) to an external endpoint and evaluates the return value, which is expected to be a string containing either "true" or "false". Anything other than a 200 status code results in an exception being thrown, which will cause the workflow instance to become Faulted [**NOTE**: At present, this is incorrect as written; the code currently accepts any 2XX status code without throwing an exception. [This GitHub issue tracks the problem.](https://github.com/marain-dotnet/Marain.Workflow/issues/111)].
 
-If evaluating a condition fails (evaluating to "false" is not considered a failure), the workflow instance will be placed in a faulted state.
+If evaluating a condition fails (evaluating to "false" is not considered a failure), the workflow instance will be placed into the Faulted status.
 
 ## Trigger
 
