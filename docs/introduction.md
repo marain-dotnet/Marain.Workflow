@@ -34,7 +34,7 @@ On closer inspection, a high percentage of business systems are essentially work
 
 While it can be difficult to justify adopting a workflow engine when building these systems, the real value comes when the underlying business processes - the workflows - need to be modified. Since the workflows themselves are modelled within the system, they are the focal point for changes; should new conditions or actions be needed to support the changes, they are straightforward to add to the codebase.
 
-Using a workflow engine also helps answer questions around how to migrate from one version of a workflow to the next - for example, it is straightforward to have two versions of a workflow exist side-by-side in the workflow engine, with existing workflow instance continuing to use an previous version of a workflow and new instances based on a new version.
+Using a workflow engine also helps answer questions around how to migrate from one version of a workflow to the next - for example, it is straightforward to have two versions of a workflow exist side-by-side in the workflow engine, with existing workflow instances continuing to use an previous version of a workflow and new instances based on a new version.
 
 
 ## Why use *this* workflow engine?
@@ -44,3 +44,5 @@ Marain.Workflow was built from the ground up to address some of the problems com
 Foremost in these is that of scalability. The hosting APIs provided with the workflow engine are implemented using serverless functions running in Windows Azure, enabling messages to be ingested and processed at extremely high rates.
 
 In addition, it is technology agnostic. Whilst it's built using C# and the provided hosting is targetted at Microsoft Azure, conditions and actions can be implemented in any other language as long as they are exposed via an HTTP endpoint that can accept calls from the workflow engine.
+
+Finally it is Open Source, licenced under the AGPL v3 open source licence (with commercial licenses also available). Consumers can see and evaluate the code for themselves, and both active issues and the longer term roadmap are managed in an open and transparent way via GitHub. Pull requests are accepted from the community (subject to agreeing to the Contributor Licence Agreement).
