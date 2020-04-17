@@ -6,8 +6,10 @@ namespace Marain.Workflow.Api.Specs.Bindings
 {
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Azure.Storage.Tenancy;
+    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.Leasing;
     using Corvus.SpecFlow.Extensions;
+    using Marain.Tenancy.Client;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
@@ -43,15 +45,17 @@ namespace Marain.Workflow.Api.Specs.Bindings
 
                     string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
 
-                    TenantCloudBlobContainerFactoryOptions blobStorageConfiguration = root.GetSection("TenantCloudBlobContainerFactoryOptions").Get<TenantCloudBlobContainerFactoryOptions>()
-                        ?? new TenantCloudBlobContainerFactoryOptions();
-                    if (blobStorageConfiguration.RootTenantBlobStorageConfiguration == null)
-                    {
-                        blobStorageConfiguration.RootTenantBlobStorageConfiguration = new BlobStorageConfiguration();
-                    }
+                    // Work around the fact that the tenancy client currently tries to fetch the root tenant on startup.
+                    services.AddRootTenant();
 
-                    services.AddTenantCloudBlobContainerFactory(blobStorageConfiguration);
-                    services.AddTenantProviderBlobStore();
+                    services.AddSingleton(sp => sp.GetRequiredService<IConfiguration>().GetSection("TenancyClient").Get<TenancyClientOptions>());
+                    services.AddAzureManagedIdentityBasedTokenSource(
+                        new AzureManagedIdentityTokenSourceOptions
+                        {
+                            AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                        });
+
+                    services.AddTenantProviderServiceClient();
 
                     TenantCosmosContainerFactoryOptions cosmosConfiguration = root.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
                         ?? new TenantCosmosContainerFactoryOptions();

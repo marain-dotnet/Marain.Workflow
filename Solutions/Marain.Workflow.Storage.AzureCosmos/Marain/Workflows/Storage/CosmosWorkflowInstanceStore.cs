@@ -97,13 +97,15 @@ namespace Marain.Workflows.Storage
 
             FeedIterator<dynamic> iterator = this.Container.GetItemQueryIterator<dynamic>(spec);
 
-            if (iterator.HasMoreResults)
+            var matchingIds = new List<string>();
+
+            while (iterator.HasMoreResults)
             {
                 FeedResponse<dynamic> results = await Retriable.RetryAsync(() => iterator.ReadNextAsync()).ConfigureAwait(false);
-                return results.Select(x => (string)x.id);
+                matchingIds.AddRange(results.Select(x => (string)x.id));
             }
 
-            return Enumerable.Empty<string>();
+            return matchingIds;
         }
 
         /// <inheritdoc/>
