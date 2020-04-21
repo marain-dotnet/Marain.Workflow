@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <!--
-  Not using normal netstandard2.0 import, because this contains AutoRest-generated code, which makes
-  the analyzers we normally bring in unhappy.
-  -->
+  <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace />
     <DocumentationFile>$(OutputPath)$(TargetFramework.ToLowerInvariant())\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
@@ -40,6 +36,10 @@
     <PackageReference Include="Corvus.Extensions" Version="0.7.0" />
     <PackageReference Include="Corvus.Extensions.Newtonsoft.Json" Version="0.9.0" />
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="0.2.0-preview.5" />
+    <PackageReference Include="Endjin.RecommendedPractices" Version="0.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.2.0" />
     <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.21" />
   </ItemGroup>

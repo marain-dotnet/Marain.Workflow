@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+  <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
 
-  <Import Project="..\Common.NetStandard_2_0.proj" />
-  
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
   <PropertyGroup>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <PackageDescription>
@@ -17,6 +20,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="Endjin.RecommendedPractices" Version="0.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Marain.Operations.ControlClient" Version="0.8.0" />
     <PackageReference Include="Menes.Abstractions" Version="0.10.0" />
   </ItemGroup>

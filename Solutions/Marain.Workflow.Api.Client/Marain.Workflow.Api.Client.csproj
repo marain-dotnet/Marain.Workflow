@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
+
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace></RootNamespace>
   </PropertyGroup>
 
@@ -8,6 +10,10 @@
     <PackageReference Include="Corvus.Extensions" Version="0.7.0" />
     <PackageReference Include="Corvus.Extensions.Newtonsoft.Json" Version="0.9.0" />
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="0.1.0" />
+    <PackageReference Include="Endjin.RecommendedPractices" Version="0.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.21" />
   </ItemGroup>
 

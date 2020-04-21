@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
-  <Import Project="..\Common.NetCoreApp_3_1.proj" />
+  <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
 
   <PropertyGroup>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
@@ -16,6 +20,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Endjin.RecommendedPractices" Version="0.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.3" />
   </ItemGroup>
 

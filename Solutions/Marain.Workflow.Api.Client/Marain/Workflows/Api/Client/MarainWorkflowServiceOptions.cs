@@ -1,11 +1,14 @@
-﻿// <copyright file="WorkflowEngineClientServiceCollectionExtensions.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="MarainWorkflowServiceOptions.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 namespace Marain.Workflows.Api.Client
 {
     using System;
 
+    /// <summary>
+    /// Options for the Marain workflow service.
+    /// </summary>
     public class MarainWorkflowServiceOptions
     {
         /// <summary>

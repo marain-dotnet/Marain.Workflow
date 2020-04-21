@@ -1,7 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
 
-  <Import Project="..\Common.NetStandard_2_0.proj" />
-  
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
   <PropertyGroup>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <PackageDescription>
@@ -19,6 +22,10 @@
   <ItemGroup>
     <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.22.0" />
     <PackageReference Include="Corvus.Extensions.CosmosClient" Version="0.6.0" />
+    <PackageReference Include="Endjin.RecommendedPractices" Version="0.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
