@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflow.Api.Specs.Bindings
+namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System;
     using System.Threading.Tasks;

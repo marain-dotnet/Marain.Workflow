@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflow.Api.Specs.Bindings
+namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System;
     using System.Threading.Tasks;
@@ -33,16 +33,17 @@ namespace Marain.Workflow.Api.Specs.Bindings
         /// The newly created tenant is added to the <see cref="FeatureContext"/>. Access it via the helper methods
         /// <see cref="GetTransientTenant(FeatureContext)"/> or <see cref="GetTransientTenantId(FeatureContext)"/>.
         /// </remarks>
-        [BeforeFeature("@useTransientTenant", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
+        [BeforeFeature("@useTransientTenant", Order = BindingSequence.TransientTenantSetup)]
         public static async Task SetupTransientTenant(FeatureContext featureContext)
         {
+            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<ITenantProvider>();
             var transientTenantManager = TransientTenantManager.GetInstance(featureContext);
             await transientTenantManager.EnsureInitialised().ConfigureAwait(false);
 
             // Create a transient service tenant for testing purposes.
             ITenant transientServiceTenant = await transientTenantManager.CreateTransientServiceTenantFromEmbeddedResourceAsync(
                 typeof(TransientTenantBindings).Assembly,
-                $"Marain.Workflow.Api.SpecsServiceManifests.WorkflowServiceManifest.jsonc").ConfigureAwait(false);
+                $"Marain.Workflows.Api.Specs.ServiceManifests.WorkflowServiceManifest.jsonc").ConfigureAwait(false);
 
             // Now update the service Id in our configuration and in the function configuration
             UpdateServiceConfigurationWithTransientTenantId(featureContext, transientServiceTenant);
@@ -55,24 +56,10 @@ namespace Marain.Workflow.Api.Specs.Bindings
                 transientClientTenant.Id,
                 transientServiceTenant.Id,
                 GetWorkflowConfig(featureContext)).ConfigureAwait(false);
-        }
 
-        /// <summary>
-        /// Tears down the transient tenant created for the current feature.
-        /// </summary>
-        /// <param name="context">The current <see cref="FeatureContext"/>.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [AfterFeature("@useTransientTenant")]
-        public static Task TearDownTransientTenant(FeatureContext context)
-        {
-            return context.RunAndStoreExceptionsAsync(() =>
-            {
-                IServiceProvider provider = ContainerBindings.GetServiceProvider(context);
-                ITenantProvider tenantProvider = provider.GetRequiredService<ITenantProvider>();
-
-                ITenant tenant = context.Get<ITenant>();
-                return tenantProvider.DeleteTenantAsync(tenant.Id);
-            });
+            // TODO: Temporary hack to work around the fact that the transient tenant manager no longer holds the latest
+            // version of the tenants it's tracking.
+            transientTenantManager.PrimaryTransientClient = await tenantProvider.GetTenantAsync(transientClientTenant.Id).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -111,11 +98,11 @@ namespace Marain.Workflow.Api.Specs.Bindings
             configuration.ServiceDisplayName = transientServiceTenant.Name;
 
             featureContext.AddFunctionConfigurationEnvironmentVariable(
-                "MarainServiceConfiguration__ServiceTenantId",
+                "MarainServiceConfiguration:ServiceTenantId",
                 configuration.ServiceTenantId);
 
             featureContext.AddFunctionConfigurationEnvironmentVariable(
-                "MarainServiceConfiguration__ServiceDisplayName",
+                "MarainServiceConfiguration:ServiceDisplayName",
                 configuration.ServiceDisplayName);
         }
 

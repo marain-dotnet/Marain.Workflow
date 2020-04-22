@@ -7,8 +7,10 @@ namespace Marain.Workflows.Api.MessageProcessingHost.OpenApi
     using System;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
+    using Corvus.Tenancy;
     using Marain.Operations.Client.OperationsControl;
     using Marain.Operations.Client.OperationsControl.Models;
+    using Marain.Services.Tenancy;
     using Marain.Workflows.Api.MessageProcessingHost.Orchestrators;
     using Marain.Workflows.Api.MessageProcessingHost.Shared;
     using Menes;
@@ -24,16 +26,20 @@ namespace Marain.Workflows.Api.MessageProcessingHost.OpenApi
 
         private readonly IMarainOperationsControl operationsControl;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
+        private readonly IMarainServicesTenancy marainServicesTenancy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageIngestionService" /> class.
         /// </summary>
         /// <param name="serializerSettingsProvider">Serialization settings provider.</param>
         /// <param name="operationsControl">Allows definition and control of long-running operations.</param>
+        /// <param name="marainServicesTenancy">The tenancy services.</param>
         public MessageIngestionService(
             IJsonSerializerSettingsProvider serializerSettingsProvider,
-            IMarainOperationsControl operationsControl)
+            IMarainOperationsControl operationsControl,
+            IMarainServicesTenancy marainServicesTenancy)
         {
+            this.marainServicesTenancy = marainServicesTenancy;
             this.operationsControl = operationsControl;
             this.serializerSettingsProvider = serializerSettingsProvider;
         }
@@ -47,6 +53,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.OpenApi
         [OperationId(StartNewWorkflowOperationId)]
         public async Task<OpenApiResult> HandleStartNewWorkflowInstanceRequest(IOpenApiContext context, StartWorkflowInstanceRequest body)
         {
+            ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(context.CurrentTenantId).ConfigureAwait(false);
+
             var operationId = Guid.NewGuid();
             CreateOperationHeaders operationHeaders = await this.operationsControl.CreateOperationAsync(context.CurrentTenantId, operationId).ConfigureAwait(false);
 
@@ -77,6 +85,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.OpenApi
         [OperationId(TriggerWorkflowOperationId)]
         public async Task<OpenApiResult> HandleTrigger(IOpenApiContext context, IWorkflowTrigger body)
         {
+            ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(context.CurrentTenantId).ConfigureAwait(false);
+
             var operationId = Guid.NewGuid();
             CreateOperationHeaders operationHeaders =
                 await this.operationsControl.CreateOperationAsync(context.CurrentTenantId, operationId).ConfigureAwait(false);

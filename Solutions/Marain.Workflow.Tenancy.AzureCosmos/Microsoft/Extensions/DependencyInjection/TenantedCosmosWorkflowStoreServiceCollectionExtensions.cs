@@ -17,13 +17,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Gets the container definition that will be used for the tenanted workflow store.
         /// </summary>
         public static CosmosContainerDefinition WorkflowStoreContainerDefinition { get; } =
-            new CosmosContainerDefinition("workflow", "workflows", "/id");
+            new CosmosContainerDefinition("workflow", "definitions", "/id");
 
         /// <summary>
         /// Gets the container definition that will be used for the tenanted workflow instance store.
         /// </summary>
         public static CosmosContainerDefinition WorkflowInstanceStoreContainerDefinition { get; } =
-            new CosmosContainerDefinition("workflow", "workflowinstances", "/id");
+            new CosmosContainerDefinition("workflow", "instances", "/id");
 
         /// <summary>
         /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
