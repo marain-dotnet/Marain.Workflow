@@ -25,6 +25,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.6" />
+    <PackageReference Include="Marain.Services.Tenancy" Version="0.1.0-preview.9" />
   </ItemGroup>
 
   <ItemGroup>

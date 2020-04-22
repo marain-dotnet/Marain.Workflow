@@ -14,6 +14,18 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class TenantedCosmosWorkflowStoreServiceCollectionExtensions
     {
         /// <summary>
+        /// Gets the container definition that will be used for the tenanted workflow store.
+        /// </summary>
+        public static CosmosContainerDefinition WorkflowStoreContainerDefinition { get; } =
+            new CosmosContainerDefinition("workflow", "workflows", "/id");
+
+        /// <summary>
+        /// Gets the container definition that will be used for the tenanted workflow instance store.
+        /// </summary>
+        public static CosmosContainerDefinition WorkflowInstanceStoreContainerDefinition { get; } =
+            new CosmosContainerDefinition("workflow", "workflowinstances", "/id");
+
+        /// <summary>
         /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
         /// </summary>
         /// <param name="services">The collection.</param>
@@ -26,12 +38,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            var containerDefinition = new CosmosContainerDefinition("workflow", "workflows", "/id");
-
             services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions());
             services.AddSingleton<ITenantedWorkflowStoreFactory>(svc => new TenantedCosmosWorkflowStoreFactory(
                 svc.GetRequiredService<ITenantCosmosContainerFactory>(),
-                containerDefinition));
+                WorkflowStoreContainerDefinition));
 
             return services;
         }
@@ -49,12 +59,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            var containerDefinition = new CosmosContainerDefinition("workflow", "workflowinstances", "/id");
-
             services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions());
             services.AddSingleton<ITenantedWorkflowInstanceStoreFactory>(svc => new TenantedCosmosWorkflowInstanceStoreFactory(
                 svc.GetRequiredService<ITenantCosmosContainerFactory>(),
-                containerDefinition));
+                WorkflowInstanceStoreContainerDefinition));
 
             return services;
         }

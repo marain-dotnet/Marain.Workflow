@@ -16,8 +16,8 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="0.1.0-preview.9" />
     <PackageReference Include="Corvus.SpecFlow.Extensions" Version="0.7.0-preview.6" />
-    <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="0.22.0" />
     <PackageReference Include="Endjin.RecommendedPractices" Version="0.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -53,6 +53,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="ServiceManifests\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="..\ServiceManifests\WorkflowServiceManifest.jsonc" Link="ServiceManifests\WorkflowServiceManifest.jsonc" />
   </ItemGroup>
   
 </Project>

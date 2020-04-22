@@ -15,6 +15,12 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class TenantedSqlWorkflowStoreServiceCollectionExtensions
     {
         /// <summary>
+        /// Gets the connection definition that will be used for the SQL database.
+        /// </summary>
+        public static SqlConnectionDefinition WorkflowConnectionDefinition { get; } =
+            new SqlConnectionDefinition("workflow");
+
+        /// <summary>
         /// Adds Sql-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
         /// </summary>
         /// <param name="services">The collection.</param>
@@ -27,13 +33,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            var connectionDefinition = new SqlConnectionDefinition("workflow");
-
             services.AddTenantSqlConnectionFactory(new TenantSqlConnectionFactoryOptions());
             services.AddSingleton<ITenantedWorkflowStoreFactory>(svc => new TenantedSqlWorkflowStoreFactory(
                 svc.GetRequiredService<IJsonSerializerSettingsProvider>(),
                 svc.GetRequiredService<ITenantSqlConnectionFactory>(),
-                connectionDefinition));
+                WorkflowConnectionDefinition));
 
             return services;
         }

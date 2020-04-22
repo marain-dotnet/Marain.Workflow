@@ -17,7 +17,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System.Net;
     using Corvus.Extensions.Json;
     using Corvus.SpecFlow.Extensions;
-    using Marain.ContentManagement.Specs.Bindings;
+    using Marain.TenantManagement.Testing;
     using Marain.Workflows.Api.Specs.Bindings;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
@@ -31,11 +31,13 @@ namespace Marain.Workflows.Api.Specs.Steps
     {
         private readonly ScenarioContext context;
         private readonly FeatureContext featureContext;
+        private readonly TransientTenantManager transientTenantManager;
 
         public WebRequestSteps(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
             this.context = scenarioContext;
             this.featureContext = featureContext;
+            this.transientTenantManager = TransientTenantManager.GetInstance(featureContext);
         }
 
         [Then("I should have received a (.*) status code from the HTTP request")]
@@ -70,9 +72,7 @@ namespace Marain.Workflows.Api.Specs.Steps
 
         private void PostContextObjectToEndpoint(string instanceName, string url)
         {
-            string tenantId = this.featureContext.GetTransientTenantId();
-
-            url = url.Replace("{tenantId}", tenantId);
+            url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
 
             foreach (object obj in this.context.Get<IEnumerable<object>>(instanceName))
             {

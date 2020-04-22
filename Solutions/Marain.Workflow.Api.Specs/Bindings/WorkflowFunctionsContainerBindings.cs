@@ -57,14 +57,10 @@ namespace Marain.Workflow.Api.Specs.Bindings
 
                     services.AddTenantProviderServiceClient();
 
-                    TenantCosmosContainerFactoryOptions cosmosConfiguration = root.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
-                        ?? new TenantCosmosContainerFactoryOptions();
-                    if (cosmosConfiguration.RootTenantCosmosConfiguration == null)
+                    services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
                     {
-                        cosmosConfiguration.RootTenantCosmosConfiguration = new CosmosConfiguration();
-                    }
-
-                    services.AddTenantCosmosContainerFactory(cosmosConfiguration);
+                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                    });
 
                     services.AddTenantedWorkflowEngineFactory();
                     services.AddTenantedAzureCosmosWorkflowStore();

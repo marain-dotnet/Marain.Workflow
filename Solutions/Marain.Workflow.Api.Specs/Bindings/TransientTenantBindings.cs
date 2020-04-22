@@ -2,13 +2,18 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.ContentManagement.Specs.Bindings
+namespace Marain.Workflow.Api.Specs.Bindings
 {
     using System;
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
+    using Corvus.Azure.Storage.Tenancy;
     using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Marain.Services;
+    using Marain.TenantManagement.EnrollmentConfiguration;
+    using Marain.TenantManagement.Testing;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
 
@@ -22,35 +27,34 @@ namespace Marain.ContentManagement.Specs.Bindings
         /// Creates a new <see cref="ITenant"/> for the current feature, adding a test <see cref="CosmosConfiguration"/>
         /// to the tenant data.
         /// </summary>
-        /// <param name="context">The current <see cref="FeatureContext"/>.</param>
+        /// <param name="featureContext">The current <see cref="FeatureContext"/>.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         /// <remarks>
         /// The newly created tenant is added to the <see cref="FeatureContext"/>. Access it via the helper methods
         /// <see cref="GetTransientTenant(FeatureContext)"/> or <see cref="GetTransientTenantId(FeatureContext)"/>.
         /// </remarks>
         [BeforeFeature("@useTransientTenant", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
-        public static async Task SetupTransientTenant(FeatureContext context)
+        public static async Task SetupTransientTenant(FeatureContext featureContext)
         {
-            // This needs to run after the ServiceProvider has been constructed
-            IServiceProvider provider = ContainerBindings.GetServiceProvider(context);
-            ITenantProvider tenantProvider = provider.GetRequiredService<ITenantProvider>();
+            var transientTenantManager = TransientTenantManager.GetInstance(featureContext);
+            await transientTenantManager.EnsureInitialised().ConfigureAwait(false);
 
-            // In order to ensure the Cosmos aspects of the Tenancy setup are fully configured, we need to resolve
-            // the ITenantCosmosContainerFactory, which triggers setting default config to the root tenant.
-            // HACK: This is a hack until we can come up with a better way of handling deferred initialisation.
-            provider.GetRequiredService<ITenantCosmosContainerFactory>();
+            // Create a transient service tenant for testing purposes.
+            ITenant transientServiceTenant = await transientTenantManager.CreateTransientServiceTenantFromEmbeddedResourceAsync(
+                typeof(TransientTenantBindings).Assembly,
+                $"Marain.Workflow.Api.SpecsServiceManifests.WorkflowServiceManifest.jsonc").ConfigureAwait(false);
 
-            ITenant rootTenant = tenantProvider.Root;
-            ITenant transientTenant = await tenantProvider.CreateChildTenantAsync(rootTenant.Id).ConfigureAwait(false);
+            // Now update the service Id in our configuration and in the function configuration
+            UpdateServiceConfigurationWithTransientTenantId(featureContext, transientServiceTenant);
 
-            CosmosConfiguration config = rootTenant.GetDefaultCosmosConfiguration() ?? new CosmosConfiguration();
-            config.DatabaseName = "endjinspecssharedthroughput";
-            config.DisableTenantIdPrefix = true;
-            transientTenant.SetDefaultCosmosConfiguration(config);
+            // Now we need to construct a transient client tenant for the test, and enroll it in the new
+            // transient service.
+            ITenant transientClientTenant = await transientTenantManager.CreateTransientClientTenantAsync().ConfigureAwait(false);
 
-            await tenantProvider.UpdateTenantAsync(transientTenant).ConfigureAwait(false);
-
-            context.Set(transientTenant);
+            await transientTenantManager.AddEnrollmentAsync(
+                transientClientTenant.Id,
+                transientServiceTenant.Id,
+                GetWorkflowConfig(featureContext)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -93,6 +97,59 @@ namespace Marain.ContentManagement.Specs.Bindings
         public static string GetTransientTenantId(this FeatureContext context)
         {
             return context.GetTransientTenant().Id;
+        }
+
+        private static void UpdateServiceConfigurationWithTransientTenantId(
+            FeatureContext featureContext,
+            ITenant transientServiceTenant)
+        {
+            MarainServiceConfiguration configuration = ContainerBindings
+                .GetServiceProvider(featureContext)
+                .GetRequiredService<MarainServiceConfiguration>();
+
+            configuration.ServiceTenantId = transientServiceTenant.Id;
+            configuration.ServiceDisplayName = transientServiceTenant.Name;
+
+            featureContext.AddFunctionConfigurationEnvironmentVariable(
+                "MarainServiceConfiguration__ServiceTenantId",
+                configuration.ServiceTenantId);
+
+            featureContext.AddFunctionConfigurationEnvironmentVariable(
+                "MarainServiceConfiguration__ServiceDisplayName",
+                configuration.ServiceDisplayName);
+        }
+
+        private static EnrollmentConfigurationItem[] GetWorkflowConfig(FeatureContext featureContext)
+        {
+            IConfiguration configuration = ContainerBindings
+                .GetServiceProvider(featureContext)
+                .GetRequiredService<IConfiguration>();
+
+            // Load the config items we need:
+            CosmosConfiguration cosmosConfiguration =
+                configuration.GetSection("TestTenantCosmosConfiguration").Get<CosmosConfiguration>();
+
+            BlobStorageConfiguration storageConfiguration =
+                configuration.GetSection("TestTenantBlobStorageConfiguration").Get<BlobStorageConfiguration>();
+
+            return new EnrollmentConfigurationItem[]
+            {
+                new EnrollmentCosmosConfigurationItem
+                {
+                    Key = "workflowStore",
+                    Configuration = cosmosConfiguration ?? new CosmosConfiguration(),
+                },
+                new EnrollmentCosmosConfigurationItem
+                {
+                    Key = "workflowInstanceStore",
+                    Configuration = cosmosConfiguration ?? new CosmosConfiguration(),
+                },
+                new EnrollmentBlobStorageConfigurationItem
+                {
+                    Key = "operationsStore",
+                    Configuration = storageConfiguration ?? new BlobStorageConfiguration(),
+                },
+            };
         }
     }
 }

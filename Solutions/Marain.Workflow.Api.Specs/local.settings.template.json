@@ -16,10 +16,10 @@
   "TenantCloudBlobContainerFactoryOptions:RootTenantBlobStorageConfiguration:AccountName": "<Tenancy Storage Account Connection String Here>",
 
   // Remove these to use the local storage emulator.
-  "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountUri": "https://endjintestsql.documents.azure.com/",
-  "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountKeySecretName": "endjintestsql",
-  "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:KeyVaultName": "endjintest",
-  "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:DisableTenantIdPrefix": "true",
+  "TestTenantCosmosConfiguration:AccountUri": "https://endjintestsql.documents.azure.com/",
+  "TestTenantCosmosConfiguration:AccountKeySecretName": "endjintestsql",
+  "TestTenantCosmosConfiguration:KeyVaultName": "endjintest",
+  "TestTenantCosmosConfiguration:DisableTenantIdPrefix": "true",
 
   "TenantSqlConnectionFactoryOptions:RootTenantSqlConfiguration:Database": "endjintestsql",
   "TenantSqlConnectionFactoryOptions:RootTenantSqlConfiguration:ConnectionStringSecretName": "endjintestazuresql",

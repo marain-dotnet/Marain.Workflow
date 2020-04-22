@@ -87,10 +87,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 TenantCosmosContainerFactoryOptions cosmosConfiguration = config.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
                     ?? new TenantCosmosContainerFactoryOptions();
-                if (cosmosConfiguration.RootTenantCosmosConfiguration == null)
-                {
-                    cosmosConfiguration.RootTenantCosmosConfiguration = new CosmosConfiguration();
-                }
 
                 return cosmosConfiguration;
             });
