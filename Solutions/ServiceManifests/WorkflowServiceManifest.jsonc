@@ -6,12 +6,8 @@
   "dependsOnServiceTenants": [
     {
       "id": "3633754ac4c9be44b55bfe791b1780f12429524fe7b6cc48a265a307407ec858",
-      "expectedName": "Operations Control v1"
+      "expectedName": "Operations v1"
     },
-    {
-      "id": "3633754ac4c9be44b55bfe791b1780f1e02e0b01f0d58843a1201eb237970946",
-      "expectedName": "Operations Status v1"
-    }
   ],
   "requiredConfigurationEntries": [
     {
