@@ -114,10 +114,10 @@ namespace Marain.Workflows.Api.Specs.Bindings
 
             // Load the config items we need:
             CosmosConfiguration cosmosConfiguration =
-                configuration.GetSection("TestTenantCosmosConfiguration").Get<CosmosConfiguration>();
+                configuration.GetSection("TestCosmosConfiguration").Get<CosmosConfiguration>();
 
             BlobStorageConfiguration storageConfiguration =
-                configuration.GetSection("TestTenantBlobStorageConfiguration").Get<BlobStorageConfiguration>();
+                configuration.GetSection("TestBlobStorageConfiguration").Get<BlobStorageConfiguration>();
 
             return new EnrollmentConfigurationItem[]
             {
