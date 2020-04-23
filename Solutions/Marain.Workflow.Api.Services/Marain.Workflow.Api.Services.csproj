@@ -3,16 +3,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-    <PackageDescription>
-    </PackageDescription>
-    <PackageTags>
-    </PackageTags>
-    <PackageReleaseNotes>
-    </PackageReleaseNotes>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
