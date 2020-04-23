@@ -63,6 +63,13 @@ namespace Marain.Workflows.Api.Specs.Bindings
                 "netcoreapp3.1");
         }
 
+        [AfterScenario("useWorkflowEngineApi", "useWorkflowMessageProcessingApi")]
+        public static void WriteFunctionsOutput(FeatureContext featureContext)
+        {
+            FunctionsController functionsController = featureContext.Get<FunctionsController>();
+            functionsController.GetFunctionsOutput().WriteAllToConsoleAndClear();
+        }
+
         /// <summary>
         /// Tear down the running functions instances for the scenario.
         /// </summary>

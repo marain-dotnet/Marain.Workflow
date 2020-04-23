@@ -3,7 +3,14 @@
   "functionTimeout": "00:10:00",
   "extensions": {
     "http": {
-    "routePrefix": ""
-    }  
+      "routePrefix": ""
+    }
+  },
+  "logging": {
+    "logLevel": {
+      "default": "Debug"
+    },
+    "console": {      "isEnabled": true
+    }
   }
 }
