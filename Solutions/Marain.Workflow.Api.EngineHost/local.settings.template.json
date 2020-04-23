@@ -21,12 +21,6 @@
     "Operations:ControlServiceBaseUrl": "https://mardevoperationscontrol.azurewebsites.net/",
     "Operations:ResourceIdForMsiAuthentication": "97642f9e-efcb-47c2-8c1e-bf21a3e9cdf6",
 
-    // Remove these to use the local storage emulator.
-    "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountUri": "https://endjintestsql.documents.azure.com/",
-    "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountKeySecretName": "endjintestsql",
-    "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:KeyVaultName": "endjintest",
-    "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:DisableTenantIdPrefix": "true"
-
     // If you are running locally but your tenant configuration is making use of resources in Azure, this local service will
     // need to authenticate. And for that to work, you won't be able to use the normal az cli-based
     // AzureServicesAuthConnectionString (because az cli is only able to obtain tokens for a fixed set of known Microsoft

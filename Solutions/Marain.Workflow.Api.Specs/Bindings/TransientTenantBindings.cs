@@ -114,27 +114,31 @@ namespace Marain.Workflows.Api.Specs.Bindings
 
             // Load the config items we need:
             CosmosConfiguration cosmosConfiguration =
-                configuration.GetSection("TestCosmosConfiguration").Get<CosmosConfiguration>();
+                configuration.GetSection("TestCosmosConfiguration").Get<CosmosConfiguration>()
+                ?? new CosmosConfiguration();
+
+            cosmosConfiguration.DatabaseName = "endjinspecssharedthroughput";
 
             BlobStorageConfiguration storageConfiguration =
-                configuration.GetSection("TestBlobStorageConfiguration").Get<BlobStorageConfiguration>();
+                configuration.GetSection("TestBlobStorageConfiguration").Get<BlobStorageConfiguration>()
+                ?? new BlobStorageConfiguration();
 
             return new EnrollmentConfigurationItem[]
             {
                 new EnrollmentCosmosConfigurationItem
                 {
                     Key = "workflowStore",
-                    Configuration = cosmosConfiguration ?? new CosmosConfiguration(),
+                    Configuration = cosmosConfiguration,
                 },
                 new EnrollmentCosmosConfigurationItem
                 {
                     Key = "workflowInstanceStore",
-                    Configuration = cosmosConfiguration ?? new CosmosConfiguration(),
+                    Configuration = cosmosConfiguration,
                 },
                 new EnrollmentBlobStorageConfigurationItem
                 {
                     Key = "operationsStore",
-                    Configuration = storageConfiguration ?? new BlobStorageConfiguration(),
+                    Configuration = storageConfiguration,
                 },
             };
         }

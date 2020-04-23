@@ -28,14 +28,16 @@ jobs:
           Write-Host "##vso[task.setvariable variable=TenancyClient__ResourceIdForMsiAuthentication]$Env:ENDJIN_MARAINTENANCYRESOURCEIDFORMSIAUTHENTICATION"
           Write-Host "##vso[task.setvariable variable=Operations__ControlServiceBaseUrl]$Env:ENDJIN_MARAINOPERATIONSCONTROLBASEURL"
           Write-Host "##vso[task.setvariable variable=Operations__ResourceIdForMsiAuthentication]$Env:ENDJIN_MARAINOPERATIONSCONTROLRESOURCEID"
-          Write-Host "##vso[task.setvariable variable=TenantCloudBlobContainerFactoryOptions__RootTenantBlobStorageConfiguration__AccountName]$Env:ENDJIN_MARAINTENANCYSTORAGECONNECTIONSTRING"
-          Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__AccountUri]$Env:ENDJIN_COSMOSDBACCOUNTURI"
-          Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__AccountKeySecretName]$Env:ENDJIN_COSMOSDBKEYSECRETNAME"
-          Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__KeyVaultName]$Env:ENDJIN_KEYVAULTNAME"
-          Write-Host "##vso[task.setvariable variable=TenantCosmosContainerFactoryOptions__RootTenantCosmosConfiguration__DisableTenantIdPrefix]true"
-          Write-Host "##vso[task.setvariable variable=TenantSqlConnectionFactoryOptions__RootTenantSqlConfiguration__Database]$Env:ENDJIN_SQLDBDATABASE"
-          Write-Host "##vso[task.setvariable variable=TenantSqlConnectionFactoryOptions__RootTenantSqlConfiguration__ConnectionStringSecretName]$Env:ENDJIN_SQLDBCONNECTIONSTRINGSECRETNAME"
-          Write-Host "##vso[task.setvariable variable=TenantSqlConnectionFactoryOptions__RootTenantSqlConfiguration__KeyVaultName]$Env:ENDJIN_KEYVAULTNAME"
+          Write-Host "##vso[task.setvariable variable=TestBlobStorageConfiguration__AccountName]$Env:ENDJIN_MARAINTENANCYSTORAGECONNECTIONSTRING"
+          Write-Host "##vso[task.setvariable variable=TestCosmosConfiguration__AccountUri]$Env:ENDJIN_COSMOSDBACCOUNTURI"
+          Write-Host "##vso[task.setvariable variable=TestCosmosConfiguration__AccountKeySecretName]$Env:ENDJIN_COSMOSDBKEYSECRETNAME"
+          Write-Host "##vso[task.setvariable variable=TestCosmosConfiguration__KeyVaultName]$Env:ENDJIN_KEYVAULTNAME"
+          Write-Host "##vso[task.setvariable variable=TestCosmosConfiguration__DisableTenantIdPrefix]true"
+          Write-Host "##vso[task.setvariable variable=TestSqlConfiguration__Database]$Env:ENDJIN_SQLDBDATABASE"
+          Write-Host "##vso[task.setvariable variable=TestSqlConfiguration__ConnectionStringSecretName]$Env:ENDJIN_SQLDBCONNECTIONSTRINGSECRETNAME"
+          Write-Host "##vso[task.setvariable variable=TestSqlConfiguration__KeyVaultName]$Env:ENDJIN_KEYVAULTNAME"
+          Write-Host "##vso[task.setvariable variable=MarainServiceConfiguration:ServiceDisplayName]$Env:ENDJIN_MARAINWORKFLOWSERVICEDISPLAYNAME"
+          Write-Host "##vso[task.setvariable variable=MarainServiceConfiguration:ServiceTenantId]$Env:ENDJIN_MARAINWORKFLOWSERVICETENANTID"
           Write-Host "##vso[task.setvariable variable=LeasingStorageAccountConnectionString]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
         displayName: 'Set Custom Environment Variables'
         env:
@@ -51,6 +53,8 @@ jobs:
           ENDJIN_KEYVAULTNAME: $(Endjin_KeyVaultName)
           ENDJIN_SQLDBDATABASE: $(Endjin_SqlDbDatabase)
           ENDJIN_SQLDBCONNECTIONSTRINGSECRETNAME: $(Endjin_SqlDbConnectionStringSecretName)
+          ENDJIN_MARAINWORKFLOWSERVICEDISPLAYNAME: $(Endjin_MarainWorkflowServiceDisplayName)
+          ENDJIN_MARAINWORKFLOWSERVICETENANTID: $(Endjin_MarainWorkflowServiceTenantId)
       - task: Npm@1
         displayName: 'Install Latest Azure Functions V3 Runtime'
         inputs:
