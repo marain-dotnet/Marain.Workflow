@@ -58,7 +58,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
                 GetWorkflowConfig(featureContext)).ConfigureAwait(false);
 
             // TODO: Temporary hack to work around the fact that the transient tenant manager no longer holds the latest
-            // version of the tenants it's tracking.
+            // version of the tenants it's tracking; see https://github.com/marain-dotnet/Marain.TenantManagement/issues/28
             transientTenantManager.PrimaryTransientClient = await tenantProvider.GetTenantAsync(transientClientTenant.Id).ConfigureAwait(false);
         }
 
