@@ -15,7 +15,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     using Corvus.Retry.Policies;
     using Corvus.Retry.Strategies;
     using Corvus.SpecFlow.Extensions;
-    using Marain.ContentManagement.Specs.Bindings;
+    using Marain.TenantManagement.Testing;
     using Microsoft.Extensions.DependencyInjection;
 
     using NUnit.Framework;
@@ -30,6 +30,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     {
         private readonly ScenarioContext scenarioContext;
         private readonly IServiceProvider serviceProvider;
+        private readonly TransientTenantManager transientTenantManager;
         private readonly FeatureContext featureContext;
 
         public WorkflowSteps(
@@ -37,8 +38,9 @@ namespace Marain.Workflows.Api.Specs.Steps
             FeatureContext featureContext)
         {
             this.scenarioContext = scenarioContext;
-            this.serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
             this.featureContext = featureContext;
+            this.serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
+            this.transientTenantManager = TransientTenantManager.GetInstance(featureContext);
         }
 
         [Given("I have added the workflow '(.*)' to the workflow store with Id '(.*)'")]
@@ -48,7 +50,8 @@ namespace Marain.Workflows.Api.Specs.Steps
             workflow.Id = workflowId;
 
             ITenantedWorkflowStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
-            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(this.featureContext.GetTransientTenant()).ConfigureAwait(false);
+            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(
+                this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
 
             await store.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
         }
@@ -57,7 +60,7 @@ namespace Marain.Workflows.Api.Specs.Steps
         public async Task GivenIHaveStartedAnInstanceOfTheWorkflowWithInstanceIdAndUsingContextObject(string workflowId, string instanceId, string contextInstanceName)
         {
             ITenantedWorkflowEngineFactory engineFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowEngineFactory>();
-            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(this.featureContext.GetTransientTenant()).ConfigureAwait(false);
+            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
             IDictionary<string, string> context = this.scenarioContext.Get<IDictionary<string, string>>(contextInstanceName);
 
             var request =
@@ -75,7 +78,7 @@ namespace Marain.Workflows.Api.Specs.Steps
         public async Task TheWorkflowInstanceStoreIsEmpty()
         {
             ITenantedWorkflowInstanceStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
-            IWorkflowInstanceStore store = await storeFactory.GetWorkflowInstanceStoreForTenantAsync(this.featureContext.GetTransientTenant()).ConfigureAwait(false);
+            IWorkflowInstanceStore store = await storeFactory.GetWorkflowInstanceStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
 
             IEnumerable<string> instanceIds = await store.GetMatchingWorkflowInstanceIdsForSubjectsAsync(new string[0], int.MaxValue, 0).ConfigureAwait(false);
             foreach (string current in instanceIds)
@@ -89,7 +92,7 @@ namespace Marain.Workflows.Api.Specs.Steps
         public async Task ThenThereShouldBeANewWorkflowInstanceInTheWorkflowInstanceStore(int expected)
         {
             ITenantedWorkflowInstanceStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
-            IWorkflowInstanceStore store = await storeFactory.GetWorkflowInstanceStoreForTenantAsync(this.featureContext.GetTransientTenant()).ConfigureAwait(false);
+            IWorkflowInstanceStore store = await storeFactory.GetWorkflowInstanceStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
             IEnumerable<string> instances = await store.GetMatchingWorkflowInstanceIdsForSubjectsAsync(new string[0], int.MaxValue, 0).ConfigureAwait(false);
 
             Assert.AreEqual(expected, instances.Count());
@@ -156,7 +159,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             WorkflowInstance instance = await this.GetWorkflowInstance(instanceId).ConfigureAwait(false);
 
             ITenantedWorkflowStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
-            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(this.featureContext.GetTransientTenant()).ConfigureAwait(false);
+            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
 
             Workflow workflow = await store.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
             WorkflowState state = workflow.GetState(instance.StateId);
@@ -179,7 +182,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             await this.EnsureWorkflowInstanceIsNotBeingModified(id).ConfigureAwait(false);
 
             ITenantedWorkflowInstanceStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
-            IWorkflowInstanceStore store = await storeFactory.GetWorkflowInstanceStoreForTenantAsync(this.featureContext.GetTransientTenant()).ConfigureAwait(false);
+            IWorkflowInstanceStore store = await storeFactory.GetWorkflowInstanceStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
 
             try
             {

@@ -31,6 +31,7 @@
     <None Include="Marain-PostDeploy.ps1" />
     <None Include="Marain-PostDeployAad.ps1" />
     <None Include="Marain-PreDeploy.ps1" />
+    <None Include="packages.config" />
     <None Include="Templates\cosmos-db.json" />
     <None Include="Templates\functions-app-auth-settings.json" />
     <None Include="Templates\functions-app-settings-engine-host.json" />

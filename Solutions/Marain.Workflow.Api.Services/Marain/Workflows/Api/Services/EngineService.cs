@@ -6,7 +6,9 @@ namespace Marain.Workflows.Api.Services
 {
     using System.Threading.Tasks;
     using Corvus.Tenancy;
+    using Marain.Services.Tenancy;
     using Menes;
+    using Microsoft.Extensions.Configuration;
 
     /// <summary>
     /// Handles incoming triggers posted to the trigger service.
@@ -17,20 +19,24 @@ namespace Marain.Workflows.Api.Services
         private const string StartWorkflowInstanceOperationId = "startWorkflowInstance";
         private const string SendTriggerOperationId = "sendTrigger";
 
-        private readonly ITenantProvider tenantProvider;
+        private readonly IMarainServicesTenancy marainServicesTenancy;
         private readonly ITenantedWorkflowEngineFactory workflowEngineFactory;
+        private readonly IConfiguration configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EngineService"/> class.
         /// </summary>
         /// <param name="workflowEngineFactory">The workflow engine factory.</param>
-        /// <param name="tenantProvider">The tenant provider.</param>
+        /// <param name="marainServicesTenancy">The tenancy services.</param>
+        /// <param name="configuration">The configuration.</param>
         public EngineService(
             ITenantedWorkflowEngineFactory workflowEngineFactory,
-            ITenantProvider tenantProvider)
+            IMarainServicesTenancy marainServicesTenancy,
+            IConfiguration configuration)
         {
             this.workflowEngineFactory = workflowEngineFactory;
-            this.tenantProvider = tenantProvider;
+            this.marainServicesTenancy = marainServicesTenancy;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -43,7 +49,7 @@ namespace Marain.Workflows.Api.Services
         [OperationId(SendTriggerOperationId)]
         public async Task<OpenApiResult> HandleTrigger(string tenantId, string workflowInstanceId, IWorkflowTrigger body)
         {
-            ITenant tenant = await this.tenantProvider.GetTenantAsync(tenantId).ConfigureAwait(false);
+            ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(tenantId).ConfigureAwait(false);
             IWorkflowEngine workflowEngine = await this.workflowEngineFactory.GetWorkflowEngineAsync(tenant).ConfigureAwait(false);
             await workflowEngine.ProcessTriggerAsync(body, workflowInstanceId).ConfigureAwait(false);
             return this.OkResult();
@@ -58,7 +64,7 @@ namespace Marain.Workflows.Api.Services
         [OperationId(StartWorkflowInstanceOperationId)]
         public async Task<OpenApiResult> StartWorkflowInstance(string tenantId, StartWorkflowInstanceRequest body)
         {
-            ITenant tenant = await this.tenantProvider.GetTenantAsync(tenantId).ConfigureAwait(false);
+            ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(tenantId).ConfigureAwait(false);
             IWorkflowEngine workflowEngine = await this.workflowEngineFactory.GetWorkflowEngineAsync(tenant).ConfigureAwait(false);
             await workflowEngine.StartWorkflowInstanceAsync(body).ConfigureAwait(false);
             return this.CreatedResult();

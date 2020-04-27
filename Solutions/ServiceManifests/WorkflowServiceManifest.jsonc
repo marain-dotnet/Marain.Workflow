@@ -1,0 +1,34 @@
+{
+  "$schema": "./ServiceManifestSchema.json",
+  "contentType": "application/vnd.marain.tenancy.servicemanifests.servicemanifest",
+  "wellKnownTenantGuid": "8664b477-3403-4c77-abb2-f9d1b95b0c18", // This will encode to 3633754ac4c9be44b55bfe791b1780f177b464860334774cabb2f9d1b95b0c18
+  "serviceName": "Workflow v1",
+  "dependsOnServiceTenants": [
+    {
+      "id": "3633754ac4c9be44b55bfe791b1780f12429524fe7b6cc48a265a307407ec858",
+      "expectedName": "Operations v1"
+    },
+  ],
+  "requiredConfigurationEntries": [
+    {
+      "contentType": "application/vnd.marain.tenancy.servicemanifests.requiredconfigurationentries.cosmosdb",
+      "type": "cosmosContainerConfiguration",
+      "key": "workflowStore",
+      "containerDefinition": {
+        "databaseName": "workflow",
+        "containerName": "definitions"
+      },
+      "description": "Workflow definitions"
+    },
+    {
+      "contentType": "application/vnd.marain.tenancy.servicemanifests.requiredconfigurationentries.cosmosdb",
+      "type": "cosmosContainerConfiguration",
+      "key": "workflowInstanceStore",
+      "containerDefinition": {
+        "databaseName": "workflow",
+        "containerName": "instances"
+      },
+      "description": "Workflow instances"
+    }
+  ]
+}

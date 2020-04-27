@@ -12,6 +12,7 @@ namespace Marain.Workflows.Specs.Bindings
     using Corvus.Tenancy;
     using Marain.Workflows.Specs.Steps;
     using Microsoft.Azure.Cosmos;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
 
@@ -37,28 +38,48 @@ namespace Marain.Workflows.Specs.Bindings
             ITenantSqlConnectionFactory sqlConnectionFactory = serviceProvider.GetRequiredService<ITenantSqlConnectionFactory>();
             ITenantCosmosContainerFactory factory = serviceProvider.GetRequiredService<ITenantCosmosContainerFactory>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
+            IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
-            SqlConfiguration config = tenantProvider.Root.GetDefaultSqlConfiguration();
+            SqlConfiguration sqlConfig =
+                configuration.GetSection("TestSqlConfiguration").Get<SqlConfiguration>()
+                ?? new SqlConfiguration();
 
             string containerBase = Guid.NewGuid().ToString();
 
-            config.ConnectionString = "Server=(localdb)\\mssqllocaldb;Trusted_Connection=True;MultipleActiveResultSets=true";
-            config.Database = $"workflow-{containerBase}";
-            config.ConnectionStringSecretName = null;
-            config.KeyVaultName = null;
-            config.IsLocalDatabase = true;
-            config.DisableTenantIdPrefix = true;
-            tenantProvider.Root.SetDefaultSqlConfiguration(config);
+            sqlConfig.ConnectionString = "Server=(localdb)\\mssqllocaldb;Trusted_Connection=True;MultipleActiveResultSets=true";
+            sqlConfig.Database = $"workflow-{containerBase}";
+            sqlConfig.ConnectionStringSecretName = null;
+            sqlConfig.KeyVaultName = null;
+            sqlConfig.IsLocalDatabase = true;
+            sqlConfig.DisableTenantIdPrefix = true;
+            tenantProvider.Root.SetSqlConfiguration(
+                TenantedSqlWorkflowStoreServiceCollectionExtensions.WorkflowConnectionDefinition,
+                sqlConfig);
 
-            CosmosConfiguration cosmosConfig = tenantProvider.Root.GetDefaultCosmosConfiguration();
+            CosmosConfiguration cosmosConfig =
+                configuration.GetSection("TestCosmosConfiguration").Get<CosmosConfiguration>()
+                ?? new CosmosConfiguration();
+
             cosmosConfig.DatabaseName = "endjinspecssharedthroughput";
             cosmosConfig.DisableTenantIdPrefix = true;
-            tenantProvider.Root.SetDefaultCosmosConfiguration(cosmosConfig);
+
+            tenantProvider.Root.SetCosmosConfiguration(
+                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
+                cosmosConfig);
+
+            tenantProvider.Root.SetCosmosConfiguration(
+                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
+                cosmosConfig);
+
+            var testDocumentRepositoryContainerDefinition = new CosmosContainerDefinition("workflow", "testdocuments", "/id");
+            tenantProvider.Root.SetCosmosConfiguration(
+                testDocumentRepositoryContainerDefinition,
+                cosmosConfig);
 
             Container testDocumentsRepository = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
                 () => factory.GetContainerForTenantAsync(
                     tenantProvider.Root,
-                    new CosmosContainerDefinition("workflow", $"{containerBase}testdocuments", "/id"))).Result;
+                    testDocumentRepositoryContainerDefinition)).Result;
 
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
 
@@ -69,7 +90,7 @@ namespace Marain.Workflows.Specs.Bindings
             const string BUILD = "release";
 #endif
 
-            SqlHelpers.SetupDatabaseFromDacPac(config.ConnectionString, config.Database, @$"..\..\..\..\Marain.Workflow.Storage.Sql.Database\bin\{BUILD}\Marain.Workflow.Storage.Sql.Database.dacpac");
+            SqlHelpers.SetupDatabaseFromDacPac(sqlConfig.ConnectionString, sqlConfig.Database, @$"..\..\..\..\Marain.Workflow.Storage.Sql.Database\bin\{BUILD}\Marain.Workflow.Storage.Sql.Database.dacpac");
         }
 
         /// <summary>
@@ -84,7 +105,7 @@ namespace Marain.Workflows.Specs.Bindings
             ITenantSqlConnectionFactory sqlConnectionFactory = serviceProvider.GetRequiredService<ITenantSqlConnectionFactory>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
 
-            SqlConfiguration config = tenantProvider.Root.GetDefaultSqlConfiguration();
+            SqlConfiguration config = tenantProvider.Root.GetSqlConfiguration(TenantedSqlWorkflowStoreServiceCollectionExtensions.WorkflowConnectionDefinition);
 
             featureContext.RunAndStoreExceptions(() =>
                 SqlHelpers.DeleteDatabase(config.ConnectionString, config.Database));

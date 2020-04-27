@@ -2,12 +2,13 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.ContentManagement.Specs.Bindings
+namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System;
     using System.Threading.Tasks;
     using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Marain.TenantManagement.Testing;
     using Marain.Workflows;
     using Marain.Workflows.Storage;
     using Microsoft.Extensions.DependencyInjection;
@@ -34,22 +35,22 @@ namespace Marain.ContentManagement.Specs.Bindings
         [AfterFeature]
         public static async Task ClearDownTransientTenantContentStore(FeatureContext context)
         {
-            ITenant currentTenant = context.GetTransientTenant();
+            ITenant transientTenant = TransientTenantManager.GetInstance(context).PrimaryTransientClient;
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(context);
 
-            if (currentTenant != null && serviceProvider != null)
+            if (transientTenant != null && serviceProvider != null)
             {
                 await context.RunAndStoreExceptionsAsync(async () =>
                     {
                         ITenantedWorkflowStoreFactory workflowStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
-                        var workflowStore = (CosmosWorkflowStore)await workflowStoreFactory.GetWorkflowStoreForTenantAsync(currentTenant).ConfigureAwait(false);
+                        var workflowStore = (CosmosWorkflowStore)await workflowStoreFactory.GetWorkflowStoreForTenantAsync(transientTenant).ConfigureAwait(false);
                         await workflowStore.Container.DeleteContainerAsync().ConfigureAwait(false);
                     }).ConfigureAwait(false);
 
                 await context.RunAndStoreExceptionsAsync(async () =>
                 {
                     ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
-                    var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(currentTenant).ConfigureAwait(false);
+                    var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(transientTenant).ConfigureAwait(false);
                     await workflowInstanceStore.Container.DeleteContainerAsync().ConfigureAwait(false);
                 }).ConfigureAwait(false);
             }

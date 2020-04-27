@@ -1,6 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <GitHubOrg>marain-dotnet</GitHubOrg>
-    <GitHubProject>Marain.Workflow</GitHubProject>
-  </PropertyGroup>
-</Project>

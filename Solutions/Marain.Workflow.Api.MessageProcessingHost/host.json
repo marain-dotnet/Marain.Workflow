@@ -1,5 +1,5 @@
 {
-  "version":"2.0",
+  "version": "2.0",
   "functionTimeout": "00:10:00",
   "extensions": {
     "http": {
@@ -7,6 +7,14 @@
     },
     "durableTask": {
       "hubName": "TaskHubV2"
+    }
+  },
+  "logging": {
+    "logLevel": {
+      "default": "Debug"
+    },
+    "console": {
+      "isEnabled": true
     }
   }
 }

@@ -2,13 +2,13 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflow.Api.Specs.Bindings
+namespace Marain.Workflows.Api.Specs.Bindings
 {
     using Corvus.Azure.Cosmos.Tenancy;
-    using Corvus.Azure.Storage.Tenancy;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.Leasing;
     using Corvus.SpecFlow.Extensions;
+    using Marain.Services;
     using Marain.Tenancy.Client;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -45,26 +45,23 @@ namespace Marain.Workflow.Api.Specs.Bindings
 
                     string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
 
-                    // Work around the fact that the tenancy client currently tries to fetch the root tenant on startup.
-                    services.AddRootTenant();
-
-                    services.AddSingleton(sp => sp.GetRequiredService<IConfiguration>().GetSection("TenancyClient").Get<TenancyClientOptions>());
                     services.AddAzureManagedIdentityBasedTokenSource(
                         new AzureManagedIdentityTokenSourceOptions
                         {
                             AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
                         });
 
+                    services.AddRootTenant();
+                    services.AddSingleton(sp => sp.GetRequiredService<IConfiguration>().GetSection("TenancyClient").Get<TenancyClientOptions>());
+
+                    services.AddSingleton(new MarainServiceConfiguration());
+                    services.AddMarainServicesTenancy();
                     services.AddTenantProviderServiceClient();
 
-                    TenantCosmosContainerFactoryOptions cosmosConfiguration = root.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
-                        ?? new TenantCosmosContainerFactoryOptions();
-                    if (cosmosConfiguration.RootTenantCosmosConfiguration == null)
+                    services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
                     {
-                        cosmosConfiguration.RootTenantCosmosConfiguration = new CosmosConfiguration();
-                    }
-
-                    services.AddTenantCosmosContainerFactory(cosmosConfiguration);
+                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                    });
 
                     services.AddTenantedWorkflowEngineFactory();
                     services.AddTenantedAzureCosmosWorkflowStore();

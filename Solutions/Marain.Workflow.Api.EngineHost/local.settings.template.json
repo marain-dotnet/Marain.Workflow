@@ -8,6 +8,9 @@
     "AI:DeveloperMode": "true",
     "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
 
+    "MarainServiceConfiguration:ServiceTenantId": "3633754ac4c9be44b55bfe791b1780f177b464860334774cabb2f9d1b95b0c18",
+    "MarainServiceConfiguration:ServiceDisplayName": "Workflow v1",
+
     // If running with a local tenancy service, point TenancyClient:TenancyServiceBaseUri at the localhost address for that
     // and set the ResourceIdForMsiAuthentication to an empty string.
     "TenancyClient:TenancyServiceBaseUri": "https://mardevtenancy.azurewebsites.net/",
@@ -18,19 +21,12 @@
     "Operations:ControlServiceBaseUrl": "https://mardevoperationscontrol.azurewebsites.net/",
     "Operations:ResourceIdForMsiAuthentication": "97642f9e-efcb-47c2-8c1e-bf21a3e9cdf6",
 
-    // Remove these to use the local storage emulator.
-    "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountUri": "https://endjintestsql.documents.azure.com/",
-    "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountKeySecretName": "endjintestsql",
-    "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:KeyVaultName": "endjintest",
-    "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:DisableTenantIdPrefix": "true"
-
-    // If either TenancyClient:TenancyServiceBaseUri or Operations:ControlServiceBaseUrl refer to an instance in
-    // Azure, or if you've configured TenantCosmosContainerFactoryOptions, this local service will need to authenticate.
-    // And for that to work, you won't be able to use the normal az cli-based AzureServicesAuthConnectionString
-    // (because az cli is only able to obtain tokens for a fixed set of known Microsoft resource; it can't be
-    // used to obtain tokens for arbitrary applications that we've defined). Instead, you'll need to create
-    // a suitable service principle in AAD, grant that service principle access to the tenancy service, and
-    // set up the credentials like this instead of the setting above:
-    //  "AzureServicesAuthConnectionString": "RunAs=App;AppId=AppIdForYourServicePrinciple;TenantId=0f621c67-98a0-4ed5-b5bd-31a35be41e29;AppKey=YourAppSecretHere"
+    // If you are running locally but your tenant configuration is making use of resources in Azure, this local service will
+    // need to authenticate. And for that to work, you won't be able to use the normal az cli-based
+    // AzureServicesAuthConnectionString (because az cli is only able to obtain tokens for a fixed set of known Microsoft
+    // resource; it can't be used to obtain tokens for arbitrary applications that we've defined). Instead, you'll need to
+    // create a suitable service principle in AAD, grant that service principle access to the tenancy service, and set up the
+    // credentials like this instead of the setting above:
+    // "AzureServicesAuthConnectionString": "RunAs=App;AppId=AppIdForYourServicePrinciple;TenantId=0f621c67-98a0-4ed5-b5bd-31a35be41e29;AppKey=YourAppSecretHere"
   } 
 }

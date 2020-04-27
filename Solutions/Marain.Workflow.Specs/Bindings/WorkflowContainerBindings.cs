@@ -41,31 +41,26 @@ namespace Marain.Workflows.Specs.Bindings
 
                     IConfiguration root = configurationBuilder.Build();
 
+                    string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
+
                     services.AddSingleton(root);
 
                     services.AddLogging();
 
+                    services.AddRootTenant();
+                    services.AddInMemoryTenantProvider();
+
                     services.AddJsonSerializerSettings();
 
-                    services.AddSingleton<ITenantProvider, FakeTenantProvider>();
-
-                    TenantCosmosContainerFactoryOptions cosmosConfiguration = root.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
-                        ?? new TenantCosmosContainerFactoryOptions();
-                    if (cosmosConfiguration.RootTenantCosmosConfiguration == null)
+                    services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
                     {
-                        cosmosConfiguration.RootTenantCosmosConfiguration = new CosmosConfiguration();
-                    }
+                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                    });
 
-                    services.AddTenantCosmosContainerFactory(cosmosConfiguration);
-
-                    TenantSqlConnectionFactoryOptions sqlConfiguration = root.GetSection("TenantSqlConnectionFactoryOptions").Get<TenantSqlConnectionFactoryOptions>()
-                        ?? new TenantSqlConnectionFactoryOptions();
-                    if (sqlConfiguration.RootTenantSqlConfiguration == null)
+                    services.AddTenantSqlConnectionFactory(new TenantSqlConnectionFactoryOptions
                     {
-                        sqlConfiguration.RootTenantSqlConfiguration = new SqlConfiguration();
-                    }
-
-                    services.AddTenantSqlConnectionFactory(sqlConfiguration);
+                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                    });
 
                     services.AddInMemoryWorkflowTriggerQueue();
                     services.AddInMemoryLeasing();

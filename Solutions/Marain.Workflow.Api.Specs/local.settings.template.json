@@ -11,26 +11,22 @@
   "Operations:ControlServiceBaseUrl": "https://mardevoperationscontrol.azurewebsites.net/",
   "Operations:ResourceIdForMsiAuthentication": "97642f9e-efcb-47c2-8c1e-bf21a3e9cdf6",
 
-  // Until we come up with a better way to create test tenants, this needs to be set to point to
-  // whatever storage account is being used by the tenancy service you're using.
-  "TenantCloudBlobContainerFactoryOptions:RootTenantBlobStorageConfiguration:AccountName": "<Tenancy Storage Account Connection String Here>",
+  // Blob storage configuration for Operations during testing.
+  // Remove this to use local storage emulator.
+  "TestBlobStorageConfiguration:AccountName": "<Tenancy Storage Account Connection String Here>",
 
+  // CosmosDb configuration for testing.
   // Remove these to use the local storage emulator.
-  "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountUri": "https://endjintestsql.documents.azure.com/",
-  "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:AccountKeySecretName": "endjintestsql",
-  "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:KeyVaultName": "endjintest",
-  "TenantCosmosContainerFactoryOptions:RootTenantCosmosConfiguration:DisableTenantIdPrefix": "true",
+  "TestCosmosConfiguration:AccountUri": "https://endjintestsql.documents.azure.com/",
+  "TestCosmosConfiguration:AccountKeySecretName": "endjintestsql",
+  "TestCosmosConfiguration:KeyVaultName": "endjintest",
+  "TestCosmosConfiguration:DisableTenantIdPrefix": "true"
 
-  "TenantSqlConnectionFactoryOptions:RootTenantSqlConfiguration:Database": "endjintestsql",
-  "TenantSqlConnectionFactoryOptions:RootTenantSqlConfiguration:ConnectionStringSecretName": "endjintestazuresql",
-  "TenantSqlConnectionFactoryOptions:RootTenantSqlConfiguration:KeyVaultName": "endjintest"
-
-  // If either TenancyClient:TenancyServiceBaseUri or Operations:ControlServiceBaseUrl refer to an instance in
-  // Azure, or if you've configured TenantCosmosContainerFactoryOptions, this local service will need to authenticate.
-  // And for that to work, you won't be able to use the normal az cli-based AzureServicesAuthConnectionString
-  // (because az cli is only able to obtain tokens for a fixed set of known Microsoft resource; it can't be
-  // used to obtain tokens for arbitrary applications that we've defined). Instead, you'll need to create
-  // a suitable service principle in AAD, grant that service principle access to the tenancy service, and
+  // If any of the TenancyClient, Operations, TestBlobStorageConfiguration or TestCosmosConfguration are set to point at
+  // resources in Azure, this local service will need to authenticate. And for that to work, you won't be able to use the
+  // normal az cli-based AzureServicesAuthConnectionString (because az cli is only able to obtain tokens for a fixed set of
+  // known Microsoft resource; it can't be used to obtain tokens for arbitrary applications that we've defined). Instead,
+  // you'll need to create a suitable service principle in AAD, grant that service principle access to the tenancy service, and
   // set up the credentials like this instead of the setting above:
   //  "AzureServicesAuthConnectionString": "RunAs=App;AppId=AppIdForYourServicePrinciple;TenantId=0f621c67-98a0-4ed5-b5bd-31a35be41e29;AppKey=YourAppSecretHere"
 }

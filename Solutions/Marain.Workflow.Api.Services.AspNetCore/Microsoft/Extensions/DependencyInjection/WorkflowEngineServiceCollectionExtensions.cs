@@ -75,24 +75,21 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddLogging();
 
             // Work around the fact that the tenancy client currently tries to fetch the root tenant on startup.
-            services.AddRootTenant();
+            services.AddMarainServiceConfiguration();
 
+            services.AddRootTenant();
+            services.AddMarainServicesTenancy();
             services.AddSingleton(sp => sp.GetRequiredService<IConfiguration>().GetSection("TenancyClient").Get<TenancyClientOptions>());
-            services.AddAzureManagedIdentityBasedTokenSource();
             services.AddTenantProviderServiceClient();
+
+            services.AddAzureManagedIdentityBasedTokenSource();
 
             services.AddTenantCosmosContainerFactory(sp =>
             {
                 IConfiguration config = sp.GetRequiredService<IConfiguration>();
 
-                TenantCosmosContainerFactoryOptions cosmosConfiguration = config.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
+                return config.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
                     ?? new TenantCosmosContainerFactoryOptions();
-                if (cosmosConfiguration.RootTenantCosmosConfiguration == null)
-                {
-                    cosmosConfiguration.RootTenantCosmosConfiguration = new CosmosConfiguration();
-                }
-
-                return cosmosConfiguration;
             });
 
             services.AddTenantedWorkflowEngineFactory();
