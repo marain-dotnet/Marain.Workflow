@@ -32,6 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 factory.RegisterTransientContent<EntityIdTrigger>();
                 factory.RegisterTransientContent<HostedWorkflowTrigger>();
                 factory.RegisterTransientContent<HostedWorkflowTriggerNameCondition>();
+                factory.RegisterTransientContent<HostedWorkflowTriggerParameterCondition>();
                 factory.RegisterTransientContent<EntityIdCondition>();
                 factory.RegisterTransientContent<TriggerContentTypeCondition>();
                 factory.RegisterTransientContent<WorkflowMessageEnvelope>();
