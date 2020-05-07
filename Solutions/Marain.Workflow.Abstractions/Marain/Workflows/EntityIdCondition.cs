@@ -59,7 +59,7 @@ namespace Marain.Workflows
 
             if (trigger is EntityIdTrigger etrigger)
             {
-                if (instance.Context.TryGetValue(this.EntityIdContextProperty, out string value))
+                if (instance.Context.TryGet(this.EntityIdContextProperty, out string value))
                 {
                     result = value == etrigger.EntityId;
                 }
@@ -73,7 +73,7 @@ namespace Marain.Workflows
         /// <inheritdoc />
         public IEnumerable<string> GetInterests(WorkflowInstance instance)
         {
-            if (instance.Context.TryGetValue(this.EntityIdContextProperty, out string value))
+            if (instance.Context.TryGet(this.EntityIdContextProperty, out string value))
             {
                 return new[] { value };
             }

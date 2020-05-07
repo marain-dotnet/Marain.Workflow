@@ -13,6 +13,7 @@ namespace Marain.Workflows
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Json;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -44,21 +45,26 @@ namespace Marain.Workflows
         private static readonly HttpClient HttpClient = new HttpClient();
         private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
+        private readonly IPropertyBagFactory propertyBagFactory;
         private HttpMethod httpMethod;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvokeExternalServiceAction"/> class.
         /// </summary>
         /// <param name="serviceIdentityTokenSource">The token source to use when authenticating to third party services.</param>
+        /// <param name="propertyBagFactory">The property bag factory that will be used to populate the request.</param>
         /// <param name="serializerSettingsProvider">The serialization settings to use when serializing requests.</param>
         public InvokeExternalServiceCondition(
             IServiceIdentityTokenSource serviceIdentityTokenSource,
+            IPropertyBagFactory propertyBagFactory,
             IJsonSerializerSettingsProvider serializerSettingsProvider)
         {
             this.serviceIdentityTokenSource =
                 serviceIdentityTokenSource ?? throw new ArgumentNullException(nameof(serviceIdentityTokenSource));
             this.serializerSettingsProvider =
                 serializerSettingsProvider ?? throw new ArgumentNullException(nameof(serializerSettingsProvider));
+            this.propertyBagFactory =
+                propertyBagFactory ?? throw new ArgumentNullException(nameof(propertyBagFactory));
         }
 
         /// <inheritdoc />
@@ -144,9 +150,9 @@ namespace Marain.Workflows
 
             if (this.ContextItemsToInclude?.Any() == true)
             {
-                responseBody.ContextProperties = instance.Context
-                    .Where(kv => this.ContextItemsToInclude.Contains(kv.Key))
-                    .ToDictionary(kv => kv.Key, kv => kv.Value);
+                responseBody.ContextProperties = this.propertyBagFactory.CreateModified(
+                    instance.Context,
+                    values => values.Where(kv => this.ContextItemsToInclude.Contains(kv.Key)));
             }
 
             request.Content = new StringContent(

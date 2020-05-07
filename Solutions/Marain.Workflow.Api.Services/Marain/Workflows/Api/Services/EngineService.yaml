@@ -86,18 +86,10 @@ components:
           example: "a29caa9f-0150-42f8-9e7b-a477fcb18112"
           description: The Id of the new workflow instance
         context:
-          type: object
-          nullable: true
-          additionalProperties:
-            type: string
-          description: Parameters for the new workflow instance. This will be processed on the server as a list of key/value pairs.
-          example:
-            "Name": "John Smith"
-            "Age": "42"
+          $ref: "#/components/schemas/PropertyBag"
       required:
         - workflowId
         - contentType
-
     Trigger:
       properties:
         id:
@@ -124,17 +116,20 @@ components:
           items:
             type: string
         parameters:
-          type: object
-          nullable: true
-          additionalProperties:
-            type: string
-          description: Parameters for this trigger. This will be processed on the server as a list of key/value pairs - complex objects should not be used.
-          example:
-            "Name": "John Smith"
-            "Age": "42"
+          $ref: "#/components/schemas/PropertyBag"
       required:
         - contentType
         - triggerName
+    PropertyBag:
+      type: object
+      additionalProperties:
+        oneOf:
+          - type: array
+          - type: boolean
+          - type: integer
+          - type: number
+          - type: object
+          - type: string
 
     ############################################################################
     # RFC 7807 Problem Details response definition

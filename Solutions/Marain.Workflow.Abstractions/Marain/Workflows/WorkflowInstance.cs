@@ -7,7 +7,7 @@ namespace Marain.Workflows
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using Corvus.Json;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -19,12 +19,6 @@ namespace Marain.Workflows
         /// The registered content type used when this object is serialized/deserialized.
         /// </summary>
         public const string RegisteredContentType = "application/vnd.marain.workflows.workflowinstance";
-
-        /// <summary>
-        /// Context dictionary for the workflow. This can be used to store any useful data
-        /// needed by workflow states to simplify execution of their triggers and actions.
-        /// </summary>
-        private IDictionary<string, string> context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance" /> class.
@@ -51,12 +45,7 @@ namespace Marain.Workflows
         /// can choose to add specific pieces of that data.
         /// </para>
         /// </remarks>
-        public IDictionary<string, string> Context
-        {
-            get => this.context ?? (this.context = new Dictionary<string, string>());
-
-            set => this.context = value;
-        }
+        public IPropertyBag Context { get; set; }
 
         /// <summary>
         /// Gets or sets the unique Id of this workflow instance.

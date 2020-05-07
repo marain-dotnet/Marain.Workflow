@@ -16,7 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Sql.Tenancy" Version="0.24.0-preview.37" />
+    <PackageReference Include="Corvus.Sql.Tenancy" Version="0.25.0" />
+    <PackageReference Include="Corvus.Tenancy.Abstractions" Version="0.25.0" />
     <PackageReference Include="Endjin.RecommendedPractices" Version="0.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

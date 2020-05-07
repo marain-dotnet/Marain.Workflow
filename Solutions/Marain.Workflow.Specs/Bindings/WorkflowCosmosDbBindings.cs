@@ -7,6 +7,7 @@ namespace Marain.Workflows.Specs.Bindings
     using System;
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
+    using Corvus.Json;
     using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
     using Marain.Workflows.Specs.Steps;
@@ -42,6 +43,7 @@ namespace Marain.Workflows.Specs.Bindings
             ITenantCosmosContainerFactory factory = serviceProvider.GetRequiredService<ITenantCosmosContainerFactory>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
             IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            IPropertyBagFactory propertyBagFactory = serviceProvider.GetRequiredService<IPropertyBagFactory>();
 
             ITenant rootTenant = tenantProvider.Root;
 
@@ -52,13 +54,15 @@ namespace Marain.Workflows.Specs.Bindings
             cosmosConfig.DatabaseName = "endjinspecssharedthroughput";
             cosmosConfig.DisableTenantIdPrefix = true;
 
-            tenantProvider.Root.SetCosmosConfiguration(
-                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
-                cosmosConfig);
+            tenantProvider.Root.UpdateProperties(
+                values => values.AddCosmosConfiguration(
+                    TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
+                    cosmosConfig));
 
-            tenantProvider.Root.SetCosmosConfiguration(
-                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
-                cosmosConfig);
+            tenantProvider.Root.UpdateProperties(
+                values => values.AddCosmosConfiguration(
+                    TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
+                    cosmosConfig));
 
             var testDocumentRepositoryContainerDefinition = new CosmosContainerDefinition("workflow", "testdocuments", "/id");
             tenantProvider.Root.SetCosmosConfiguration(

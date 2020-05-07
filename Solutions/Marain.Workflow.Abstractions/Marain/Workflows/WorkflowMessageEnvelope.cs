@@ -6,6 +6,7 @@ namespace Marain.Workflows
 {
     using System;
     using Corvus.Extensions.Json;
+    using Corvus.Json;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -63,8 +64,8 @@ namespace Marain.Workflows
         public Guid OperationId { get; set; }
 
         /// <summary>
-        /// Gets or sets a <see cref="PropertyBag"/> containing any additional data.
+        /// Gets or sets a <see cref="IPropertyBag"/> containing any additional data.
         /// </summary>
-        public PropertyBag Properties { get; set; } = new PropertyBag();
+        public IPropertyBag Properties { get; set; }
     }
 }

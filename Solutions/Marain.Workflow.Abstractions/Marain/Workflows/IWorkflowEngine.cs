@@ -6,6 +6,7 @@ namespace Marain.Workflows
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Corvus.Json;
 
     /// <summary>
     /// The workflow engine. Manages the processing of triggers (classes inheriting <see cref="IWorkflowTrigger" />
@@ -53,6 +54,6 @@ namespace Marain.Workflows
             string workflowPartitionKey = null,
             string instanceId = null,
             string instancePartitionKey = null,
-            IDictionary<string, string> context = null);
+            IPropertyBag context = null);
     }
 }

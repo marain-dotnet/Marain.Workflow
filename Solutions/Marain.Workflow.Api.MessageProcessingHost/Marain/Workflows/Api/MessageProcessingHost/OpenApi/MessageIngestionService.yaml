@@ -98,14 +98,7 @@ components:
             - "74f4ce70-afa9-40bb-8516-7680e2604069"
             - "2d4722c1-3915-4b3b-a338-15595d98f01f"
         parameters:
-          type: object
-          nullable: true
-          additionalProperties:
-            type: string
-          description: Parameters for this trigger. This will be processed on the server as a list of key/value pairs - complex objects should not be used.
-          example:
-            "Name": "John Smith"
-            "Age": "42"
+          $ref: "#/components/schemas/PropertyBag"
       required:
         - contentType
         - triggerName
@@ -134,17 +127,20 @@ components:
           example: "e58627e6-91eb-4283-a171-53414aa6618b"
           description: Id to give the new workflow instance. If omitted, an Id will be generated.
         context:
-          type: object
-          nullable: true
-          additionalProperties:
-            type: string
-          description: Parameters for this trigger. This will be processed on the server as a list of key/value pairs - complex objects should not be used.
-          example:
-            "Name": "John Smith"
-            "Age": "42"
+          $ref: "#/components/schemas/PropertyBag"
       required:
         - contentType
         - workflowId
+    PropertyBag:
+      type: object
+      additionalProperties:
+        oneOf:
+          - type: array
+          - type: boolean
+          - type: integer
+          - type: number
+          - type: object
+          - type: string
 
     ############################################################################
     # RFC 7807 Problem Details response definition

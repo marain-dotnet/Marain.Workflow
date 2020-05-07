@@ -5,6 +5,7 @@
 namespace Marain.Workflows
 {
     using System.Collections.Generic;
+    using Corvus.Json;
 
     /// <summary>
     /// Defines the structure of the HTTP request body sent to external services by an
@@ -83,6 +84,6 @@ namespace Marain.Workflows
         /// <see cref="InvokeExternalServiceCondition.ContextItemsToInclude"/>, and will be null if
         /// that list is null or empty.
         /// </remarks>
-        public IDictionary<string, string> ContextProperties { get; set; }
+        public IPropertyBag ContextProperties { get; set; }
     }
 }

@@ -73,12 +73,12 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Activities
             var subjects = new ObservableCollection<string>();
             workflowTrigger.Subjects?.ForEach(subjects.Add);
 
+            // TODO: Set parameters
             var body = new Trigger
             {
                 Id = workflowTrigger.Id,
                 Subjects = subjects,
                 TriggerName = workflowTrigger.TriggerName,
-                Parameters = workflowTrigger.Parameters,
             };
 
             await this.client.SendTriggerAsync(envelope.TenantId, instanceId, body);

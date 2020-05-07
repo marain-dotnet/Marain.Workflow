@@ -6,7 +6,7 @@ namespace Marain.Workflows
 {
     using System;
     using System.Collections.Generic;
-
+    using Corvus.Json;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -27,10 +27,10 @@ namespace Marain.Workflows
 
         /// <summary>
         /// Gets or sets the context. This will be passed to the
-        /// <see cref="WorkflowEngine.CreateWorkflowInstanceAsync(string, string, string, string, IDictionary{string, string})" />
+        /// <see cref="WorkflowEngine.CreateWorkflowInstanceAsync(string, string, string, string, IPropertyBag)" />
         /// method when creating the new instance.
         /// </summary>
-        public IDictionary<string, string> Context { get; set; }
+        public IPropertyBag Context { get; set; }
 
         /// <summary>
         /// Gets or sets the id of this request. This can be used for diagnostic purposes.

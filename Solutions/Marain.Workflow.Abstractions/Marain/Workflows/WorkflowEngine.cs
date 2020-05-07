@@ -6,7 +6,9 @@ namespace Marain.Workflows
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using Corvus.Json;
     using Corvus.Leasing;
     using Corvus.Retry;
     using Microsoft.Extensions.Logging;
@@ -15,6 +17,7 @@ namespace Marain.Workflows
     public class WorkflowEngine : IWorkflowEngine
     {
         private readonly ILeaseProvider leaseProvider;
+        private readonly IPropertyBagFactory propertyBagFactory;
         private readonly ILogger<IWorkflowEngine> logger;
 
         private readonly IWorkflowInstanceStore workflowInstanceStore;
@@ -26,11 +29,13 @@ namespace Marain.Workflows
         /// <param name="workflowStore">The repository in which to store workflows.</param>
         /// <param name="workflowInstanceStore">The repository in which to store workflow instances.</param>
         /// <param name="leaseProvider">The lease provider.</param>
+        /// <param name="propertyBagFactory">The <see cref="IPropertyBag"/>"/>.</param>
         /// <param name="logger">A logger for the workflow instance service.</param>
         public WorkflowEngine(
             IWorkflowStore workflowStore,
             IWorkflowInstanceStore workflowInstanceStore,
             ILeaseProvider leaseProvider,
+            IPropertyBagFactory propertyBagFactory,
             ILogger<IWorkflowEngine> logger)
         {
             this.workflowStore = workflowStore ?? throw new ArgumentNullException(nameof(workflowStore));
@@ -38,6 +43,7 @@ namespace Marain.Workflows
                 workflowInstanceStore ?? throw new ArgumentNullException(nameof(workflowInstanceStore));
 
             this.leaseProvider = leaseProvider ?? throw new ArgumentNullException(nameof(leaseProvider));
+            this.propertyBagFactory = propertyBagFactory ?? throw new ArgumentNullException(nameof(propertyBagFactory));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -58,7 +64,7 @@ namespace Marain.Workflows
             string workflowPartitionKey = null,
             string instanceId = null,
             string instancePartitionKey = null,
-            IDictionary<string, string> context = null)
+            IPropertyBag context = null)
         {
             return Retriable.RetryAsync(() =>
             this.CreateWorkflowInstanceAsync(workflowId, workflowPartitionKey, instanceId, instancePartitionKey, context));
@@ -161,7 +167,7 @@ namespace Marain.Workflows
             string workflowPartitionKey = null,
             string workflowInstanceId = null,
             string workflowInstancePartitionKey = null,
-            IDictionary<string, string> context = null)
+            IPropertyBag context = null)
         {
             var instance = new WorkflowInstance();
 
@@ -522,10 +528,10 @@ namespace Marain.Workflows
         /// takes a shared lease at the earliest possible moment.
         /// </para>
         /// </remarks>
-        private async Task InitializeInstanceAsync(WorkflowInstance instance, Workflow workflow, IDictionary<string, string> context = null)
+        private async Task InitializeInstanceAsync(WorkflowInstance instance, Workflow workflow, IPropertyBag context = null)
         {
             instance.WorkflowId = workflow.Id;
-            instance.Context = context;
+            instance.Context = context ?? this.propertyBagFactory.Create(Enumerable.Empty<KeyValuePair<string, object>>());
 
             WorkflowState workflowState = workflow.GetInitialState();
 

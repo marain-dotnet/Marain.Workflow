@@ -8,6 +8,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
     using System;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
+    using Corvus.Json;
     using Marain.Workflows.Api.MessageProcessingHost.Activities;
     using Marain.Workflows.Api.MessageProcessingHost.Shared;
     using Microsoft.Azure.WebJobs;
@@ -20,14 +21,19 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
     public class TriggerExecutionOrchestrator
     {
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
+        private readonly IPropertyBagFactory propertyBagFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TriggerExecutionOrchestrator"/> class.
         /// </summary>
+        /// <param name="propertyBagFactory">The <see cref="IPropertyBagFactory"/>.</param>
         /// <param name="serializerSettingsProvider">The serialization settings provider.</param>
-        public TriggerExecutionOrchestrator(IJsonSerializerSettingsProvider serializerSettingsProvider)
+        public TriggerExecutionOrchestrator(
+            IPropertyBagFactory propertyBagFactory,
+            IJsonSerializerSettingsProvider serializerSettingsProvider)
         {
             this.serializerSettingsProvider = serializerSettingsProvider;
+            this.propertyBagFactory = propertyBagFactory;
         }
 
         /// <summary>
@@ -80,7 +86,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
 
                     for (int i = 0; i < pages; i++)
                     {
-                        envelope.SetWorkflowInstancesPageNumber(i);
+                        envelope.SetWorkflowInstancesPageNumber(i, this.propertyBagFactory);
                         tasks[i] = orchestrationContext.CallSubOrchestratorWithCustomSerializationSettingsAsync(
                             nameof(TriggerInstancesExecutionOrchestrator),
                             envelope,
