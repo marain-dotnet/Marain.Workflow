@@ -38,10 +38,7 @@ namespace Marain.Workflows.EngineHost.Client.Models
         /// process the trigger, so it is strongly recommended that you always
         /// supply a value. If possible, use the Id of the specific workflow
         /// instance that you want to process the trigger.</param>
-        /// <param name="parameters">Parameters for this trigger. This will be
-        /// processed on the server as a list of key/value pairs - complex
-        /// objects should not be used.</param>
-        public Trigger(string triggerName, string id = default(string), IList<string> subjects = default(IList<string>), IDictionary<string, string> parameters = default(IDictionary<string, string>))
+        public Trigger(string triggerName, string id = default(string), IList<string> subjects = default(IList<string>), IDictionary<string, object> parameters = default(IDictionary<string, object>))
         {
             Id = id;
             TriggerName = triggerName;
@@ -91,12 +88,9 @@ namespace Marain.Workflows.EngineHost.Client.Models
         public IList<string> Subjects { get; set; }
 
         /// <summary>
-        /// Gets or sets parameters for this trigger. This will be processed on
-        /// the server as a list of key/value pairs - complex objects should
-        /// not be used.
         /// </summary>
         [JsonProperty(PropertyName = "parameters")]
-        public IDictionary<string, string> Parameters { get; set; }
+        public IDictionary<string, object> Parameters { get; set; }
 
         /// <summary>
         /// </summary>

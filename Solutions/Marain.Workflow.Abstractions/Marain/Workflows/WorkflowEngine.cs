@@ -29,7 +29,7 @@ namespace Marain.Workflows
         /// <param name="workflowStore">The repository in which to store workflows.</param>
         /// <param name="workflowInstanceStore">The repository in which to store workflow instances.</param>
         /// <param name="leaseProvider">The lease provider.</param>
-        /// <param name="propertyBagFactory">The <see cref="IPropertyBag"/>"/>.</param>
+        /// <param name="propertyBagFactory">The <see cref="IPropertyBag"/>"/> factory.</param>
         /// <param name="logger">A logger for the workflow instance service.</param>
         public WorkflowEngine(
             IWorkflowStore workflowStore,

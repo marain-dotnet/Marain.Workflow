@@ -30,10 +30,7 @@ namespace Marain.Workflows.EngineHost.Client.Models
         /// <param name="requestId">Unique Id for this request</param>
         /// <param name="workflowInstanceId">The Id of the new workflow
         /// instance</param>
-        /// <param name="context">Parameters for the new workflow instance.
-        /// This will be processed on the server as a list of key/value
-        /// pairs.</param>
-        public StartWorkflowRequest(string workflowId, string requestId = default(string), string workflowInstanceId = default(string), IDictionary<string, string> context = default(IDictionary<string, string>))
+        public StartWorkflowRequest(string workflowId, string requestId = default(string), string workflowInstanceId = default(string), IDictionary<string, object> context = default(IDictionary<string, object>))
         {
             RequestId = requestId;
             WorkflowId = workflowId;
@@ -74,11 +71,9 @@ namespace Marain.Workflows.EngineHost.Client.Models
         public string WorkflowInstanceId { get; set; }
 
         /// <summary>
-        /// Gets or sets parameters for the new workflow instance. This will be
-        /// processed on the server as a list of key/value pairs.
         /// </summary>
         [JsonProperty(PropertyName = "context")]
-        public IDictionary<string, string> Context { get; set; }
+        public IDictionary<string, object> Context { get; set; }
 
         /// <summary>
         /// </summary>

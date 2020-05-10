@@ -113,9 +113,9 @@ namespace Marain.Workflows
                             string variableName = logMessage.Substring(
                                 state.IndexOfVariableNameStart,
                                 i - state.IndexOfVariableNameStart);
-                            if (instance.Context.TryGetValue(variableName, out _))
+                            if (instance.Context.TryGet(variableName, out string variableValue))
                             {
-                                sb.Append(instance.Context[variableName]);
+                                sb.Append(variableValue);
                             }
                             else
                             {

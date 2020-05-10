@@ -19,7 +19,7 @@ namespace Marain.Workflows
     {
         /// <summary>
         /// The <see cref="WorkflowStatus" /> has been created and persisted, but initialization has not yet completed. This
-        /// implies that <see cref="WorkflowEngine.CreateWorkflowInstanceAsync(string, string, string, string, System.Collections.Generic.IDictionary{string, string})"/>
+        /// implies that <see cref="WorkflowEngine.CreateWorkflowInstanceAsync(string, string, string, string, Corvus.Json.IPropertyBag)"/>
         /// is still in progress, or has aborted without completing.
         /// </summary>
         Initializing,
