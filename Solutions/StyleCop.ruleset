@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
     Note: this file was added to your solution as a result of one or more projects using the Endjin.RecommendedPractices.Build.Common NuGet package.
     You can edit this file (e.g., to remove these comments), and it will not be updated - the package just checks for its presence, and copies
@@ -27,5 +27,8 @@
         disable this rule just inside switch expressions, so we reluctantly live without it.
     -->
     <Rule Id="SA1025" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.Azure.WebJobs.Extensions.DurableTask.Analyzers" RuleNamespace="Microsoft.Azure.WebJobs.Extensions.DurableTask.Analyzers">
+    <Rule Id="DF0108" Action="Hidden" />
   </Rules>
 </RuleSet>
