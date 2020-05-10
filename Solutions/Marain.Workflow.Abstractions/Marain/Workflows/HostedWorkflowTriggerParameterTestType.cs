@@ -12,21 +12,21 @@ namespace Marain.Workflows
         /// <summary>
         /// The parameter value should match the value specified in the condition.
         /// </summary>
-        Equality,
+        Equals,
 
         /// <summary>
         /// The parameter value should not match the value specified in the condition.
         /// </summary>
-        Inequality,
+        DoesNotEqual,
 
         /// <summary>
         /// The specified parameter must be supplied.
         /// </summary>
-        Existence,
+        Exists,
 
         /// <summary>
         /// The specified parameter must not be present.
         /// </summary>
-        NonExistence,
+        DoesNotExist,
     }
 }

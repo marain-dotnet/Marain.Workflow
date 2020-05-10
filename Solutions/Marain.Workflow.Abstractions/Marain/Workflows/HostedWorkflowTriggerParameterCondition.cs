@@ -51,16 +51,16 @@ namespace Marain.Workflows
 
                 switch (this.ParameterTestType)
                 {
-                    case HostedWorkflowTriggerParameterTestType.Equality:
+                    case HostedWorkflowTriggerParameterTestType.Equals:
                         return Task.FromResult(parameterExists && actualValue == this.ParameterValue);
 
-                    case HostedWorkflowTriggerParameterTestType.Inequality:
+                    case HostedWorkflowTriggerParameterTestType.DoesNotEqual:
                         return Task.FromResult(parameterExists && actualValue != this.ParameterValue);
 
-                    case HostedWorkflowTriggerParameterTestType.Existence:
+                    case HostedWorkflowTriggerParameterTestType.Exists:
                         return Task.FromResult(parameterExists);
 
-                    case HostedWorkflowTriggerParameterTestType.NonExistence:
+                    case HostedWorkflowTriggerParameterTestType.DoesNotExist:
                         return Task.FromResult(!parameterExists);
                 }
             }
