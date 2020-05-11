@@ -5,6 +5,7 @@
     [WorkflowInstanceId] NVARCHAR(50) NOT NULL, 
     [SerializedTrigger] NVARCHAR(MAX), 
     [SerializedInstance] NVARCHAR(MAX) NOT NULL, 
+    [SequenceNumber] ROWVERSION NOT NULL 
 )
 
 GO

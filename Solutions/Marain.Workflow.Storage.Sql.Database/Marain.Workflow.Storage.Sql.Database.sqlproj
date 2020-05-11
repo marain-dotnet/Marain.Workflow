@@ -75,6 +75,7 @@
     <Build Include="DataTypes\WorkflowInstanceInterestTableType.sql" />
     <Build Include="Tables\WorkflowInstanceChangeLog.sql" />
     <Build Include="StoredProcedures\WorkflowInstance\CreateWorkflowInstanceChangeLogEntry.sql" />
+    <Build Include="StoredProcedures\WorkflowInstance\GetWorkflowInstanceLog.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Marain.Workflow.Storage.Sql.Database.refactorlog" />

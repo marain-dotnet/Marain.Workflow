@@ -7,6 +7,7 @@ namespace Marain.Workflows.Storage
     using System;
     using System.Threading.Tasks;
     using Corvus.Retry;
+    using Marain.Workflows;
     using Marain.Workflows.Storage.Internal;
     using Microsoft.Azure.Cosmos;
 
@@ -44,6 +45,12 @@ namespace Marain.Workflows.Storage
                     logEntry,
                     new PartitionKey(partitionKey ?? workflowInstance.Id)))
                 .ConfigureAwait(false);
+        }
+
+        /// <inheritdoc/>
+        public Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, ulong? startingSequenceNumber = null, int maxItems = 25, string continuationToken = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }
