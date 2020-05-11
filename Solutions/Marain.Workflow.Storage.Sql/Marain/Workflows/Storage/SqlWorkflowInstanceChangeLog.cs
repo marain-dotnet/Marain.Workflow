@@ -47,7 +47,8 @@ namespace Marain.Workflows.Storage
             using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
             using SqlCommand command = connection.CreateCommand();
-            command.Parameters.Add("@logId", SqlDbType.NVarChar, 50).Value = Guid.NewGuid().ToString();
+            string logId = Guid.NewGuid().ToString();
+            command.Parameters.Add("@logId", SqlDbType.NVarChar, 50).Value = logId;
             command.Parameters.Add("@workflowInstanceId", SqlDbType.NVarChar, 50).Value = workflowInstance.Id;
             command.Parameters.Add("@serializedInstance", SqlDbType.NVarChar, -1).Value = serializedInstance;
             command.Parameters.Add("@serializedTrigger", SqlDbType.NVarChar, -1).Value = serializedTrigger;
@@ -63,7 +64,7 @@ namespace Marain.Workflows.Storage
 
             if ((int)returnValue.Value == 409)
             {
-                throw new WorkflowInstanceConflictException($"The workflow instance with id {workflowInstance.Id} was already modified.");
+                throw new WorkflowInstanceConflictException($"The workflow instance change log entry with id '{logId}' for the instance with id '{workflowInstance.Id}' was already cre3ated.");
             }
         }
     }
