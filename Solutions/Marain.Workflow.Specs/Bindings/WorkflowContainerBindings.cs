@@ -9,7 +9,6 @@ namespace Marain.Workflows.Specs.Bindings
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.SpecFlow.Extensions;
     using Corvus.Sql.Tenancy;
-    using Corvus.Tenancy;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Subjects;
     using Microsoft.Extensions.Configuration;
@@ -72,11 +71,13 @@ namespace Marain.Workflows.Specs.Bindings
                     {
                         services.AddTenantedAzureCosmosWorkflowStore();
                         services.AddTenantedAzureCosmosWorkflowInstanceStore();
+                        services.AddTenantedAzureCosmosWorkflowInstanceChangeLog();
                     }
                     else if (featureContext.FeatureInfo.Tags.Any(t => t == "useSqlStores"))
                     {
                         services.AddTenantedSqlWorkflowStore();
                         services.AddTenantedSqlWorkflowInstanceStore();
+                        services.AddTenantedSqlWorkflowInstanceChangeLog();
                     }
 
                     services.AddContent(factory => factory.RegisterTestContentTypes());

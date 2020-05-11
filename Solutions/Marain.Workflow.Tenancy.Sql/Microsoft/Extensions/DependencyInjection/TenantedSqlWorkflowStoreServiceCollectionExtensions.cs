@@ -43,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Adds Sql-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
+        /// Adds Sql-based implementation of <see cref="ITenantedWorkflowInstanceStoreFactory"/> to the service container.
         /// </summary>
         /// <param name="services">The collection.</param>
         /// <returns>The configured <see cref="IServiceCollection"/>.</returns>
@@ -59,6 +59,30 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTenantSqlConnectionFactory(new TenantSqlConnectionFactoryOptions());
             services.AddSingleton<ITenantedWorkflowInstanceStoreFactory>(svc => new TenantedSqlWorkflowInstanceStoreFactory(
+                svc.GetRequiredService<IJsonSerializerSettingsProvider>(),
+                svc.GetRequiredService<ITenantSqlConnectionFactory>(),
+                connectionDefinition));
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds Sql-based implementation of <see cref="ITenantedWorkflowInstanceChangeLogFactory"/> to the service container.
+        /// </summary>
+        /// <param name="services">The collection.</param>
+        /// <returns>The configured <see cref="IServiceCollection"/>.</returns>
+        public static IServiceCollection AddTenantedSqlWorkflowInstanceChangeLog(
+            this IServiceCollection services)
+        {
+            if (services.Any(s => s.ServiceType is ITenantedWorkflowInstanceChangeLogFactory))
+            {
+                return services;
+            }
+
+            var connectionDefinition = new SqlConnectionDefinition("workflow");
+
+            services.AddTenantSqlConnectionFactory(new TenantSqlConnectionFactoryOptions());
+            services.AddSingleton<ITenantedWorkflowInstanceChangeLogFactory>(svc => new TenantedSqlWorkflowInstanceChangeLogFactory(
                 svc.GetRequiredService<IJsonSerializerSettingsProvider>(),
                 svc.GetRequiredService<ITenantSqlConnectionFactory>(),
                 connectionDefinition));

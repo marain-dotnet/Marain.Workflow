@@ -26,6 +26,12 @@ namespace Microsoft.Extensions.DependencyInjection
             new CosmosContainerDefinition("workflow", "instances", "/id");
 
         /// <summary>
+        /// Gets the container definition that will be used for the tenanted workflow instance store.
+        /// </summary>
+        public static CosmosContainerDefinition WorkflowInstanceChangeLogContainerDefinition { get; } =
+            new CosmosContainerDefinition("workflow", "instancechangelog", "/workflowInstance/id");
+
+        /// <summary>
         /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
         /// </summary>
         /// <param name="services">The collection.</param>
@@ -47,7 +53,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
+        /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowInstanceStoreFactory"/> to the service container.
         /// </summary>
         /// <param name="services">The collection.</param>
         /// <returns>The configured <see cref="IServiceCollection"/>.</returns>
@@ -63,6 +69,27 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ITenantedWorkflowInstanceStoreFactory>(svc => new TenantedCosmosWorkflowInstanceStoreFactory(
                 svc.GetRequiredService<ITenantCosmosContainerFactory>(),
                 WorkflowInstanceStoreContainerDefinition));
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowInstanceChangeLogFactory"/> to the service container.
+        /// </summary>
+        /// <param name="services">The collection.</param>
+        /// <returns>The configured <see cref="IServiceCollection"/>.</returns>
+        public static IServiceCollection AddTenantedAzureCosmosWorkflowInstanceChangeLog(
+            this IServiceCollection services)
+        {
+            if (services.Any(s => s.ServiceType is ITenantedWorkflowInstanceChangeLogFactory))
+            {
+                return services;
+            }
+
+            services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions());
+            services.AddSingleton<ITenantedWorkflowInstanceChangeLogFactory>(svc => new TenantedCosmosWorkflowInstanceChangeLogFactory(
+                svc.GetRequiredService<ITenantCosmosContainerFactory>(),
+                WorkflowInstanceChangeLogContainerDefinition));
 
             return services;
         }

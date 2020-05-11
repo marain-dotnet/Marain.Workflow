@@ -19,17 +19,20 @@ namespace Marain.Workflows
 
         private readonly IWorkflowInstanceStore workflowInstanceStore;
         private readonly IWorkflowStore workflowStore;
+        private readonly IWorkflowInstanceChangeLog workflowInstanceChangeLog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowEngine"/> class.
         /// </summary>
         /// <param name="workflowStore">The repository in which to store workflows.</param>
         /// <param name="workflowInstanceStore">The repository in which to store workflow instances.</param>
+        /// <param name="workflowInstanceChangeLog">The change log to record workflow instance changes.</param>
         /// <param name="leaseProvider">The lease provider.</param>
         /// <param name="logger">A logger for the workflow instance service.</param>
         public WorkflowEngine(
             IWorkflowStore workflowStore,
             IWorkflowInstanceStore workflowInstanceStore,
+            IWorkflowInstanceChangeLog workflowInstanceChangeLog,
             ILeaseProvider leaseProvider,
             ILogger<IWorkflowEngine> logger)
         {
@@ -39,6 +42,7 @@ namespace Marain.Workflows
 
             this.leaseProvider = leaseProvider ?? throw new ArgumentNullException(nameof(leaseProvider));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.workflowInstanceChangeLog = workflowInstanceChangeLog;
         }
 
         /// <inheritdoc/>
@@ -124,7 +128,9 @@ namespace Marain.Workflows
             {
                 if (item?.IsDirty == true)
                 {
-                    await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(item, partitionKey).ConfigureAwait(false);
+                    await Task.WhenAll(
+                        this.workflowInstanceChangeLog.CreateLogEntryAsync(trigger, item, partitionKey),
+                        this.workflowInstanceStore.UpsertWorkflowInstanceAsync(item, partitionKey)).ConfigureAwait(false);
                 }
             }
         }
@@ -182,6 +188,9 @@ namespace Marain.Workflows
                         await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
                         await this.InitializeInstanceAsync(instance, workflow, context).ConfigureAwait(false);
                         await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
+
+                        // We only record this final version post-initialization in the change log.
+                        await this.workflowInstanceChangeLog.CreateLogEntryAsync(null, instance, workflowInstancePartitionKey).ConfigureAwait(false);
                     },
                     instance.Id)
                 .ConfigureAwait(false);

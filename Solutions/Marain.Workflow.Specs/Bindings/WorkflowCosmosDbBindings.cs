@@ -60,6 +60,10 @@ namespace Marain.Workflows.Specs.Bindings
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
                 cosmosConfig);
 
+            tenantProvider.Root.SetCosmosConfiguration(
+                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceChangeLogContainerDefinition,
+                cosmosConfig);
+
             var testDocumentRepositoryContainerDefinition = new CosmosContainerDefinition("workflow", "testdocuments", "/id");
             tenantProvider.Root.SetCosmosConfiguration(
                 testDocumentRepositoryContainerDefinition,

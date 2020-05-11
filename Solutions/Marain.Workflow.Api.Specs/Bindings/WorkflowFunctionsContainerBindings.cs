@@ -66,6 +66,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
                     services.AddTenantedWorkflowEngineFactory();
                     services.AddTenantedAzureCosmosWorkflowStore();
                     services.AddTenantedAzureCosmosWorkflowInstanceStore();
+                    services.AddTenantedAzureCosmosWorkflowInstanceChangeLog();
 
                     services.RegisterCoreWorkflowContentTypes();
 
