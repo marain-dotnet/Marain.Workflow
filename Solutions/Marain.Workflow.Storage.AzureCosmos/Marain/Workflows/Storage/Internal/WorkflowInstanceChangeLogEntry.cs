@@ -28,8 +28,9 @@ namespace Marain.Workflows.Storage.Internal
         /// <param name="id">The unique ID of this workflow instance.</param>
         /// <param name="trigger">the trigger that caused the workflow instance to be changed, or null if this was a newly initialized workflow.</param>
         /// <param name="workflowInstance">The workflow instance that has changed.</param>
+        /// <param name="timestamp">The timestamp of the change.</param>
         [JsonConstructor]
-        public WorkflowInstanceChangeLogEntry(string id, IWorkflowTrigger trigger, WorkflowInstance workflowInstance)
+        public WorkflowInstanceChangeLogEntry(string id, IWorkflowTrigger trigger, WorkflowInstance workflowInstance, int? timestamp = null)
         {
             this.Id = id ?? throw new ArgumentNullException(nameof(trigger));
             this.Trigger = trigger;
@@ -45,6 +46,12 @@ namespace Marain.Workflows.Storage.Internal
         /// Gets the partition key.
         /// </summary>
         public string PartitionKey => this.WorkflowInstance.Id;
+
+        /// <summary>
+        /// Gets the unix timestamp for the log entry.
+        /// </summary>
+        [JsonProperty("_ts")]
+        public int? Timestamp { get; }
 
         /// <summary>
         /// Gets the trigger that caused the workflow instance to be changed, or null if this was a newly initialized workflow.
