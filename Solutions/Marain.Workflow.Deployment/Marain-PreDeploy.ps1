@@ -22,4 +22,12 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
         "Able to create workflow instances, and send triggers",
         "WorkflowController",
         ("User", "Application"))
+
+    # ensure the service tenancy exists
+    $serviceManifest = Join-Path $PSScriptRoot "..\ServiceManifests\WorkflowServiceManifest.jsonc" -Resolve
+    & $ServiceDeploymentContext.InstanceContext.MarainCliPath create-service $serviceManifest
+    if ($LASTEXITCODE -ne 0) {
+        # TODO: Ignore error when service tenant already exists
+        Write-Error "Error whilst trying to register the Workflow service tenant: ExitCode=$LASTEXITCODE"
+    }
 }
