@@ -1,4 +1,4 @@
-﻿// <copyright file="WorkflowInstanceChangeLogEntry.cs" company="Endjin Limited">
+﻿// <copyright file="CosmosWorkflowInstanceChangeLogEntry.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
@@ -10,31 +10,32 @@ namespace Marain.Workflows.Storage.Internal
     /// <summary>
     /// A log entry for a workflow instance change.
     /// </summary>
-    internal class WorkflowInstanceChangeLogEntry
+    internal class CosmosWorkflowInstanceChangeLogEntry
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowInstanceChangeLogEntry"/> class.
+        /// Initializes a new instance of the <see cref="CosmosWorkflowInstanceChangeLogEntry"/> class.
         /// </summary>
         /// <param name="trigger">the trigger that caused the workflow instance to be changed, or null if this was a newly initialized workflow.</param>
         /// <param name="workflowInstance">The workflow instance that has changed.</param>
-        public WorkflowInstanceChangeLogEntry(IWorkflowTrigger trigger, WorkflowInstance workflowInstance)
+        public CosmosWorkflowInstanceChangeLogEntry(IWorkflowTrigger trigger, WorkflowInstance workflowInstance)
             : this(Guid.NewGuid().ToString(), trigger, workflowInstance)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowInstanceChangeLogEntry"/> class.
+        /// Initializes a new instance of the <see cref="CosmosWorkflowInstanceChangeLogEntry"/> class.
         /// </summary>
         /// <param name="id">The unique ID of this workflow instance.</param>
         /// <param name="trigger">the trigger that caused the workflow instance to be changed, or null if this was a newly initialized workflow.</param>
         /// <param name="workflowInstance">The workflow instance that has changed.</param>
         /// <param name="timestamp">The timestamp of the change.</param>
         [JsonConstructor]
-        public WorkflowInstanceChangeLogEntry(string id, IWorkflowTrigger trigger, WorkflowInstance workflowInstance, int? timestamp = null)
+        public CosmosWorkflowInstanceChangeLogEntry(string id, IWorkflowTrigger trigger, WorkflowInstance workflowInstance, int? timestamp = null)
         {
             this.Id = id ?? throw new ArgumentNullException(nameof(trigger));
             this.Trigger = trigger;
             this.WorkflowInstance = workflowInstance ?? throw new ArgumentNullException(nameof(workflowInstance));
+            this.Timestamp = timestamp;
         }
 
         /// <summary>

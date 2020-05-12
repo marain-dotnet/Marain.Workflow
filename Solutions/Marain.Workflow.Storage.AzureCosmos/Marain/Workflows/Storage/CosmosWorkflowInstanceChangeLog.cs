@@ -39,7 +39,7 @@ namespace Marain.Workflows.Storage
                 throw new ArgumentNullException(nameof(workflowInstance));
             }
 
-            var logEntry = new WorkflowInstanceChangeLogEntry(trigger, workflowInstance);
+            var logEntry = new CosmosWorkflowInstanceChangeLogEntry(trigger, workflowInstance);
             await Retriable.RetryAsync(() =>
                 this.Container.UpsertItemAsync(
                     logEntry,
