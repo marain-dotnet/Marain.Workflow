@@ -2,15 +2,15 @@
 CREATE PROCEDURE [dbo].[GetWorkflowInstanceLog]
 -- The Id of the instance to get
 	@workflowInstanceId  nvarchar(50),
-	@startingSequenceNumber binary(8),
+	@startingTimestamp bigint NULL,
 -- The maximum number of rows to return
 	@pageSize int,
 -- The zero-based index of the page of rows to return
 	@pageIndex int
 AS
-IF @startingSequenceNumber IS NULL
+IF @startingTimestamp IS NULL
 BEGIN
-	SELECT [WorkflowInstanceChangeLog].WorkflowInstanceId, [WorkflowInstanceChangeLog].SerializedTrigger, [WorkflowInstanceChangeLog].SerializedInstance, [WorkflowInstanceChangeLog].SequenceNumber  FROM [WorkflowInstanceChangeLog]
+	SELECT [WorkflowInstanceChangeLog].WorkflowInstanceId, [WorkflowInstanceChangeLog].SerializedTrigger, [WorkflowInstanceChangeLog].SerializedInstance, [WorkflowInstanceChangeLog].Timestamp  FROM [WorkflowInstanceChangeLog]
 	WHERE [WorkflowInstanceChangeLog].WorkflowInstanceId = @workflowInstanceId
 	ORDER BY [WorkflowInstanceChangeLog].SequenceNumber
 	OFFSET (@pageSize * @pageIndex) ROWS
@@ -18,9 +18,9 @@ BEGIN
 END
 ELSE
 BEGIN
-	SELECT [WorkflowInstanceChangeLog].WorkflowInstanceId, [WorkflowInstanceChangeLog].SerializedTrigger, [WorkflowInstanceChangeLog].SerializedInstance, [WorkflowInstanceChangeLog].SequenceNumber  FROM [WorkflowInstanceChangeLog]
+	SELECT [WorkflowInstanceChangeLog].WorkflowInstanceId, [WorkflowInstanceChangeLog].SerializedTrigger, [WorkflowInstanceChangeLog].SerializedInstance, [WorkflowInstanceChangeLog].Timestamp  FROM [WorkflowInstanceChangeLog]
 	WHERE [WorkflowInstanceChangeLog].WorkflowInstanceId = @workflowInstanceId
-	  AND [WorkflowInstanceChangeLog].SequenceNumber >= @startingSequenceNumber
+		AND [WorkflowInstanceChangeLog].Timestamp >= @startingTimestamp
 	ORDER BY [WorkflowInstanceChangeLog].SequenceNumber
 	OFFSET (@pageSize * @pageIndex) ROWS
 	FETCH NEXT @pageSize ROWS ONLY;

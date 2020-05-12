@@ -48,7 +48,7 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, ulong? startingSequenceNumber = null, int maxItems = 25, string continuationToken = null)
+        public Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
         {
             throw new NotImplementedException();
         }

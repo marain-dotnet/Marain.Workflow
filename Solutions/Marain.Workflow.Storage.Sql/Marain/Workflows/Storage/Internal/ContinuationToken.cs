@@ -14,12 +14,12 @@ namespace Marain.Workflows.Storage.Internal
         /// </summary>
         /// <param name="pageSize">The page size.</param>
         /// <param name="pageIndex">The next page to retrieve.</param>
-        /// <param name="startingSequenceNumber">The starting sequence number for the log, or null to start from the first available entry.</param>
-        public ContinuationToken(int pageSize, int pageIndex, ulong? startingSequenceNumber = null)
+        /// <param name="startingTimestamp">The starting timestamp for the log, or null to start from the first available entry.</param>
+        public ContinuationToken(int pageSize, int pageIndex, int? startingTimestamp = null)
         {
             this.PageSize = pageSize;
             this.PageIndex = pageIndex;
-            this.StartingSequenceNumber = startingSequenceNumber;
+            this.StartingTimestamp = startingTimestamp;
         }
 
         /// <summary>
@@ -35,6 +35,6 @@ namespace Marain.Workflows.Storage.Internal
         /// <summary>
         /// Gets the starting sequence number for the log, or null to start from the first available entry.
         /// </summary>
-        public ulong? StartingSequenceNumber { get; }
+        public int? StartingTimestamp { get; }
     }
 }

@@ -45,13 +45,13 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, ulong? startingSequenceNumber = null, int maxItems = 25, string continuationToken = null)
+        public Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
         {
             return Retriable.RetryAsync(() =>
-                this.GetLogEntriesCoreAsync(workflowInstanceId, startingSequenceNumber, maxItems, continuationToken));
+                this.GetLogEntriesCoreAsync(workflowInstanceId, startingTimestamp, maxItems, continuationToken));
         }
 
-        private async Task<WorkflowInstanceLog> GetLogEntriesCoreAsync(string workflowInstanceId, ulong? startingSequenceNumber, int maxItems = 25, string continuationToken = null)
+        private async Task<WorkflowInstanceLog> GetLogEntriesCoreAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
         {
             int pageIndex = 0;
             int pageSize = maxItems;
@@ -62,7 +62,7 @@ namespace Marain.Workflows.Storage
                 ContinuationToken token = JsonConvert.DeserializeObject<ContinuationToken>(serializedToken);
                 pageIndex = token.PageIndex;
                 pageSize = token.PageSize;
-                startingSequenceNumber = token.StartingSequenceNumber;
+                startingTimestamp = token.StartingTimestamp;
             }
 
             using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
@@ -70,8 +70,13 @@ namespace Marain.Workflows.Storage
             using SqlCommand command = connection.CreateCommand();
             command.CommandText = "GetWorkflowInstanceLog";
             command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@startingSequenceNumber", this.ToSqlBinary(startingSequenceNumber));
             command.Parameters.AddWithValue("@workflowInstanceId", workflowInstanceId);
+            var timestamp = new SqlParameter("@startingTimestamp", SqlDbType.BigInt)
+            {
+                IsNullable = true,
+                Value = (object)startingTimestamp ?? DBNull.Value,
+            };
+            command.Parameters.Add(timestamp);
             command.Parameters.AddWithValue("@pageSize", pageSize);
             command.Parameters.AddWithValue("@pageIndex", pageIndex);
 
@@ -84,44 +89,19 @@ namespace Marain.Workflows.Storage
                 resultSet.Add(this.GetLogEntry(reader));
             }
 
-            var nextToken = new ContinuationToken(pageSize, pageIndex + 1, startingSequenceNumber);
-            return new WorkflowInstanceLog(JsonConvert.SerializeObject(nextToken).AsBase64(), resultSet);
-        }
-
-        private SqlBinary ToSqlBinary(ulong? startingSequenceNumber)
-        {
-            if (startingSequenceNumber is null)
-            {
-                return SqlBinary.Null;
-            }
-
-            // Need to ensure we convert BigEndian regardless of the server platform.
-            return new SqlBinary(
-                BitConverter.IsLittleEndian ?
-                    BitConverter.GetBytes(startingSequenceNumber.Value).Reverse().ToArray() :
-                    BitConverter.GetBytes(startingSequenceNumber.Value));
-        }
-
-        private ulong FromSqlBinary(SqlBinary sequenceNumberBinary)
-        {
-            return
-               BitConverter.IsLittleEndian ?
-                   BitConverter.ToUInt64(sequenceNumberBinary.Value.Reverse().ToArray()) :
-                   BitConverter.ToUInt64(sequenceNumberBinary.Value);
+            return new WorkflowInstanceLog(resultSet.Count > 0 ? JsonConvert.SerializeObject(new ContinuationToken(pageSize, pageIndex + 1, startingTimestamp)).AsBase64() : null, resultSet);
         }
 
         private WorkflowInstanceLogEntry GetLogEntry(SqlDataReader reader)
         {
             string serializedTrigger = reader.GetString(1);
             string serializedInstance = reader.GetString(2);
-            SqlBinary sequenceNumberBinary = reader.GetSqlBinary(3);
-
-            ulong sequenceNumber = this.FromSqlBinary(sequenceNumberBinary);
+            int timestamp = reader.GetInt32(3);
 
             return new WorkflowInstanceLogEntry(
                 JsonConvert.DeserializeObject<IWorkflowTrigger>(serializedTrigger, this.serializerSettingsProvider.Instance),
                 JsonConvert.DeserializeObject<WorkflowInstance>(serializedInstance, this.serializerSettingsProvider.Instance),
-                sequenceNumber);
+                timestamp);
         }
 
         private async Task CreateLogEntryCoreAsync(IWorkflowTrigger trigger, WorkflowInstance workflowInstance)

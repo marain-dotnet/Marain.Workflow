@@ -26,6 +26,7 @@ Scenario: Edit item in the Waiting for Documentation state
 	And the data catalog item with Id 'id1' should have a Type of 't1'
 	And the data catalog item with Id 'id1' should have a Description of 'The new description'
 	And the data catalog item with Id 'id1' should have Notes of 'The new notes'
+	And the workflow instance with Id 'id1' should have 3 change log entries
 	And the following trace messages should be the last messages recorded
 	| Message                                    |
 	| Exiting state 'Waiting for documentation'  |
@@ -64,6 +65,7 @@ Scenario: Edit item in the Published state with a change that would keep the ite
 	And the data catalog item with Id 'id2' should have a Type of 't1'
 	And the data catalog item with Id 'id2' should have a Description of 'The new description'
 	And the data catalog item with Id 'id2' should have Notes of 'The new notes'
+	And the workflow instance with Id 'id2' should have 5 change log entries
 	And the following trace messages should be the last messages recorded
 	| Message                                |
 	| Exiting state 'Published'              |
@@ -102,6 +104,7 @@ Scenario: Edit item in the Published state with a change that would make the ite
 	And the data catalog item with Id 'id3' should have a Type of 't1'
 	And the data catalog item with Id 'id3' should have a Description of 'The new description'
 	And the data catalog item with Id 'id3' should have Notes of ''
+	And the workflow instance with Id 'id3' should have 5 change log entries
 	And the following trace messages should be the last messages recorded
 	| Message                                    |
 	| Exiting state 'Published'                  |

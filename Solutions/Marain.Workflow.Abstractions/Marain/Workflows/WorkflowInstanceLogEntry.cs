@@ -16,7 +16,7 @@ namespace Marain.Workflows
         /// <param name="trigger">The trigger that caused the change, or null if the instance was being initialized.</param>
         /// <param name="instance">The associated version of the workflow instance.</param>
         /// <param name="sequenceNumber">The sequence number of the log entry.</param>
-        public WorkflowInstanceLogEntry(IWorkflowTrigger trigger, WorkflowInstance instance, ulong sequenceNumber)
+        public WorkflowInstanceLogEntry(IWorkflowTrigger trigger, WorkflowInstance instance, int sequenceNumber)
         {
             this.Trigger = trigger;
             this.Instance = instance ?? throw new System.ArgumentNullException(nameof(instance));
@@ -36,6 +36,6 @@ namespace Marain.Workflows
         /// <summary>
         /// Gets the sequence number of the entry.
         /// </summary>
-        public ulong SequenceNumber { get; }
+        public int SequenceNumber { get; }
     }
 }

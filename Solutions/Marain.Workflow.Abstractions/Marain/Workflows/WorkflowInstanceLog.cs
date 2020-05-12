@@ -15,15 +15,10 @@ namespace Marain.Workflows
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstanceLog"/> class.
         /// </summary>
-        /// <param name="continuationToken">The continuation token for the next page of the log.</param>
+        /// <param name="continuationToken">The continuation token for the next page of the log, or null if there is no next page.</param>
         /// <param name="entries">The entries in this page of the log.</param>
         public WorkflowInstanceLog(string continuationToken, IEnumerable<WorkflowInstanceLogEntry> entries)
         {
-            if (string.IsNullOrEmpty(continuationToken))
-            {
-                throw new System.ArgumentException("message", nameof(continuationToken));
-            }
-
             this.ContinuationToken = continuationToken;
             this.Entries = (entries ?? throw new System.ArgumentNullException(nameof(entries))).ToList();
         }

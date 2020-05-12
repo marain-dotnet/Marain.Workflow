@@ -24,6 +24,7 @@ Scenario: An unmet exit condition on the current state prevents a transition bei
 	And I wait for all triggers to be processed
 	Then the workflow instance with Id 'id1' should have status 'Waiting'
 	And the workflow instance with Id 'id1' should be in the state called 'Waiting for documentation'
+	And the workflow instance with Id 'id1' should have 2 change log entries
 	And the following trace messages should be the last messages recorded
 	| Message                                    |
 	| Entering state 'Waiting for documentation' |
@@ -49,6 +50,7 @@ Scenario: An unmet entry condition on a target state prevents a transition being
 	And I wait for all triggers to be processed
 	Then the workflow instance with Id 'id2' should have status 'Waiting'
 	And the workflow instance with Id 'id2' should be in the state called 'Waiting for documentation'
+	And the workflow instance with Id 'id2' should have 3 change log entries
 	And the following trace messages should be the last messages recorded
 	| Message                                    |
 	| Entering state 'Waiting for documentation' |

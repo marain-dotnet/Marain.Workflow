@@ -22,6 +22,7 @@ Scenario: Create a new instance
 	And a new data catalog item with Id 'new-instance' should have been added to the data catalog store
 	And the data catalog item with Id 'new-instance' should have an Identifier of 'identifier1'
 	And the data catalog item with Id 'new-instance' should have a Type of 't1'
+	And the workflow instance with Id 'new-instance' should have 2 change log entries
 	And the following trace messages should have been recorded
 	| Message                                     |
 	| Entering state 'Waiting for initialization' |
@@ -35,4 +36,5 @@ Scenario: Create a new instance with incomplete data
 	| Type          | t1          |
 	And I wait for all triggers to be processed
 	Then the workflow instance with Id 'new-instance-incomplete' should have status 'Faulted'
+	And the workflow instance with Id 'new-instance-incomplete' should have 1 change log entries
 	And a new data catalog item with Id 'new-instance-incomplete' should not have been added to the data catalog store

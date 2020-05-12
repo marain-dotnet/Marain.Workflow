@@ -28,6 +28,7 @@ Scenario: Deprecate item when it is in the published state
 	And I wait for all triggers to be processed
 	Then the workflow instance with Id 'id1' should have status 'Complete'
 	And the workflow instance with Id 'id1' should be in the state called 'Deprecated'
+	And the workflow instance with Id 'id1' should have 5 change log entries
 	And the following trace messages should be the last messages recorded
 	| Message                          |
 	| Exiting state 'Published'        |

@@ -187,6 +187,36 @@ namespace Marain.Workflows.Specs.Steps
             log.ForEachAtIndex((s, i) => Assert.AreEqual(table.Rows[i]["Message"], s));
         }
 
+        [Then("the workflow instance with Id '(.*)' should have (.*) change log entries")]
+        public async Task ThenTheWorkflowInstanceWithIdShouldHaveChangeLogEntries(string instanceId, int count)
+        {
+            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                              .GetService<ITenantProvider>();
+
+            ITenantedWorkflowInstanceChangeLogFactory instanceChangeLogFactory = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                                    .GetService<ITenantedWorkflowInstanceChangeLogFactory>();
+            IWorkflowInstanceChangeLog instanceChangeLog = await instanceChangeLogFactory.GetWorkflowInstanceChangeLogForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+
+            int totalCount = -1;
+            string continuationToken = null;
+
+            // Make sure we get a block of at least the right number of items
+            while (totalCount < count && (totalCount == -1 || continuationToken != null))
+            {
+                WorkflowInstanceLog log = await instanceChangeLog.GetLogEntriesAsync(instanceId, maxItems: count + 10, continuationToken: continuationToken).ConfigureAwait(false);
+
+                if (totalCount == -1)
+                {
+                    totalCount = 0;
+                }
+
+                totalCount += log.Entries.Count;
+                continuationToken = log.ContinuationToken;
+            }
+
+            Assert.AreEqual(count, totalCount);
+        }
+
         [Then("the workflow instance with Id '(.*)' should be in the state called '(.*)'")]
         public async Task ThenTheWorkflowInstanceWithIdShouldBeInTheStateCalled(string instanceId, string stateName)
         {

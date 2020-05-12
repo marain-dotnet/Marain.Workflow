@@ -25,10 +25,10 @@ namespace Marain.Workflows
         /// Gets a page of log entries for a particular workflow instance ID.
         /// </summary>
         /// <param name="workflowInstanceId">The ID of the workflow instance for which to get log entries.</param>
-        /// <param name="startingSequenceNumber">The initial sequence number with which to start enumerating entries.</param>
+        /// <param name="startingTimestamp">The initial sequence number with which to start enumerating entries.</param>
         /// <param name="maxItems">The maximum number of items per page. Note that fewer than this number may be returned in any page.</param>
         /// <param name="continuationToken">The continuation token supplied from a previous page of results.</param>
         /// <returns>A page of log entires for the given workflow instance.</returns>
-        Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, ulong? startingSequenceNumber = null, int maxItems = 25, string continuationToken = null);
+        Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null);
     }
 }
