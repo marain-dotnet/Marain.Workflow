@@ -203,7 +203,7 @@ namespace Marain.Workflows.Specs.Steps
             // Make sure we get a block of at least the right number of items
             while (totalCount < count && (totalCount == -1 || continuationToken != null))
             {
-                WorkflowInstanceLog log = await instanceChangeLog.GetLogEntriesAsync(instanceId, maxItems: count + 10, continuationToken: continuationToken).ConfigureAwait(false);
+                WorkflowInstanceLogPage log = await instanceChangeLog.GetLogEntriesAsync(instanceId, maxItems: count + 10, continuationToken: continuationToken).ConfigureAwait(false);
 
                 if (totalCount == -1)
                 {

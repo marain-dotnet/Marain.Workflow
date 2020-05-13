@@ -45,13 +45,13 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
+        public Task<WorkflowInstanceLogPage> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
         {
             return Retriable.RetryAsync(() =>
                 this.GetLogEntriesCoreAsync(workflowInstanceId, startingTimestamp, maxItems, continuationToken));
         }
 
-        private async Task<WorkflowInstanceLog> GetLogEntriesCoreAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
+        private async Task<WorkflowInstanceLogPage> GetLogEntriesCoreAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
         {
             int pageIndex = 0;
             int pageSize = maxItems;
@@ -89,7 +89,7 @@ namespace Marain.Workflows.Storage
                 resultSet.Add(this.GetLogEntry(reader));
             }
 
-            return new WorkflowInstanceLog(resultSet.Count > 0 ? JsonConvert.SerializeObject(new ContinuationToken(pageSize, pageIndex + 1, startingTimestamp)).AsBase64() : null, resultSet);
+            return new WorkflowInstanceLogPage(resultSet.Count > 0 ? JsonConvert.SerializeObject(new ContinuationToken(pageSize, pageIndex + 1, startingTimestamp)).AsBase64() : null, resultSet);
         }
 
         private WorkflowInstanceLogEntry GetLogEntry(SqlDataReader reader)

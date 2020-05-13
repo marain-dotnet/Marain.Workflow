@@ -19,6 +19,6 @@ namespace Marain.Workflows
         /// <param name="maxItems">The maximum number of items per page. Note that fewer than this number may be returned in any page.</param>
         /// <param name="continuationToken">The continuation token supplied from a previous page of results.</param>
         /// <returns>A page of log entires for the given workflow instance.</returns>
-        Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null);
+        Task<WorkflowInstanceLogPage> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null);
     }
 }

@@ -5,7 +5,7 @@
 namespace Marain.Workflows
 {
     /// <summary>
-    /// An entry in a <see cref="WorkflowInstanceLog"/>, associating a version of a <see cref="WorkflowInstance"/>
+    /// An entry in a <see cref="WorkflowInstanceLogPage"/>, associating a version of a <see cref="WorkflowInstance"/>
     /// with the <see cref="IWorkflowTrigger"/> that caused the instance to change state.
     /// </summary>
     public class WorkflowInstanceLogEntry

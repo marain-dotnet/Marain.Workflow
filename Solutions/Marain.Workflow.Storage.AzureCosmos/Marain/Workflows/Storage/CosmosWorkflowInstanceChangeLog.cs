@@ -51,7 +51,7 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public async Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
+        public async Task<WorkflowInstanceLogPage> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
         {
             var query = new StringBuilder("SELECT * FROM log l WHERE l.workflowInstance.id = @workflowInstanceId");
             if (startingTimestamp.HasValue)
@@ -81,7 +81,7 @@ namespace Marain.Workflows.Storage
                 results = response.Select(l => new WorkflowInstanceLogEntry(l.Trigger, l.WorkflowInstance, l.Timestamp.Value)).ToList();
             }
 
-            return new WorkflowInstanceLog(nextToken, results);
+            return new WorkflowInstanceLogPage(nextToken, results);
         }
     }
 }

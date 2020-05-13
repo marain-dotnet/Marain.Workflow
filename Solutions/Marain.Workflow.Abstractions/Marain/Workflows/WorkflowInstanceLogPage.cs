@@ -1,4 +1,4 @@
-﻿// <copyright file="WorkflowInstanceLog.cs" company="Endjin Limited">
+﻿// <copyright file="WorkflowInstanceLogPage.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
@@ -10,14 +10,14 @@ namespace Marain.Workflows
     /// <summary>
     /// A page of entries from the workflow instance log.
     /// </summary>
-    public class WorkflowInstanceLog
+    public class WorkflowInstanceLogPage
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowInstanceLog"/> class.
+        /// Initializes a new instance of the <see cref="WorkflowInstanceLogPage"/> class.
         /// </summary>
         /// <param name="continuationToken">The continuation token for the next page of the log, or null if there is no next page.</param>
         /// <param name="entries">The entries in this page of the log.</param>
-        public WorkflowInstanceLog(string continuationToken, IEnumerable<WorkflowInstanceLogEntry> entries)
+        public WorkflowInstanceLogPage(string continuationToken, IEnumerable<WorkflowInstanceLogEntry> entries)
         {
             this.ContinuationToken = continuationToken;
             this.Entries = (entries ?? throw new System.ArgumentNullException(nameof(entries))).ToList();
