@@ -26,15 +26,15 @@ namespace Marain.Workflows
         /// <param name="serializerSettingsProvider">The JSON serializer settings provider.</param>
         /// <param name="containerFactory">The <see cref="ITenantSqlConnectionFactory"/> that will be used to create
         /// underlying <see cref="SqlConnection"/> instances for the stores.</param>
-        /// <param name="connectionDefintiion">The <see cref="SqlConnectionDefinition"/> to use when creating tenanted
+        /// <param name="connectionDefinition">The <see cref="SqlConnectionDefinition"/> to use when creating tenanted
         /// <see cref="SqlConnection"/> instances.</param>
         public TenantedSqlWorkflowInstanceChangeLogFactory(
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             ITenantSqlConnectionFactory containerFactory,
-            SqlConnectionDefinition connectionDefintiion)
+            SqlConnectionDefinition connectionDefinition)
         {
             this.containerFactory = containerFactory;
-            this.connectionDefinition = connectionDefintiion;
+            this.connectionDefinition = connectionDefinition;
             this.serializerSettingsProvider = serializerSettingsProvider;
         }
 
