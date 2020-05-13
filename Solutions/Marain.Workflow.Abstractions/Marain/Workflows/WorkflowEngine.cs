@@ -131,7 +131,7 @@ namespace Marain.Workflows
                     try
                     {
                         await Task.WhenAll(
-                            this.workflowInstanceChangeLog.CreateLogEntryAsync(trigger, item, partitionKey),
+                            this.workflowInstanceChangeLog.RecordWorkflowInstanceChangeAsync(trigger, item, partitionKey),
                             this.workflowInstanceStore.UpsertWorkflowInstanceAsync(item, partitionKey)).ConfigureAwait(false);
                     }
                     catch (Exception ex)
@@ -200,7 +200,7 @@ namespace Marain.Workflows
                         await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
 
                         // We only record this final version post-initialization in the change log.
-                        await this.workflowInstanceChangeLog.CreateLogEntryAsync(null, instance, workflowInstancePartitionKey).ConfigureAwait(false);
+                        await this.workflowInstanceChangeLog.RecordWorkflowInstanceChangeAsync(null, instance, workflowInstancePartitionKey).ConfigureAwait(false);
                     },
                     instance.Id)
                 .ConfigureAwait(false);

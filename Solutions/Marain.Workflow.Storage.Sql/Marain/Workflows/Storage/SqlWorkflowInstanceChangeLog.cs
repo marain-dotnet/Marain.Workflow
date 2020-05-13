@@ -38,7 +38,7 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public Task CreateLogEntryAsync(IWorkflowTrigger trigger, WorkflowInstance workflowInstance, string partitionKey = null)
+        public Task RecordWorkflowInstanceChangeAsync(IWorkflowTrigger trigger, WorkflowInstance workflowInstance, string partitionKey = null)
         {
             return Retriable.RetryAsync(() =>
                 this.CreateLogEntryCoreAsync(trigger, workflowInstance));

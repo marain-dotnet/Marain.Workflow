@@ -35,7 +35,7 @@ namespace Marain.Workflows.Storage
         public Container Container { get; }
 
         /// <inheritdoc/>
-        public async Task CreateLogEntryAsync(IWorkflowTrigger trigger, WorkflowInstance workflowInstance, string partitionKey = null)
+        public async Task RecordWorkflowInstanceChangeAsync(IWorkflowTrigger trigger, WorkflowInstance workflowInstance, string partitionKey = null)
         {
             if (workflowInstance == null)
             {
