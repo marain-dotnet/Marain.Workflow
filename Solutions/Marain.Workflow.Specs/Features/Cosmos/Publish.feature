@@ -25,6 +25,7 @@ Scenario: Publish item when it is in the waiting for documentation state and it 
 	And I wait for all triggers to be processed
 	Then the workflow instance with Id 'id1' should have status 'Waiting'
 	And the workflow instance with Id 'id1' should be in the state called 'Published'
+	And the workflow instance with Id 'id1' should have 4 change log entries
 	And the following trace messages should be the last messages recorded
 	| Message                                   |
 	| Exiting state 'Waiting for documentation' |

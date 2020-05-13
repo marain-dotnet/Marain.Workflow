@@ -5,6 +5,9 @@
 namespace Marain.Workflows.Storage
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using Corvus.Retry;
     using Marain.Workflows;
@@ -48,9 +51,37 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
+        public async Task<WorkflowInstanceLog> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
         {
-            throw new NotImplementedException();
+            var query = new StringBuilder("SELECT * FROM log l WHERE l.workflowInstance.id = @workflowInstanceId");
+            if (startingTimestamp.HasValue)
+            {
+                query.Append(" AND l._ts >= @startingTimestamp");
+            }
+
+            query.Append(" ORDER BY l._ts ASC");
+
+            QueryDefinition queryDefinition =
+            new QueryDefinition(query.ToString())
+                .WithParameter("@workflowInstanceId", workflowInstanceId);
+
+            if (startingTimestamp.HasValue)
+            {
+                queryDefinition = queryDefinition.WithParameter("@startingTimestamp", startingTimestamp);
+            }
+
+            string nextToken = null;
+            IEnumerable<WorkflowInstanceLogEntry> results = Enumerable.Empty<WorkflowInstanceLogEntry>();
+
+            FeedIterator<CosmosWorkflowInstanceChangeLogEntry> iterator = this.Container.GetItemQueryIterator<CosmosWorkflowInstanceChangeLogEntry>(queryDefinition, continuationToken, new QueryRequestOptions { MaxItemCount = maxItems });
+            if (iterator.HasMoreResults)
+            {
+                FeedResponse<CosmosWorkflowInstanceChangeLogEntry> response = await iterator.ReadNextAsync().ConfigureAwait(false);
+                nextToken = response.ContinuationToken;
+                results = response.Select(l => new WorkflowInstanceLogEntry(l.Trigger, l.WorkflowInstance, l.Timestamp.Value)).ToList();
+            }
+
+            return new WorkflowInstanceLog(nextToken, results);
         }
     }
 }

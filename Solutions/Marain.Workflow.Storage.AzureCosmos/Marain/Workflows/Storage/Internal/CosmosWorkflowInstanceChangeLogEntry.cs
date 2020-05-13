@@ -32,7 +32,7 @@ namespace Marain.Workflows.Storage.Internal
         [JsonConstructor]
         public CosmosWorkflowInstanceChangeLogEntry(string id, IWorkflowTrigger trigger, WorkflowInstance workflowInstance, int? timestamp = null)
         {
-            this.Id = id ?? throw new ArgumentNullException(nameof(trigger));
+            this.Id = id;
             this.Trigger = trigger;
             this.WorkflowInstance = workflowInstance ?? throw new ArgumentNullException(nameof(workflowInstance));
             this.Timestamp = timestamp;

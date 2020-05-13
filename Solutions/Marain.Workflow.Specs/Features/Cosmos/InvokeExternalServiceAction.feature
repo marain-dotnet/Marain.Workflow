@@ -29,6 +29,7 @@ Scenario: External action invoked
     And the request body ContextProperties key 'include2' has the value 'value2'
     And the request body ContextProperties has 2 values
 	Then the workflow instance with Id 'id1' should have status 'Complete'
+	And the workflow instance with Id 'id1' should have 2 change log entries
 	And the workflow instance with Id 'id1' should be in the state called 'Done'
 
 @externalServiceRequired
@@ -45,4 +46,5 @@ Scenario: External action returns a 500 status code
 	And I wait for all triggers to be processed
     Then the action endpoint should have been invoked
 	Then the workflow instance with Id 'id2' should have status 'Faulted'
+	And the workflow instance with Id 'id2' should have 2 change log entries
 	And the workflow instance with Id 'id2' should be in the state called 'Waiting to run'
