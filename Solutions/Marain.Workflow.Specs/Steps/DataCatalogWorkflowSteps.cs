@@ -46,10 +46,12 @@ namespace Marain.Workflows.Specs.Steps
         {
             IWorkflowMessageQueue workflowMessageQueue =
                 ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowMessageQueue>();
+
             Workflow workflow = DataCatalogWorkflowFactory.Create(workflowId, workflowMessageQueue);
 
             ITenantedWorkflowStoreFactory storeFactory =
                 ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantedWorkflowStoreFactory>();
+
             ITenantProvider tenantProvider =
                 ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantProvider>();
 
@@ -74,9 +76,10 @@ namespace Marain.Workflows.Specs.Steps
         [Then("a new data catalog item with Id '(.*)' should have been added to the data catalog store")]
         public async Task ThenANewDataCatalogItemWithIdShouldHaveBeenAddedToTheDataCatalogStore(string catalogItemId)
         {
-            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
-                                              .GetService<DataCatalogItemRepositoryFactory>()
-                                              .GetRepository();
+            Container repo =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<DataCatalogItemRepositoryFactory>()
+                    .GetRepository();
 
             ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
                 () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
@@ -87,9 +90,10 @@ namespace Marain.Workflows.Specs.Steps
         [Then("a new data catalog item with Id '(.*)' should not have been added to the data catalog store")]
         public async Task ThenANewDataCatalogItemWithIdShouldNotHaveBeenAddedToTheDataCatalogStore(string catalogItemId)
         {
-            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
-                                              .GetService<DataCatalogItemRepositoryFactory>()
-                                              .GetRepository();
+            Container repo =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<DataCatalogItemRepositoryFactory>()
+                    .GetRepository();
 
             try
             {
@@ -113,12 +117,14 @@ namespace Marain.Workflows.Specs.Steps
             string catalogItemId,
             string expectedDescription)
         {
-            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
-                                              .GetService<DataCatalogItemRepositoryFactory>()
-                                              .GetRepository();
+            Container repo =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<DataCatalogItemRepositoryFactory>()
+                    .GetRepository();
 
-            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
+            ItemResponse<CatalogItem> item =
+                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                    () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedDescription, item.Resource.Description);
         }
@@ -128,12 +134,14 @@ namespace Marain.Workflows.Specs.Steps
             string catalogItemId,
             string expectedIdentifier)
         {
-            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
-                                              .GetService<DataCatalogItemRepositoryFactory>()
-                                              .GetRepository();
+            Container repo =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<DataCatalogItemRepositoryFactory>()
+                    .GetRepository();
 
-            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
+            ItemResponse<CatalogItem> item =
+                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                    () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedIdentifier, item.Resource.Identifier);
         }
@@ -141,12 +149,14 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the data catalog item with Id '(.*)' should have a Type of '(.*)'")]
         public async Task ThenTheDataCatalogItemWithIdShouldHaveATypeOf(string catalogItemId, string expectedType)
         {
-            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
-                                              .GetService<DataCatalogItemRepositoryFactory>()
-                                              .GetRepository();
+            Container repo =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<DataCatalogItemRepositoryFactory>()
+                    .GetRepository();
 
-            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
+            ItemResponse<CatalogItem> item =
+                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                    () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedType, item.Resource.Type);
         }
@@ -154,12 +164,14 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the data catalog item with Id '(.*)' should have Notes of '(.*)'")]
         public async Task ThenTheDataCatalogItemWithIdShouldHaveNotesOf(string catalogItemId, string expectedNotes)
         {
-            Container repo = ContainerBindings.GetServiceProvider(this.featureContext)
-                                              .GetService<DataCatalogItemRepositoryFactory>()
-                                              .GetRepository();
+            Container repo =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<DataCatalogItemRepositoryFactory>()
+                        .GetRepository();
 
-            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
+            ItemResponse<CatalogItem> item =
+                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                    () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedNotes, item.Resource.Notes);
         }
@@ -190,11 +202,14 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the workflow instance with Id '(.*)' should have (.*) change log entries")]
         public async Task ThenTheWorkflowInstanceWithIdShouldHaveChangeLogEntries(string instanceId, int count)
         {
-            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                              .GetService<ITenantProvider>();
+            ITenantProvider tenantProvider =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<ITenantProvider>();
 
-            ITenantedWorkflowInstanceChangeLogFactory instanceChangeLogFactory = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                                    .GetService<ITenantedWorkflowInstanceChangeLogFactory>();
+            ITenantedWorkflowInstanceChangeLogFactory instanceChangeLogFactory =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<ITenantedWorkflowInstanceChangeLogFactory>();
+
             IWorkflowInstanceChangeLogReader instanceChangeLog = await instanceChangeLogFactory.GetWorkflowInstanceChangeLogReaderForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
             int totalCount = -1;
@@ -220,22 +235,27 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the workflow instance with Id '(.*)' should be in the state called '(.*)'")]
         public async Task ThenTheWorkflowInstanceWithIdShouldBeInTheStateCalled(string instanceId, string stateName)
         {
-            ITenantedWorkflowStoreFactory storeFactory = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                                    .GetService<ITenantedWorkflowStoreFactory>();
-            ITenantedWorkflowInstanceStoreFactory instanceStoreFactory = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                                    .GetService<ITenantedWorkflowInstanceStoreFactory>();
+            ITenantedWorkflowStoreFactory storeFactory =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<ITenantedWorkflowStoreFactory>();
+            ITenantedWorkflowInstanceStoreFactory instanceStoreFactory =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<ITenantedWorkflowInstanceStoreFactory>();
 
-            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                              .GetService<ITenantProvider>();
+            ITenantProvider tenantProvider =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<ITenantProvider>();
 
             IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
             IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            WorkflowInstance instance = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => instanceStore.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
+            WorkflowInstance instance =
+                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                    () => instanceStore.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
 
-            Workflow workflow = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => store.GetWorkflowAsync(instance.WorkflowId)).ConfigureAwait(false);
+            Workflow workflow =
+                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                    () => store.GetWorkflowAsync(instance.WorkflowId)).ConfigureAwait(false);
 
             WorkflowState currentState = workflow.GetState(instance.StateId);
 
@@ -245,16 +265,19 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the workflow instance with Id '(.*)' should have status '(.*)'")]
         public async Task ThenTheWorkflowInstanceWithIdShouldHaveStatus(string instanceId, string expectedStatus)
         {
-            ITenantedWorkflowInstanceStoreFactory instanceStoreFactory = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                                    .GetService<ITenantedWorkflowInstanceStoreFactory>();
+            ITenantedWorkflowInstanceStoreFactory instanceStoreFactory =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<ITenantedWorkflowInstanceStoreFactory>();
 
-            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                              .GetService<ITenantProvider>();
+            ITenantProvider tenantProvider =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetService<ITenantProvider>();
 
             IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            WorkflowInstance instance = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => instanceStore.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
+            WorkflowInstance instance =
+                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                    () => instanceStore.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
 
             Assert.AreEqual(expectedStatus, instance.Status.ToString());
         }
@@ -265,8 +288,9 @@ namespace Marain.Workflows.Specs.Steps
         {
             var trigger = (IWorkflowTrigger)this.CreateObject(contentType, table);
 
-            IWorkflowMessageQueue queue = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                           .GetRequiredService<IWorkflowMessageQueue>();
+            IWorkflowMessageQueue queue =
+                ContainerBindings.GetServiceProvider(this.featureContext)
+                    .GetRequiredService<IWorkflowMessageQueue>();
 
             await queue.EnqueueTriggerAsync(trigger, default).ConfigureAwait(false);
         }
