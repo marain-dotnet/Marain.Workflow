@@ -14,10 +14,17 @@ namespace Marain.Workflows
     public interface ITenantedWorkflowInstanceChangeLogFactory
     {
         /// <summary>
-        /// Retrieves an <see cref="IWorkflowInstanceChangeLog"/> for the specified <see cref="Tenant"/>.
+        /// Retrieves an <see cref="IWorkflowInstanceChangeLogWriter"/> for the specified <see cref="Tenant"/>.
         /// </summary>
-        /// <param name="tenant">The tenant for which to retrieve a workflow instance change log.</param>
+        /// <param name="tenant">The tenant for which to retrieve a workflow instance change log writer.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
-        Task<IWorkflowInstanceChangeLog> GetWorkflowInstanceChangeLogForTenantAsync(ITenant tenant);
+        Task<IWorkflowInstanceChangeLogWriter> GetWorkflowInstanceChangeLogWriterForTenantAsync(ITenant tenant);
+
+        /// <summary>
+        /// Retrieves an <see cref="IWorkflowInstanceChangeLogReader"/> for the specified <see cref="Tenant"/>.
+        /// </summary>
+        /// <param name="tenant">The tenant for which to retrieve a workflow instance change log reader.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+        Task<IWorkflowInstanceChangeLogReader> GetWorkflowInstanceChangeLogReaderForTenantAsync(ITenant tenant);
     }
 }

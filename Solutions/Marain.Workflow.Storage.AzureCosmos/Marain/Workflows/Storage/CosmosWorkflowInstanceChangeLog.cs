@@ -17,7 +17,7 @@ namespace Marain.Workflows.Storage
     /// <summary>
     /// A CosmosDb implementation of the workflow instance change log.
     /// </summary>
-    public class CosmosWorkflowInstanceChangeLog : IWorkflowInstanceChangeLog
+    public class CosmosWorkflowInstanceChangeLog : IWorkflowInstanceChangeLogWriter, IWorkflowInstanceChangeLogReader
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CosmosWorkflowInstanceChangeLog"/> class.

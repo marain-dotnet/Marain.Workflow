@@ -12,7 +12,7 @@ namespace Marain.Workflows
     using Marain.Workflows.Storage;
 
     /// <summary>
-    /// Factory class for retrieving Sql-based instances of <see cref="IWorkflowInstanceChangeLog"/> for specific <see cref="Tenant"/>s.
+    /// Factory class for retrieving Sql-based instances of <see cref="IWorkflowInstanceChangeLogWriter"/> for specific <see cref="Tenant"/>s.
     /// </summary>
     public class TenantedSqlWorkflowInstanceChangeLogFactory : ITenantedWorkflowInstanceChangeLogFactory
     {
@@ -39,9 +39,18 @@ namespace Marain.Workflows
         }
 
         /// <inheritdoc/>
-        public Task<IWorkflowInstanceChangeLog> GetWorkflowInstanceChangeLogForTenantAsync(ITenant tenant)
+        public Task<IWorkflowInstanceChangeLogReader> GetWorkflowInstanceChangeLogReaderForTenantAsync(ITenant tenant)
         {
-            return Task.FromResult<IWorkflowInstanceChangeLog>(
+            return Task.FromResult<IWorkflowInstanceChangeLogReader>(
+                new SqlWorkflowInstanceChangeLog(
+                    this.serializerSettingsProvider,
+                    () => this.containerFactory.GetSqlConnectionForTenantAsync(tenant, this.connectionDefinition)));
+        }
+
+        /// <inheritdoc/>
+        public Task<IWorkflowInstanceChangeLogWriter> GetWorkflowInstanceChangeLogWriterForTenantAsync(ITenant tenant)
+        {
+            return Task.FromResult<IWorkflowInstanceChangeLogWriter>(
                 new SqlWorkflowInstanceChangeLog(
                     this.serializerSettingsProvider,
                     () => this.containerFactory.GetSqlConnectionForTenantAsync(tenant, this.connectionDefinition)));

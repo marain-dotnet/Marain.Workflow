@@ -102,7 +102,7 @@ namespace Marain.Workflows.Specs.Bindings
                 () => workflowInstanceStore.Container.DeleteContainerAsync()).ConfigureAwait(false);
 
             ITenantedWorkflowInstanceChangeLogFactory workflowInstanceChangeLogFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceChangeLogFactory>();
-            var workflowInstanceChangeLog = (CosmosWorkflowInstanceChangeLog)await workflowInstanceChangeLogFactory.GetWorkflowInstanceChangeLogForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            var workflowInstanceChangeLog = (CosmosWorkflowInstanceChangeLog)await workflowInstanceChangeLogFactory.GetWorkflowInstanceChangeLogWriterForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
                 () => workflowInstanceChangeLog.Container.DeleteContainerAsync()).ConfigureAwait(false);

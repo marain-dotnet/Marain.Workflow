@@ -195,7 +195,7 @@ namespace Marain.Workflows.Specs.Steps
 
             ITenantedWorkflowInstanceChangeLogFactory instanceChangeLogFactory = ContainerBindings.GetServiceProvider(this.featureContext)
                                                                     .GetService<ITenantedWorkflowInstanceChangeLogFactory>();
-            IWorkflowInstanceChangeLog instanceChangeLog = await instanceChangeLogFactory.GetWorkflowInstanceChangeLogForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            IWorkflowInstanceChangeLogReader instanceChangeLog = await instanceChangeLogFactory.GetWorkflowInstanceChangeLogReaderForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
             int totalCount = -1;
             string continuationToken = null;

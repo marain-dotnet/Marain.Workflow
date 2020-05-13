@@ -19,7 +19,7 @@ namespace Marain.Workflows
 
         private readonly IWorkflowInstanceStore workflowInstanceStore;
         private readonly IWorkflowStore workflowStore;
-        private readonly IWorkflowInstanceChangeLog workflowInstanceChangeLog;
+        private readonly IWorkflowInstanceChangeLogWriter workflowInstanceChangeLog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowEngine"/> class.
@@ -32,7 +32,7 @@ namespace Marain.Workflows
         public WorkflowEngine(
             IWorkflowStore workflowStore,
             IWorkflowInstanceStore workflowInstanceStore,
-            IWorkflowInstanceChangeLog workflowInstanceChangeLog,
+            IWorkflowInstanceChangeLogWriter workflowInstanceChangeLog,
             ILeaseProvider leaseProvider,
             ILogger<IWorkflowEngine> logger)
         {

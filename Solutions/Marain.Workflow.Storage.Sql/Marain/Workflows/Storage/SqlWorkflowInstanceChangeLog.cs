@@ -21,7 +21,7 @@ namespace Marain.Workflows.Storage
     /// <summary>
     /// A CosmosDb implementation of the workflow instance change log.
     /// </summary>
-    public class SqlWorkflowInstanceChangeLog : IWorkflowInstanceChangeLog
+    public class SqlWorkflowInstanceChangeLog : IWorkflowInstanceChangeLogWriter, IWorkflowInstanceChangeLogReader
     {
         private readonly Func<Task<SqlConnection>> connectionFactory;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;

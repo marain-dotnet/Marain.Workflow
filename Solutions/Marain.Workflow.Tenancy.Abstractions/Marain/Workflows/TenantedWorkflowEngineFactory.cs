@@ -49,7 +49,7 @@ namespace Marain.Workflows
             return new WorkflowEngine(
                 await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false),
                 await this.workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenant).ConfigureAwait(false),
-                await this.workflowInstanceChangeLogFactory.GetWorkflowInstanceChangeLogForTenantAsync(tenant).ConfigureAwait(false),
+                await this.workflowInstanceChangeLogFactory.GetWorkflowInstanceChangeLogWriterForTenantAsync(tenant).ConfigureAwait(false),
                 this.leaseProvider,
                 this.logger);
         }

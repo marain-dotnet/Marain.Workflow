@@ -34,7 +34,16 @@ namespace Marain.Workflows
         }
 
         /// <inheritdoc/>
-        public async Task<IWorkflowInstanceChangeLog> GetWorkflowInstanceChangeLogForTenantAsync(ITenant tenant)
+        public async Task<IWorkflowInstanceChangeLogReader> GetWorkflowInstanceChangeLogReaderForTenantAsync(ITenant tenant)
+        {
+            Container container = await this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition).ConfigureAwait(false);
+
+            // No need to cache these instances as they are lightweight wrappers around the container.
+            return new CosmosWorkflowInstanceChangeLog(container);
+        }
+
+        /// <inheritdoc/>
+        public async Task<IWorkflowInstanceChangeLogWriter> GetWorkflowInstanceChangeLogWriterForTenantAsync(ITenant tenant)
         {
             Container container = await this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition).ConfigureAwait(false);
 
