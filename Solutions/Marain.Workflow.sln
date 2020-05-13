@@ -68,6 +68,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configurat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marain.Workflow.Storage.AzureBlob", "Marain.Workflow.Storage.AzureBlob\Marain.Workflow.Storage.AzureBlob.csproj", "{8063DEA1-20D1-4A47-9EC9-C13B450133A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marain.Workflow.Tenancy.AzureBlob", "Marain.Workflow.Tenancy.AzureBlob\Marain.Workflow.Tenancy.AzureBlob.csproj", "{8E7939E8-BAA7-457D-B32C-C8FA5640CE16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +144,10 @@ Global
 		{8063DEA1-20D1-4A47-9EC9-C13B450133A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8063DEA1-20D1-4A47-9EC9-C13B450133A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8063DEA1-20D1-4A47-9EC9-C13B450133A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E7939E8-BAA7-457D-B32C-C8FA5640CE16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E7939E8-BAA7-457D-B32C-C8FA5640CE16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E7939E8-BAA7-457D-B32C-C8FA5640CE16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E7939E8-BAA7-457D-B32C-C8FA5640CE16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,6 +165,7 @@ Global
 		{B4F2E79B-C2D2-4E3E-BB0F-E85AC8F1E331} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 		{3C88450E-1BD4-4305-BCCF-01A457F15AFB} = {D29CABE7-467E-4CF6-B44B-3C58AB76145A}
 		{BA79178D-3DEC-4E00-B2ED-9C7F61BA0143} = {94FC6B17-2A9A-43C4-B590-4418C8DD8348}
+		{8E7939E8-BAA7-457D-B32C-C8FA5640CE16} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EED79307-5690-4CE6-A80D-F41857C97EFF}

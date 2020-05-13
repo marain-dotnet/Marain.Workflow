@@ -1,4 +1,4 @@
-﻿// <copyright file="AzureBlobWorkflowInstanceChangeLog.cs" company="Endjin Limited">
+﻿// <copyright file="CloudBlobWorkflowInstanceChangeLog.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
@@ -6,9 +6,7 @@ namespace Marain.Workflows.Storage
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
-    using System.Reflection.Metadata;
     using System.Text;
     using System.Threading.Tasks;
     using Corvus.Extensions;
@@ -23,17 +21,17 @@ namespace Marain.Workflows.Storage
     /// <summary>
     /// A CosmosDb implementation of the workflow instance change log.
     /// </summary>
-    public class AzureBlobWorkflowInstanceChangeLog : IWorkflowInstanceChangeLogWriter, IWorkflowInstanceChangeLogReader
+    public class CloudBlobWorkflowInstanceChangeLog : IWorkflowInstanceChangeLogWriter, IWorkflowInstanceChangeLogReader
     {
         private const string RecordTimestampKey = "recordtimestamp";
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AzureBlobWorkflowInstanceChangeLog"/> class.
+        /// Initializes a new instance of the <see cref="CloudBlobWorkflowInstanceChangeLog"/> class.
         /// </summary>
         /// <param name="serializerSettingsProvider">The serializer settings provider for the store.</param>
         /// <param name="container">The cloud blob container in which to store the log.</param>
-        public AzureBlobWorkflowInstanceChangeLog(IJsonSerializerSettingsProvider serializerSettingsProvider, CloudBlobContainer container)
+        public CloudBlobWorkflowInstanceChangeLog(IJsonSerializerSettingsProvider serializerSettingsProvider, CloudBlobContainer container)
         {
             this.serializerSettingsProvider = serializerSettingsProvider;
             this.Container = container;
@@ -94,7 +92,7 @@ namespace Marain.Workflows.Storage
         private async Task<WorkflowInstanceLogEntry> GetLogEntry(CloudBlockBlob blob)
         {
             string serializedEntry = await blob.DownloadTextAsync().ConfigureAwait(false);
-            AzureBlobWorkflowInstanceChangeLogEntry entry = JsonConvert.DeserializeObject<AzureBlobWorkflowInstanceChangeLogEntry>(serializedEntry, this.serializerSettingsProvider.Instance);
+            CloudBlobWorkflowInstanceChangeLogEntry entry = JsonConvert.DeserializeObject<CloudBlobWorkflowInstanceChangeLogEntry>(serializedEntry, this.serializerSettingsProvider.Instance);
 
             return new WorkflowInstanceLogEntry(
                 entry.Trigger,
@@ -105,7 +103,7 @@ namespace Marain.Workflows.Storage
         private async Task CreateLogEntryCoreAsync(IWorkflowTrigger trigger, WorkflowInstance workflowInstance)
         {
             var logEntry =
-                new AzureBlobWorkflowInstanceChangeLogEntry(
+                new CloudBlobWorkflowInstanceChangeLogEntry(
                     Guid.NewGuid().ToString(),
                     trigger,
                     workflowInstance,
