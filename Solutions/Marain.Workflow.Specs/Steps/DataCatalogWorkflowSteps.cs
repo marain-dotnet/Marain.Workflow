@@ -212,22 +212,19 @@ namespace Marain.Workflows.Specs.Steps
 
             IWorkflowInstanceChangeLogReader instanceChangeLog = await instanceChangeLogFactory.GetWorkflowInstanceChangeLogReaderForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            int totalCount = -1;
+            int totalCount = 0;
             string continuationToken = null;
 
-            // Make sure we get a block of at least the right number of items
-            while (totalCount < count && (totalCount == -1 || continuationToken != null))
+            // Let's keep going until we've run out of items to get.
+            // We're asking for blocks of our expected result, so we will, in the usual case, get the result in a single block.
+            // (Unless the API decides to return us a smaller batch for some internal reason, which is within its rights to do!)
+            do
             {
-                WorkflowInstanceLogPage log = await instanceChangeLog.GetLogEntriesAsync(instanceId, maxItems: count + 10, continuationToken: continuationToken).ConfigureAwait(false);
-
-                if (totalCount == -1)
-                {
-                    totalCount = 0;
-                }
-
+                WorkflowInstanceLogPage log = await instanceChangeLog.GetLogEntriesAsync(instanceId, maxItems: count, continuationToken: continuationToken).ConfigureAwait(false);
                 totalCount += log.Entries.Count;
                 continuationToken = log.ContinuationToken;
             }
+            while (continuationToken != null);
 
             Assert.AreEqual(count, totalCount);
         }
