@@ -66,6 +66,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configurat
 		ServiceManifests\Configuration\WorkflowConfigForStorageEmulator.json = ServiceManifests\Configuration\WorkflowConfigForStorageEmulator.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marain.Workflow.Storage.AzureBlob", "Marain.Workflow.Storage.AzureBlob\Marain.Workflow.Storage.AzureBlob.csproj", "{8063DEA1-20D1-4A47-9EC9-C13B450133A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +138,10 @@ Global
 		{3C88450E-1BD4-4305-BCCF-01A457F15AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C88450E-1BD4-4305-BCCF-01A457F15AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C88450E-1BD4-4305-BCCF-01A457F15AFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8063DEA1-20D1-4A47-9EC9-C13B450133A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8063DEA1-20D1-4A47-9EC9-C13B450133A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8063DEA1-20D1-4A47-9EC9-C13B450133A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8063DEA1-20D1-4A47-9EC9-C13B450133A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
