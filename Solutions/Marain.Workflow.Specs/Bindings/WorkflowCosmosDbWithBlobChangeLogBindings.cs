@@ -65,6 +65,8 @@ namespace Marain.Workflows.Specs.Bindings
                 configuration.GetSection("TestBlobStorageConfiguration").Get<BlobStorageConfiguration>()
                     ?? new BlobStorageConfiguration();
 
+            // Ensure a unique blob container name for the feature.
+            blobConfig.Container = Guid.NewGuid().ToString();
             blobConfig.DisableTenantIdPrefix = true;
             tenantProvider.Root.SetBlobStorageConfiguration(
                 TenantedCloudBlobWorkflowStoreServiceCollectionExtensions.WorkflowInstanceChangeLogContainerDefinition,
