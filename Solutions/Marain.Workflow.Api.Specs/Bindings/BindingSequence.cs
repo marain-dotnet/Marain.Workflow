@@ -4,7 +4,7 @@
 
 namespace Marain.Workflows.Api.Specs.Bindings
 {
-    using Corvus.SpecFlow.Extensions;
+    using Corvus.Testing.SpecFlow;
 
     public static class BindingSequence
     {

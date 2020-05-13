@@ -5,7 +5,7 @@
 namespace Marain.Workflows.Api.Specs.Steps
 {
     using System.Linq;
-    using Corvus.SpecFlow.Extensions;
+    using Corvus.Testing.SpecFlow;
     using Microsoft.Extensions.DependencyInjection;
 
     using TechTalk.SpecFlow;

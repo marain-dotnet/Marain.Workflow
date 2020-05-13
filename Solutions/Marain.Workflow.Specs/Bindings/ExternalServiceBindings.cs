@@ -13,7 +13,7 @@ namespace Marain.Workflows.Specs.Bindings
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using Corvus.SpecFlow.Extensions;
+    using Corvus.Testing.SpecFlow;
     using NUnit.Framework;
     using TechTalk.SpecFlow;
 

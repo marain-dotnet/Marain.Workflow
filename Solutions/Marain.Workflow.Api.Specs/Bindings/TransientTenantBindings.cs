@@ -8,8 +8,10 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Azure.Storage.Tenancy;
-    using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Corvus.Testing.AzureFunctions;
+    using Corvus.Testing.AzureFunctions.SpecFlow;
+    using Corvus.Testing.SpecFlow;
     using Marain.Services;
     using Marain.TenantManagement.EnrollmentConfiguration;
     using Marain.TenantManagement.Testing;
@@ -43,7 +45,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
             // Create a transient service tenant for testing purposes.
             ITenant transientServiceTenant = await transientTenantManager.CreateTransientServiceTenantFromEmbeddedResourceAsync(
                 typeof(TransientTenantBindings).Assembly,
-                $"Marain.Workflows.Api.Specs.ServiceManifests.WorkflowServiceManifest.jsonc").ConfigureAwait(false);
+                "Marain.Workflows.Api.Specs.ServiceManifests.WorkflowServiceManifest.jsonc").ConfigureAwait(false);
 
             // Now update the service Id in our configuration and in the function configuration
             UpdateServiceConfigurationWithTransientTenantId(featureContext, transientServiceTenant);
@@ -97,11 +99,13 @@ namespace Marain.Workflows.Api.Specs.Bindings
             configuration.ServiceTenantId = transientServiceTenant.Id;
             configuration.ServiceDisplayName = transientServiceTenant.Name;
 
-            featureContext.AddFunctionConfigurationEnvironmentVariable(
+            FunctionConfiguration functionConfiguration = FunctionsBindings.GetFunctionConfiguration(featureContext);
+
+            functionConfiguration.EnvironmentVariables.Add(
                 "MarainServiceConfiguration:ServiceTenantId",
                 configuration.ServiceTenantId);
 
-            featureContext.AddFunctionConfigurationEnvironmentVariable(
+            functionConfiguration.EnvironmentVariables.Add(
                 "MarainServiceConfiguration:ServiceDisplayName",
                 configuration.ServiceDisplayName);
         }

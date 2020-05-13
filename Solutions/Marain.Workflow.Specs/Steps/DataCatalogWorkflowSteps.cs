@@ -9,8 +9,8 @@ namespace Marain.Workflows.Specs.Steps
     using System.Net;
     using System.Threading.Tasks;
     using Corvus.Extensions;
-    using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Actions;
     using Marain.Workflows.Specs.TestObjects.Subjects;

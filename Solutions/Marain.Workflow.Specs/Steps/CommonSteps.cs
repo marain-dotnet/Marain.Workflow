@@ -7,8 +7,8 @@ namespace Marain.Workflows.Specs.Steps
     using System.Linq;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
-    using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.Bindings;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Triggers;

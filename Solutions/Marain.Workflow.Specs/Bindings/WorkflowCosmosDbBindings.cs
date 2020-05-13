@@ -7,8 +7,8 @@ namespace Marain.Workflows.Specs.Bindings
     using System;
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
-    using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.Steps;
     using Marain.Workflows.Storage;
     using Microsoft.Azure.Cosmos;
