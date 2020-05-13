@@ -128,9 +128,19 @@ namespace Marain.Workflows
             {
                 if (item?.IsDirty == true)
                 {
-                    await Task.WhenAll(
-                        this.workflowInstanceChangeLog.CreateLogEntryAsync(trigger, item, partitionKey),
-                        this.workflowInstanceStore.UpsertWorkflowInstanceAsync(item, partitionKey)).ConfigureAwait(false);
+                    try
+                    {
+                        await Task.WhenAll(
+                            this.workflowInstanceChangeLog.CreateLogEntryAsync(trigger, item, partitionKey),
+                            this.workflowInstanceStore.UpsertWorkflowInstanceAsync(item, partitionKey)).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.logger.LogError(
+                           new EventId(0),
+                           ex,
+                           $"Error persisting Workflow Instance for trigger {trigger.Id} in instance {item?.Id}");
+                    }
                 }
             }
         }
