@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The collection.</param>
         /// <returns>The configured <see cref="IServiceCollection"/>.</returns>
-        public static IServiceCollection AddTenantedAzureCosmosWorkflowInstanceChangeLog(
+        public static IServiceCollection AddTenantedCloudBlobWorkflowInstanceChangeLog(
             this IServiceCollection services)
         {
             if (services.Any(s => s.ServiceType is ITenantedWorkflowInstanceChangeLogFactory))

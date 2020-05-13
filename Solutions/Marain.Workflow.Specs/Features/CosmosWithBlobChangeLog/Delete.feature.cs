@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Specs.Features.Cosmos
+namespace Marain.Workflows.Specs.Features.CosmosWithBlobChangeLog
 {
     using TechTalk.SpecFlow;
     using System;
@@ -20,31 +20,31 @@ namespace Marain.Workflows.Specs.Features.Cosmos
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Deprecate an item with Cosmos")]
+    [NUnit.Framework.DescriptionAttribute("Delete an item with Cosmos and blob change log")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
-    [NUnit.Framework.CategoryAttribute("useCosmosStores")]
-    [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainers")]
-    public partial class DeprecateAnItemWithCosmosFeature
+    [NUnit.Framework.CategoryAttribute("useCosmosStoresWithBlobChangeLog")]
+    [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainersWithBlobChangeLog")]
+    public partial class DeleteAnItemWithCosmosAndBlobChangeLogFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
                 "perFeatureContainer",
-                "useCosmosStores",
-                "setupTenantedCosmosContainers"};
+                "useCosmosStoresWithBlobChangeLog",
+                "setupTenantedCosmosContainersWithBlobChangeLog"};
         
-#line 1 "Deprecated.feature"
+#line 1 "Delete.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Deprecate an item with Cosmos", null, ProgrammingLanguage.CSharp, new string[] {
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Delete an item with Cosmos and blob change log", null, ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
-                        "useCosmosStores",
-                        "setupTenantedCosmosContainers"});
+                        "useCosmosStoresWithBlobChangeLog",
+                        "setupTenantedCosmosContainersWithBlobChangeLog"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -83,15 +83,15 @@ namespace Marain.Workflows.Specs.Features.Cosmos
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Deprecate item when it is in the published state")]
+        [NUnit.Framework.DescriptionAttribute("Delete item when it is in the published state")]
         [NUnit.Framework.CategoryAttribute("useChildObjects")]
-        public virtual void DeprecateItemWhenItIsInThePublishedState()
+        public virtual void DeleteItemWhenItIsInThePublishedState()
         {
             string[] tagsOfScenario = new string[] {
                     "useChildObjects"};
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Deprecate item when it is in the published state", null, new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete item when it is in the published state", null, new string[] {
                         "useChildObjects"});
-#line 7
+#line 8
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -111,89 +111,89 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 8
+#line 9
  testRunner.Given("I have created and persisted the DataCatalogWorkflow with Id \'dc-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 9
+#line 10
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table73 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table73.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "Identifier",
                             "identifier1"});
-                table73.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "Type",
                             "t1"});
-                table73.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "AllowWaitingForDocumentationExit",
                             "x"});
-                table73.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "AllowPublishedEntry",
                             "x"});
-#line 10
+#line 11
  testRunner.And("I have created and persisted a new instance with Id \'id1\' of the workflow with Id" +
-                        " \'dc-workflow\' and supplied the following context items", ((string)(null)), table73, "And ");
+                        " \'dc-workflow\' and supplied the following context items", ((string)(null)), table14, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table74 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                             "Id",
                             "Notes",
                             "Description"});
-                table74.AddRow(new string[] {
+                table15.AddRow(new string[] {
                             "id1",
                             "The new notes",
                             "The new description"});
-#line 16
+#line 17
  testRunner.And("I have an object of type \'application/vnd.endjin.datacatalog.catalogitempatchdeta" +
-                        "ils\' called \'patch\'", ((string)(null)), table74, "And ");
+                        "ils\' called \'patch\'", ((string)(null)), table15, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table75 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                             "PatchDetails"});
-                table75.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "{patch}"});
-#line 19
+#line 20
  testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
-                        "alog.editcatalogitemtrigger\'", ((string)(null)), table75, "And ");
+                        "alog.editcatalogitemtrigger\'", ((string)(null)), table16, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table76 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                             "CatalogItemId"});
-                table76.AddRow(new string[] {
+                table17.AddRow(new string[] {
                             "id1"});
-#line 22
+#line 23
  testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
-                        "alog.publishcatalogitemtrigger\'", ((string)(null)), table76, "And ");
+                        "alog.publishcatalogitemtrigger\'", ((string)(null)), table17, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table77 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                             "CatalogItemId"});
-                table77.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "id1"});
-#line 25
+#line 26
  testRunner.When("I send the workflow engine a trigger of type \'application/vnd.endjin.datacatalog." +
-                        "deprecatecatalogitemtrigger\'", ((string)(null)), table77, "When ");
-#line hidden
-#line 28
- testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+                        "deletecatalogitemtrigger\'", ((string)(null)), table18, "When ");
 #line hidden
 #line 29
- testRunner.Then("the workflow instance with Id \'id1\' should have status \'Complete\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 30
- testRunner.And("the workflow instance with Id \'id1\' should be in the state called \'Deprecated\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Then("the workflow instance with Id \'id1\' should have status \'Complete\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 31
+ testRunner.And("the workflow instance with Id \'id1\' should be in the state called \'Deleted\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 32
  testRunner.And("the workflow instance with Id \'id1\' should have 5 change log entries", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table78 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
                             "Message"});
-                table78.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "Exiting state \'Published\'"});
-                table78.AddRow(new string[] {
-                            "Executing transition \'Deprecate\'"});
-                table78.AddRow(new string[] {
-                            "Entering state \'Deprecated\'"});
-#line 32
- testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table78, "And ");
+                table19.AddRow(new string[] {
+                            "Executing transition \'Delete\'"});
+                table19.AddRow(new string[] {
+                            "Entering state \'Deleted\'"});
+#line 33
+ testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table19, "And ");
 #line hidden
             }
             this.ScenarioCleanup();

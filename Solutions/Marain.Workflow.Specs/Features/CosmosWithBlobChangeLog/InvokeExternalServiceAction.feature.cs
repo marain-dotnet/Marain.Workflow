@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Specs.Features.Sql
+namespace Marain.Workflows.Specs.Features.CosmosWithBlobChangeLog
 {
     using TechTalk.SpecFlow;
     using System;
@@ -20,19 +20,19 @@ namespace Marain.Workflows.Specs.Features.Sql
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("InvokeExternalServiceAction with SQL")]
+    [NUnit.Framework.DescriptionAttribute("InvokeExternalServiceAction with Cosmos and blob change log")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
-    [NUnit.Framework.CategoryAttribute("useSqlStores")]
-    [NUnit.Framework.CategoryAttribute("setupTenantedSqlDatabase")]
-    public partial class InvokeExternalServiceActionWithSQLFeature
+    [NUnit.Framework.CategoryAttribute("useCosmosStoresWithBlobChangeLog")]
+    [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainersWithBlobChangeLog")]
+    public partial class InvokeExternalServiceActionWithCosmosAndBlobChangeLogFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
                 "perFeatureContainer",
-                "useSqlStores",
-                "setupTenantedSqlDatabase"};
+                "useCosmosStoresWithBlobChangeLog",
+                "setupTenantedCosmosContainersWithBlobChangeLog"};
         
 #line 1 "InvokeExternalServiceAction.feature"
 #line hidden
@@ -41,12 +41,12 @@ namespace Marain.Workflows.Specs.Features.Sql
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "InvokeExternalServiceAction with SQL", "    In order to be able to define a workflow that invokes external HTTP endpoints" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "InvokeExternalServiceAction with Cosmos and blob change log", "    In order to be able to define a workflow that invokes external HTTP endpoints" +
                     "\r\n    As a developer defining a workflow\r\n    I want to be able to define a work" +
                     "flow action that invokes an external HTTP endpoint", ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
-                        "useSqlStores",
-                        "setupTenantedSqlDatabase"});
+                        "useCosmosStoresWithBlobChangeLog",
+                        "setupTenantedCosmosContainersWithBlobChangeLog"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -117,21 +117,21 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have created and persisted a workflow containing an external action with id \'ex" +
                         "ternal-action-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table150 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table44 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table150.AddRow(new string[] {
+                table44.AddRow(new string[] {
                             "include1",
                             "value1"});
-                table150.AddRow(new string[] {
+                table44.AddRow(new string[] {
                             "include2",
                             "value2"});
-                table150.AddRow(new string[] {
+                table44.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
 #line 12
  testRunner.And("I have created and persisted a new instance with Id \'id1\' of the workflow with Id" +
-                        " \'external-action-workflow\' and supplied the following context items", ((string)(null)), table150, "And ");
+                        " \'external-action-workflow\' and supplied the following context items", ((string)(null)), table44, "And ");
 #line hidden
 #line 17
     testRunner.And("the external service will return a 200 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -223,21 +223,21 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have created and persisted a workflow containing an external action with id \'ex" +
                         "ternal-action-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table151 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table45 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table151.AddRow(new string[] {
+                table45.AddRow(new string[] {
                             "include1",
                             "value1"});
-                table151.AddRow(new string[] {
+                table45.AddRow(new string[] {
                             "include2",
                             "value2"});
-                table151.AddRow(new string[] {
+                table45.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
 #line 38
  testRunner.And("I have created and persisted a new instance with Id \'id2\' of the workflow with Id" +
-                        " \'external-action-workflow\' and supplied the following context items", ((string)(null)), table151, "And ");
+                        " \'external-action-workflow\' and supplied the following context items", ((string)(null)), table45, "And ");
 #line hidden
 #line 43
     testRunner.And("the external service will return a 500 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

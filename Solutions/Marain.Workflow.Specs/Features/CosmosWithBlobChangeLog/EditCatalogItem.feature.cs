@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Marain.Workflows.Specs.Features.Sql
+namespace Marain.Workflows.Specs.Features.CosmosWithBlobChangeLog
 {
     using TechTalk.SpecFlow;
     using System;
@@ -20,19 +20,19 @@ namespace Marain.Workflows.Specs.Features.Sql
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.1.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("Edit catalog item with SQL")]
+    [NUnit.Framework.DescriptionAttribute("Edit catalog item with Cosmos and blob change log")]
     [NUnit.Framework.CategoryAttribute("perFeatureContainer")]
-    [NUnit.Framework.CategoryAttribute("useSqlStores")]
-    [NUnit.Framework.CategoryAttribute("setupTenantedSqlDatabase")]
-    public partial class EditCatalogItemWithSQLFeature
+    [NUnit.Framework.CategoryAttribute("useCosmosStoresWithBlobChangeLog")]
+    [NUnit.Framework.CategoryAttribute("setupTenantedCosmosContainersWithBlobChangeLog")]
+    public partial class EditCatalogItemWithCosmosAndBlobChangeLogFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private string[] _featureTags = new string[] {
                 "perFeatureContainer",
-                "useSqlStores",
-                "setupTenantedSqlDatabase"};
+                "useCosmosStoresWithBlobChangeLog",
+                "setupTenantedCosmosContainersWithBlobChangeLog"};
         
 #line 1 "EditCatalogItem.feature"
 #line hidden
@@ -41,10 +41,10 @@ namespace Marain.Workflows.Specs.Features.Sql
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Edit catalog item with SQL", null, ProgrammingLanguage.CSharp, new string[] {
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Edit catalog item with Cosmos and blob change log", null, ProgrammingLanguage.CSharp, new string[] {
                         "perFeatureContainer",
-                        "useSqlStores",
-                        "setupTenantedSqlDatabase"});
+                        "useCosmosStoresWithBlobChangeLog",
+                        "setupTenantedCosmosContainersWithBlobChangeLog"});
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -117,44 +117,44 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table132 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table132.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "Identifier",
                             "identifier1"});
-                table132.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "Type",
                             "t1"});
-                table132.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "AllowWaitingForDocumentationExit",
                             "x"});
-                table132.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "AllowPublishedEntry",
                             "x"});
 #line 10
  testRunner.And("I have created and persisted a new instance with Id \'id1\' of the workflow with Id" +
-                        " \'dc-workflow\' and supplied the following context items", ((string)(null)), table132, "And ");
+                        " \'dc-workflow\' and supplied the following context items", ((string)(null)), table26, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table133 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table27 = new TechTalk.SpecFlow.Table(new string[] {
                             "Id",
                             "Notes",
                             "Description"});
-                table133.AddRow(new string[] {
+                table27.AddRow(new string[] {
                             "id1",
                             "The new notes",
                             "The new description"});
 #line 16
  testRunner.And("I have an object of type \'application/vnd.endjin.datacatalog.catalogitempatchdeta" +
-                        "ils\' called \'patch\'", ((string)(null)), table133, "And ");
+                        "ils\' called \'patch\'", ((string)(null)), table27, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table134 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table28 = new TechTalk.SpecFlow.Table(new string[] {
                             "PatchDetails"});
-                table134.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "{patch}"});
 #line 19
  testRunner.When("I send the workflow engine a trigger of type \'application/vnd.endjin.datacatalog." +
-                        "editcatalogitemtrigger\'", ((string)(null)), table134, "When ");
+                        "editcatalogitemtrigger\'", ((string)(null)), table28, "When ");
 #line hidden
 #line 22
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -182,16 +182,16 @@ this.ScenarioInitialize(scenarioInfo);
 #line 29
  testRunner.And("the workflow instance with Id \'id1\' should have 3 change log entries", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table135 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table29 = new TechTalk.SpecFlow.Table(new string[] {
                             "Message"});
-                table135.AddRow(new string[] {
+                table29.AddRow(new string[] {
                             "Exiting state \'Waiting for documentation\'"});
-                table135.AddRow(new string[] {
+                table29.AddRow(new string[] {
                             "Executing transition \'Edit\'"});
-                table135.AddRow(new string[] {
+                table29.AddRow(new string[] {
                             "Entering state \'Waiting for documentation\'"});
 #line 30
- testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table135, "And ");
+ testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table29, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -232,72 +232,72 @@ this.ScenarioInitialize(scenarioInfo);
 #line 39
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table136 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table30 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table136.AddRow(new string[] {
+                table30.AddRow(new string[] {
                             "Identifier",
                             "identifier1"});
-                table136.AddRow(new string[] {
+                table30.AddRow(new string[] {
                             "Type",
                             "t1"});
-                table136.AddRow(new string[] {
+                table30.AddRow(new string[] {
                             "AllowWaitingForDocumentationExit",
                             "x"});
-                table136.AddRow(new string[] {
+                table30.AddRow(new string[] {
                             "AllowPublishedEntry",
                             "x"});
 #line 40
  testRunner.And("I have created and persisted a new instance with Id \'id2\' of the workflow with Id" +
-                        " \'dc-workflow\' and supplied the following context items", ((string)(null)), table136, "And ");
+                        " \'dc-workflow\' and supplied the following context items", ((string)(null)), table30, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table137 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table31 = new TechTalk.SpecFlow.Table(new string[] {
                             "Id",
                             "Notes",
                             "Description"});
-                table137.AddRow(new string[] {
+                table31.AddRow(new string[] {
                             "id2",
                             "The notes",
                             "The description"});
 #line 46
  testRunner.And("I have an object of type \'application/vnd.endjin.datacatalog.catalogitempatchdeta" +
-                        "ils\' called \'InitialPatch\'", ((string)(null)), table137, "And ");
+                        "ils\' called \'InitialPatch\'", ((string)(null)), table31, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table138 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table32 = new TechTalk.SpecFlow.Table(new string[] {
                             "Id",
                             "Notes",
                             "Description"});
-                table138.AddRow(new string[] {
+                table32.AddRow(new string[] {
                             "id2",
                             "The new notes",
                             "The new description"});
 #line 49
  testRunner.And("I have an object of type \'application/vnd.endjin.datacatalog.catalogitempatchdeta" +
-                        "ils\' called \'TestPatch\'", ((string)(null)), table138, "And ");
+                        "ils\' called \'TestPatch\'", ((string)(null)), table32, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table139 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table33 = new TechTalk.SpecFlow.Table(new string[] {
                             "PatchDetails"});
-                table139.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "{InitialPatch}"});
 #line 52
  testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
-                        "alog.editcatalogitemtrigger\'", ((string)(null)), table139, "And ");
+                        "alog.editcatalogitemtrigger\'", ((string)(null)), table33, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table140 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table34 = new TechTalk.SpecFlow.Table(new string[] {
                             "CatalogItemId"});
-                table140.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "id2"});
 #line 55
  testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
-                        "alog.publishcatalogitemtrigger\'", ((string)(null)), table140, "And ");
+                        "alog.publishcatalogitemtrigger\'", ((string)(null)), table34, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table141 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table35 = new TechTalk.SpecFlow.Table(new string[] {
                             "PatchDetails"});
-                table141.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "{TestPatch}"});
 #line 58
  testRunner.When("I send the workflow engine a trigger of type \'application/vnd.endjin.datacatalog." +
-                        "editcatalogitemtrigger\'", ((string)(null)), table141, "When ");
+                        "editcatalogitemtrigger\'", ((string)(null)), table35, "When ");
 #line hidden
 #line 61
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -324,16 +324,16 @@ this.ScenarioInitialize(scenarioInfo);
 #line 68
  testRunner.And("the workflow instance with Id \'id2\' should have 5 change log entries", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table142 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table36 = new TechTalk.SpecFlow.Table(new string[] {
                             "Message"});
-                table142.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Exiting state \'Published\'"});
-                table142.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Executing transition \'Edit (complete)\'"});
-                table142.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Entering state \'Published\'"});
 #line 69
- testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table142, "And ");
+ testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table36, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -376,72 +376,72 @@ this.ScenarioInitialize(scenarioInfo);
 #line 78
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table143 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table37 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table143.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "Identifier",
                             "identifier1"});
-                table143.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "Type",
                             "t1"});
-                table143.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "AllowWaitingForDocumentationExit",
                             "x"});
-                table143.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "AllowPublishedEntry",
                             "x"});
 #line 79
  testRunner.And("I have created and persisted a new instance with Id \'id3\' of the workflow with Id" +
-                        " \'dc-workflow\' and supplied the following context items", ((string)(null)), table143, "And ");
+                        " \'dc-workflow\' and supplied the following context items", ((string)(null)), table37, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table144 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table38 = new TechTalk.SpecFlow.Table(new string[] {
                             "Id",
                             "Notes",
                             "Description"});
-                table144.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "id3",
                             "The notes",
                             "The description"});
 #line 85
  testRunner.And("I have an object of type \'application/vnd.endjin.datacatalog.catalogitempatchdeta" +
-                        "ils\' called \'InitialPatch\'", ((string)(null)), table144, "And ");
+                        "ils\' called \'InitialPatch\'", ((string)(null)), table38, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table145 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table39 = new TechTalk.SpecFlow.Table(new string[] {
                             "Id",
                             "Notes",
                             "Description"});
-                table145.AddRow(new string[] {
+                table39.AddRow(new string[] {
                             "id3",
                             "",
                             "The new description"});
 #line 88
  testRunner.And("I have an object of type \'application/vnd.endjin.datacatalog.catalogitempatchdeta" +
-                        "ils\' called \'TestPatch\'", ((string)(null)), table145, "And ");
+                        "ils\' called \'TestPatch\'", ((string)(null)), table39, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table146 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table40 = new TechTalk.SpecFlow.Table(new string[] {
                             "PatchDetails"});
-                table146.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "{InitialPatch}"});
 #line 91
  testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
-                        "alog.editcatalogitemtrigger\'", ((string)(null)), table146, "And ");
+                        "alog.editcatalogitemtrigger\'", ((string)(null)), table40, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table147 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table41 = new TechTalk.SpecFlow.Table(new string[] {
                             "CatalogItemId"});
-                table147.AddRow(new string[] {
+                table41.AddRow(new string[] {
                             "id3"});
 #line 94
  testRunner.And("I have sent the workflow engine a trigger of type \'application/vnd.endjin.datacat" +
-                        "alog.publishcatalogitemtrigger\'", ((string)(null)), table147, "And ");
+                        "alog.publishcatalogitemtrigger\'", ((string)(null)), table41, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table148 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table42 = new TechTalk.SpecFlow.Table(new string[] {
                             "PatchDetails"});
-                table148.AddRow(new string[] {
+                table42.AddRow(new string[] {
                             "{TestPatch}"});
 #line 97
  testRunner.When("I send the workflow engine a trigger of type \'application/vnd.endjin.datacatalog." +
-                        "editcatalogitemtrigger\'", ((string)(null)), table148, "When ");
+                        "editcatalogitemtrigger\'", ((string)(null)), table42, "When ");
 #line hidden
 #line 100
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -469,16 +469,16 @@ this.ScenarioInitialize(scenarioInfo);
 #line 107
  testRunner.And("the workflow instance with Id \'id3\' should have 5 change log entries", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table149 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table43 = new TechTalk.SpecFlow.Table(new string[] {
                             "Message"});
-                table149.AddRow(new string[] {
+                table43.AddRow(new string[] {
                             "Exiting state \'Published\'"});
-                table149.AddRow(new string[] {
+                table43.AddRow(new string[] {
                             "Executing transition \'Edit (incomplete)\'"});
-                table149.AddRow(new string[] {
+                table43.AddRow(new string[] {
                             "Entering state \'Waiting for documentation\'"});
 #line 108
- testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table149, "And ");
+ testRunner.And("the following trace messages should be the last messages recorded", ((string)(null)), table43, "And ");
 #line hidden
             }
             this.ScenarioCleanup();

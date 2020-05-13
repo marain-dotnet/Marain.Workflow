@@ -73,6 +73,12 @@ namespace Marain.Workflows.Specs.Bindings
                         services.AddTenantedAzureCosmosWorkflowInstanceStore();
                         services.AddTenantedAzureCosmosWorkflowInstanceChangeLog();
                     }
+                    else if (featureContext.FeatureInfo.Tags.Any(t => t == "setupTenantedCosmosContainersWithBlobChangeLog"))
+                    {
+                        services.AddTenantedAzureCosmosWorkflowStore();
+                        services.AddTenantedAzureCosmosWorkflowInstanceStore();
+                        services.AddTenantedCloudBlobWorkflowInstanceChangeLog();
+                    }
                     else if (featureContext.FeatureInfo.Tags.Any(t => t == "useSqlStores"))
                     {
                         services.AddTenantedSqlWorkflowStore();

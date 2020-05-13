@@ -20,6 +20,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\CosmosWithBlobChangeLog\Conditions.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\CosmosWithBlobChangeLog\Create.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\CosmosWithBlobChangeLog\Delete.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\CosmosWithBlobChangeLog\Deprecated.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\CosmosWithBlobChangeLog\EditCatalogItem.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\CosmosWithBlobChangeLog\InvokeExternalServiceAction.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\CosmosWithBlobChangeLog\InvokeExternalServiceCondition.feature.cs" />
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\CosmosWithBlobChangeLog\Publish.feature.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.24.0-preview.37" />
     <PackageReference Include="Corvus.Leasing.InMemory" Version="0.5.0-preview.5" />
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="0.2.0-preview.5" />
@@ -53,8 +64,36 @@
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.Abstractions\Marain.Workflow.Tenancy.Abstractions.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureBlob\Marain.Workflow.Tenancy.AzureBlob.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureCosmos\Marain.Workflow.Tenancy.AzureCosmos.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.Sql\Marain.Workflow.Tenancy.Sql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Features\CosmosWithBlobChangeLog\Conditions.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\CosmosWithBlobChangeLog\Create.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\CosmosWithBlobChangeLog\Delete.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\CosmosWithBlobChangeLog\Deprecated.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\CosmosWithBlobChangeLog\EditCatalogItem.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\CosmosWithBlobChangeLog\InvokeExternalServiceAction.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\CosmosWithBlobChangeLog\InvokeExternalServiceCondition.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Features\CosmosWithBlobChangeLog\Publish.feature.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -64,6 +103,41 @@
     <None Update="specflow.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\CosmosWithBlobChangeLog\Conditions.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\CosmosWithBlobChangeLog\Create.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\CosmosWithBlobChangeLog\Delete.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\CosmosWithBlobChangeLog\Deprecated.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\CosmosWithBlobChangeLog\EditCatalogItem.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\CosmosWithBlobChangeLog\InvokeExternalServiceAction.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\CosmosWithBlobChangeLog\InvokeExternalServiceCondition.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\CosmosWithBlobChangeLog\Publish.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
   </ItemGroup>
 
 </Project>
