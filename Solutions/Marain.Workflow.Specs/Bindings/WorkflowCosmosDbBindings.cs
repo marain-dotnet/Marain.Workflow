@@ -52,18 +52,18 @@ namespace Marain.Workflows.Specs.Bindings
             cosmosConfig.DatabaseName = "endjinspecssharedthroughput";
             cosmosConfig.DisableTenantIdPrefix = true;
 
-            tenantProvider.Root.SetCosmosConfiguration(
+            tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
-                cosmosConfig);
+                cosmosConfig));
 
-            tenantProvider.Root.SetCosmosConfiguration(
+            tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
-                cosmosConfig);
+                cosmosConfig));
 
             var testDocumentRepositoryContainerDefinition = new CosmosContainerDefinition("workflow", "testdocuments", "/id");
-            tenantProvider.Root.SetCosmosConfiguration(
+            tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
                 testDocumentRepositoryContainerDefinition,
-                cosmosConfig);
+                cosmosConfig));
 
             Container testDocumentsRepository = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
                 () => factory.GetContainerForTenantAsync(

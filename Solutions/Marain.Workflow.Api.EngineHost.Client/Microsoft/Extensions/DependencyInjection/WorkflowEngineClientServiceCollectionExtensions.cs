@@ -1,5 +1,5 @@
-﻿// <copyright file="WorkflowEngineClientServiceCollectionExtensions.cs" company="Endjin">
-// Copyright (c) Endjin. All rights reserved.
+﻿// <copyright file="WorkflowEngineClientServiceCollectionExtensions.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -21,6 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds the workflow engine client to a service collection.
         /// </summary>
         /// <param name="services">The service collection.</param>
+        /// <param name="getOptions">A callback method to retrieve options for the client.</param>
         /// <returns>The modified service collection.</returns>
         public static IServiceCollection AddMarainWorkflowEngineClient(
             this IServiceCollection services,

@@ -16,7 +16,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="0.1.0-preview.9" />
+    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="0.1.0-preview.25" />
     <PackageReference Include="Corvus.SpecFlow.Extensions" Version="0.7.0-preview.16" />
     <PackageReference Include="Endjin.RecommendedPractices" Version="0.3.0">
       <PrivateAssets>all</PrivateAssets>
