@@ -15,12 +15,12 @@ namespace Marain.Workflows
         /// </summary>
         /// <param name="trigger">The trigger that caused the change, or null if the instance was being initialized.</param>
         /// <param name="instance">The associated version of the workflow instance.</param>
-        /// <param name="sequenceNumber">The sequence number of the log entry.</param>
-        public WorkflowInstanceLogEntry(IWorkflowTrigger trigger, WorkflowInstance instance, int sequenceNumber)
+        /// <param name="timestamp">The unix timestamp of the log entry at a resolution of seconds.</param>
+        public WorkflowInstanceLogEntry(IWorkflowTrigger trigger, WorkflowInstance instance, int timestamp)
         {
             this.Trigger = trigger;
             this.Instance = instance ?? throw new System.ArgumentNullException(nameof(instance));
-            this.SequenceNumber = sequenceNumber;
+            this.Timestamp = timestamp;
         }
 
         /// <summary>
@@ -34,8 +34,8 @@ namespace Marain.Workflows
         public WorkflowInstance Instance { get; }
 
         /// <summary>
-        /// Gets the sequence number of the entry.
+        /// Gets the unix timestamp of the log entry at a resolution of seconds.
         /// </summary>
-        public int SequenceNumber { get; }
+        public int Timestamp { get; }
     }
 }
