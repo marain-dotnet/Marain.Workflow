@@ -5,7 +5,10 @@
 namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System.Threading.Tasks;
-    using Corvus.SpecFlow.Extensions;
+    using Corvus.Testing.AzureFunctions;
+    using Corvus.Testing.AzureFunctions.SpecFlow;
+    using Corvus.Testing.SpecFlow;
+    using NUnit.Framework;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -37,12 +40,13 @@ namespace Marain.Workflows.Api.Specs.Bindings
         [BeforeFeature("@useWorkflowEngineApi", Order = BindingSequence.FunctionStartup)]
         public static Task StartWorkflowEngineFunctionAsync(FeatureContext context)
         {
-            return GetFunctionsController(context).StartFunctionsInstance(
-                context,
-                null,
-                "Marain.Workflow.Api.EngineHost",
-                EngineHostPort,
-                "netcoreapp3.1");
+            return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
+                    TestContext.CurrentContext.TestDirectory,
+                    "Marain.Workflow.Api.EngineHost",
+                    EngineHostPort,
+                    "netcoreapp3.1",
+                    "csharp",
+                    FunctionsBindings.GetFunctionConfiguration(context));
         }
 
         /// <summary>
@@ -53,20 +57,22 @@ namespace Marain.Workflows.Api.Specs.Bindings
         [BeforeFeature("@useWorkflowMessageProcessingApi", Order = BindingSequence.FunctionStartup)]
         public static Task StartWorkflowMessageProcessingFunctionAsync(FeatureContext context)
         {
-            FunctionConfiguration config = GetFunctionConfiguration(context);
+            FunctionConfiguration config = FunctionsBindings.GetFunctionConfiguration(context);
             config.EnvironmentVariables.Add("Workflow:EngineClient:BaseUrl", EngineHostBaseUrl);
-            return GetFunctionsController(context).StartFunctionsInstance(
-                context,
-                null,
+
+            return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
+                TestContext.CurrentContext.TestDirectory,
                 "Marain.Workflow.Api.MessageProcessingHost",
                 MessageProcessingHostPort,
-                "netcoreapp3.1");
+                "netcoreapp3.1",
+                "csharp",
+                config);
         }
 
         [AfterScenario("useWorkflowEngineApi", "useWorkflowMessageProcessingApi")]
         public static void WriteFunctionsOutput(FeatureContext featureContext)
         {
-            FunctionsController functionsController = featureContext.Get<FunctionsController>();
+            FunctionsController functionsController = FunctionsBindings.GetFunctionsController(featureContext);
             functionsController.GetFunctionsOutput().WriteAllToConsoleAndClear();
         }
 
@@ -81,28 +87,6 @@ namespace Marain.Workflows.Api.Specs.Bindings
             {
                 context.RunAndStoreExceptions(controller.TeardownFunctions);
             }
-        }
-
-        private static FunctionsController GetFunctionsController(FeatureContext context)
-        {
-            if (!context.TryGetValue(out FunctionsController controller))
-            {
-                controller = new FunctionsController();
-                context.Set(controller);
-            }
-
-            return controller;
-        }
-
-        private static FunctionConfiguration GetFunctionConfiguration(FeatureContext context)
-        {
-            if (!context.TryGetValue(out FunctionConfiguration configuration))
-            {
-                configuration = new FunctionConfiguration();
-                context.Set(configuration);
-            }
-
-            return configuration;
         }
     }
 }

@@ -7,6 +7,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.OpenApi
     using System;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
+    using Corvus.Json;
     using Corvus.Tenancy;
     using Marain.Operations.Client.OperationsControl;
     using Marain.Operations.Client.OperationsControl.Models;
@@ -27,21 +28,25 @@ namespace Marain.Workflows.Api.MessageProcessingHost.OpenApi
         private readonly IMarainOperationsControl operationsControl;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private readonly IMarainServicesTenancy marainServicesTenancy;
+        private readonly IPropertyBagFactory propertyBagFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageIngestionService" /> class.
         /// </summary>
         /// <param name="serializerSettingsProvider">Serialization settings provider.</param>
+        /// <param name="propertyBagFactory">Factory to use when creating initial IPropertyBag instances for workflow message envelopes.</param>
         /// <param name="operationsControl">Allows definition and control of long-running operations.</param>
         /// <param name="marainServicesTenancy">Marain tenancy services.</param>
         public MessageIngestionService(
             IJsonSerializerSettingsProvider serializerSettingsProvider,
+            IPropertyBagFactory propertyBagFactory,
             IMarainOperationsControl operationsControl,
             IMarainServicesTenancy marainServicesTenancy)
         {
             this.marainServicesTenancy = marainServicesTenancy;
             this.operationsControl = operationsControl;
             this.serializerSettingsProvider = serializerSettingsProvider;
+            this.propertyBagFactory = propertyBagFactory;
         }
 
         /// <summary>
@@ -59,7 +64,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.OpenApi
             var operationId = Guid.NewGuid();
             CreateOperationHeaders operationHeaders = await this.operationsControl.CreateOperationAsync(delegatedTenantId, operationId).ConfigureAwait(false);
 
-            var envelope = new WorkflowMessageEnvelope
+            var envelope = new WorkflowMessageEnvelope(this.propertyBagFactory.Create(PropertyBagValues.Empty))
             {
                 StartWorkflowInstanceRequest = body,
                 OperationId = operationId,
@@ -92,7 +97,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.OpenApi
             CreateOperationHeaders operationHeaders =
                 await this.operationsControl.CreateOperationAsync(delegatedTenantId, operationId).ConfigureAwait(false);
 
-            var envelope = new WorkflowMessageEnvelope
+            var envelope = new WorkflowMessageEnvelope(this.propertyBagFactory.Create(PropertyBagValues.Empty))
             {
                 Trigger = body,
                 OperationId = operationId,
