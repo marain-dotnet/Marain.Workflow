@@ -8,8 +8,8 @@ namespace Marain.Workflows.Specs.Bindings
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Azure.Storage.Tenancy;
-    using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.Steps;
     using Marain.Workflows.Storage;
     using Microsoft.Azure.Cosmos;
@@ -18,7 +18,7 @@ namespace Marain.Workflows.Specs.Bindings
     using TechTalk.SpecFlow;
 
     /// <summary>
-    /// Specflow bindings to support Cosmos DB.
+    /// Specflow bindings to support Cosmos DB with the Blob storage change log.
     /// </summary>
     [Binding]
     public static class WorkflowCosmosDbWithBlobChangeLogBindings
@@ -38,7 +38,7 @@ namespace Marain.Workflows.Specs.Bindings
         /// </remarks>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [BeforeFeature("@setupTenantedCosmosContainersWithBlobChangeLog", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
-        public static async Task SetupCosmosDbRepositoryWithBlobChangeLog(FeatureContext featureContext)
+        public static async Task SetupCosmosDbRepository(FeatureContext featureContext)
         {
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
             ITenantCosmosContainerFactory factory = serviceProvider.GetRequiredService<ITenantCosmosContainerFactory>();
@@ -66,7 +66,6 @@ namespace Marain.Workflows.Specs.Bindings
                 configuration.GetSection("TestBlobStorageConfiguration").Get<BlobStorageConfiguration>()
                     ?? new BlobStorageConfiguration();
 
-            // Ensure a unique blob container name for the feature.
             blobConfig.Container = Guid.NewGuid().ToString();
             blobConfig.DisableTenantIdPrefix = true;
 
@@ -84,8 +83,9 @@ namespace Marain.Workflows.Specs.Bindings
                     testTenant,
                     testDocumentRepositoryContainerDefinition)).ConfigureAwait(false);
 
-            featureContext.Set(testTenant);
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
+
+            featureContext.Set(testTenant);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Marain.Workflows.Specs.Bindings
         /// <param name="featureContext">The feature context.</param>
         /// <returns>A <see cref="Task" /> which completes once the operation has completed.</returns>
         [AfterFeature("@setupTenantedCosmosContainersWithBlobChangeLog", Order = 100000)]
-        public static async Task TearDownCosmosDbRepositoryWithBlobChangeLog(FeatureContext featureContext)
+        public static async Task TeardownCosmosDb(FeatureContext featureContext)
         {
             // Pretty nasty hack to get rid of the underlying containers for the stores.
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
@@ -116,7 +116,7 @@ namespace Marain.Workflows.Specs.Bindings
             var workflowInstanceChangeLog = (CloudBlobWorkflowInstanceChangeLog)await workflowInstanceChangeLogFactory.GetWorkflowInstanceChangeLogWriterForTenantAsync(tenant).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
-                () => workflowInstanceChangeLog.Container.DeleteAsync()).ConfigureAwait(false);
+                () => workflowInstanceChangeLog.Container.DeleteIfExistsAsync()).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
                 () => featureContext.Get<Container>(TestDocumentsRepository).DeleteContainerAsync()).ConfigureAwait(false);
