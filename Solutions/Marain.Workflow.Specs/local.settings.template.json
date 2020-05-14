@@ -12,9 +12,11 @@
   // completely.
   "TestSqlConfiguration:Database": "endjintestsql",
   "TestSqlConfiguration:ConnectionStringSecretName": "endjintestazuresql",
-  "TestSqlConfiguration:KeyVaultName": "endjintest"
+  "TestSqlConfiguration:KeyVaultName": "endjintest",
 
-
+  // Blob storage configuration for testing.
+  // Remove this to use local storage emulator.
+  "TestBlobStorageConfiguration:AccountName": "<Tenancy Storage Account Connection String Here>"
 
   // If using a real Cosmos, Sql, or CloudBlob configuration that requires KeyVault access, this local service will need to authenticate.
   // And for that to work, you won't be able to use the normal az cli-based AzureServicesAuthConnectionString
