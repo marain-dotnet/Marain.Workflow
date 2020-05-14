@@ -6,11 +6,11 @@ namespace Marain.Workflows
 {
     using System;
     using Corvus.Extensions.Json;
+    using Corvus.Json;
     using Newtonsoft.Json;
 
     /// <summary>
-    /// Wrapper for workflow messages being sent via a queuing system,
-    /// e.g. Event Hubs..
+    /// Wrapper for workflow messages being sent via a queuing system, e.g. an Event Hub.
     /// </summary>
     public class WorkflowMessageEnvelope
     {
@@ -18,6 +18,15 @@ namespace Marain.Workflows
         /// The content type that will be used when serializing/deserializing.
         /// </summary>
         public const string RegisteredContentType = "application/vnd.marain.workflows.hosted.messageenvelope";
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="WorkflowMessageEnvelope"/> class.
+        /// </summary>
+        /// <param name="properties">The <see cref="Properties"/>.</param>
+        public WorkflowMessageEnvelope(IPropertyBag properties)
+        {
+            this.Properties = properties;
+        }
 
         /// <summary>
         /// Gets the content type that will be used when serializing/deserializing.
@@ -63,8 +72,8 @@ namespace Marain.Workflows
         public Guid OperationId { get; set; }
 
         /// <summary>
-        /// Gets or sets a <see cref="PropertyBag"/> containing any additional data.
+        /// Gets or sets a <see cref="IPropertyBag"/> containing any additional data.
         /// </summary>
-        public PropertyBag Properties { get; set; } = new PropertyBag();
+        public IPropertyBag Properties { get; set; }
     }
 }

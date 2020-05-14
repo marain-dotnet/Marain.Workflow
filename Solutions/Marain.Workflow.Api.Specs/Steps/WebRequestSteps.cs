@@ -16,7 +16,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System.Linq;
     using System.Net;
     using Corvus.Extensions.Json;
-    using Corvus.SpecFlow.Extensions;
+    using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
     using Marain.Workflows.Api.Specs.Bindings;
     using Microsoft.Extensions.DependencyInjection;

@@ -14,7 +14,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     using Corvus.Retry;
     using Corvus.Retry.Policies;
     using Corvus.Retry.Strategies;
-    using Corvus.SpecFlow.Extensions;
+    using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
     using Microsoft.Extensions.DependencyInjection;
 

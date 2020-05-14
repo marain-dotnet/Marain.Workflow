@@ -7,9 +7,9 @@ namespace Marain.Workflows.Specs.Bindings
     using System;
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
-    using Corvus.SpecFlow.Extensions;
     using Corvus.Sql.Tenancy;
     using Corvus.Tenancy;
+    using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.Steps;
     using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.Configuration;
@@ -38,7 +38,7 @@ namespace Marain.Workflows.Specs.Bindings
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
             ITenantSqlConnectionFactory sqlConnectionFactory = serviceProvider.GetRequiredService<ITenantSqlConnectionFactory>();
             ITenantCosmosContainerFactory factory = serviceProvider.GetRequiredService<ITenantCosmosContainerFactory>();
-            ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
+            ITenantStore tenantStore = serviceProvider.GetRequiredService<ITenantStore>();
             IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
             SqlConfiguration sqlConfig =
@@ -47,17 +47,17 @@ namespace Marain.Workflows.Specs.Bindings
 
             string containerBase = Guid.NewGuid().ToString();
 
-            ITenant testTenant = await tenantProvider.CreateChildTenantAsync(tenantProvider.Root.Id, "Test tenant").ConfigureAwait(false);
-
+            ITenant testTenant = await tenantStore.CreateChildTenantAsync(tenantStore.Root.Id, "Test tenant").ConfigureAwait(false);
             sqlConfig.ConnectionString = "Server=(localdb)\\mssqllocaldb;Trusted_Connection=True;MultipleActiveResultSets=true";
             sqlConfig.Database = $"workflow-{containerBase}";
             sqlConfig.ConnectionStringSecretName = null;
             sqlConfig.KeyVaultName = null;
             sqlConfig.IsLocalDatabase = true;
             sqlConfig.DisableTenantIdPrefix = true;
-            testTenant.SetSqlConfiguration(
+
+            await tenantStore.UpdateTenantPropertiesAsync(testTenant, data => data.AddSqlConfiguration(
                 TenantedSqlWorkflowStoreServiceCollectionExtensions.WorkflowConnectionDefinition,
-                sqlConfig);
+                sqlConfig)).ConfigureAwait(false);
 
             CosmosConfiguration cosmosConfig =
                 configuration.GetSection("TestCosmosConfiguration").Get<CosmosConfiguration>()
@@ -66,22 +66,22 @@ namespace Marain.Workflows.Specs.Bindings
             cosmosConfig.DatabaseName = "endjinspecssharedthroughput";
             cosmosConfig.DisableTenantIdPrefix = true;
 
-            testTenant.SetCosmosConfiguration(
+            testTenant = await tenantStore.UpdateTenantPropertiesAsync(testTenant, data => data.AddCosmosConfiguration(
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
-                cosmosConfig);
+                cosmosConfig)).ConfigureAwait(false);
 
-            testTenant.SetCosmosConfiguration(
+            testTenant = await tenantStore.UpdateTenantPropertiesAsync(testTenant, data => data.AddCosmosConfiguration(
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
-                cosmosConfig);
+                cosmosConfig)).ConfigureAwait(false);
 
-            testTenant.SetCosmosConfiguration(
+            testTenant = await tenantStore.UpdateTenantPropertiesAsync(testTenant, data => data.AddCosmosConfiguration(
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceChangeLogContainerDefinition,
-                cosmosConfig);
+                cosmosConfig)).ConfigureAwait(false);
 
             var testDocumentRepositoryContainerDefinition = new CosmosContainerDefinition("workflow", "testdocuments", "/id");
-            testTenant.SetCosmosConfiguration(
+            testTenant = await tenantStore.UpdateTenantPropertiesAsync(testTenant, data => data.AddCosmosConfiguration(
                 testDocumentRepositoryContainerDefinition,
-                cosmosConfig);
+                cosmosConfig)).ConfigureAwait(false);
 
             Container testDocumentsRepository = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
                 () => factory.GetContainerForTenantAsync(
