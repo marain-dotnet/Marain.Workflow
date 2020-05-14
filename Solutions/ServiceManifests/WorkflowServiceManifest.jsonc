@@ -29,6 +29,16 @@
         "containerName": "instances"
       },
       "description": "Workflow instances"
+    },
+    {
+      "contentType": "application/vnd.marain.tenancy.servicemanifests.requiredconfigurationentries.cosmosdb",
+      "type": "cosmosContainerConfiguration",
+      "key": "workflowInstanceChangeLog",
+      "containerDefinition": {
+        "databaseName": "workflow",
+        "containerName": "instancechangelog"
+      },
+      "description": "Workflow instance change log"
     }
   ]
 }

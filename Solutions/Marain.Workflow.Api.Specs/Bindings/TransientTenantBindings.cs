@@ -139,6 +139,11 @@ namespace Marain.Workflows.Api.Specs.Bindings
                     Key = "workflowInstanceStore",
                     Configuration = cosmosConfiguration,
                 },
+                new EnrollmentCosmosConfigurationItem
+                {
+                    Key = "workflowInstanceChangeLog",
+                    Configuration = cosmosConfiguration,
+                },
                 new EnrollmentBlobStorageConfigurationItem
                 {
                     Key = "operationsStore",
