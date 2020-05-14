@@ -58,10 +58,9 @@ namespace Marain.Workflows.Specs.Steps
             ITenantedWorkflowStoreFactory storeFactory = ContainerBindings.GetServiceProvider(this.featureContext)
                                                                     .GetService<ITenantedWorkflowStoreFactory>();
 
-            ITenantProvider tenantProvider =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<ITenantProvider>();
+            ITenant tenant = this.featureContext.Get<ITenant>();
 
-            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(async () =>
             {

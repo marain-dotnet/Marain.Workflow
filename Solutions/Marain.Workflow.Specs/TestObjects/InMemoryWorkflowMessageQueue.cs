@@ -33,11 +33,6 @@ namespace Marain.Workflows.Specs.TestObjects
         private readonly ILogger<InMemoryWorkflowMessageQueue> logger;
 
         /// <summary>
-        /// The tenant provider that will be used when accessing storage.
-        /// </summary>
-        private readonly ITenantProvider tenantProvider;
-
-        /// <summary>
         /// The queue that will be used for triggers.
         /// </summary>
         private readonly ConcurrentQueue<WorkflowMessageEnvelope> queue;
@@ -56,6 +51,7 @@ namespace Marain.Workflows.Specs.TestObjects
         /// The task that represents the procssing thread.
         /// </summary>
         private Task runner;
+        private ITenant tenant;
 
         /// <summary>
         /// Flag that indicates whether or not the <see cref="FinishProcessing" /> method has
@@ -73,9 +69,6 @@ namespace Marain.Workflows.Specs.TestObjects
         /// <param name="workflowInstanceStoreFactory">
         /// The workflow instance store factory to use to access underlying instance storage.
         /// </param>
-        /// <param name="tenantProvider">
-        /// The tenant provider that will be used when accessing storage.
-        /// </param>
         /// <param name="logger">
         /// Logger to use to write diagnostic messages.
         /// </param>
@@ -88,11 +81,9 @@ namespace Marain.Workflows.Specs.TestObjects
         public InMemoryWorkflowMessageQueue(
             ITenantedWorkflowEngineFactory workflowEngineFactory,
             ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory,
-            ITenantProvider tenantProvider,
             ILogger<InMemoryWorkflowMessageQueue> logger)
         {
             this.logger = logger;
-            this.tenantProvider = tenantProvider;
             this.workflowEngineFactory = workflowEngineFactory;
             this.queue = new ConcurrentQueue<WorkflowMessageEnvelope>();
             this.workflowInstanceStoreFactory = workflowInstanceStoreFactory;
@@ -135,10 +126,11 @@ namespace Marain.Workflows.Specs.TestObjects
         /// Start passing trigger messsages to the <see cref="IWorkflowEngine" /> that was
         /// passed to the constructor.
         /// </summary>
+        /// <param name="tenant">The tenant for which to start processing.</param>
         /// <exception cref="InvalidOperationException">
         /// Thrown if processing is already started.
         /// </exception>
-        public void StartProcessing()
+        public void StartProcessing(ITenant tenant)
         {
             if (this.runner != null && this.runner.Status != TaskStatus.RanToCompletion
                                     && this.runner.Status != TaskStatus.Faulted)
@@ -146,6 +138,7 @@ namespace Marain.Workflows.Specs.TestObjects
                 throw new InvalidOperationException();
             }
 
+            this.tenant = tenant;
             this.shouldComplete = false;
             this.runner = new Task(() => this.Process().Wait());
             this.runner.Start();
@@ -189,9 +182,9 @@ namespace Marain.Workflows.Specs.TestObjects
                 this.queue.TryPeek(out WorkflowMessageEnvelope item);
 
                 IWorkflowInstanceStore instanceStore =
-                    await this.workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(this.tenantProvider.Root).ConfigureAwait(false);
+                    await this.workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(this.tenant).ConfigureAwait(false);
                 IWorkflowEngine engine =
-                    await this.workflowEngineFactory.GetWorkflowEngineAsync(this.tenantProvider.Root).ConfigureAwait(false);
+                    await this.workflowEngineFactory.GetWorkflowEngineAsync(this.tenant).ConfigureAwait(false);
 
                 if (item.IsTrigger)
                 {

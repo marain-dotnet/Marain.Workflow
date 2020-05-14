@@ -12,7 +12,7 @@
   // completely.
   "TestSqlConfiguration:Database": "endjintestsql",
   "TestSqlConfiguration:ConnectionStringSecretName": "endjintestazuresql",
-  "TestSqlConfiguration:KeyVaultName": "endjintest",
+  "TestSqlConfiguration:KeyVaultName": "endjintest"
 
 
 

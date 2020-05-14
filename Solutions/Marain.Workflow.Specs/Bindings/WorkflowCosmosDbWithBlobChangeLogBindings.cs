@@ -36,15 +36,16 @@ namespace Marain.Workflows.Specs.Bindings
         /// Note that this sets up a resource in Azure and will incur cost. Ensure the corresponding tear down operation
         /// is always run, or verify manually after a test run.
         /// </remarks>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [BeforeFeature("@setupTenantedCosmosContainersWithBlobChangeLog", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
-        public static void SetupCosmosDbRepositoryWithBlobChangeLog(FeatureContext featureContext)
+        public static async Task SetupCosmosDbRepositoryWithBlobChangeLog(FeatureContext featureContext)
         {
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
             ITenantCosmosContainerFactory factory = serviceProvider.GetRequiredService<ITenantCosmosContainerFactory>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
             IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
-            ITenant rootTenant = tenantProvider.Root;
+            ITenant testTenant = await tenantProvider.CreateChildTenantAsync(tenantProvider.Root.Id, "Test tenant").ConfigureAwait(false);
 
             CosmosConfiguration cosmosConfig =
                 configuration.GetSection("TestCosmosConfiguration").Get<CosmosConfiguration>()
@@ -53,11 +54,11 @@ namespace Marain.Workflows.Specs.Bindings
             cosmosConfig.DatabaseName = "endjinspecssharedthroughput";
             cosmosConfig.DisableTenantIdPrefix = true;
 
-            tenantProvider.Root.SetCosmosConfiguration(
+            testTenant.SetCosmosConfiguration(
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
                 cosmosConfig);
 
-            tenantProvider.Root.SetCosmosConfiguration(
+            testTenant.SetCosmosConfiguration(
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
                 cosmosConfig);
 
@@ -68,20 +69,21 @@ namespace Marain.Workflows.Specs.Bindings
             // Ensure a unique blob container name for the feature.
             blobConfig.Container = Guid.NewGuid().ToString();
             blobConfig.DisableTenantIdPrefix = true;
-            tenantProvider.Root.SetBlobStorageConfiguration(
+            testTenant.SetBlobStorageConfiguration(
                 TenantedCloudBlobWorkflowStoreServiceCollectionExtensions.WorkflowInstanceChangeLogContainerDefinition,
                 blobConfig);
 
             var testDocumentRepositoryContainerDefinition = new CosmosContainerDefinition("workflow", "testdocuments", "/id");
-            tenantProvider.Root.SetCosmosConfiguration(
+            testTenant.SetCosmosConfiguration(
                 testDocumentRepositoryContainerDefinition,
                 cosmosConfig);
 
-            Container testDocumentsRepository = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+            Container testDocumentsRepository = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
                 () => factory.GetContainerForTenantAsync(
-                    rootTenant,
-                    testDocumentRepositoryContainerDefinition)).Result;
+                    testTenant,
+                    testDocumentRepositoryContainerDefinition)).ConfigureAwait(false);
 
+            featureContext.Set(testTenant);
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
         }
 
@@ -96,21 +98,21 @@ namespace Marain.Workflows.Specs.Bindings
             // Pretty nasty hack to get rid of the underlying containers for the stores.
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
-
+            ITenant tenant = featureContext.Get<ITenant>();
             ITenantedWorkflowStoreFactory workflowStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
-            var workflowStore = (CosmosWorkflowStore)await workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            var workflowStore = (CosmosWorkflowStore)await workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
                 () => workflowStore.Container.DeleteContainerAsync()).ConfigureAwait(false);
 
             ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
-            var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
                 () => workflowInstanceStore.Container.DeleteContainerAsync()).ConfigureAwait(false);
 
             ITenantedWorkflowInstanceChangeLogFactory workflowInstanceChangeLogFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceChangeLogFactory>();
-            var workflowInstanceChangeLog = (CloudBlobWorkflowInstanceChangeLog)await workflowInstanceChangeLogFactory.GetWorkflowInstanceChangeLogWriterForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            var workflowInstanceChangeLog = (CloudBlobWorkflowInstanceChangeLog)await workflowInstanceChangeLogFactory.GetWorkflowInstanceChangeLogWriterForTenantAsync(tenant).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
                 () => workflowInstanceChangeLog.Container.DeleteAsync()).ConfigureAwait(false);

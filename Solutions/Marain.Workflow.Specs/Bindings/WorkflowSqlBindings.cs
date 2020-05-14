@@ -31,8 +31,9 @@ namespace Marain.Workflows.Specs.Bindings
         /// Set up a SQL Database for the feature.
         /// </summary>
         /// <param name="featureContext">The feature context.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [BeforeFeature("@setupTenantedSqlDatabase", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
-        public static void SetupDatabases(FeatureContext featureContext)
+        public static async Task SetupDatabases(FeatureContext featureContext)
         {
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
             ITenantSqlConnectionFactory sqlConnectionFactory = serviceProvider.GetRequiredService<ITenantSqlConnectionFactory>();
@@ -46,13 +47,15 @@ namespace Marain.Workflows.Specs.Bindings
 
             string containerBase = Guid.NewGuid().ToString();
 
+            ITenant testTenant = await tenantProvider.CreateChildTenantAsync(tenantProvider.Root.Id, "Test tenant").ConfigureAwait(false);
+
             sqlConfig.ConnectionString = "Server=(localdb)\\mssqllocaldb;Trusted_Connection=True;MultipleActiveResultSets=true";
             sqlConfig.Database = $"workflow-{containerBase}";
             sqlConfig.ConnectionStringSecretName = null;
             sqlConfig.KeyVaultName = null;
             sqlConfig.IsLocalDatabase = true;
             sqlConfig.DisableTenantIdPrefix = true;
-            tenantProvider.Root.SetSqlConfiguration(
+            testTenant.SetSqlConfiguration(
                 TenantedSqlWorkflowStoreServiceCollectionExtensions.WorkflowConnectionDefinition,
                 sqlConfig);
 
@@ -63,28 +66,29 @@ namespace Marain.Workflows.Specs.Bindings
             cosmosConfig.DatabaseName = "endjinspecssharedthroughput";
             cosmosConfig.DisableTenantIdPrefix = true;
 
-            tenantProvider.Root.SetCosmosConfiguration(
+            testTenant.SetCosmosConfiguration(
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
                 cosmosConfig);
 
-            tenantProvider.Root.SetCosmosConfiguration(
+            testTenant.SetCosmosConfiguration(
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
                 cosmosConfig);
 
-            tenantProvider.Root.SetCosmosConfiguration(
+            testTenant.SetCosmosConfiguration(
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceChangeLogContainerDefinition,
                 cosmosConfig);
 
             var testDocumentRepositoryContainerDefinition = new CosmosContainerDefinition("workflow", "testdocuments", "/id");
-            tenantProvider.Root.SetCosmosConfiguration(
+            testTenant.SetCosmosConfiguration(
                 testDocumentRepositoryContainerDefinition,
                 cosmosConfig);
 
-            Container testDocumentsRepository = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+            Container testDocumentsRepository = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
                 () => factory.GetContainerForTenantAsync(
-                    tenantProvider.Root,
-                    testDocumentRepositoryContainerDefinition)).Result;
+                    testTenant,
+                    testDocumentRepositoryContainerDefinition)).ConfigureAwait(false);
 
+            featureContext.Set(testTenant);
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
 
             // And now, deploy the sql server for this instance.
@@ -109,7 +113,8 @@ namespace Marain.Workflows.Specs.Bindings
             ITenantSqlConnectionFactory sqlConnectionFactory = serviceProvider.GetRequiredService<ITenantSqlConnectionFactory>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
 
-            SqlConfiguration config = tenantProvider.Root.GetSqlConfiguration(TenantedSqlWorkflowStoreServiceCollectionExtensions.WorkflowConnectionDefinition);
+            ITenant tenant = featureContext.Get<ITenant>();
+            SqlConfiguration config = tenant.GetSqlConfiguration(TenantedSqlWorkflowStoreServiceCollectionExtensions.WorkflowConnectionDefinition);
 
             featureContext.RunAndStoreExceptions(() =>
                 SqlHelpers.DeleteDatabase(config.ConnectionString, config.Database));

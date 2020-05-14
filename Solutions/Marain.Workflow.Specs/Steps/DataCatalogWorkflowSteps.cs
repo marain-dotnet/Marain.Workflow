@@ -52,10 +52,9 @@ namespace Marain.Workflows.Specs.Steps
             ITenantedWorkflowStoreFactory storeFactory =
                 ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantedWorkflowStoreFactory>();
 
-            ITenantProvider tenantProvider =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantProvider>();
+            ITenant tenant = this.featureContext.Get<ITenant>();
 
-            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(async () =>
             {
@@ -202,15 +201,12 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the workflow instance with Id '(.*)' should have (.*) change log entries")]
         public async Task ThenTheWorkflowInstanceWithIdShouldHaveChangeLogEntries(string instanceId, int count)
         {
-            ITenantProvider tenantProvider =
-                ContainerBindings.GetServiceProvider(this.featureContext)
-                    .GetService<ITenantProvider>();
-
             ITenantedWorkflowInstanceChangeLogFactory instanceChangeLogFactory =
                 ContainerBindings.GetServiceProvider(this.featureContext)
                     .GetService<ITenantedWorkflowInstanceChangeLogFactory>();
 
-            IWorkflowInstanceChangeLogReader instanceChangeLog = await instanceChangeLogFactory.GetWorkflowInstanceChangeLogReaderForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            ITenant tenant = this.featureContext.Get<ITenant>();
+            IWorkflowInstanceChangeLogReader instanceChangeLog = await instanceChangeLogFactory.GetWorkflowInstanceChangeLogReaderForTenantAsync(tenant).ConfigureAwait(false);
 
             int totalCount = 0;
             string continuationToken = null;
@@ -239,12 +235,9 @@ namespace Marain.Workflows.Specs.Steps
                 ContainerBindings.GetServiceProvider(this.featureContext)
                     .GetService<ITenantedWorkflowInstanceStoreFactory>();
 
-            ITenantProvider tenantProvider =
-                ContainerBindings.GetServiceProvider(this.featureContext)
-                    .GetService<ITenantProvider>();
-
-            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
-            IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            ITenant tenant = this.featureContext.Get<ITenant>();
+            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
+            IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             WorkflowInstance instance =
                 await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
@@ -266,11 +259,9 @@ namespace Marain.Workflows.Specs.Steps
                 ContainerBindings.GetServiceProvider(this.featureContext)
                     .GetService<ITenantedWorkflowInstanceStoreFactory>();
 
-            ITenantProvider tenantProvider =
-                ContainerBindings.GetServiceProvider(this.featureContext)
-                    .GetService<ITenantProvider>();
+            ITenant tenant = this.featureContext.Get<ITenant>();
 
-            IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+            IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             WorkflowInstance instance =
                 await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(

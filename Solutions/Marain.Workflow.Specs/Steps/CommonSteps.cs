@@ -43,10 +43,10 @@ namespace Marain.Workflows.Specs.Steps
             Table table)
         {
             var context = table.Rows.ToDictionary(x => x["Key"], x => x["Value"]);
-
+            ITenant tenant = this.featureContext.Get<ITenant>();
             ITenantedWorkflowEngineFactory engineFactory = ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantedWorkflowEngineFactory>();
             ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetService<ITenantProvider>();
-            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenantProvider.Root).ConfigureAwait(false);
+            IWorkflowEngine engine = await engineFactory.GetWorkflowEngineAsync(tenant).ConfigureAwait(false);
 
             await engine.StartWorkflowInstanceAsync(new StartWorkflowInstanceRequest { Context = context, WorkflowId = workflowId, WorkflowInstanceId = instanceId }).ConfigureAwait(false);
         }
@@ -61,7 +61,7 @@ namespace Marain.Workflows.Specs.Steps
         public void GivenTheWorkflowTriggerQueueIsReadyToProcessNewTriggers()
         {
             var queue = (InMemoryWorkflowMessageQueue)ContainerBindings.GetServiceProvider(this.featureContext).GetService<IWorkflowMessageQueue>();
-            queue.StartProcessing();
+            queue.StartProcessing(this.featureContext.Get<ITenant>());
         }
 
         [When("I wait for all triggers to be processed")]
