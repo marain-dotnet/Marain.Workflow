@@ -45,13 +45,13 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public Task<WorkflowInstanceLogPage> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
+        public Task<WorkflowInstanceLogPage> GetLogEntriesAsync(string workflowInstanceId, long? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
         {
             return Retriable.RetryAsync(() =>
                 this.GetLogEntriesCoreAsync(workflowInstanceId, startingTimestamp, maxItems, continuationToken));
         }
 
-        private async Task<WorkflowInstanceLogPage> GetLogEntriesCoreAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
+        private async Task<WorkflowInstanceLogPage> GetLogEntriesCoreAsync(string workflowInstanceId, long? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
         {
             int pageIndex = 0;
             int pageSize = maxItems;
@@ -96,7 +96,7 @@ namespace Marain.Workflows.Storage
         {
             string serializedTrigger = reader.GetString(1);
             string serializedInstance = reader.GetString(2);
-            int timestamp = reader.GetInt32(3);
+            long timestamp = reader.GetInt64(3);
 
             return new WorkflowInstanceLogEntry(
                 JsonConvert.DeserializeObject<IWorkflowTrigger>(serializedTrigger, this.serializerSettingsProvider.Instance),

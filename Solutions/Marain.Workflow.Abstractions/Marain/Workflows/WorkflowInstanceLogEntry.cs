@@ -15,8 +15,11 @@ namespace Marain.Workflows
         /// </summary>
         /// <param name="trigger">The trigger that caused the change, or null if the instance was being initialized.</param>
         /// <param name="instance">The associated version of the workflow instance.</param>
-        /// <param name="timestamp">The unix timestamp of the log entry at a resolution of seconds.</param>
-        public WorkflowInstanceLogEntry(IWorkflowTrigger trigger, WorkflowInstance instance, int timestamp)
+        /// <param name="timestamp">The unix timestamp of the log entry at a resolution of milliseconds.</param>
+        /// <remarks>
+        /// <para>Note that two log entries, even for the same workflow instance, could have the same timestamp, and there is no absolute guarantee of the ordering of entries, even for a single workflow instance.</para>
+        /// </remarks>
+        public WorkflowInstanceLogEntry(IWorkflowTrigger trigger, WorkflowInstance instance, long timestamp)
         {
             this.Trigger = trigger;
             this.Instance = instance ?? throw new System.ArgumentNullException(nameof(instance));
@@ -36,6 +39,6 @@ namespace Marain.Workflows
         /// <summary>
         /// Gets the unix timestamp of the log entry at a resolution of seconds.
         /// </summary>
-        public int Timestamp { get; }
+        public long Timestamp { get; }
     }
 }

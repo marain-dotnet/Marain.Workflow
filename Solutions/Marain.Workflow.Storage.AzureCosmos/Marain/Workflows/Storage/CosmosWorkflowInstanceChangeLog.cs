@@ -42,7 +42,7 @@ namespace Marain.Workflows.Storage
                 throw new ArgumentNullException(nameof(workflowInstance));
             }
 
-            var logEntry = new CosmosWorkflowInstanceChangeLogEntry(trigger, workflowInstance);
+            var logEntry = new CosmosWorkflowInstanceChangeLogEntry(Guid.NewGuid().ToString(), trigger, workflowInstance, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             await Retriable.RetryAsync(() =>
                 this.Container.UpsertItemAsync(
                     logEntry,
@@ -51,15 +51,15 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public async Task<WorkflowInstanceLogPage> GetLogEntriesAsync(string workflowInstanceId, int? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
+        public async Task<WorkflowInstanceLogPage> GetLogEntriesAsync(string workflowInstanceId, long? startingTimestamp = null, int maxItems = 25, string continuationToken = null)
         {
             var query = new StringBuilder("SELECT * FROM log l WHERE l.workflowInstance.id = @workflowInstanceId");
             if (startingTimestamp.HasValue)
             {
-                query.Append(" AND l._ts >= @startingTimestamp");
+                query.Append(" AND l.timestamp >= @startingTimestamp");
             }
 
-            query.Append(" ORDER BY l._ts ASC");
+            query.Append(" ORDER BY l.timestamp ASC");
 
             QueryDefinition queryDefinition =
             new QueryDefinition(query.ToString())
@@ -78,7 +78,7 @@ namespace Marain.Workflows.Storage
             {
                 FeedResponse<CosmosWorkflowInstanceChangeLogEntry> response = await iterator.ReadNextAsync().ConfigureAwait(false);
                 nextToken = response.ContinuationToken;
-                results = response.Select(l => new WorkflowInstanceLogEntry(l.Trigger, l.WorkflowInstance, l.Timestamp.Value)).ToList();
+                results = response.Select(l => new WorkflowInstanceLogEntry(l.Trigger, l.WorkflowInstance, l.Timestamp)).ToList();
             }
 
             return new WorkflowInstanceLogPage(nextToken, results);

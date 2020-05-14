@@ -15,22 +15,12 @@ namespace Marain.Workflows.Storage.Internal
         /// <summary>
         /// Initializes a new instance of the <see cref="CosmosWorkflowInstanceChangeLogEntry"/> class.
         /// </summary>
-        /// <param name="trigger">the trigger that caused the workflow instance to be changed, or null if this was a newly initialized workflow.</param>
-        /// <param name="workflowInstance">The workflow instance that has changed.</param>
-        public CosmosWorkflowInstanceChangeLogEntry(IWorkflowTrigger trigger, WorkflowInstance workflowInstance)
-            : this(Guid.NewGuid().ToString(), trigger, workflowInstance)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CosmosWorkflowInstanceChangeLogEntry"/> class.
-        /// </summary>
         /// <param name="id">The unique ID of this workflow instance.</param>
         /// <param name="trigger">the trigger that caused the workflow instance to be changed, or null if this was a newly initialized workflow.</param>
         /// <param name="workflowInstance">The workflow instance that has changed.</param>
         /// <param name="timestamp">The timestamp of the change.</param>
         [JsonConstructor]
-        public CosmosWorkflowInstanceChangeLogEntry(string id, IWorkflowTrigger trigger, WorkflowInstance workflowInstance, int? timestamp = null)
+        public CosmosWorkflowInstanceChangeLogEntry(string id, IWorkflowTrigger trigger, WorkflowInstance workflowInstance, long timestamp)
         {
             this.Id = id;
             this.Trigger = trigger;
@@ -51,8 +41,7 @@ namespace Marain.Workflows.Storage.Internal
         /// <summary>
         /// Gets the unix timestamp for the log entry.
         /// </summary>
-        [JsonProperty("_ts")]
-        public int? Timestamp { get; }
+        public long Timestamp { get; }
 
         /// <summary>
         /// Gets the trigger that caused the workflow instance to be changed, or null if this was a newly initialized workflow.

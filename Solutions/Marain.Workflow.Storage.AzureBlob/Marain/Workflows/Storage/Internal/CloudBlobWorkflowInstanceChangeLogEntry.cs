@@ -18,7 +18,7 @@ namespace Marain.Workflows.Storage.Internal
         /// <param name="trigger">the trigger that caused the workflow instance to be changed, or null if this was a newly initialized workflow.</param>
         /// <param name="workflowInstance">The workflow instance that has changed.</param>
         /// <param name="timestamp">The timestamp of the change.</param>
-        public CloudBlobWorkflowInstanceChangeLogEntry(string id, IWorkflowTrigger trigger, WorkflowInstance workflowInstance, int timestamp)
+        public CloudBlobWorkflowInstanceChangeLogEntry(string id, IWorkflowTrigger trigger, WorkflowInstance workflowInstance, long timestamp)
         {
             this.Id = id;
             this.Trigger = trigger;
@@ -34,7 +34,7 @@ namespace Marain.Workflows.Storage.Internal
         /// <summary>
         /// Gets the unix timestamp for the log entry.
         /// </summary>
-        public int Timestamp { get; }
+        public long Timestamp { get; }
 
         /// <summary>
         /// Gets the trigger that caused the workflow instance to be changed, or null if this was a newly initialized workflow.

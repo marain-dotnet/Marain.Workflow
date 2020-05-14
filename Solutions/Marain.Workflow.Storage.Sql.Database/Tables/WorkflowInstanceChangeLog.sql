@@ -6,7 +6,7 @@
     [SerializedTrigger] NVARCHAR(MAX), 
     [SerializedInstance] NVARCHAR(MAX) NOT NULL, 
     [SequenceNumber] ROWVERSION NOT NULL, 
-    [Timestamp] INT NOT NULL DEFAULT DATEDIFF(second,{d '1970-01-01'},CURRENT_TIMESTAMP) 
+    [Timestamp] BIGINT NOT NULL DEFAULT DATEDIFF_BIG(millisecond,{d '1970-01-01'},CURRENT_TIMESTAMP) 
 )
 
 GO
