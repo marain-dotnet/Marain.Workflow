@@ -35,7 +35,7 @@ namespace Marain.Workflows.Storage
         public Container Container { get; }
 
         /// <inheritdoc/>
-        public async Task RecordWorkflowInstanceChangeAsync(IWorkflowTrigger trigger, WorkflowInstance workflowInstance, string partitionKey = null)
+        public async Task RecordWorkflowInstanceChangeAsync(IWorkflowTrigger trigger, WorkflowInstance workflowInstance)
         {
             if (workflowInstance == null)
             {
@@ -46,7 +46,7 @@ namespace Marain.Workflows.Storage
             await Retriable.RetryAsync(() =>
                 this.Container.UpsertItemAsync(
                     logEntry,
-                    new PartitionKey(partitionKey ?? workflowInstance.Id)))
+                    new PartitionKey(workflowInstance.Id)))
                 .ConfigureAwait(false);
         }
 

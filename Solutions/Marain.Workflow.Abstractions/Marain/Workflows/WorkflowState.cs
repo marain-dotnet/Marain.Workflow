@@ -30,7 +30,7 @@ namespace Marain.Workflows
     /// <para>
     /// These collections are used by <see cref="IWorkflowEngine" /> to
     /// determine whether an <see cref="WorkflowInstance" /> in a particular state can process a
-    /// trigger. See remarks on the <see cref="IWorkflowEngine.ProcessTriggerAsync(IWorkflowTrigger, string, string)" />
+    /// trigger. See remarks on the <see cref="IWorkflowEngine.ProcessTriggerAsync(IWorkflowTrigger, string)" />
     /// extension method for an explanation of how this is done.
     /// </para>
     /// </remarks>

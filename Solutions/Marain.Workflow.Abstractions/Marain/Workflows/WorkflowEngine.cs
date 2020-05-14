@@ -69,9 +69,9 @@ namespace Marain.Workflows
         }
 
         /// <inheritdoc/>
-        public Task ProcessTriggerAsync(IWorkflowTrigger trigger, string workflowInstanceId, string partitionKey = null)
+        public Task ProcessTriggerAsync(IWorkflowTrigger trigger, string workflowInstanceId)
         {
-            return this.ProcessInstanceWithLeaseAsync(trigger, workflowInstanceId, partitionKey);
+            return this.ProcessInstanceWithLeaseAsync(trigger, workflowInstanceId);
         }
 
         /// <summary>
@@ -80,20 +80,19 @@ namespace Marain.Workflows
         /// </summary>
         /// <param name="trigger">The trigger to process.</param>
         /// <param name="instanceId">The Id of the <see cref="WorkflowInstance" /> that will process the trigger.</param>
-        /// <param name="partitionKey">The partition key for the instance. If not supplied, the Id will be used.</param>
         /// <returns>A <see cref="Task" /> that will complete when the instance has finished processing the trigger.</returns>
         /// <remarks>
         /// This method retrieves the workflow instance from storage, passes it the trigger
         /// and, if the instance has updated as a result of the trigger, puts it back in
         /// storage.
         /// </remarks>
-        private async Task ProcessInstanceAsync(IWorkflowTrigger trigger, string instanceId, string partitionKey)
+        private async Task ProcessInstanceAsync(IWorkflowTrigger trigger, string instanceId)
         {
             WorkflowInstance item = null;
 
             try
             {
-                item = await this.workflowInstanceStore.GetWorkflowInstanceAsync(instanceId, partitionKey).ConfigureAwait(false);
+                item = await this.workflowInstanceStore.GetWorkflowInstanceAsync(instanceId).ConfigureAwait(false);
 
                 this.logger.LogDebug($"Accepting trigger {trigger.Id} in instance {item.Id}", trigger, item);
 
@@ -131,8 +130,8 @@ namespace Marain.Workflows
                     try
                     {
                         await Task.WhenAll(
-                            this.workflowInstanceChangeLog.RecordWorkflowInstanceChangeAsync(trigger, item, partitionKey),
-                            this.workflowInstanceStore.UpsertWorkflowInstanceAsync(item, partitionKey)).ConfigureAwait(false);
+                            this.workflowInstanceChangeLog.RecordWorkflowInstanceChangeAsync(trigger, item),
+                            this.workflowInstanceStore.UpsertWorkflowInstanceAsync(item)).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -151,16 +150,15 @@ namespace Marain.Workflows
         /// </summary>
         /// <param name="trigger">The trigger to process.</param>
         /// <param name="instanceId">The Id of the <see cref="WorkflowInstance" /> that will process the trigger.</param>
-        /// <param name="partitionKey">The partition key for the instance. If not supplied, the Id will be used.</param>
         /// <returns>A <see cref="Task" /> that will complete when the instance has finished processing the trigger.</returns>
         /// <remarks>
         /// If another instance of WorkflowEngine already has a lease on the WorkflowInstance,
         /// this method will wait for the lease to become available.
         /// </remarks>
-        private Task ProcessInstanceWithLeaseAsync(IWorkflowTrigger trigger, string instanceId, string partitionKey)
+        private Task ProcessInstanceWithLeaseAsync(IWorkflowTrigger trigger, string instanceId)
         {
             return this.leaseProvider
-                .ExecuteWithMutexAsync(_ => this.ProcessInstanceAsync(trigger, instanceId, partitionKey), instanceId);
+                .ExecuteWithMutexAsync(_ => this.ProcessInstanceAsync(trigger, instanceId), instanceId);
         }
 
         /// <summary>
@@ -200,7 +198,7 @@ namespace Marain.Workflows
                         await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
 
                         // We only record this final version post-initialization in the change log.
-                        await this.workflowInstanceChangeLog.RecordWorkflowInstanceChangeAsync(null, instance, workflowInstancePartitionKey).ConfigureAwait(false);
+                        await this.workflowInstanceChangeLog.RecordWorkflowInstanceChangeAsync(null, instance).ConfigureAwait(false);
                     },
                     instance.Id)
                 .ConfigureAwait(false);

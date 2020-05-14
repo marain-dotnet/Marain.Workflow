@@ -26,9 +26,8 @@ namespace Marain.Workflows
         /// </summary>
         /// <param name="trigger">The trigger to apply.</param>
         /// <param name="workflowInstanceId">The Id of the <see cref="WorkflowInstance" /> to apply the trigger to.</param>
-        /// <param name="partitionKey">The partition key for the instance. If not supplied, the Id will be used.</param>
         /// <returns>The <see cref="Task" />.</returns>
-        Task ProcessTriggerAsync(IWorkflowTrigger trigger, string workflowInstanceId, string partitionKey = null);
+        Task ProcessTriggerAsync(IWorkflowTrigger trigger, string workflowInstanceId);
 
         /// <summary>
         /// Starts a new instance of the specified <see cref="Workflow"/>.
