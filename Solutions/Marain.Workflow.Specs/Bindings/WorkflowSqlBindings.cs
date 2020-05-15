@@ -10,6 +10,7 @@ namespace Marain.Workflows.Specs.Bindings
     using Corvus.Sql.Tenancy;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
+    using Marain.Workflows.Internal;
     using Marain.Workflows.Specs.Steps;
     using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.Configuration;
@@ -83,7 +84,7 @@ namespace Marain.Workflows.Specs.Bindings
                 testDocumentRepositoryContainerDefinition,
                 cosmosConfig)).ConfigureAwait(false);
 
-            Container testDocumentsRepository = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+            Container testDocumentsRepository = await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                 () => factory.GetContainerForTenantAsync(
                     testTenant,
                     testDocumentRepositoryContainerDefinition)).ConfigureAwait(false);

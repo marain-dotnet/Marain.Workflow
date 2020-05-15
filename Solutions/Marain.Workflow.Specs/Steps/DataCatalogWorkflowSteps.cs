@@ -11,6 +11,7 @@ namespace Marain.Workflows.Specs.Steps
     using Corvus.Extensions;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
+    using Marain.Workflows.Internal;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Actions;
     using Marain.Workflows.Specs.TestObjects.Subjects;
@@ -56,7 +57,7 @@ namespace Marain.Workflows.Specs.Steps
 
             IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
 
-            await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(async () =>
+            await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(async () =>
             {
                 try
                 {
@@ -80,7 +81,7 @@ namespace Marain.Workflows.Specs.Steps
                     .GetService<DataCatalogItemRepositoryFactory>()
                     .GetRepository();
 
-            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+            ItemResponse<CatalogItem> item = await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                 () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.IsNotNull(item);
@@ -96,7 +97,7 @@ namespace Marain.Workflows.Specs.Steps
 
             try
             {
-                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                     () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
                 Assert.Fail(
@@ -122,7 +123,7 @@ namespace Marain.Workflows.Specs.Steps
                     .GetRepository();
 
             ItemResponse<CatalogItem> item =
-                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                     () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedDescription, item.Resource.Description);
@@ -139,7 +140,7 @@ namespace Marain.Workflows.Specs.Steps
                     .GetRepository();
 
             ItemResponse<CatalogItem> item =
-                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                     () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedIdentifier, item.Resource.Identifier);
@@ -154,7 +155,7 @@ namespace Marain.Workflows.Specs.Steps
                     .GetRepository();
 
             ItemResponse<CatalogItem> item =
-                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                     () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedType, item.Resource.Type);
@@ -169,7 +170,7 @@ namespace Marain.Workflows.Specs.Steps
                         .GetRepository();
 
             ItemResponse<CatalogItem> item =
-                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                     () => repo.ReadItemAsync<CatalogItem>(catalogItemId, new PartitionKey(catalogItemId))).ConfigureAwait(false);
 
             Assert.AreEqual(expectedNotes, item.Resource.Notes);
@@ -240,11 +241,11 @@ namespace Marain.Workflows.Specs.Steps
             IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             WorkflowInstance instance =
-                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                     () => instanceStore.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
 
             Workflow workflow =
-                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                     () => store.GetWorkflowAsync(instance.WorkflowId)).ConfigureAwait(false);
 
             WorkflowState currentState = workflow.GetState(instance.StateId);
@@ -264,7 +265,7 @@ namespace Marain.Workflows.Specs.Steps
             IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             WorkflowInstance instance =
-                await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                     () => instanceStore.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
 
             Assert.AreEqual(expectedStatus, instance.Status.ToString());

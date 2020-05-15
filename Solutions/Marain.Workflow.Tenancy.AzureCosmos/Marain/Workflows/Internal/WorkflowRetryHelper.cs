@@ -2,13 +2,12 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Api.Specs.Steps
+namespace Marain.Workflows.Internal
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
     using Corvus.Retry;
-    using Corvus.Retry.Strategies;
 
     /// <summary>
     /// Helper methods providing standard retry functionality for test steps.
@@ -20,7 +19,7 @@ namespace Marain.Workflows.Api.Specs.Steps
         /// </summary>
         /// <param name="asyncMethod">The method to execute.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public static Task ExecuteWithStandardTestRetryRulesAsync(Func<Task> asyncMethod)
+        public static Task ExecuteWithRetryRulesAsync(Func<Task> asyncMethod)
         {
             return Retriable.RetryAsync(
                 asyncMethod,
@@ -36,7 +35,7 @@ namespace Marain.Workflows.Api.Specs.Steps
         /// <typeparam name="T">The type of the return value.</typeparam>
         /// <param name="asyncMethod">The method to execute.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public static Task<T> ExecuteWithStandardTestRetryRulesAsync<T>(Func<Task<T>> asyncMethod)
+        public static Task<T> ExecuteWithRetryRulesAsync<T>(Func<Task<T>> asyncMethod)
         {
             return Retriable.RetryAsync(
                 asyncMethod,

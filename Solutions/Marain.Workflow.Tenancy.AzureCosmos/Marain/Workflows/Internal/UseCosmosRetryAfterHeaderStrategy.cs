@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Specs.Steps
+namespace Marain.Workflows.Internal
 {
     using System;
     using Corvus.Retry.Strategies;
@@ -56,7 +56,7 @@ namespace Marain.Workflows.Specs.Steps
             this.tryCount++;
 
             return lastException is CosmosException cex && cex.RetryAfter.HasValue
-                ? TimeSpan.FromSeconds(Math.Max(cex.RetryAfter.Value.TotalSeconds, this.defaultPeriodicity.TotalSeconds))
+                ? cex.RetryAfter.Value
                 : this.defaultPeriodicity;
         }
     }

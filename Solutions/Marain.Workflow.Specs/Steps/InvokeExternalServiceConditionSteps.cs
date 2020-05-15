@@ -11,6 +11,7 @@ namespace Marain.Workflows.Specs.Steps
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
+    using Marain.Workflows.Internal;
     using Marain.Workflows.Specs.Bindings;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Triggers;
@@ -62,9 +63,9 @@ namespace Marain.Workflows.Specs.Steps
                                                                     .GetService<ITenantedWorkflowStoreFactory>();
 
             ITenant tenant = this.featureContext.Get<ITenant>();
-            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
+            IWorkflowStore store = await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(() => storeFactory.GetWorkflowStoreForTenantAsync(tenant)).ConfigureAwait(false);
 
-            await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(async () =>
+            await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(async () =>
             {
                 try
                 {

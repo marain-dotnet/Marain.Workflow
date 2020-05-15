@@ -12,7 +12,7 @@ namespace Marain.Workflows.Internal
     /// <summary>
     /// <see cref="IRetryPolicy"/> which retries on a Cosmos 429 response.
     /// </summary>
-    internal class RetryOnCosmosRequestRateExceededPolicy : IRetryPolicy
+    public class RetryOnCosmosRequestRateExceededPolicy : IRetryPolicy
     {
         /// <summary>
         /// Gets the shared instance of the <see cref="RetryOnCosmosRequestRateExceededPolicy"/>.

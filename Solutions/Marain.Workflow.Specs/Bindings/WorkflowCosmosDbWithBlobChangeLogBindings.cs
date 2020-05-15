@@ -10,6 +10,7 @@ namespace Marain.Workflows.Specs.Bindings
     using Corvus.Azure.Storage.Tenancy;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
+    using Marain.Workflows.Internal;
     using Marain.Workflows.Specs.Steps;
     using Marain.Workflows.Storage;
     using Microsoft.Azure.Cosmos;
@@ -78,7 +79,7 @@ namespace Marain.Workflows.Specs.Bindings
                 testDocumentRepositoryContainerDefinition,
                 cosmosConfig)).ConfigureAwait(false);
 
-            Container testDocumentsRepository = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+            Container testDocumentsRepository = await WorkflowRetryHelper.ExecuteWithRetryRulesAsync(
                 () => factory.GetContainerForTenantAsync(
                     testTenant,
                     testDocumentRepositoryContainerDefinition)).ConfigureAwait(false);
@@ -104,22 +105,22 @@ namespace Marain.Workflows.Specs.Bindings
             var workflowStore = (CosmosWorkflowStore)await workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
-                () => WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => workflowStore.Container.DeleteContainerAsync())).ConfigureAwait(false);
+                () => WorkflowRetryHelper.ExecuteWithRetryRulesAsync(() => workflowStore.Container.DeleteContainerAsync())).ConfigureAwait(false);
 
             ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
             var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
-                () => WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => workflowInstanceStore.Container.DeleteContainerAsync())).ConfigureAwait(false);
+                () => WorkflowRetryHelper.ExecuteWithRetryRulesAsync(() => workflowInstanceStore.Container.DeleteContainerAsync())).ConfigureAwait(false);
 
             ITenantedWorkflowInstanceChangeLogFactory workflowInstanceChangeLogFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceChangeLogFactory>();
             var workflowInstanceChangeLog = (CloudBlobWorkflowInstanceChangeLog)await workflowInstanceChangeLogFactory.GetWorkflowInstanceChangeLogWriterForTenantAsync(tenant).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
-                () => WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => workflowInstanceChangeLog.Container.DeleteIfExistsAsync())).ConfigureAwait(false);
+                () => WorkflowRetryHelper.ExecuteWithRetryRulesAsync(() => workflowInstanceChangeLog.Container.DeleteIfExistsAsync())).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
-                () => WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => featureContext.Get<Container>(TestDocumentsRepository).DeleteContainerAsync())).ConfigureAwait(false);
+                () => WorkflowRetryHelper.ExecuteWithRetryRulesAsync(() => featureContext.Get<Container>(TestDocumentsRepository).DeleteContainerAsync())).ConfigureAwait(false);
         }
     }
 }
