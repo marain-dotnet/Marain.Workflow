@@ -48,14 +48,14 @@ namespace Marain.Workflows.Api.Specs.Bindings
                     {
                         ITenantedWorkflowStoreFactory workflowStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
                         var workflowStore = (CosmosWorkflowStore)await workflowStoreFactory.GetWorkflowStoreForTenantAsync(transientTenant).ConfigureAwait(false);
-                        await Retriable.RetryAsync(() => workflowStore.Container.DeleteContainerAsync(), CancellationToken.None, new Backoff(10, TimeSpan.FromMilliseconds(500)), new RetryOnBusyPolicy()).ConfigureAwait(false);
+                        await Retriable.RetryAsync(() => workflowStore.Container.DeleteContainerAsync(), CancellationToken.None, new Linear(TimeSpan.FromSeconds(2), 10), new RetryOnBusyPolicy()).ConfigureAwait(false);
                     }).ConfigureAwait(false);
 
                 await context.RunAndStoreExceptionsAsync(async () =>
                 {
                     ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
                     var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(transientTenant).ConfigureAwait(false);
-                    await Retriable.RetryAsync(() => workflowInstanceStore.Container.DeleteContainerAsync(), CancellationToken.None, new Backoff(10, TimeSpan.FromMilliseconds(500)), new RetryOnBusyPolicy()).ConfigureAwait(false);
+                    await Retriable.RetryAsync(() => workflowInstanceStore.Container.DeleteContainerAsync(), CancellationToken.None, new Linear(TimeSpan.FromSeconds(2), 10), new RetryOnBusyPolicy()).ConfigureAwait(false);
                 }).ConfigureAwait(false);
             }
         }
