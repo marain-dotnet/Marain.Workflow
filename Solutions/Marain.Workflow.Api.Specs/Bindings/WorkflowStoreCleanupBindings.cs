@@ -58,6 +58,13 @@ namespace Marain.Workflows.Api.Specs.Bindings
                     var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(transientTenant).ConfigureAwait(false);
                     await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => workflowInstanceStore.Container.DeleteContainerAsync()).ConfigureAwait(false);
                 }).ConfigureAwait(false);
+
+                await context.RunAndStoreExceptionsAsync(async () =>
+                {
+                    ITenantedWorkflowInstanceChangeLogFactory workflowInstanceChangeLogFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceChangeLogFactory>();
+                    var workflowInstanceChangeLog = (CosmosWorkflowInstanceChangeLog)await workflowInstanceChangeLogFactory.GetWorkflowInstanceChangeLogWriterForTenantAsync(transientTenant).ConfigureAwait(false);
+                    await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => workflowInstanceChangeLog.Container.DeleteContainerAsync()).ConfigureAwait(false);
+                }).ConfigureAwait(false);
             }
         }
     }
