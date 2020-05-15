@@ -41,7 +41,7 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<IWorkflowInstanceStore> GetWorkflowInstanceStoreForTenantAsync(ITenant tenant)
         {
-            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Linear(TimeSpan.FromSeconds(1), 5), new RetryOnBusyPolicy()).ConfigureAwait(false);
+            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Linear(TimeSpan.FromSeconds(2), 10), new RetryOnBusyPolicy()).ConfigureAwait(false);
 
             // No need to cache these instances as they are lightweight wrappers around the container.
             return new CosmosWorkflowInstanceStore(container);
