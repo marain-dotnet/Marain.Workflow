@@ -25,7 +25,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             return Retriable.RetryAsync(
                 asyncMethod,
                 CancellationToken.None,
-                new UseCosmosRetryAfterHeaderStrategy(TimeSpan.FromSeconds(5), 5),
+                new UseCosmosRetryAfterHeaderStrategy(TimeSpan.FromSeconds(15), 3),
                 RetryOnCosmosRequestRateExceededPolicy.Instance,
                 false);
         }
@@ -41,7 +41,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             return Retriable.RetryAsync(
                 asyncMethod,
                 CancellationToken.None,
-                new UseCosmosRetryAfterHeaderStrategy(TimeSpan.FromSeconds(5), 5),
+                new UseCosmosRetryAfterHeaderStrategy(TimeSpan.FromSeconds(15), 3),
                 RetryOnCosmosRequestRateExceededPolicy.Instance,
                 false);
         }

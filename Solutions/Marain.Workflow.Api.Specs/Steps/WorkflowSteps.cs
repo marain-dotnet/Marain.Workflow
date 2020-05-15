@@ -31,14 +31,12 @@ namespace Marain.Workflows.Api.Specs.Steps
         private readonly ScenarioContext scenarioContext;
         private readonly IServiceProvider serviceProvider;
         private readonly TransientTenantManager transientTenantManager;
-        private readonly FeatureContext featureContext;
 
         public WorkflowSteps(
             ScenarioContext scenarioContext,
             FeatureContext featureContext)
         {
             this.scenarioContext = scenarioContext;
-            this.featureContext = featureContext;
             this.serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
             this.transientTenantManager = TransientTenantManager.GetInstance(featureContext);
         }

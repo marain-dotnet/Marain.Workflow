@@ -12,6 +12,7 @@ namespace Marain.Workflows
     using Corvus.Retry;
     using Corvus.Retry.Strategies;
     using Corvus.Tenancy;
+    using Marain.Workflows.Internal;
     using Marain.Workflows.Storage;
     using Microsoft.Azure.Cosmos;
 
@@ -41,7 +42,7 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<IWorkflowInstanceChangeLogReader> GetWorkflowInstanceChangeLogReaderForTenantAsync(ITenant tenant)
         {
-            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Linear(TimeSpan.FromSeconds(5), 5), new RetryOnBusyPolicy()).ConfigureAwait(false);
+            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Linear(TimeSpan.FromSeconds(10), 5), new RetryOnCosmosRequestRateExceededPolicy()).ConfigureAwait(false);
 
             // No need to cache these instances as they are lightweight wrappers around the container.
             return new CosmosWorkflowInstanceChangeLog(container);
@@ -50,7 +51,7 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<IWorkflowInstanceChangeLogWriter> GetWorkflowInstanceChangeLogWriterForTenantAsync(ITenant tenant)
         {
-            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Linear(TimeSpan.FromSeconds(5), 5), new RetryOnBusyPolicy()).ConfigureAwait(false);
+            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Linear(TimeSpan.FromSeconds(10), 5), new RetryOnCosmosRequestRateExceededPolicy()).ConfigureAwait(false);
 
             // No need to cache these instances as they are lightweight wrappers around the container.
             return new CosmosWorkflowInstanceChangeLog(container);

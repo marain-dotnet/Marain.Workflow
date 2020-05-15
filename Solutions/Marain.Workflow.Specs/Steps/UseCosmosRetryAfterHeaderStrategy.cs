@@ -56,7 +56,7 @@ namespace Marain.Workflows.Specs.Steps
             this.tryCount++;
 
             return lastException is CosmosException cex && cex.RetryAfter.HasValue
-                ? cex.RetryAfter.Value
+                ? TimeSpan.FromSeconds(Math.Max(cex.RetryAfter.Value.TotalSeconds, this.defaultPeriodicity.TotalSeconds))
                 : this.defaultPeriodicity;
         }
     }
