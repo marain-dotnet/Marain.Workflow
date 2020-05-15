@@ -7,6 +7,7 @@ namespace Marain.Workflows
     using System.Threading.Tasks;
     using Corvus.Azure.Storage.Tenancy;
     using Corvus.Extensions.Json;
+    using Corvus.Retry;
     using Corvus.Tenancy;
     using Marain.Workflows.Storage;
     using Microsoft.Azure.Storage.Blob;
@@ -41,7 +42,7 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<IWorkflowInstanceChangeLogReader> GetWorkflowInstanceChangeLogReaderForTenantAsync(ITenant tenant)
         {
-            CloudBlobContainer container = await this.containerFactory.GetBlobContainerForTenantAsync(tenant, this.containerDefinition).ConfigureAwait(false);
+            CloudBlobContainer container = await Retriable.RetryAsync(() => this.containerFactory.GetBlobContainerForTenantAsync(tenant, this.containerDefinition)).ConfigureAwait(false);
 
             // No need to cache these instances as they are lightweight wrappers around the container.
             return new CloudBlobWorkflowInstanceChangeLog(this.serializerSettingsProvider, container);
@@ -50,7 +51,7 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<IWorkflowInstanceChangeLogWriter> GetWorkflowInstanceChangeLogWriterForTenantAsync(ITenant tenant)
         {
-            CloudBlobContainer container = await this.containerFactory.GetBlobContainerForTenantAsync(tenant, this.containerDefinition).ConfigureAwait(false);
+            CloudBlobContainer container = await Retriable.RetryAsync(() => this.containerFactory.GetBlobContainerForTenantAsync(tenant, this.containerDefinition)).ConfigureAwait(false);
 
             // No need to cache these instances as they are lightweight wrappers around the container.
             return new CloudBlobWorkflowInstanceChangeLog(this.serializerSettingsProvider, container);

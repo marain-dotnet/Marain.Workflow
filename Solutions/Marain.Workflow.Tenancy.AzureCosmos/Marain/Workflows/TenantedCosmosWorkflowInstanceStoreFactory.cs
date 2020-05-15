@@ -4,8 +4,12 @@
 
 namespace Marain.Workflows
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
+    using Corvus.Extensions.Cosmos;
+    using Corvus.Retry;
+    using Corvus.Retry.Strategies;
     using Corvus.Tenancy;
     using Marain.Workflows.Storage;
     using Microsoft.Azure.Cosmos;
@@ -36,7 +40,7 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<IWorkflowInstanceStore> GetWorkflowInstanceStoreForTenantAsync(ITenant tenant)
         {
-            Container container = await this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition).ConfigureAwait(false);
+            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Backoff(), new RetryOnBusyPolicy()).ConfigureAwait(false);
 
             // No need to cache these instances as they are lightweight wrappers around the container.
             return new CosmosWorkflowInstanceStore(container);
