@@ -5,7 +5,11 @@
 namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Corvus.Extensions.Cosmos;
+    using Corvus.Retry;
+    using Corvus.Retry.Strategies;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
@@ -44,14 +48,14 @@ namespace Marain.Workflows.Api.Specs.Bindings
                     {
                         ITenantedWorkflowStoreFactory workflowStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
                         var workflowStore = (CosmosWorkflowStore)await workflowStoreFactory.GetWorkflowStoreForTenantAsync(transientTenant).ConfigureAwait(false);
-                        await workflowStore.Container.DeleteContainerAsync().ConfigureAwait(false);
+                        await Retriable.RetryAsync(() => workflowStore.Container.DeleteContainerAsync(), CancellationToken.None, new Backoff(10, TimeSpan.FromMilliseconds(500)), new RetryOnBusyPolicy()).ConfigureAwait(false);
                     }).ConfigureAwait(false);
 
                 await context.RunAndStoreExceptionsAsync(async () =>
                 {
                     ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
                     var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(transientTenant).ConfigureAwait(false);
-                    await workflowInstanceStore.Container.DeleteContainerAsync().ConfigureAwait(false);
+                    await Retriable.RetryAsync(() => workflowInstanceStore.Container.DeleteContainerAsync(), CancellationToken.None, new Backoff(10, TimeSpan.FromMilliseconds(500)), new RetryOnBusyPolicy()).ConfigureAwait(false);
                 }).ConfigureAwait(false);
             }
         }
