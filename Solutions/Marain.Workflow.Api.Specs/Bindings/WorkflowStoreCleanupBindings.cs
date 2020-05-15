@@ -14,6 +14,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
     using Marain.Workflows;
+    using Marain.Workflows.Api.Specs.Steps;
     using Marain.Workflows.Storage;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
@@ -48,14 +49,14 @@ namespace Marain.Workflows.Api.Specs.Bindings
                     {
                         ITenantedWorkflowStoreFactory workflowStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
                         var workflowStore = (CosmosWorkflowStore)await workflowStoreFactory.GetWorkflowStoreForTenantAsync(transientTenant).ConfigureAwait(false);
-                        await Retriable.RetryAsync(() => workflowStore.Container.DeleteContainerAsync(), CancellationToken.None, new Linear(TimeSpan.FromSeconds(2), 10), new RetryOnBusyPolicy()).ConfigureAwait(false);
+                        await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => workflowStore.Container.DeleteContainerAsync()).ConfigureAwait(false);
                     }).ConfigureAwait(false);
 
                 await context.RunAndStoreExceptionsAsync(async () =>
                 {
                     ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
                     var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(transientTenant).ConfigureAwait(false);
-                    await Retriable.RetryAsync(() => workflowInstanceStore.Container.DeleteContainerAsync(), CancellationToken.None, new Linear(TimeSpan.FromSeconds(2), 10), new RetryOnBusyPolicy()).ConfigureAwait(false);
+                    await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(() => workflowInstanceStore.Container.DeleteContainerAsync()).ConfigureAwait(false);
                 }).ConfigureAwait(false);
             }
         }
