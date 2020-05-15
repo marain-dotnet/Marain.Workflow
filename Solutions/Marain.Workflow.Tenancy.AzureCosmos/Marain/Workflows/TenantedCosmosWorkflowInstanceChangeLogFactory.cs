@@ -4,6 +4,7 @@
 
 namespace Marain.Workflows
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
@@ -40,7 +41,7 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<IWorkflowInstanceChangeLogReader> GetWorkflowInstanceChangeLogReaderForTenantAsync(ITenant tenant)
         {
-            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Backoff(), new RetryOnBusyPolicy()).ConfigureAwait(false);
+            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Linear(TimeSpan.FromSeconds(1), 5), new RetryOnBusyPolicy()).ConfigureAwait(false);
 
             // No need to cache these instances as they are lightweight wrappers around the container.
             return new CosmosWorkflowInstanceChangeLog(container);
@@ -49,7 +50,7 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public async Task<IWorkflowInstanceChangeLogWriter> GetWorkflowInstanceChangeLogWriterForTenantAsync(ITenant tenant)
         {
-            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Backoff(), new RetryOnBusyPolicy()).ConfigureAwait(false);
+            Container container = await Retriable.RetryAsync(() => this.containerFactory.GetContainerForTenantAsync(tenant, this.containerDefinition), CancellationToken.None, new Linear(TimeSpan.FromSeconds(1), 5), new RetryOnBusyPolicy()).ConfigureAwait(false);
 
             // No need to cache these instances as they are lightweight wrappers around the container.
             return new CosmosWorkflowInstanceChangeLog(container);
