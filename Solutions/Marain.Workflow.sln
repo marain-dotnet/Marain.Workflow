@@ -56,16 +56,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.Client"
 EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "Marain.Workflow.Deployment", "Marain.Workflow.Deployment\Marain.Workflow.Deployment.deployproj", "{3C88450E-1BD4-4305-BCCF-01A457F15AFB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceManifests", "ServiceManifests", "{94FC6B17-2A9A-43C4-B590-4418C8DD8348}"
-	ProjectSection(SolutionItems) = preProject
-		ServiceManifests\WorkflowServiceManifest.jsonc = ServiceManifests\WorkflowServiceManifest.jsonc
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{BA79178D-3DEC-4E00-B2ED-9C7F61BA0143}"
-	ProjectSection(SolutionItems) = preProject
-		ServiceManifests\Configuration\WorkflowConfigForStorageEmulator.json = ServiceManifests\Configuration\WorkflowConfigForStorageEmulator.json
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -152,7 +142,6 @@ Global
 		{96379438-8F88-4F73-BFEF-18D84CFD3F82} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
 		{B4F2E79B-C2D2-4E3E-BB0F-E85AC8F1E331} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 		{3C88450E-1BD4-4305-BCCF-01A457F15AFB} = {D29CABE7-467E-4CF6-B44B-3C58AB76145A}
-		{BA79178D-3DEC-4E00-B2ED-9C7F61BA0143} = {94FC6B17-2A9A-43C4-B590-4418C8DD8348}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EED79307-5690-4CE6-A80D-F41857C97EFF}
