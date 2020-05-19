@@ -8,8 +8,10 @@ namespace Marain.Workflows.Specs.TestObjects
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Corvus.Json;
     using Corvus.Tenancy;
     using Microsoft.Extensions.Logging;
+    using NUnit.Framework.Internal;
 
     /// <inheritdoc />
     /// <summary>
@@ -53,6 +55,12 @@ namespace Marain.Workflows.Specs.TestObjects
         private readonly ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory;
 
         /// <summary>
+        /// The <see cref="IPropertyBagFactory"/> that will be used when creating new
+        /// <see cref="WorkflowMessageEnvelope"/> instances.
+        /// </summary>
+        private readonly IPropertyBagFactory propertyBagFactory;
+
+        /// <summary>
         /// The task that represents the procssing thread.
         /// </summary>
         private Task runner;
@@ -76,6 +84,10 @@ namespace Marain.Workflows.Specs.TestObjects
         /// <param name="tenantProvider">
         /// The tenant provider that will be used when accessing storage.
         /// </param>
+        /// <param name="propertyBagFactory">
+        /// The <see cref="IPropertyBagFactory"/> that will be used when creating new
+        /// <see cref="WorkflowMessageEnvelope"/> instances.
+        /// </param>
         /// <param name="logger">
         /// Logger to use to write diagnostic messages.
         /// </param>
@@ -89,6 +101,7 @@ namespace Marain.Workflows.Specs.TestObjects
             ITenantedWorkflowEngineFactory workflowEngineFactory,
             ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory,
             ITenantProvider tenantProvider,
+            IPropertyBagFactory propertyBagFactory,
             ILogger<InMemoryWorkflowMessageQueue> logger)
         {
             this.logger = logger;
@@ -96,6 +109,7 @@ namespace Marain.Workflows.Specs.TestObjects
             this.workflowEngineFactory = workflowEngineFactory;
             this.queue = new ConcurrentQueue<WorkflowMessageEnvelope>();
             this.workflowInstanceStoreFactory = workflowInstanceStoreFactory;
+            this.propertyBagFactory = propertyBagFactory;
         }
 
         /// <inheritdoc />
@@ -104,7 +118,10 @@ namespace Marain.Workflows.Specs.TestObjects
             Guid operationId)
         {
             return this.EnqueueMessageEnvelopeAsync(
-                new WorkflowMessageEnvelope { StartWorkflowInstanceRequest = request });
+                new WorkflowMessageEnvelope(this.propertyBagFactory.Create(PropertyBagValues.Empty))
+                {
+                    StartWorkflowInstanceRequest = request,
+                });
         }
 
         /// <inheritdoc />
@@ -115,7 +132,11 @@ namespace Marain.Workflows.Specs.TestObjects
             IWorkflowTrigger trigger,
             Guid operationId)
         {
-            return this.EnqueueMessageEnvelopeAsync(new WorkflowMessageEnvelope { Trigger = trigger });
+            return this.EnqueueMessageEnvelopeAsync(
+                new WorkflowMessageEnvelope(this.propertyBagFactory.Create(PropertyBagValues.Empty))
+                {
+                    Trigger = trigger,
+                });
         }
 
         /// <summary>

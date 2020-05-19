@@ -16,14 +16,15 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="0.1.0-preview.9" />
-    <PackageReference Include="Corvus.SpecFlow.Extensions" Version="0.7.0-preview.16" />
+    <PackageReference Include="Corvus.Testing.AzureFunctions.SpecFlow" Version="0.7.0-preview.40" />
+    <PackageReference Include="Corvus.Testing.SpecFlow" Version="0.7.0-preview.40" />
+    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="0.1.0-preview.25" />
     <PackageReference Include="Endjin.RecommendedPractices" Version="0.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

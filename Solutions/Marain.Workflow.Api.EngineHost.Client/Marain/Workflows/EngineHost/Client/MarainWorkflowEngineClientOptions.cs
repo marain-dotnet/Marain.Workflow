@@ -1,11 +1,11 @@
-﻿// <copyright file="WorkflowEngineConfiguration.cs" company="Endjin Limited">
+﻿// <copyright file="MarainWorkflowEngineClientOptions.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-using System;
-
 namespace Marain.Workflows.EngineHost.Client
 {
+    using System;
+
     /// <summary>
     /// A class for storing the configuration for setting up the workflow engine client.
     /// </summary>

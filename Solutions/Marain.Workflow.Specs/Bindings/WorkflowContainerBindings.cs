@@ -7,9 +7,8 @@ namespace Marain.Workflows.Specs.Bindings
     using System.Linq;
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
-    using Corvus.SpecFlow.Extensions;
     using Corvus.Sql.Tenancy;
-    using Corvus.Tenancy;
+    using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Subjects;
     using Microsoft.Extensions.Configuration;

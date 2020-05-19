@@ -14,12 +14,12 @@
     // If running with a local tenancy service, point TenancyClient:TenancyServiceBaseUri at the localhost address for that
     // and set the ResourceIdForMsiAuthentication to an empty string.
     "TenancyClient:TenancyServiceBaseUri": "https://mardevtenancy.azurewebsites.net/",
-    "TenancyClient:ResourceIdForMsiAuthentication": "f1815180-9920-477b-95cc-7b93c2cd5de0",
+    "TenancyClient:ResourceIdForMsiAuthentication": "e7281b1b-6540-4c1b-ac18-eb0c2d42bfbf",
 
     // If running with a local operations service, point Operations:ControlServiceBaseUrl at the localhost address for that
     // and set the ResourceIdForMsiAuthentication to an empty string.
     "Operations:ControlServiceBaseUrl": "https://mardevoperationscontrol.azurewebsites.net/",
-    "Operations:ResourceIdForMsiAuthentication": "97642f9e-efcb-47c2-8c1e-bf21a3e9cdf6",
+    "Operations:ResourceIdForMsiAuthentication": "c32e9a16-c008-48c7-8518-327e7a14dc4a"
 
     // If you are running locally but your tenant configuration is making use of resources in Azure, this local service will
     // need to authenticate. And for that to work, you won't be able to use the normal az cli-based

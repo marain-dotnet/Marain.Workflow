@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
     using System;
     using System.Linq;
     using Corvus.Azure.Cosmos.Tenancy;
+    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.Leasing;
     using Marain.Tenancy.Client;
     using Marain.Workflows;
@@ -82,7 +83,11 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton(sp => sp.GetRequiredService<IConfiguration>().GetSection("TenancyClient").Get<TenancyClientOptions>());
             services.AddTenantProviderServiceClient();
 
-            services.AddAzureManagedIdentityBasedTokenSource();
+            services.AddAzureManagedIdentityBasedTokenSource(
+                sp => new AzureManagedIdentityTokenSourceOptions
+                {
+                    AzureServicesAuthConnectionString = sp.GetRequiredService<IConfiguration>()["AzureServicesAuthConnectionString"],
+                });
 
             services.AddTenantCosmosContainerFactory(sp =>
             {

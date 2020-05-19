@@ -6,8 +6,8 @@ namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System;
     using System.Threading.Tasks;
-    using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
     using Marain.Workflows;
     using Marain.Workflows.Storage;

@@ -5,6 +5,8 @@
 namespace Marain.Workflows.Api.MessageProcessingHost.Shared
 {
     using System;
+    using System.Collections.Generic;
+    using Corvus.Json;
 
     /// <summary>
     /// Extension methods for the <see cref="WorkflowMessageEnvelope"/> class, allowing easier get/set of items in the
@@ -31,10 +33,17 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
         /// Sets the workflow instances page number.
         /// </summary>
         /// <param name="data">The envelope to add the value to.</param>
+        /// <param name="propertyBagFactory">The property bag factory.</param>
         /// <param name="pageNumber">The page number.</param>
-        public static void SetWorkflowInstancesPageNumber(this WorkflowMessageEnvelope data, int pageNumber)
+        public static void SetWorkflowInstancesPageNumber(
+            this WorkflowMessageEnvelope data,
+            IPropertyBagFactory propertyBagFactory,
+            int pageNumber)
         {
-            data.Properties.Set("GetWorkflowInstancesPageNumber", pageNumber);
+            data.Properties = propertyBagFactory.CreateModified(
+                data.Properties,
+                new KeyValuePair<string, object>[] { new KeyValuePair<string, object>("GetWorkflowInstancesPageNumber", pageNumber) },
+                null);
         }
 
         /// <summary>
@@ -44,7 +53,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
         /// <returns>The workflow instance id.</returns>
         public static string GetWorkflowInstanceId(this WorkflowMessageEnvelope data)
         {
-            if (data.Properties.TryGet<string>("WorkflowInstanceId", out string result))
+            if (data.Properties.TryGet("WorkflowInstanceId", out string result))
             {
                 return result;
             }
@@ -56,10 +65,17 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
         /// Sets the workflow instance Id to process.
         /// </summary>
         /// <param name="data">The envelope to add the value to.</param>
+        /// <param name="propertyBagFactory">The property bag factory.</param>
         /// <param name="workflowInstanceId">The workflow instance id.</param>
-        public static void SetWorkflowInstanceId(this WorkflowMessageEnvelope data, string workflowInstanceId)
+        public static void SetWorkflowInstanceId(
+            this WorkflowMessageEnvelope data,
+            IPropertyBagFactory propertyBagFactory,
+            string workflowInstanceId)
         {
-            data.Properties.Set("WorkflowInstanceId", workflowInstanceId);
+            data.Properties = propertyBagFactory.CreateModified(
+                data.Properties,
+                new KeyValuePair<string, object>[] { new KeyValuePair<string, object>("WorkflowInstanceId", workflowInstanceId) },
+                null);
         }
     }
 }
