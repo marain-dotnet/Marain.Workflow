@@ -19,7 +19,7 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
     )
 
     # ensure the service tenancy exists
-    $serviceManifest = Join-Path $PSScriptRoot "..\ServiceManifests\WorkflowServiceManifest.jsonc" -Resolve
+    $serviceManifest = Join-Path $PSScriptRoot "ServiceManifests\WorkflowServiceManifest.jsonc" -Resolve
     try {
         # TODO: If tenancy wasn't run, we won't currently have the marain cli configuration setup
         $cliOutput = & $ServiceDeploymentContext.InstanceContext.MarainCliPath create-service $serviceManifest
