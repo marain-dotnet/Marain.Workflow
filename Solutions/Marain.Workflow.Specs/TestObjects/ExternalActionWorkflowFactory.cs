@@ -7,6 +7,7 @@ namespace Marain.Workflows.Specs.TestObjects
     using System;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Creates a workflow for testing external actions.
@@ -20,12 +21,14 @@ namespace Marain.Workflows.Specs.TestObjects
         /// <param name="externalServiceUrl">External URL to invoke.</param>
         /// <param name="serviceIdentityTokenSource">The token source to use when authenticating to external services.</param>
         /// <param name="serializerSettingsProvider">The serialization settings provider.</param>
+        /// <param name="externalServiceActionLogger">The logger for <see cref="InvokeExternalServiceAction"/>s.</param>
         /// <returns>The workflow definition.</returns>
         public static Workflow Create(
             string id,
             string externalServiceUrl,
             IServiceIdentityTokenSource serviceIdentityTokenSource,
-            IJsonSerializerSettingsProvider serializerSettingsProvider)
+            IJsonSerializerSettingsProvider serializerSettingsProvider,
+            ILogger<InvokeExternalServiceAction> externalServiceActionLogger)
         {
             var workflow = new Workflow(
                 id,
@@ -38,7 +41,10 @@ namespace Marain.Workflows.Specs.TestObjects
             workflow.SetInitialState(waitingToRun);
 
             WorkflowTransition transition = waitingToRun.CreateTransition(done);
-            var action = new InvokeExternalServiceAction(serviceIdentityTokenSource, serializerSettingsProvider)
+            var action = new InvokeExternalServiceAction(
+                serviceIdentityTokenSource,
+                serializerSettingsProvider,
+                externalServiceActionLogger)
             {
                 Id = Guid.NewGuid().ToString(),
                 AuthenticateWithManagedServiceIdentity = true,

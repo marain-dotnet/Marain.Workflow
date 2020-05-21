@@ -229,6 +229,35 @@ namespace Marain.Workflows.Specs.Steps
             Assert.AreEqual(expectedStatus, instance.Status.ToString());
         }
 
+        [Then("the workflow instance with Id '(.*)' should contain context items")]
+        public async Task ThenTheWorkflowInstanceWithIdShouldContainContextItems(string instanceId, Table expectedContextItems)
+        {
+            ITenantedWorkflowInstanceStoreFactory instanceStoreFactory = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                                    .GetService<ITenantedWorkflowInstanceStoreFactory>();
+
+            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(this.featureContext)
+                                                              .GetService<ITenantProvider>();
+
+            IWorkflowInstanceStore instanceStore = await instanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
+
+            WorkflowInstance instance = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+                () => instanceStore.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
+
+            Assert.AreEqual(
+                expectedContextItems.Rows.Count,
+                instance.Context.Count,
+                "The number of context items in the workflow instance is different to the number of items in the specified list");
+
+            foreach (TableRow current in expectedContextItems.Rows)
+            {
+                Assert.IsTrue(
+                    instance.Context.TryGetValue(current[0], out string actualValue),
+                    $"The instance context does not contain expected item with key '{current[0]}'");
+
+                Assert.AreEqual(current[1], actualValue, $"The instance context does not contain the expected value for key '{current[0]}'");
+            }
+        }
+
         [Given("I have sent the workflow engine a trigger of type '(.*)'")]
         [When("I send the workflow engine a trigger of type '(.*)'")]
         public async Task WhenISendTheWorkflowEngineATriggerOfType(string contentType, Table table)

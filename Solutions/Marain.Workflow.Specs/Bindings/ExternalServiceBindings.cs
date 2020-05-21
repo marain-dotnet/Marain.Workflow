@@ -13,7 +13,11 @@ namespace Marain.Workflows.Specs.Bindings
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using Corvus.Extensions.Json;
+    using Corvus.Extensions.Json.Internal;
     using Corvus.Testing.SpecFlow;
+    using Microsoft.Extensions.DependencyInjection;
+    using Newtonsoft.Json;
     using NUnit.Framework;
     using TechTalk.SpecFlow;
 
@@ -26,13 +30,19 @@ namespace Marain.Workflows.Specs.Bindings
         /// <summary>
         /// Create a suitable Http listener.
         /// </summary>
+        /// <param name="featureContext">The current feature context.</param>
         /// <param name="scenarioContext">The current scenario context.</param>
         [BeforeScenario("@externalServiceRequired")]
-        public static void InitializeService(ScenarioContext scenarioContext)
+        public static void InitializeService(
+            FeatureContext featureContext,
+            ScenarioContext scenarioContext)
         {
             // IANA recommends this range for dynamic or private ports.
             const int MinPort = 49215;
             const int MaxPort = 65535;
+
+            IJsonSerializerSettingsProvider serilizationSettingsProvider =
+                ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
 
             HttpListener listener = null;
             for (int i = MinPort; i <= MaxPort; ++i)
@@ -56,7 +66,7 @@ namespace Marain.Workflows.Specs.Bindings
                 Assert.Fail("Unable to find an available port to create test HTTP listener");
             }
 
-            var externalService = new ExternalService(listener);
+            var externalService = new ExternalService(listener, serilizationSettingsProvider);
             scenarioContext.Set(externalService);
         }
 
@@ -95,17 +105,23 @@ namespace Marain.Workflows.Specs.Bindings
 
             private readonly Task mainLoopTask;
             private readonly CancellationTokenSource cancellationSource = new CancellationTokenSource();
+            private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
+
+            private string conditionResponseBody;
+            private ExternalServiceWorkflowResponse actionResponseBody;
 
             /// <summary>
             /// Creates a new instance of the external service bindings for a specific http listener.
             /// </summary>
             /// <param name="listener">The listener for the external service.</param>
-            public ExternalService(HttpListener listener)
+            /// <param name="serializerSettingsProvider">The serializer settings provider that should be used for the response.</param>
+            public ExternalService(HttpListener listener, IJsonSerializerSettingsProvider serializerSettingsProvider)
             {
                 this.listener = listener;
                 this.baseUrl = new Uri(this.listener.Prefixes.First());
 
                 this.mainLoopTask = Task.Run(() => this.MainLoop(this.cancellationSource.Token));
+                this.serializerSettingsProvider = serializerSettingsProvider;
             }
 
             /// <summary>
@@ -120,9 +136,40 @@ namespace Marain.Workflows.Specs.Bindings
             public int StatusCode { get; set; }
 
             /// <summary>
-            /// Gets or sets the content to return as a result.
+            /// Gets or sets the content to return as a result from condition requests.
             /// </summary>
-            public string ResponseBody { get; set; }
+            public string ConditionResponseBody
+            {
+                get => this.conditionResponseBody;
+
+                set
+                {
+                    if (this.actionResponseBody != null)
+                    {
+                        throw new InvalidOperationException($"Cannot set {nameof(this.ConditionResponseBody)} when {nameof(this.ActionResponseBody)} has already been set.");
+                    }
+
+                    this.conditionResponseBody = value;
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the content to return as a result from action requests.
+            /// </summary>
+            public ExternalServiceWorkflowResponse ActionResponseBody
+            {
+                get => this.actionResponseBody;
+
+                set
+                {
+                    if (!string.IsNullOrEmpty(this.conditionResponseBody))
+                    {
+                        throw new InvalidOperationException($"Cannot set {nameof(this.ActionResponseBody)} when {nameof(this.ConditionResponseBody)} has already been set.");
+                    }
+
+                    this.actionResponseBody = value;
+                }
+            }
 
             /// <summary>
             /// Gets a list of the requests made to this service.
@@ -184,9 +231,15 @@ namespace Marain.Workflows.Specs.Bindings
                         HttpListenerResponse response = context.Response;
                         string requestPath = context.Request.Url.AbsolutePath;
                         response.StatusCode = this.StatusCode;
-                        if (!string.IsNullOrWhiteSpace(this.ResponseBody))
+                        if (!string.IsNullOrWhiteSpace(this.ConditionResponseBody))
                         {
-                            WriteJsonResponse(response, this.ResponseBody);
+                            WriteJsonResponse(response, this.ConditionResponseBody);
+                        }
+                        else if (this.ActionResponseBody != null)
+                        {
+                            WriteJsonResponse(
+                                response,
+                                JsonConvert.SerializeObject(this.ActionResponseBody, this.serializerSettingsProvider.Instance));
                         }
 
                         response.Close();
