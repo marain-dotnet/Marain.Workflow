@@ -36,4 +36,18 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
 
     $ServiceDeploymentContext.SetAppServiceDetails($DeploymentResult.Outputs.messageIngestionFunctionServicePrincipalId.Value, "mi", $null)
     $ServiceDeploymentContext.SetAppServiceDetails($DeploymentResult.Outputs.engineFunctionServicePrincipalId.Value, "eng", $null)
+
+
+    # ensure the service tenancy exists
+    Write-Host "Ensuring Workflow service tenancy..."
+    $serviceManifest = Join-Path $PSScriptRoot "ServiceManifests\WorkflowServiceManifest.jsonc" -Resolve
+    try {
+        $cliOutput = & $ServiceDeploymentContext.InstanceContext.MarainCliPath create-service $serviceManifest
+        if ( $LASTEXITCODE -ne 0 -and -not ($cliOutput -imatch 'service tenant.*already exists') ) {
+            Write-Error "Error whilst trying to register the Workflow service tenant: ExitCode=$LASTEXITCODE`n$cliOutput"
+        }
+    }
+    catch {
+        throw $_
+    }
 }
