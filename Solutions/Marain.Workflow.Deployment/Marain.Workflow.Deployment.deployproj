@@ -27,20 +27,22 @@
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>
-    <None Include="Marain-ArmDeploy.ps1" />
-    <None Include="Marain-PostDeploy.ps1" />
-    <None Include="Marain-PostDeployAad.ps1" />
-    <None Include="Marain-PreDeploy.ps1" />
+    <Content Include="Marain-ArmDeploy.ps1" />
+    <Content Include="Marain-PostDeploy.ps1" />
+    <Content Include="Marain-PostDeployAad.ps1" />
+    <Content Include="Marain-PreDeploy.ps1" />
     <None Include="packages.config" />
-    <None Include="Templates\cosmos-db.json" />
-    <None Include="Templates\functions-app-auth-settings.json" />
-    <None Include="Templates\functions-app-settings-engine-host.json" />
-    <None Include="Templates\functions-app-settings-message-ingestion-host.json" />
-    <None Include="Templates\functions-app.json" />
-    <None Include="Templates\key-vault-access-policy.json" />
-    <None Include="Templates\key-vault-secret.json" />
-    <None Include="Templates\key-vault.json" />
-    <None Include="Templates\storage-account.json" />
+    <Content Include="Templates\cosmos-db.json" />
+    <Content Include="Templates\functions-app-auth-settings.json" />
+    <Content Include="Templates\functions-app-settings-engine-host.json" />
+    <Content Include="Templates\functions-app-settings-message-ingestion-host.json" />
+    <Content Include="Templates\functions-app.json" />
+    <Content Include="Templates\key-vault-access-policy.json" />
+    <Content Include="Templates\key-vault-secret.json" />
+    <Content Include="Templates\key-vault.json" />
+    <Content Include="Templates\storage-account.json" />
+    <Content Include="ServiceManifests\Configuration\WorkflowConfigForStorageEmulator.json" />
+    <Content Include="ServiceManifests\WorkflowServiceManifest.jsonc" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
