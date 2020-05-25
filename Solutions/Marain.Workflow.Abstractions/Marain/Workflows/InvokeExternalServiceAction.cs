@@ -13,6 +13,7 @@ namespace Marain.Workflows
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -37,20 +38,25 @@ namespace Marain.Workflows
         private static readonly HttpClient HttpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(300) };
         private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
+        private readonly ILogger<InvokeExternalServiceAction> logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InvokeExternalServiceAction"/> class.
         /// </summary>
         /// <param name="serviceIdentityTokenSource">The token source to use when authenticating to third party services.</param>
         /// <param name="serializerSettingsProvider">The serialization settings to use when serializing requests.</param>
+        /// <param name="logger">The logger.</param>
         public InvokeExternalServiceAction(
             IServiceIdentityTokenSource serviceIdentityTokenSource,
-            IJsonSerializerSettingsProvider serializerSettingsProvider)
+            IJsonSerializerSettingsProvider serializerSettingsProvider,
+            ILogger<InvokeExternalServiceAction> logger)
         {
             this.serviceIdentityTokenSource =
                 serviceIdentityTokenSource ?? throw new ArgumentNullException(nameof(serviceIdentityTokenSource));
             this.serializerSettingsProvider =
                 serializerSettingsProvider ?? throw new ArgumentNullException(nameof(serializerSettingsProvider));
+            this.logger =
+                logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <inheritdoc />
@@ -90,6 +96,69 @@ namespace Marain.Workflows
         /// <inheritdoc />
         public async Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
         {
+            HttpRequestMessage request =
+                await this.PrepareRequestAsync(instance, trigger).ConfigureAwait(false);
+
+            HttpResponseMessage httpResponse =
+                await this.ExecuteRequestAsync(request, instance, trigger).ConfigureAwait(false);
+
+            await this.ProcessResponseAsync(httpResponse, instance, trigger).ConfigureAwait(false);
+        }
+
+        private async Task ProcessResponseAsync(
+            HttpResponseMessage httpResponse,
+            WorkflowInstance instance,
+            IWorkflowTrigger trigger)
+        {
+            // Get the response body and see if it's useful
+            string responseContent = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (!string.IsNullOrEmpty(responseContent))
+            {
+                this.logger.LogDebug(
+                    "Processing response for workflow instance '{workflowInstanceId} from call to external URL '{externalUrl}' resulting from trigger '{triggerId}'",
+                    instance.Id,
+                    this.ExternalUrl,
+                    trigger.Id);
+
+                // Read and process the response.
+                ExternalServiceWorkflowResponse response = JsonConvert.DeserializeObject<ExternalServiceWorkflowResponse>(
+                    responseContent,
+                    this.serializerSettingsProvider.Instance);
+
+                foreach (string key in response.ContextValuesToRemove.Where(k => instance.Context.ContainsKey(k)))
+                {
+                    this.logger.LogDebug("Removing context item with key '{key}'", key);
+
+                    instance.Context.Remove(key);
+                }
+
+                foreach (KeyValuePair<string, string> item in response.ContextValuesToSetOrAdd)
+                {
+                    this.logger.LogDebug("Adding/updating context item with key '{key}'", item.Key);
+
+                    instance.Context[item.Key] = item.Value;
+                }
+            }
+            else
+            {
+                this.logger.LogDebug(
+                    "Request to external URL '{externalUrl}' did not return any response.",
+                    instance.Id,
+                    this.ExternalUrl);
+            }
+        }
+
+        private async Task<HttpRequestMessage> PrepareRequestAsync(
+            WorkflowInstance instance,
+            IWorkflowTrigger trigger)
+        {
+            this.logger.LogDebug(
+                "Initialising request for workflow instance '{workflowInstanceId} to external URL '{externalUrl}' resulting from trigger '{triggerId}'",
+                instance.Id,
+                this.ExternalUrl,
+                trigger.Id);
+
             var request = new HttpRequestMessage(HttpMethod.Post, this.ExternalUrl);
 
             if (this.AuthenticateWithManagedServiceIdentity)
@@ -100,7 +169,7 @@ namespace Marain.Workflows
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var responseBody = new ExternalServiceWorkflowRequest
+            var requestBody = new ExternalServiceWorkflowRequest
             {
                 WorkflowId = instance.WorkflowId,
                 WorkflowInstanceId = instance.Id,
@@ -112,28 +181,41 @@ namespace Marain.Workflows
 
             if (this.ContextItemsToInclude?.Any() == true)
             {
-                responseBody.ContextProperties = instance.Context
+                requestBody.ContextProperties = instance.Context
                     .Where(kv => this.ContextItemsToInclude.Contains(kv.Key))
                     .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+                this.logger.LogDebug($"Including context keys {string.Join(',', requestBody.ContextProperties.Keys)}");
             }
 
             request.Content = new StringContent(
-                JsonConvert.SerializeObject(responseBody, this.serializerSettingsProvider.Instance),
+                JsonConvert.SerializeObject(requestBody, this.serializerSettingsProvider.Instance),
                 Encoding.UTF8,
                 ExternalServiceWorkflowRequest.RegisteredContentType);
 
-            HttpResponseMessage response = await HttpClient.SendAsync(request).ConfigureAwait(false);
+            return request;
+        }
 
-            if (!response.IsSuccessStatusCode)
+        private async Task<HttpResponseMessage> ExecuteRequestAsync(
+            HttpRequestMessage request,
+            WorkflowInstance instance,
+            IWorkflowTrigger trigger)
+        {
+            // TODO: Add retry logic - https://github.com/marain-dotnet/Marain.Workflow/issues/104
+            HttpResponseMessage httpResponse = await HttpClient.SendAsync(request).ConfigureAwait(false);
+
+            if (!httpResponse.IsSuccessStatusCode)
             {
                 throw new ExternalServiceInvocationException(
                     this.ContentType,
                     this.Id,
                     instance.Id,
                     trigger.Id,
-                    response.StatusCode,
-                    response.ReasonPhrase);
+                    httpResponse.StatusCode,
+                    httpResponse.ReasonPhrase);
             }
+
+            return httpResponse;
         }
     }
 }

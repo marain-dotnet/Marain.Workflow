@@ -57,6 +57,24 @@ namespace Marain.Workflows.Specs.Steps
             ExternalServiceBindings.GetService(this.scenarioContext).StatusCode = statusCode;
         }
 
+        [Given("the external service response will specify context items to upsert")]
+        public void GivenTheExternalServiceResponseWillSpecifyContextItemsToUpsert(Table table)
+        {
+            ExternalServiceBindings.ExternalService service = ExternalServiceBindings.GetService(this.scenarioContext);
+            service.ActionResponseBody ??= new ExternalServiceWorkflowResponse();
+            service.ActionResponseBody.ContextValuesToSetOrAdd = table.Rows.ToDictionary(
+                row => row["Key"],
+                row => row["Value"]);
+        }
+
+        [Given("the external service response will specify context items to remove")]
+        public void GivenTheExternalServiceResponseWillSpecifyContextItemsToRemove(Table table)
+        {
+            ExternalServiceBindings.ExternalService service = ExternalServiceBindings.GetService(this.scenarioContext);
+            service.ActionResponseBody ??= new ExternalServiceWorkflowResponse();
+            service.ActionResponseBody.ContextValuesToRemove = table.Rows.Select(x => x[0]).ToList();
+        }
+
         [Given("the workflow trigger queue is ready to process new triggers")]
         public void GivenTheWorkflowTriggerQueueIsReadyToProcessNewTriggers()
         {

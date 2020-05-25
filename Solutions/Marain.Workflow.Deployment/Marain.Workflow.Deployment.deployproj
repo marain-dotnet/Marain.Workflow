@@ -43,6 +43,7 @@
     <Content Include="Templates\storage-account.json" />
     <Content Include="ServiceManifests\Configuration\WorkflowConfigForStorageEmulator.json" />
     <Content Include="ServiceManifests\WorkflowServiceManifest.jsonc" />
+    <Content Include="ServiceManifests\Configuration\WorkflowConfigForMarainDev.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
