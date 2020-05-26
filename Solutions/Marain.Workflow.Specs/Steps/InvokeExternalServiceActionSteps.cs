@@ -15,6 +15,7 @@ namespace Marain.Workflows.Specs.Steps
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Triggers;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using NUnit.Framework;
     using TechTalk.SpecFlow;
@@ -41,25 +42,28 @@ namespace Marain.Workflows.Specs.Steps
         {
             ExternalServiceBindings.ExternalService externalService = ExternalServiceBindings.GetService(this.scenarioContext);
 
+            IServiceProvider container = ContainerBindings.GetServiceProvider(this.featureContext);
+
             IServiceIdentityTokenSource serviceIdentityTokenSource =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IServiceIdentityTokenSource>();
+                container.GetRequiredService<IServiceIdentityTokenSource>();
 
             IJsonSerializerSettingsProvider serializerSettingsProvider =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
+                container.GetRequiredService<IJsonSerializerSettingsProvider>();
+
+            ILogger<InvokeExternalServiceAction> logger = container.GetRequiredService<ILogger<InvokeExternalServiceAction>>();
 
             Workflow workflow = ExternalActionWorkflowFactory.Create(
                 workflowId,
                 externalService.TestUrl.ToString(),
                 serviceIdentityTokenSource,
-                serializerSettingsProvider);
+                serializerSettingsProvider,
+                logger);
 
             this.action = workflow.GetInitialState().Transitions.Single().Actions.OfType<InvokeExternalServiceAction>().Single();
 
-            ITenantedWorkflowStoreFactory storeFactory = ContainerBindings.GetServiceProvider(this.featureContext)
-                                                                    .GetService<ITenantedWorkflowStoreFactory>();
+            ITenantedWorkflowStoreFactory storeFactory = container.GetRequiredService<ITenantedWorkflowStoreFactory>();
 
-            ITenantProvider tenantProvider =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<ITenantProvider>();
+            ITenantProvider tenantProvider = container.GetRequiredService<ITenantProvider>();
 
             IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 

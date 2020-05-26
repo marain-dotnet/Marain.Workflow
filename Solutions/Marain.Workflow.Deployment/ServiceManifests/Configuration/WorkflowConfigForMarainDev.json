@@ -1,0 +1,37 @@
+[
+  {
+    "key": "workflowStore",
+    "contentType": "application/vnd.marain.tenancy.enrollment.configurationitem.cosmosdb",
+    "configuration": {
+      "accountUri": "mardevworkflowctduas7ish",
+      "databaseName": "workflow",
+      "containerName": null,
+      "disableTenantIdPrefix": true,
+      "keyVaultName": "mardevworkflowctduas7ish",
+      "accountKeySecretName": "CosmosDbAccountKey"
+    }
+  },
+  {
+    "key": "workflowInstanceStore",
+    "contentType": "application/vnd.marain.tenancy.enrollment.configurationitem.cosmosdb",
+    "configuration": {
+      "accountUri": "mardevworkflowctduas7ish",
+      "databaseName": "workflow",
+      "containerName": null,
+      "disableTenantIdPrefix": true,
+      "keyVaultName": "mardevworkflowctduas7ish",
+      "accountKeySecretName": "CosmosDbAccountKey"
+    }
+  },
+  {
+    "key": "operationsStore",
+    "contentType": "application/vnd.marain.tenancy.enrollment.configurationitem.azureblobstorage",
+    "configuration": {
+      "accountName": "mardevoperations6hmzff2l",
+      "keyVaultName": "mardevoperations6hmzff2l",
+      "accountKeySecretName": "OperationsStorageAccountKey",
+      "container": "operations",
+      "disableTenantIdPrefix": false
+    }
+  }
+]

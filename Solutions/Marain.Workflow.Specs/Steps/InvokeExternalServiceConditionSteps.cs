@@ -86,7 +86,7 @@ namespace Marain.Workflows.Specs.Steps
         public void GivenTheExternalServiceResponseBodyWillContain(string content)
         {
             ExternalServiceBindings.ExternalService externalService = ExternalServiceBindings.GetService(this.scenarioContext);
-            externalService.ResponseBody = content;
+            externalService.ConditionResponseBody = content;
         }
 
         [When("I send a trigger that will execute the condition with a trigger id of '(.*)'")]
