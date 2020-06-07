@@ -162,7 +162,7 @@ namespace Marain.Workflows
                     this.ContentType,
                     this.Id,
                     instance.Id,
-                    trigger.Id,
+                    trigger?.Id ?? "{no trigger}",
                     response.StatusCode,
                     response.ReasonPhrase);
             }
