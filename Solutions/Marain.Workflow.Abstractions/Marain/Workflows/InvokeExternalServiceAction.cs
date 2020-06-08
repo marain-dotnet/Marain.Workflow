@@ -157,7 +157,7 @@ namespace Marain.Workflows
                 "Initialising request for workflow instance '{workflowInstanceId} to external URL '{externalUrl}' resulting from trigger '{triggerId}'",
                 instance.Id,
                 this.ExternalUrl,
-                trigger.Id);
+                trigger?.Id ?? "{no trigger}");
 
             var request = new HttpRequestMessage(HttpMethod.Post, this.ExternalUrl);
 
@@ -210,7 +210,7 @@ namespace Marain.Workflows
                     this.ContentType,
                     this.Id,
                     instance.Id,
-                    trigger.Id,
+                    trigger?.Id ?? "{no trigger}",
                     httpResponse.StatusCode,
                     httpResponse.ReasonPhrase);
             }
