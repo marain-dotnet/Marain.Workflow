@@ -119,7 +119,7 @@ namespace Marain.Workflows
                     "Processing response for workflow instance '{workflowInstanceId} from call to external URL '{externalUrl}' resulting from trigger '{triggerId}'",
                     instance.Id,
                     this.ExternalUrl,
-                    trigger.Id);
+                    trigger?.Id ?? "{no trigger}");
 
                 // Read and process the response.
                 ExternalServiceWorkflowResponse response = JsonConvert.DeserializeObject<ExternalServiceWorkflowResponse>(
