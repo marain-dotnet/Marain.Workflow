@@ -80,6 +80,61 @@ namespace Marain.Workflows.EngineHost.Client
         Task<HttpOperationResponse> SendTriggerWithHttpMessagesAsync(string tenantId, string workflowInstanceId, Trigger body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Create a workflow definition
+        /// </summary>
+        /// <param name='tenantId'>
+        /// The tenant within which the request should operate
+        /// </param>
+        /// <param name='body'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<ProblemDetails>> CreateWorkflowWithHttpMessagesAsync(string tenantId, Workflow body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get a workflow
+        /// </summary>
+        /// <param name='tenantId'>
+        /// The tenant within which the request should operate
+        /// </param>
+        /// <param name='workflowId'>
+        /// The Id of the workflow to retrieve
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<Workflow,GetWorkflowHeaders>> GetWorkflowWithHttpMessagesAsync(string tenantId, string workflowId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Update a workflow definition
+        /// </summary>
+        /// <param name='tenantId'>
+        /// The tenant within which the request should operate
+        /// </param>
+        /// <param name='workflowId'>
+        /// The Id of the workflow to retrieve
+        /// </param>
+        /// <param name='body'>
+        /// </param>
+        /// <param name='ifMatch'>
+        /// The ETag of the last known version.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse> UpdateWorkflowWithHttpMessagesAsync(string tenantId, string workflowId, Workflow body, string ifMatch = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// View swagger definition for this API
         /// </summary>
         /// <remarks>
