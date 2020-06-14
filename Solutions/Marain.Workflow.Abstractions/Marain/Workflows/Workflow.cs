@@ -6,6 +6,7 @@ namespace Marain.Workflows
 {
     using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// Class representing the definition of a workflow. Contains the list of possible states and potential
@@ -72,6 +73,7 @@ namespace Marain.Workflows
         /// <summary>
         /// Gets or sets the ETag of the workflow.
         /// </summary>
+        [JsonProperty("_etag")]
         public string ETag { get; set; }
 
         /// <summary>

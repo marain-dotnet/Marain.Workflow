@@ -66,6 +66,7 @@ namespace Marain.Workflows
         /// <summary>
         /// Gets or sets the ETag of this workflow instance.
         /// </summary>
+        [JsonProperty("_etag")]
         public string ETag { get; set; }
 
         /// <summary>

@@ -62,6 +62,92 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetails"
+  /{tenantId}/marain/workflow/engine/workflows:
+    post:
+      summary: Create a workflow definition
+      operationId: createWorkflow
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Workflow"
+      responses:
+        201:
+          description: The new workflow has been successfully created.
+        400:
+          description: The supplied data was invalid or incomplete.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+        409:
+          description: A workflow with the specified Id already exists
+        default:
+          description: Unexpected error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+
+  /{tenantId}/marain/workflow/engine/workflows/{workflowId}:
+    get:
+      summary: Get a workflow
+      operationId: getWorkflow
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+        - $ref: '#/components/parameters/workflowId'
+      responses:
+        200:
+          description: OK
+          headers:
+            ETag:
+              description: The etag for the updated tenant
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workflow"
+        404:
+          description: The specified workflow does not exist.
+        default:
+          description: Unexpected error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+    put:
+      summary: Update a workflow definition
+      operationId: updateWorkflow
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+        - $ref: '#/components/parameters/workflowId'
+        - $ref: '#/components/parameters/ifMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Workflow"
+      responses:
+        200:
+          description: The workflow has been successfully updated.
+        400:
+          description: The supplied data was invalid or incomplete.
+        404:
+          description: The specified workflow does not exist.
+        412:
+          description: The etag supplied with the workflow does not match the current version on the server.
+        default:
+          description: Unexpected error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"    
+
 components:
   schemas:
     StartWorkflowRequest:
@@ -136,6 +222,129 @@ components:
         - contentType
         - triggerName
 
+    Workflow:
+      required:
+        - id
+        - contentType
+        - initialStateId
+        - states
+      properties:
+        id:
+          type: string
+          nullable: false
+        contentType:
+          type: string
+          nullable: false
+          enum:
+            - 'application/vnd.marain.workflows.workflow'
+        description:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        initialStateId:
+          type: string
+          nullable: false
+        states:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/WorkflowState'
+    
+    WorkflowState:
+      required:
+        - id
+        - contentType
+      properties:
+        id:
+          nullable: false
+          type: string
+        contentType:
+          nullable: false
+          type: string
+        description:
+          nullable: true
+          type: string
+        displayName:
+          nullable: true
+          type: string
+        entryActions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowAction'
+        entryConditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowCondition'
+        exitActions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowAction'
+        exitConditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowCondition'
+        transitions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowTransition'
+
+    WorkflowAction:
+      required:
+        - id
+        - contentType
+      properties:
+        id:
+          type: string
+          nullable: false
+        contentType:
+          type: string
+          nullable: false
+      additionalProperties: true
+
+    WorkflowCondition:
+      required:
+        - id
+        - contentType
+      properties:
+        id:
+          type: string
+          nullable: false
+        contentType:
+          type: string
+          nullable: false
+      additionalProperties: true
+
+    WorkflowTransition:
+      required:
+        - id
+        - contentType
+        - targetStateId
+      properties:
+        id:
+          type: string
+          nullable: false
+        contentType:
+          type: string
+          nullable: false
+        description:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        targetStateId:
+          type: string
+          nullable: false
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowAction'
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowCondition'
+
     ############################################################################
     # RFC 7807 Problem Details response definition
     # https://tools.ietf.org/html/rfc7807
@@ -165,11 +374,27 @@ components:
       additionalProperties: true
       
   parameters:
+    ifMatch:
+      name: If-Match
+      in: header
+      x-ms-parameter-location: method
+      description: The ETag of the last known version.
+      required: false
+      schema:
+        type: string
     tenantId:
       name: tenantId
       in: path
       x-ms-parameter-location: method
       description: The tenant within which the request should operate
+      required: true
+      schema:
+        type: string
+    workflowId:
+      name: workflowId
+      in: path
+      x-ms-parameter-location: method
+      description: The Id of the workflow to retrieve
       required: true
       schema:
         type: string
