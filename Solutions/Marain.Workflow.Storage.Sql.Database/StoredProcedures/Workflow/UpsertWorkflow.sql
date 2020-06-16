@@ -40,7 +40,7 @@ BEGIN
 	BEGIN
 		-- Conflict
 		ROLLBACK TRANSACTION
-		RETURN 409;
+		RETURN 412;
 	END
 
 	-- All is good, so update the record, and set the new etag and instance value

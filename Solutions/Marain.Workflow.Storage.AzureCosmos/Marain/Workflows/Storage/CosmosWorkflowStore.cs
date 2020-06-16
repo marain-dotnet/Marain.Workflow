@@ -53,10 +53,45 @@ namespace Marain.Workflows.Storage
         public Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
         {
             return Retriable.RetryAsync(() =>
-                this.Container.UpsertItemAsync(
+            {
+                if (string.IsNullOrEmpty(workflow.ETag))
+                {
+                    return this.CreateWorkflowAsync(workflow, partitionKey);
+                }
+
+                return this.UpdateWorkflowAsync(workflow, partitionKey);
+            });
+        }
+
+        private async Task CreateWorkflowAsync(Workflow workflow, string partitionKey = null)
+        {
+            try
+            {
+                await this.Container.CreateItemAsync(
+                    workflow,
+                    new PartitionKey(partitionKey ?? workflow.Id)).ConfigureAwait(false);
+            }
+            catch (CosmosException cex) when (cex.StatusCode == HttpStatusCode.Conflict)
+            {
+                // Can't save a new instance because it already exists
+                throw new WorkflowConflictException();
+            }
+        }
+
+        private async Task UpdateWorkflowAsync(Workflow workflow, string partitionKey = null)
+        {
+            try
+            {
+                await this.Container.UpsertItemAsync(
                     workflow,
                     new PartitionKey(partitionKey ?? workflow.Id),
-                    new ItemRequestOptions { IfMatchEtag = workflow.ETag }));
+                    new ItemRequestOptions { IfMatchEtag = workflow.ETag }).ConfigureAwait(false);
+            }
+            catch (CosmosException cex) when (cex.StatusCode == HttpStatusCode.PreconditionFailed)
+            {
+                // Return 409 here as well as with the create to stay consistent with other implementations.
+                throw new WorkflowPreconditionFailedException();
+            }
         }
     }
 }

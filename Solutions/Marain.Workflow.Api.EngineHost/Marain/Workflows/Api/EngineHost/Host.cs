@@ -35,7 +35,7 @@ namespace Marain.Workflows.Api.EngineHost
         /// <returns>An action result which comes from executing the function.</returns>
         [FunctionName("EngineHost-OpenApiHostRoot")]
         public Task<IActionResult> RunAsync(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*path}")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "put", Route = "{*path}")]
             HttpRequest req,
             ExecutionContext executionContext)
         {

@@ -99,7 +99,12 @@ namespace Marain.Workflows.Storage
 
             if ((int)returnValue.Value == 409)
             {
-                throw new WorkflowConflictException($"The workflow with id {workflow.Id} was already modified.");
+                throw new WorkflowConflictException($"A workflow with id {workflow.Id} already exists.");
+            }
+
+            if ((int)returnValue.Value == 412)
+            {
+                throw new WorkflowPreconditionFailedException($"The workflow with id {workflow.Id} was already modified.");
             }
 
             workflow.ETag = newetag;

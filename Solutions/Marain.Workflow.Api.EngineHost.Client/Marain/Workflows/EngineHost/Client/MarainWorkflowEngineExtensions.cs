@@ -94,6 +94,128 @@ namespace Marain.Workflows.EngineHost.Client
             }
 
             /// <summary>
+            /// Create a workflow definition
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='tenantId'>
+            /// The tenant within which the request should operate
+            /// </param>
+            /// <param name='body'>
+            /// </param>
+            public static void CreateWorkflow(this IMarainWorkflowEngine operations, string tenantId, Workflow body)
+            {
+                operations.CreateWorkflowAsync(tenantId, body).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Create a workflow definition
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='tenantId'>
+            /// The tenant within which the request should operate
+            /// </param>
+            /// <param name='body'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task CreateWorkflowAsync(this IMarainWorkflowEngine operations, string tenantId, Workflow body, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.CreateWorkflowWithHttpMessagesAsync(tenantId, body, null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <summary>
+            /// Get a workflow
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='tenantId'>
+            /// The tenant within which the request should operate
+            /// </param>
+            /// <param name='workflowId'>
+            /// The Id of the workflow to retrieve
+            /// </param>
+            public static Workflow GetWorkflow(this IMarainWorkflowEngine operations, string tenantId, string workflowId)
+            {
+                return operations.GetWorkflowAsync(tenantId, workflowId).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Get a workflow
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='tenantId'>
+            /// The tenant within which the request should operate
+            /// </param>
+            /// <param name='workflowId'>
+            /// The Id of the workflow to retrieve
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<Workflow> GetWorkflowAsync(this IMarainWorkflowEngine operations, string tenantId, string workflowId, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetWorkflowWithHttpMessagesAsync(tenantId, workflowId, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Update a workflow definition
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='tenantId'>
+            /// The tenant within which the request should operate
+            /// </param>
+            /// <param name='workflowId'>
+            /// The Id of the workflow to retrieve
+            /// </param>
+            /// <param name='body'>
+            /// </param>
+            /// <param name='ifMatch'>
+            /// The ETag of the last known version.
+            /// </param>
+            public static void UpdateWorkflow(this IMarainWorkflowEngine operations, string tenantId, string workflowId, Workflow body, string ifMatch = default(string))
+            {
+                operations.UpdateWorkflowAsync(tenantId, workflowId, body, ifMatch).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Update a workflow definition
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='tenantId'>
+            /// The tenant within which the request should operate
+            /// </param>
+            /// <param name='workflowId'>
+            /// The Id of the workflow to retrieve
+            /// </param>
+            /// <param name='body'>
+            /// </param>
+            /// <param name='ifMatch'>
+            /// The ETag of the last known version.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task UpdateWorkflowAsync(this IMarainWorkflowEngine operations, string tenantId, string workflowId, Workflow body, string ifMatch = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                (await operations.UpdateWorkflowWithHttpMessagesAsync(tenantId, workflowId, body, ifMatch, null, cancellationToken).ConfigureAwait(false)).Dispose();
+            }
+
+            /// <summary>
             /// View swagger definition for this API
             /// </summary>
             /// <remarks>

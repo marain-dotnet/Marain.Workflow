@@ -7,9 +7,10 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
-
+    using Corvus.Extensions.Json;
     using Corvus.Leasing;
     using Corvus.Retry;
     using Corvus.Retry.Policies;
@@ -17,7 +18,8 @@ namespace Marain.Workflows.Api.Specs.Steps
     using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
     using Microsoft.Extensions.DependencyInjection;
-
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using NUnit.Framework;
 
     using TechTalk.SpecFlow;
@@ -53,7 +55,18 @@ namespace Marain.Workflows.Api.Specs.Steps
             IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(
                 this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
 
-            await store.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
+            try
+            {
+                await store.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
+            }
+            catch (WorkflowConflictException)
+            {
+                // The workflow already exists. Move on.
+            }
+
+            // Get the workflow so we have the correct etag.
+            workflow = await store.GetWorkflowAsync(workflow.Id).ConfigureAwait(false);
+            this.scenarioContext.Set(workflow, workflowName);
         }
 
         [Given("I have started an instance of the workflow '(.*)' with instance id '(.*)' and using context object '(.*)'")]
@@ -87,6 +100,22 @@ namespace Marain.Workflows.Api.Specs.Steps
             }
         }
 
+        [Given("I have an instance of the workflow '(.*)' with Id '(.*)'")]
+        public void GivenIHaveAnInstanceOfTheWorkflowWithId(string workflowName, string workflowId)
+        {
+            Workflow workflow = TestWorkflowFactory.Get(workflowName);
+            workflow.Id = workflowId;
+
+            this.scenarioContext.Set(workflow, workflowName);
+        }
+
+        [Given("the workflow called '(.*)' has an etag value of '(.*)'")]
+        public void GivenTheWorkflowCalledHasAnEtagValueOf(string workflowName, string etag)
+        {
+            Workflow workflow = this.scenarioContext.Get<Workflow>(workflowName);
+            workflow.ETag = etag;
+        }
+
         [Then("there should be (.*) workflow instance in the workflow instance store")]
         [Then("there should be (.*) workflow instances in the workflow instance store")]
         public async Task ThenThereShouldBeANewWorkflowInstanceInTheWorkflowInstanceStore(int expected)
@@ -102,6 +131,22 @@ namespace Marain.Workflows.Api.Specs.Steps
         public Task ThenThereShouldBeAWorkflowInstanceWithTheIdInTheWorkflowInstanceStore(string instanceId)
         {
             return this.GetWorkflowInstance(instanceId);
+        }
+
+        [Then("there should be a workflow with the id '(.*)' in the workflow store")]
+        public async Task ThenThereShouldBeAWorkflowWithTheIdInTheWorkflowStore(string id)
+        {
+            ITenantedWorkflowStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
+            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
+
+            try
+            {
+                _ = await store.GetWorkflowAsync(id).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"Couldn't find a workflow with id {id}: {ex}");
+            }
         }
 
         [Then("the workflow instance with id '(.*)' should be an instance of the workflow with id '(.*)'")]
@@ -152,6 +197,26 @@ namespace Marain.Workflows.Api.Specs.Steps
         public Task ThenTheWorkflowInstanceWithIdShouldBeInTheStateWithName(string instanceId, string expectedStateName)
         {
             return this.VerifyWorkflowInstanceState(instanceId, expectedStateName, true);
+        }
+
+        [Then("the response should contain the the workflow '(.*)'")]
+        public void ThenTheResponseShouldContainTheTheWorkflow(string expectedWorkflowName)
+        {
+            Workflow expectedWorkflow = this.scenarioContext.Get<Workflow>(expectedWorkflowName);
+
+            IJsonSerializerSettingsProvider serializationSettingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
+            string actualWorkflowJson = this.scenarioContext.Get<string>("ResponseBody");
+            Workflow actualWorkflow = JsonConvert.DeserializeObject<Workflow>(actualWorkflowJson, serializationSettingsProvider.Instance);
+
+            Assert.AreEqual(expectedWorkflow.Id, actualWorkflow.Id);
+        }
+
+        [Then("the response should contain an ETag header")]
+        public void ThenTheResponseShouldContainAnETagHeader()
+        {
+            HttpWebResponse response = this.scenarioContext.Get<HttpWebResponse>();
+            string etagHeader = response.Headers.Get("ETag");
+            Assert.IsNotNull(etagHeader);
         }
 
         private async Task VerifyWorkflowInstanceState(string instanceId, string expectedStateName, bool useAssert = true)
