@@ -14,8 +14,7 @@ Scenario: Store a workflow definition
 	And there should be a workflow with the id 'simple-expenses-workflow' in the workflow store
 
 Scenario: Attempt to store a workflow definition when a definition with the specified Id already exists
-	Given I have an instance of the workflow 'SimpleExpensesWorkflow' with Id 'simple-expenses-workflow-2'
-	And I have posted the workflow called 'SimpleExpensesWorkflow' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflows'
+	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-2'
 	When I post the workflow called 'SimpleExpensesWorkflow' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflows'
 	Then I should have received a 409 status code from the HTTP request
 	

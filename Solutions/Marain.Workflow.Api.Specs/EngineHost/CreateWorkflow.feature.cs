@@ -160,18 +160,14 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 17
- testRunner.Given("I have an instance of the workflow \'SimpleExpensesWorkflow\' with Id \'simple-expen" +
-                        "ses-workflow-2\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
+                        "\'simple-expenses-workflow-2\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 18
- testRunner.And("I have posted the workflow called \'SimpleExpensesWorkflow\' to the workflow engine" +
-                        " path \'/{tenantId}/marain/workflow/engine/workflows\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 19
  testRunner.When("I post the workflow called \'SimpleExpensesWorkflow\' to the workflow engine path \'" +
                         "/{tenantId}/marain/workflow/engine/workflows\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 20
+#line 19
  testRunner.Then("I should have received a 409 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

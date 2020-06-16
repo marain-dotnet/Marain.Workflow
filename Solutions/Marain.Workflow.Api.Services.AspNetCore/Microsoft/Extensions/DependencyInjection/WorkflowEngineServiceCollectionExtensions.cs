@@ -49,6 +49,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 config.Exceptions.Map<WorkflowNotFoundException>(404);
                 config.Exceptions.Map<WorkflowInstanceNotFoundException>(404);
+                config.Exceptions.Map<WorkflowConflictException>(409);
             });
 
             services.AddSingleton<IOpenApiService, EngineService>();

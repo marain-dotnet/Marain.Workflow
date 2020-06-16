@@ -49,14 +49,24 @@ namespace Marain.Workflows.Api.Specs.Steps
         public async Task GivenIHaveAddedTheToTheWorkflowStoreWithId(string workflowName, string workflowId)
         {
             Workflow workflow = TestWorkflowFactory.Get(workflowName);
-            this.scenarioContext.Set(workflow, workflowName);
             workflow.Id = workflowId;
 
             ITenantedWorkflowStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
             IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(
                 this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
 
-            await store.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
+            try
+            {
+                await store.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
+            }
+            catch (WorkflowConflictException)
+            {
+                // The workflow already exists. Move on.
+            }
+
+            // Get the workflow so we have the correct etag.
+            workflow = await store.GetWorkflowAsync(workflow.Id).ConfigureAwait(false);
+            this.scenarioContext.Set(workflow, workflowName);
         }
 
         [Given("I have started an instance of the workflow '(.*)' with instance id '(.*)' and using context object '(.*)'")]

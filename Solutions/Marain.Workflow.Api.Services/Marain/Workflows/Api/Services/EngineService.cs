@@ -119,20 +119,6 @@ namespace Marain.Workflows.Api.Services
             ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(tenantId).ConfigureAwait(false);
             IWorkflowStore workflowStore = await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
 
-            // The API operation is "create" but the store only supports Upsert. We need to see if there's a workflow
-            // with the specified ID already before we try and save it.
-            try
-            {
-                _ = await workflowStore.GetWorkflowAsync(body.Id).ConfigureAwait(false);
-
-                // If we're here, we have found a workflow with the same Id, so we will return a 409 Conflict
-                return this.ConflictResult();
-            }
-            catch (WorkflowNotFoundException)
-            {
-                // No-op; this means we can continue and store the new workflow definition.
-            }
-
             await workflowStore.UpsertWorkflowAsync(body).ConfigureAwait(false);
             return this.CreatedResult();
         }
@@ -154,27 +140,14 @@ namespace Marain.Workflows.Api.Services
                 return new OpenApiResult { StatusCode = 400 };
             }
 
-            if (!string.IsNullOrEmpty(ifMatch))
-            {
-                body.ETag = ifMatch;
-            }
+            body.ETag = ifMatch;
 
             ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(tenantId).ConfigureAwait(false);
             IWorkflowStore workflowStore = await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             // Because there's an etag in the body, the workflow store will throw an exception if either the workflow
             // doesn't already exist, or if the stored version doesn't have a matching etag.
-            try
-            {
-                await workflowStore.UpsertWorkflowAsync(body).ConfigureAwait(false);
-            }
-            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.PreconditionFailed)
-            {
-                return new OpenApiResult
-                {
-                    StatusCode = 412,
-                };
-            }
+            await workflowStore.UpsertWorkflowAsync(body).ConfigureAwait(false);
 
             return this.OkResult();
         }
