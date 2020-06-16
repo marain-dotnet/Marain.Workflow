@@ -93,7 +93,7 @@ namespace Marain.Workflows.EngineHost.Client
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<ProblemDetails>> CreateWorkflowWithHttpMessagesAsync(string tenantId, Workflow body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse> CreateWorkflowWithHttpMessagesAsync(string tenantId, Workflow body, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get a workflow

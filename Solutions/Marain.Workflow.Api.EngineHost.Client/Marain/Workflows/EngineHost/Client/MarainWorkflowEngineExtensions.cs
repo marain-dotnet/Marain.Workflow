@@ -104,9 +104,9 @@ namespace Marain.Workflows.EngineHost.Client
             /// </param>
             /// <param name='body'>
             /// </param>
-            public static ProblemDetails CreateWorkflow(this IMarainWorkflowEngine operations, string tenantId, Workflow body)
+            public static void CreateWorkflow(this IMarainWorkflowEngine operations, string tenantId, Workflow body)
             {
-                return operations.CreateWorkflowAsync(tenantId, body).GetAwaiter().GetResult();
+                operations.CreateWorkflowAsync(tenantId, body).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -123,12 +123,9 @@ namespace Marain.Workflows.EngineHost.Client
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<ProblemDetails> CreateWorkflowAsync(this IMarainWorkflowEngine operations, string tenantId, Workflow body, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task CreateWorkflowAsync(this IMarainWorkflowEngine operations, string tenantId, Workflow body, CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.CreateWorkflowWithHttpMessagesAsync(tenantId, body, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
+                (await operations.CreateWorkflowWithHttpMessagesAsync(tenantId, body, null, cancellationToken).ConfigureAwait(false)).Dispose();
             }
 
             /// <summary>
