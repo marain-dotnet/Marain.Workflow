@@ -79,10 +79,6 @@ paths:
           description: The new workflow has been successfully created.
         400:
           description: The supplied data was invalid or incomplete.
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ProblemDetails"
         409:
           description: A workflow with the specified Id already exists
         default:
@@ -139,6 +135,8 @@ paths:
           description: The supplied data was invalid or incomplete.
         404:
           description: The specified workflow does not exist.
+        409:
+          description: No etag was supplied and workflow with the specified Id already exists
         412:
           description: The etag supplied with the workflow does not match the current version on the server.
         default:

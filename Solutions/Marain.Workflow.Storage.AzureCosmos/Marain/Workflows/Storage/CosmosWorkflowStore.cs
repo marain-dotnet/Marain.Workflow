@@ -90,7 +90,7 @@ namespace Marain.Workflows.Storage
             catch (CosmosException cex) when (cex.StatusCode == HttpStatusCode.PreconditionFailed)
             {
                 // Return 409 here as well as with the create to stay consistent with other implementations.
-                throw new WorkflowConflictException();
+                throw new WorkflowPreconditionFailedException();
             }
         }
     }

@@ -87,11 +87,13 @@ namespace Marain.Workflows.Api.Specs.EngineHost
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Update a workflow definition without supplying an eTag")]
-        public virtual void UpdateAWorkflowDefinitionWithoutSupplyingAnETag()
+        [NUnit.Framework.DescriptionAttribute("Update a workflow definition without supplying an eTag returns a Conflict respons" +
+            "e")]
+        public virtual void UpdateAWorkflowDefinitionWithoutSupplyingAnETagReturnsAConflictResponse()
         {
             string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Update a workflow definition without supplying an eTag", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Update a workflow definition without supplying an eTag returns a Conflict respons" +
+                    "e", null, ((string[])(null)));
 #line 10
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -128,11 +130,11 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Update a workflow definition with an etag")]
-        public virtual void UpdateAWorkflowDefinitionWithAnEtag()
+        [NUnit.Framework.DescriptionAttribute("Update a workflow definition with an etag succeeds")]
+        public virtual void UpdateAWorkflowDefinitionWithAnEtagSucceeds()
         {
             string[] tagsOfScenario = ((string[])(null));
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Update a workflow definition with an etag", null, ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Update a workflow definition with an etag succeeds", null, ((string[])(null)));
 #line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -171,12 +173,12 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Attempt to update a workflow definition with an etag that does not match the stor" +
-            "ed version")]
-        public virtual void AttemptToUpdateAWorkflowDefinitionWithAnEtagThatDoesNotMatchTheStoredVersion()
+            "ed version returns a Precondition Failed response")]
+        public virtual void AttemptToUpdateAWorkflowDefinitionWithAnEtagThatDoesNotMatchTheStoredVersionReturnsAPreconditionFailedResponse()
         {
             string[] tagsOfScenario = ((string[])(null));
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Attempt to update a workflow definition with an etag that does not match the stor" +
-                    "ed version", null, ((string[])(null)));
+                    "ed version returns a Precondition Failed response", null, ((string[])(null)));
 #line 20
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -207,7 +209,7 @@ this.ScenarioInitialize(scenarioInfo);
                         "3a64df551425fcc55e4d42a148795d9f25f89d4\"\' as the If-Match header value", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 23
- testRunner.Then("I should have received a 409 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("I should have received a 412 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -215,12 +217,12 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Attempt to store a workflow definition when a definition with the supplied Id doe" +
-            "s not exist succeeds")]
-        public virtual void AttemptToStoreAWorkflowDefinitionWhenADefinitionWithTheSuppliedIdDoesNotExistSucceeds()
+            "s not exist succeeds and creates the new workflow in the store")]
+        public virtual void AttemptToStoreAWorkflowDefinitionWhenADefinitionWithTheSuppliedIdDoesNotExistSucceedsAndCreatesTheNewWorkflowInTheStore()
         {
             string[] tagsOfScenario = ((string[])(null));
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Attempt to store a workflow definition when a definition with the supplied Id doe" +
-                    "s not exist succeeds", null, ((string[])(null)));
+                    "s not exist succeeds and creates the new workflow in the store", null, ((string[])(null)));
 #line 25
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -262,12 +264,12 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Attempt to store a workflow definition when the workflow Id in the path doesn\'t m" +
-            "atch that in the body")]
-        public virtual void AttemptToStoreAWorkflowDefinitionWhenTheWorkflowIdInThePathDoesntMatchThatInTheBody()
+            "atch that in the body returns a Bad Request response")]
+        public virtual void AttemptToStoreAWorkflowDefinitionWhenTheWorkflowIdInThePathDoesntMatchThatInTheBodyReturnsABadRequestResponse()
         {
             string[] tagsOfScenario = ((string[])(null));
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Attempt to store a workflow definition when the workflow Id in the path doesn\'t m" +
-                    "atch that in the body", null, ((string[])(null)));
+                    "atch that in the body returns a Bad Request response", null, ((string[])(null)));
 #line 31
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
