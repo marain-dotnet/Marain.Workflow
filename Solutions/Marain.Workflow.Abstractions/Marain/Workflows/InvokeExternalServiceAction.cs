@@ -10,6 +10,7 @@ namespace Marain.Workflows
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
@@ -35,7 +36,12 @@ namespace Marain.Workflows
         /// </summary>
         public const string RegisteredContentType = "application/vnd.marain.workflows.invokeexternalserviceaction";
 
-        private static readonly HttpClient HttpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(300) };
+        // Although not recommended, it is possible that external requests could take quite some time. Care should be
+        // taken with this; depending on the hosting option selected, the hosting environment may place its own limits
+        // on the time taken for total request execution time. For example, on the Azure Functions consumption plan,
+        // the maximum function execution time is 10 minutes. However, other hosting environments permit longer
+        // execution time, and we don't want to impose unnecessary limitations on external service execution time.
+        private static readonly HttpClient HttpClient = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
         private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private readonly ILogger<InvokeExternalServiceAction> logger;
