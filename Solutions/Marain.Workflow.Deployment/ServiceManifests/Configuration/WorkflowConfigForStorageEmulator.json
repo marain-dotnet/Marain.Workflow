@@ -1,11 +1,10 @@
 [
   {
     "key": "workflowStore",
-    "contentType": "application/vnd.marain.tenancy.enrollment.configurationitem.cosmosdb",
+    "contentType": "application/vnd.marain.tenancy.enrollment.configurationitem.azureblobstorage",
     "configuration": {
-      "accountUri": null,
-      "databaseName": null,
-      "containerName": null,
+      "accountName": null,
+      "container": null,
       "disableTenantIdPrefix": false
     }
   },
@@ -15,8 +14,8 @@
     "configuration": {
       "accountUri": null,
       "databaseName": null,
-      "containerName": null,
-      "disableTenantIdPrefix": false
+      "containerName": "workflow",
+      "disableTenantIdPrefix": true
     }
   },
   {

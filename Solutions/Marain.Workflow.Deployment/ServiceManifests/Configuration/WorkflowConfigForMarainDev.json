@@ -3,12 +3,9 @@
     "key": "workflowStore",
     "contentType": "application/vnd.marain.tenancy.enrollment.configurationitem.cosmosdb",
     "configuration": {
-      "accountUri": "mardevworkflowctduas7ish",
-      "databaseName": "workflow",
-      "containerName": null,
-      "disableTenantIdPrefix": true,
-      "keyVaultName": "mardevworkflowctduas7ish",
-      "accountKeySecretName": "CosmosDbAccountKey"
+      "accountName": null,
+      "container": null,
+      "disableTenantIdPrefix": false
     }
   },
   {
