@@ -77,6 +77,13 @@ namespace Marain.Workflows.Specs.Bindings
                         services.AddTenantedSqlWorkflowStore();
                         services.AddTenantedSqlWorkflowInstanceStore();
                     }
+                    else if (featureContext.FeatureInfo.Tags.Any(t => t == "useAzureBlobStore"))
+                    {
+                        services.AddTenantedBlobWorkflowStore();
+
+                        // We don't yet have a blob implementation of the instance store.
+                        services.AddSingleton<ITenantedWorkflowInstanceStoreFactory, FakeTenantedWorkflowInstanceStoreFactory>();
+                    }
 
                     services.AddContent(factory => factory.RegisterTestContentTypes());
 
