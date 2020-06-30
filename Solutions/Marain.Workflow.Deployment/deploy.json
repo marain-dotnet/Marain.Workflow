@@ -40,6 +40,17 @@
     "marainServiceTenantDisplayName": {
       "type": "string"
     },
+    "workflowStorageSku": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
+    },
     "_artifactsLocation": {
       "type": "string"
     },
@@ -56,6 +67,8 @@
     "leasingStorageAccountName": "[substring(concat(variables('resourceNameRoot'), parameters('appName'), 'lease', uniqueString(resourceGroup().id)), 0, 24)]",
     "workflowCosmosAccountKeySecretName": "CosmosDbAccountKey",
     "workflowCosmosDatabaseName": "workflow",
+    "workflowStorageName": "[substring(concat(variables('defaultName'), uniqueString(resourceGroup().id)), 0, 24)]",
+    "workflowStorageKeySecretName": "WorkflowStorageAccountKey",
     "messageIngestionFunctionsAppName": "[concat(variables('defaultName'), 'mi')]",
     "engineFunctionsAppName": "[concat(variables('defaultName'), 'eng')]",
     "tenantId": "[subscription().tenantID]",
@@ -63,6 +76,7 @@
     "keyVaultDeployName": "[concat(deployment().name, '-key-vault')]",
     "diagnosticsStorageDeployName": "[concat(variables('keyVaultDeployName'), '-diagnostics-storage-account')]",
     "cosmosDbDeployName": "[concat(deployment().name, '-cosmos-db')]",
+    "workflowStorageDeployName": "[concat(deployment().name, '-storage-workflow')]",
     "leasingStorageDeployName": "[concat(deployment().name, '-storage-leasing')]",
     "ingestionAppDeployName": "[concat(deployment().name, '-functions-app-message-ingestion')]",
     "engineAppDeployName": "[concat(deployment().name, '-functions-app-engine')]"
@@ -122,6 +136,33 @@
       }
     },
     {
+      "name": "[concat(variables('workflowStorageDeployName'), '-key-vault-secret')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[variables('workflowStorageDeployName')]",
+        "[variables('keyVaultDeployName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/key-vault-secret.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "secretName": {
+            "value": "[variables('workflowStorageKeySecretName')]"
+          },
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          },
+          "contentValue": {
+            "value": "[reference(variables('workflowStorageDeployName'), '2016-09-01').outputs.storageAccountKey.value]"
+          }
+        }
+      }
+    },
+    {
       "name": "[variables('diagnosticsStorageDeployName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
@@ -135,6 +176,30 @@
         "parameters": {
           "storageAccountName": {
             "value": "[variables('keyVaultDiagnosticStorageAccountName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('workflowStorageDeployName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/storage-account.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountName": {
+            "value": "[variables('workflowStorageName')]"
+          },
+          "storageAccountType": {
+            "value": "[parameters('workflowStorageSku')]"
+          },
+          "storageAccountLocation": {
+            "value": "[resourceGroup().location]"
           }
         }
       }

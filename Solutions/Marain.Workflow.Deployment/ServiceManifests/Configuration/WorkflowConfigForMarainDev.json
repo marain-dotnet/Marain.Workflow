@@ -1,10 +1,12 @@
 [
   {
     "key": "workflowStore",
-    "contentType": "application/vnd.marain.tenancy.enrollment.configurationitem.cosmosdb",
+    "contentType": "application/vnd.marain.tenancy.enrollment.configurationitem.azureblobstorage",
     "configuration": {
-      "accountName": null,
-      "container": null,
+      "accountName": "mardevworkflowctduas7ish",
+      "keyVaultName": "mardevworkflowctduas7ish",
+      "accountKeySecretName": "WorkflowStorageAccountKey",
+      "container": "workflowdefinitions",
       "disableTenantIdPrefix": false
     }
   },
