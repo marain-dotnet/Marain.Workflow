@@ -18,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Gets the container definition that will be used for the tenanted workflow store.
         /// </summary>
         public static BlobStorageContainerDefinition WorkflowStoreContainerDefinition { get; } =
-            new BlobStorageContainerDefinition("workflow");
+            new BlobStorageContainerDefinition("workflowdefinitions");
 
         /// <summary>
         /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.

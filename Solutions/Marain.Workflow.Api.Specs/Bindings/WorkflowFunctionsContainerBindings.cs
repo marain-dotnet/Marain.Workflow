@@ -5,6 +5,7 @@
 namespace Marain.Workflows.Api.Specs.Bindings
 {
     using Corvus.Azure.Cosmos.Tenancy;
+    using Corvus.Azure.Storage.Tenancy;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.Leasing;
     using Corvus.Testing.SpecFlow;
@@ -58,14 +59,23 @@ namespace Marain.Workflows.Api.Specs.Bindings
                     services.AddMarainServicesTenancy();
                     services.AddTenantProviderServiceClient();
 
+                    // Workflow definitions get stored in blob storage
+                    services.AddTenantCloudBlobContainerFactory(new TenantCloudBlobContainerFactoryOptions
+                    {
+                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
+                    });
+
+                    services.AddTenantedBlobWorkflowStore();
+
+                    // Workflow instances get stored in CosmosDB
                     services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
                     {
                         AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
                     });
 
-                    services.AddTenantedWorkflowEngineFactory();
-                    services.AddTenantedAzureCosmosWorkflowStore();
                     services.AddTenantedAzureCosmosWorkflowInstanceStore();
+
+                    services.AddTenantedWorkflowEngineFactory();
 
                     services.RegisterCoreWorkflowContentTypes();
 

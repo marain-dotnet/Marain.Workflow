@@ -129,10 +129,10 @@ namespace Marain.Workflows.Api.Specs.Bindings
 
             return new EnrollmentConfigurationItem[]
             {
-                new EnrollmentCosmosConfigurationItem
+                new EnrollmentBlobStorageConfigurationItem
                 {
                     Key = "workflowStore",
-                    Configuration = cosmosConfiguration,
+                    Configuration = storageConfiguration,
                 },
                 new EnrollmentCosmosConfigurationItem
                 {

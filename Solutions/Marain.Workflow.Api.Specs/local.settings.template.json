@@ -11,9 +11,9 @@
   "Operations:ControlServiceBaseUrl": "https://mardevoperationscontrol.azurewebsites.net/",
   "Operations:ResourceIdForMsiAuthentication": "c32e9a16-c008-48c7-8518-327e7a14dc4a",
 
-  // Blob storage configuration for Operations during testing.
+  // Blob storage configuration for Operations and workflow definitions during testing.
   // Remove this to use local storage emulator.
-  "TestBlobStorageConfiguration:AccountName": "<Tenancy Storage Account Connection String Here>",
+  "TestBlobStorageConfiguration:AccountName": "<Storage Account Connection String Here>",
 
   // CosmosDb configuration for testing.
   // Remove these to use the local storage emulator.
