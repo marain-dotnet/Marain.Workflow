@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Api.Services\Marain.Workflow.Api.Services.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureCosmos\Marain.Workflow.Tenancy.AzureCosmos.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureStorage\Marain.Workflow.Tenancy.AzureStorage.csproj" />
   </ItemGroup>
 
   <ItemGroup>

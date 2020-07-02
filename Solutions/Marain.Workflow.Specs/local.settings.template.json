@@ -12,7 +12,14 @@
   // completely.
   "TestSqlConfiguration:Database": "endjintestsql",
   "TestSqlConfiguration:ConnectionStringSecretName": "endjintestazuresql",
-  "TestSqlConfiguration:KeyVaultName": "endjintest"
+  "TestSqlConfiguration:KeyVaultName": "endjintest",
+
+  // If using a real storage account, provide the details using these settings. To use the emulator, omit the settings
+  // completely.
+  "TestStorageConfiguration:AccountName": "endteststorage",
+  "TestStorageConfiguration:Container": "workflow",
+  "TestStorageConfiguration:KeyVaultName": "endjintest",
+  "TestStorageConfiguration:AccountKeySecretName": "endteststorage"
 
   // If using a real Cosmos or Sql configuration that requires KeyVault access, this local service will need to authenticate.
   // And for that to work, you won't be able to use the normal az cli-based AzureServicesAuthConnectionString

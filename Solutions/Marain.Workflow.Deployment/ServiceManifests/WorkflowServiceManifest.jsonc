@@ -11,12 +11,11 @@
   ],
   "requiredConfigurationEntries": [
     {
-      "contentType": "application/vnd.marain.tenancy.servicemanifests.requiredconfigurationentries.cosmosdb",
-      "type": "cosmosContainerConfiguration",
+      "contentType": "application/vnd.marain.tenancy.servicemanifests.requiredconfigurationentries.azureblobstorage",
+      "type": "azureBlobContainerConfiguration",
       "key": "workflowStore",
       "containerDefinition": {
-        "databaseName": "workflow",
-        "containerName": "definitions"
+        "containerName": "workflowdefinitions"
       },
       "description": "Workflow definitions"
     },

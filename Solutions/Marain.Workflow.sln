@@ -56,6 +56,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Api.Client"
 EndProject
 Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "Marain.Workflow.Deployment", "Marain.Workflow.Deployment\Marain.Workflow.Deployment.deployproj", "{3C88450E-1BD4-4305-BCCF-01A457F15AFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marain.Workflow.Tenancy.AzureStorage", "Marain.Workflow.Tenancy.AzureStorage\Marain.Workflow.Tenancy.AzureStorage.csproj", "{D3D7D753-ADE7-4860-A12C-1C2C161079D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marain.Workflow.Storage.AzureStorage", "Marain.Workflow.Storage.AzureStorage\Marain.Workflow.Storage.AzureStorage.csproj", "{C7442895-49B7-4BDF-94E1-646ED8DCDA28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -126,6 +130,14 @@ Global
 		{3C88450E-1BD4-4305-BCCF-01A457F15AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C88450E-1BD4-4305-BCCF-01A457F15AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C88450E-1BD4-4305-BCCF-01A457F15AFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3D7D753-ADE7-4860-A12C-1C2C161079D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3D7D753-ADE7-4860-A12C-1C2C161079D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3D7D753-ADE7-4860-A12C-1C2C161079D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3D7D753-ADE7-4860-A12C-1C2C161079D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7442895-49B7-4BDF-94E1-646ED8DCDA28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7442895-49B7-4BDF-94E1-646ED8DCDA28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7442895-49B7-4BDF-94E1-646ED8DCDA28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7442895-49B7-4BDF-94E1-646ED8DCDA28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,6 +154,7 @@ Global
 		{96379438-8F88-4F73-BFEF-18D84CFD3F82} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
 		{B4F2E79B-C2D2-4E3E-BB0F-E85AC8F1E331} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 		{3C88450E-1BD4-4305-BCCF-01A457F15AFB} = {D29CABE7-467E-4CF6-B44B-3C58AB76145A}
+		{D3D7D753-ADE7-4860-A12C-1C2C161079D9} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EED79307-5690-4CE6-A80D-F41857C97EFF}

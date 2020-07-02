@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
     using System;
     using System.Linq;
     using Corvus.Azure.Cosmos.Tenancy;
+    using Corvus.Azure.Storage.Tenancy;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.Leasing;
     using Marain.Tenancy.Client;
@@ -91,6 +92,18 @@ namespace Microsoft.Extensions.DependencyInjection
                     AzureServicesAuthConnectionString = sp.GetRequiredService<IConfiguration>()["AzureServicesAuthConnectionString"],
                 });
 
+            // Workflow definitions get stored in blob storage
+            services.AddTenantCloudBlobContainerFactory(sp =>
+            {
+                IConfiguration config = sp.GetRequiredService<IConfiguration>();
+
+                return config.GetSection("TenantCloudBlobContainerFactoryOptions").Get<TenantCloudBlobContainerFactoryOptions>()
+                    ?? new TenantCloudBlobContainerFactoryOptions();
+            });
+
+            services.AddTenantedBlobWorkflowStore();
+
+            // Workflow instances get stored in CosmosDB
             services.AddTenantCosmosContainerFactory(sp =>
             {
                 IConfiguration config = sp.GetRequiredService<IConfiguration>();
@@ -99,9 +112,9 @@ namespace Microsoft.Extensions.DependencyInjection
                     ?? new TenantCosmosContainerFactoryOptions();
             });
 
-            services.AddTenantedWorkflowEngineFactory();
-            services.AddTenantedAzureCosmosWorkflowStore();
             services.AddTenantedAzureCosmosWorkflowInstanceStore();
+
+            services.AddTenantedWorkflowEngineFactory();
 
             services.RegisterCoreWorkflowContentTypes();
 
