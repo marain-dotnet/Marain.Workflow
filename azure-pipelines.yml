@@ -99,3 +99,4 @@ jobs:
             **/bin/$(BuildConfiguration)/*.dacpac
           TargetFolder: '$(Build.ArtifactStagingDirectory)/Release/DACPACs'
           flattenFolders: true
+    netSdkVersion: '3.x'

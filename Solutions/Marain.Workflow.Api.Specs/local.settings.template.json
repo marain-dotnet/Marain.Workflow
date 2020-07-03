@@ -13,7 +13,12 @@
 
   // Blob storage configuration for Operations and workflow definitions during testing.
   // Remove this to use local storage emulator.
-  "TestBlobStorageConfiguration:AccountName": "<Storage Account Connection String Here>",
+  "TestBlobStorageConfiguration:AccountName": "endteststorage",
+  "TestBlobStorageConfiguration:AccountKeySecretName": "endteststorage",
+  "TestBlobStorageConfiguration:KeyVaultName": "endjintest",
+  // Note that the Operations services will need to have access to the key
+  // vault specified. Alternatively, set just this to use a connection string.
+  //"TestBlobStorageConfiguration:AccountName": "<Storage Account Connection String Here>",
 
   // CosmosDb configuration for testing.
   // Remove these to use the local storage emulator.

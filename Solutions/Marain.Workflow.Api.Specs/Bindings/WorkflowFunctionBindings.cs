@@ -41,7 +41,6 @@ namespace Marain.Workflows.Api.Specs.Bindings
         public static Task StartWorkflowEngineFunctionAsync(FeatureContext context)
         {
             return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
-                    TestContext.CurrentContext.TestDirectory,
                     "Marain.Workflow.Api.EngineHost",
                     EngineHostPort,
                     "netcoreapp3.1",
@@ -61,7 +60,6 @@ namespace Marain.Workflows.Api.Specs.Bindings
             config.EnvironmentVariables.Add("Workflow:EngineClient:BaseUrl", EngineHostBaseUrl);
 
             return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
-                TestContext.CurrentContext.TestDirectory,
                 "Marain.Workflow.Api.MessageProcessingHost",
                 MessageProcessingHostPort,
                 "netcoreapp3.1",
