@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Corvus.Leasing.Azure" Version="0.5.0-preview.5" />
-    <PackageReference Include="Endjin.RecommendedPractices" Version="0.4.0">
+    <PackageReference Include="Endjin.RecommendedPractices" Version="0.5.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
