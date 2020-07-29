@@ -78,6 +78,8 @@ This will allow us to retain the ability to include actions as part of a workflo
 ### We have an audit trail
 
 
+### Eventual consistency becomes a bigger issue for clients to manage
+
 
 ### We need to choose or build an event store implementation
 
