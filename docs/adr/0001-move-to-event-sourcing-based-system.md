@@ -55,17 +55,24 @@ Separately, the workflow engine will subscribe to its own events. On receiving a
 
 This will allow us to retain the ability to include actions as part of a workflow definition - useful because one of the big benefits of the workflow-based approach is that it makes it easier to see what happens as a result of transitions.
 
+*Note: we should discuss the above; removing actions from the workflow definition would give us a huge benefit at dev time, in that we would remove the need to be running the workflow service locally in order to develop those actions.*
+
 ### Consumers can choose whether to use workflow actions or event store subscriptions when modelling their workflows
 
 
 
 ### Workflow actions should no longer be able to modify workflow instance context data
 
-
+Since workflow actions will be executed as a result of a workflow transition having happened it no longer makes sense to allow a workflow action to be able to modify the context of an instance - if this were necessary, it would suggest that the workflow has been modelled incorrectly - for a workflow to require further updates as a result of a reaction to a state change implies that what is actually required is for the action to send a new trigger into the workflow to effect the necessary change.
 
 ### We need a new category of "mutation" that happens as part of workflow state changes
 
+If can no longer modify workflow instance context, we need an alternative means to do so. This new category of change - which we will refer to as Workflow Instance State Mutations (?) should have the following characteristics:
+- Should not depend on external services. These mutations will execute both when an event is created to reflect a transition, and when a workflow instance is rehydrated from events. As a result, they need to execute quickly and in process.
+- Should be guaranteed to succeed. Since they are executing as a result of applying an event, they have to be able to succeed. This means that there should be corresponding conditions on the workflow that guarantee that success.
+- Should only be able to modify the workflow instance context.
 
+It follows from this that all these mutations are able to do is effectively copy values from an incoming trigger to the workflow context, or to remove existing context keys.
 
 ### Replay becomes possible
 
@@ -73,16 +80,54 @@ This will allow us to retain the ability to include actions as part of a workflo
 
 ### Workflow instances become more resiliant
 
+Since we are no longer executing external service actions as part of a transition, but rather as a result of that transition, we reduce the scope for failure whilst applying a trigger to a workflow instance. Instead, the responsibility for handling failure shifts from the workflow instance transition process to the point at which the engine handles the transition event is it's emitted from the event store and attempts to invoke external service actions.
 
+As a result, we will need to carefully design the error handling and recovery process for executing these actions.
 
 ### We have an audit trail
 
 
 ### Eventual consistency becomes a bigger issue for clients to manage
 
+In our implementations to date, clients have generally been using the workflow engine to control individual workflow instances. For example, in our case management system, workflow triggers were raised by client code expecting to target a single workflow instance by its Id. This meant that the client code could poll the resultant long running operation and determine when the transition and all of its actions have been executed.
+
+In the new event sourced world, we would expect the long running operation to complete when the workflow engine has finished processing the trigger, but this is now redefined to mean that the conditions and any mutations have been run, and the resultant event has been added to the event store. The event dispatch that will trigger the actions happens asynchronously, and thus will not be guaranteed to be complete (or even started) at the point that the long running operation monitoring trigger processing has completed.
+
+This is really nothing new - workflow triggers can themselves cause further triggers to be raised, which means that the client has never been able to guarantee that "processing is complete" once the long running operation completes. However, up until now it has been something that the client has been able to ignore.
+
+Whilst this will be a problem for clients to solve, we should give some guidance on approaches to handle eventual consistency.
+
+### External service conditions require more thought
+
+External service conditions may currently rely on projections built from workflow engine events. This means that due to the previous point on eventual consistency, it may be possible for an external service condition to be invoked while its projection is out of date.
+
+We need to consider approaches to ensure that condition implementations are aware of this, and define one or more standard patterns for handling it.
+
+It should be noted that this may not be a huge problem; in our experience, the vast majority of conditions are checks against one or both of trigger data and instance context data, so by providing enough standard conditions in the engine itself this problem may be mostly negated.
 
 ### We need to choose or build an event store implementation
 
+
+
+### Workflow definition changes need to be carefully controlled
+
+Whilst we generally consider workflow definitions to be immutable, we need to support the idea that workflow definitions may change over time. The main reason for this will be the addition or modification of actions to a definition, most likely with the goal of supporting new projections in external services. In this scenario, we would like to "update" a workflow definition and be able to replay events from the event store to allow projections to be (re)created.
+
+It should be noted that this problem could be solved by completely removing actions from workflow definitions and requiring all projections and other external actions to subscribe to the event stream. However, this would remove a significant benefit of the workflow engine, namely the ability to define the allowed changes and their results in a single definition.
+
+Whilst we can create new workflow definitions for these changes, we are then faced with the problem of how we would move instances to new "versions" of a workflow definition.
+
+As a result, we will introduce the concept of workflow definition "revisions", which are new versions of a workflow definition that are fully compatible with previous versions. Revisions must have a number of attributes to be valid:
+- They must not remove any states from the original definition
+  - although they can add new states
+- They must not remove any transitions from the original definition
+  - they can add new transitions
+- Transitions must not have their target states changed
+- Transitions must not have their mutations changed (?)
+
+These restrictions mean that it will remain possible to rehydrate workflow instances from the event stream.
+
+This might mean that as a workflow definition evolves over time it might end up with "dead" branches (i.e. states that new instances could never get into, but old instances can get out of), or transitions that can never be used for new requests. In order to make understanding definitions easier, we should consider adding some means to easily indicate when that has happened.
 
 
 
