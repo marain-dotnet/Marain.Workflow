@@ -55,7 +55,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 config.Exceptions.Map<WorkflowPreconditionFailedException>(412);
             });
 
-            services.AddSingleton<IOpenApiService, EngineService>();
+            services.AddSingleton<IOpenApiService, GetWorkflowInstanceService>();
+            services.AddSingleton<IOpenApiService, GetWorkflowInstancesService>();
+            services.AddSingleton<IOpenApiService, GetWorkflowService>();
+            services.AddSingleton<IOpenApiService, GetWorkflowsService>();
+            services.AddSingleton<IOpenApiService, GetWorkflowStateService>();
+            services.AddSingleton<IOpenApiService, GetWorkflowStatesService>();
 
             return services;
         }

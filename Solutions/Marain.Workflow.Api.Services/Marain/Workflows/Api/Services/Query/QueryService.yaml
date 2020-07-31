@@ -23,6 +23,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkflowsList'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '401':
           description: Unauthorized
         '403':
@@ -35,6 +41,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '501':
+          description: Not Implemented
 
   /{tenantId}/marain/workflow/query/workflows/{workflowId}:
     get:
@@ -44,7 +52,7 @@ paths:
         - $ref: '#/components/parameters/tenantId'
         - $ref: '#/components/parameters/workflowId'
       responses:
-        200:
+        '200':
           description: OK
           headers:
             ETag:
@@ -55,14 +63,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Workflow"
-        404:
-          description: The specified workflow does not exist.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
         default:
           description: Unexpected error
           content:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/ProblemDetails"
+        '501':
+          description: Not Implemented
                 
   /{tenantId}/marain/workflow/query/workflows/{workflowId}/states:
     get:
@@ -80,6 +100,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkflowStatesList'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '401':
           description: Unauthorized
         '403':
@@ -92,6 +118,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '501':
+          description: Not Implemented
 
   /{tenantId}/marain/workflow/query/workflows/{workflowId}/states/{stateId}:
     get:
@@ -108,6 +136,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkflowState'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '401':
           description: Unauthorized
         '403':
@@ -120,6 +154,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '501':
+          description: Not Implemented
 
   /{tenantId}/marain/workflow/query/workflowinstances/{workflowInstanceId}:
     get:
@@ -127,7 +163,6 @@ paths:
       operationId: getWorkflowInstance
       parameters:
         - $ref: '#/components/parameters/tenantId'
-        - $ref: '#/components/parameters/workflowId'
         - $ref: '#/components/parameters/workflowInstanceId'
       responses:
         '200':
@@ -136,6 +171,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkflowInstance'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '401':
           description: Unauthorized
         '403':
@@ -148,19 +189,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '501':
+          description: Not Implemented
 
   /{tenantId}/marain/workflow/query/workflowinstances:
     get:
       summary: Retrieves a list of instances for the specified workflow and state
-      operationId: getWorkflowInstancesByState
+      operationId: getWorkflowInstances
       parameters:
         - $ref: '#/components/parameters/tenantId'
-        - $ref: '#/components/parameters/workflowId'
-        - $ref: '#/components/parameters/stateId'
+        - $ref: '#/components/parameters/workflowIdFilter'
+        - $ref: '#/components/parameters/stateIdFilter'
         - $ref: '#/components/parameters/continuationToken'
         - $ref: '#/components/parameters/maxItems'
-        - $ref: '#/components/parameters/filter'
-        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/contextFilter'
       responses:
         '200':
           description: Ok
@@ -169,7 +211,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/WorkflowInstancesList'
         '400':
-          description: Bad request
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '401':
           description: Unauthorized
         '403':
@@ -182,6 +228,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '501':
+          description: Not Implemented
 
 components:
   schemas:
@@ -480,6 +528,14 @@ components:
       required: true
       schema:
         type: string
+    workflowIdFilter:
+      name: workflowId
+      in: query
+      x-ms-parameter-location: method
+      description: The Id of the workflow
+      required: false
+      schema:
+        type: string
     workflowInstanceId:
       name: workflowInstanceId
       in: path
@@ -501,7 +557,7 @@ components:
       in: query
       x-ms-parameter-location: method
       description: The Id of the workflow state
-      required: true
+      required: false
       schema:
         type: string
     continuationToken:
@@ -523,19 +579,11 @@ components:
         minimum: 1
         maximum: 100
         default: 20
-    filter:
+    contextFilter:
       name: filter
       in: query
       x-ms-parameter-location: method
-      description: A list of fields and values to filter the results by.
-      required: false
-      schema:
-        type: string
-    sort:
-      name: sort
-      in: query
-      x-ms-parameter-location: method
-      description: A list of fields to sort the results by.
+      description: A list of context keys and values to filter the results by.
       required: false
       schema:
         type: string

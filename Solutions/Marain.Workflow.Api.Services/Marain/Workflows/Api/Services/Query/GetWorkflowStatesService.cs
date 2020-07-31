@@ -1,4 +1,4 @@
-﻿// <copyright file="GetWorkflowsService.cs" company="Endjin Limited">
+﻿// <copyright file="GetWorkflowStatesService.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
@@ -8,25 +8,27 @@ namespace Marain.Workflows.Api.Services.Query
     using Menes;
 
     /// <summary>
-    /// Implements the get workflows endpoint for the query API.
+    /// Implements the get workflow states endpoint for the query API.
     /// </summary>
-    public class GetWorkflowsService : IOpenApiService
+    public class GetWorkflowStatesService : IOpenApiService
     {
         /// <summary>
         /// The operation Id for the endpoint.
         /// </summary>
-        public const string GetWorkflowsOperationId = "getWorkflows";
+        public const string GetWorkflowStatesOperationId = "getWorkflowStates";
 
         /// <summary>
-        /// Retrieves workflows.
+        /// Retrieves a specific workflow.
         /// </summary>
         /// <param name="context">The current OpenApi context.</param>
+        /// <param name="workflowId">The Id of the workflow to retrieve.</param>
         /// <param name="maxItems">The maximum number of items to return.</param>
         /// <param name="continuationToken">A continuation token from a previous request.</param>
-        /// <returns>The workflows, as an OpenApiResult.</returns>
-        [OperationId(GetWorkflowsOperationId)]
-        public Task<OpenApiResult> GetWorkflowsAsync(
+        /// <returns>The workflow states, as an OpenApiResult.</returns>
+        [OperationId(GetWorkflowStatesOperationId)]
+        public Task<OpenApiResult> GetWorkflowStatesAsync(
             IOpenApiContext context,
+            string workflowId,
             int? maxItems,
             string continuationToken)
         {
