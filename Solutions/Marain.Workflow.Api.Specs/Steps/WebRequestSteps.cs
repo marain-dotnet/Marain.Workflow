@@ -15,6 +15,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System.IO;
     using System.Linq;
     using System.Net;
+    using System.Security.Cryptography.X509Certificates;
     using Corvus.Extensions.Json;
     using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
@@ -59,37 +60,13 @@ namespace Marain.Workflows.Api.Specs.Steps
         [When("I get the workflow engine path '(.*)'")]
         public void WhenIGetTheWorkflowEnginePath(string path)
         {
-            string url = WorkflowFunctionBindings.EngineHostBaseUrl + path;
-            url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
+            this.ExecuteGetRequest(WorkflowFunctionBindings.EngineHostBaseUrl + path);
+        }
 
-            HttpWebRequest request = WebRequest.CreateHttp(url);
-            request.Accept = "application/json";
-            request.Method = "GET";
-
-            if (!this.context.ContainsKey("HttpResponses"))
-            {
-                this.context.Add("HttpResponses", new List<int>());
-            }
-
-            try
-            {
-                var response = (HttpWebResponse)request.GetResponse();
-
-                this.context.Get<List<int>>("HttpResponses").Add((int)response.StatusCode);
-                this.context.Set(response);
-
-                using Stream responseStream = response.GetResponseStream();
-                using var responseReader = new StreamReader(responseStream);
-                string responseBody = responseReader.ReadToEnd();
-                this.context.Set(responseBody, "ResponseBody");
-            }
-            catch (WebException ex)
-            {
-                if (ex.Response is HttpWebResponse response)
-                {
-                    this.context.Get<List<int>>("HttpResponses").Add((int)response.StatusCode);
-                }
-            }
+        [When("I get the workflow query path '(.*)'")]
+        public void WhenIGetTheWorkflowQueryPath(string path)
+        {
+            this.ExecuteGetRequest(WorkflowFunctionBindings.QueryHostBaseUrl + path);
         }
 
         [When("I post the object called '(.*)' to the workflow engine path '(.*)'")]
@@ -163,6 +140,40 @@ namespace Marain.Workflows.Api.Specs.Steps
             foreach (object obj in this.context.Get<IEnumerable<object>>(instanceName))
             {
                 this.SendObjectToEndpoint(obj, url);
+            }
+        }
+
+        private void ExecuteGetRequest(string url)
+        {
+            url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
+
+            HttpWebRequest request = WebRequest.CreateHttp(url);
+            request.Accept = "application/json";
+            request.Method = "GET";
+
+            if (!this.context.ContainsKey("HttpResponses"))
+            {
+                this.context.Add("HttpResponses", new List<int>());
+            }
+
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+
+                this.context.Get<List<int>>("HttpResponses").Add((int)response.StatusCode);
+                this.context.Set(response);
+
+                using Stream responseStream = response.GetResponseStream();
+                using var responseReader = new StreamReader(responseStream);
+                string responseBody = responseReader.ReadToEnd();
+                this.context.Set(responseBody, "ResponseBody");
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response is HttpWebResponse response)
+                {
+                    this.context.Get<List<int>>("HttpResponses").Add((int)response.StatusCode);
+                }
             }
         }
 
