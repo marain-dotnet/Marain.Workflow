@@ -13,6 +13,8 @@ namespace Microsoft.Extensions.DependencyInjection
     using Marain.Tenancy.Client;
     using Marain.Workflows;
     using Marain.Workflows.Api.Services;
+    using Marain.Workflows.Api.Services.Engine;
+    using Marain.Workflows.Api.Services.Query;
     using Menes;
     using Microsoft.Extensions.Configuration;
 
@@ -21,6 +23,43 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class WorkflowEngineServiceCollectionExtensions
     {
+        /// <summary>
+        /// Adds services required by workflow engine API.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <returns>The service collection, to enable chaining.</returns>
+        public static IServiceCollection AddTenantedWorkflowQueryApi(
+            this IServiceCollection services)
+        {
+            // Verify that these services aren't already present
+            Type queryServiceType = typeof(GetWorkflowsService);
+
+            // If any of the OpenApi services are already installed, assume we've already completed installation and return.
+            if (services.Any(services => queryServiceType.IsAssignableFrom(services.ImplementationType)))
+            {
+                return services;
+            }
+
+            services.AddTenantedWorkflowEngine();
+
+            services.AddOpenApiHttpRequestHosting<SimpleOpenApiContext>(config =>
+            {
+                config.Documents.RegisterOpenApiServiceWithEmbeddedDefinition(
+                    queryServiceType.Assembly,
+                    "Marain.Workflows.Api.Services.Query.QueryService.yaml");
+                config.Documents.AddSwaggerEndpoint();
+
+                config.Exceptions.Map<WorkflowNotFoundException>(404);
+                config.Exceptions.Map<WorkflowInstanceNotFoundException>(404);
+                config.Exceptions.Map<WorkflowConflictException>(409);
+                config.Exceptions.Map<WorkflowPreconditionFailedException>(412);
+            });
+
+            services.AddSingleton<IOpenApiService, EngineService>();
+
+            return services;
+        }
+
         /// <summary>
         /// Adds services required by workflow engine API.
         /// </summary>

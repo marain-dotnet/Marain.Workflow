@@ -2,7 +2,7 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-namespace Marain.Workflows.Api.Services
+namespace Marain.Workflows.Api.Services.Engine
 {
     using System.Net;
     using System.Threading.Tasks;
@@ -16,7 +16,7 @@ namespace Marain.Workflows.Api.Services
     /// <summary>
     /// Handles incoming triggers posted to the trigger service.
     /// </summary>
-    [EmbeddedOpenApiDefinition("Marain.Workflows.Api.Services.EngineService.yaml")]
+    [EmbeddedOpenApiDefinition("Marain.Workflows.Api.Services.Engine.EngineService.yaml")]
     public class EngineService : IOpenApiService
     {
         private const string StartWorkflowInstanceOperationId = "startWorkflowInstance";

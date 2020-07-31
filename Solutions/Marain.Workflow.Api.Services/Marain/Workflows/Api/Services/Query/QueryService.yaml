@@ -1,0 +1,541 @@
+﻿openapi: '3.0.0'
+info:
+  description: This is the host function for the Marain Workflow Query service.
+  version: 1.0.0
+  title: Marain Workflow - Query API
+  contact:
+    email: hello@endjin.com
+servers: 
+  - url: https://workflow-query.marain.io
+paths:
+  /{tenantId}/marain/workflow/query/workflows:
+    get:
+      summary: Retrieves a list of workflows
+      operationId: getWorkflows
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+        - $ref: '#/components/parameters/maxItems'
+        - $ref: '#/components/parameters/continuationToken'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowsList'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+
+  /{tenantId}/marain/workflow/query/workflows/{workflowId}:
+    get:
+      summary: Get a workflow
+      operationId: getWorkflow
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+        - $ref: '#/components/parameters/workflowId'
+      responses:
+        200:
+          description: OK
+          headers:
+            ETag:
+              description: The etag for the updated tenant
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workflow"
+        404:
+          description: The specified workflow does not exist.
+        default:
+          description: Unexpected error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+                
+  /{tenantId}/marain/workflow/query/workflows/{workflowId}/states:
+    get:
+      summary: Retrieves a list of states for the specified workflow.
+      operationId: getWorkflowStates
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+        - $ref: '#/components/parameters/workflowId'
+        - $ref: '#/components/parameters/maxItems'
+        - $ref: '#/components/parameters/continuationToken'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowStatesList'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+
+  /{tenantId}/marain/workflow/query/workflows/{workflowId}/states/{stateId}:
+    get:
+      summary: Retrieves a specific state for the specified workflow.
+      operationId: getWorkflowState
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+        - $ref: '#/components/parameters/workflowId'
+        - $ref: '#/components/parameters/stateId'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowState'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+
+  /{tenantId}/marain/workflow/query/workflowinstances/{workflowInstanceId}:
+    get:
+      summary: Retrieves a specific workflow instance.
+      operationId: getWorkflowInstance
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+        - $ref: '#/components/parameters/workflowId'
+        - $ref: '#/components/parameters/workflowInstanceId'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowInstance'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+
+  /{tenantId}/marain/workflow/query/workflowinstances:
+    get:
+      summary: Retrieves a list of instances for the specified workflow and state
+      operationId: getWorkflowInstancesByState
+      parameters:
+        - $ref: '#/components/parameters/tenantId'
+        - $ref: '#/components/parameters/workflowId'
+        - $ref: '#/components/parameters/stateId'
+        - $ref: '#/components/parameters/continuationToken'
+        - $ref: '#/components/parameters/maxItems'
+        - $ref: '#/components/parameters/filter'
+        - $ref: '#/components/parameters/sort'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowInstancesList'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+
+components:
+  schemas:
+    WorkflowsList:
+      properties:
+        id:
+          type: string
+          nullable: false
+        contentType:
+          type: string
+          nullable: false
+        description:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        initialStateId:
+          type: string
+          nullable: false
+
+    Workflow:
+      allOf:
+      - $ref: '#/components/schemas/Resource'
+      - type: object
+        properties:
+          id:
+            type: string
+            nullable: false
+          contentType:
+            type: string
+            nullable: false
+          description:
+            type: string
+            nullable: true
+          displayName:
+            type: string
+            nullable: true
+          initialStateId:
+            type: string
+            nullable: false
+          _links:
+            type: object
+            properties:
+              states:
+                oneOf:
+                - $ref: '#/components/schemas/Link'
+                - $ref: '#/components/schemas/LinkCollection'
+          _embedded:
+            type: object
+            properties:
+              states:
+                oneOf:
+                - $ref: '#/components/schemas/WorkflowState'
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/WorkflowState'
+
+    WorkflowState:
+      description: A state for a given workflow
+      allOf:
+      - $ref: '#/components/schemas/Resource'
+      - type: object
+        properties:
+          contentType:
+            description: The content type of the data
+            type: string
+          id:
+            description: The Id of the workflow state
+            type: string
+          name:
+            description: The display name of the workflow state
+            type: string
+          _links:
+            type: object
+            properties:
+              self:
+                $ref: '#/components/schemas/Link'
+        additionalProperties: true
+
+    WorkflowStatesList:
+      description: A list of states for a given workflow.
+      allOf:
+      - $ref: '#/components/schemas/PagedListResource'
+      - type: object
+        properties:
+          _embedded:
+            type: object
+            properties:
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/WorkflowState'
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/WorkflowState'
+
+    WorkflowInstance:
+      description: An instance of a particular workflow
+      allOf:
+      - $ref: '#/components/schemas/Resource'
+      - type: object
+        properties:
+          id:
+            description: The Id of the workflow instance.
+            type: string
+          workflowId:
+            description: The Id of the workflow that the instance is using.
+            type: string
+          stateId:
+            description: The Id of the workflow state that this instance is currently in.
+            type: string
+          properties:
+            $ref: '#/components/schemas/PropertyBag'
+          _links:
+            type: object
+            properties:
+              self:
+                $ref: '#/components/schemas/Link'
+        additionalProperties: true
+        
+    WorkflowInstancesList:
+      description: A set of workflow instances
+      allOf:
+      - $ref: '#/components/schemas/PagedListResource'
+      - type: object
+        properties:
+          _embedded:
+            type: object
+            properties:
+              items:
+                oneOf:
+                - $ref: '#/components/schemas/WorkflowInstance'
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/WorkflowInstance'
+
+    Link:
+      type: object
+      required:
+        - href
+      properties:
+        href:
+          type: string
+          title: URI of the target resource
+          description: Either a URI [RFC3986] or URI Template [RFC6570] of the target
+            resource.
+        templated:
+          type: boolean
+          default: false
+          title: URI Template
+          description: Is true when the link object's href property is a URI Template.
+            Defaults to false.
+        type:
+          type: string
+          pattern: "^(application|audio|example|image|message|model|multipart|text|video)\\/[a-zA-Z0-9!#\\$&\\.\\+-\\^_]{1,127}$"
+          title: Media type indication of the target resource
+          description: When present, used as a hint to indicate the media type expected
+            when dereferencing the target resource.
+        name:
+          type: string
+          title: Secondary key
+          description: When present, may be used as a secondary key for selecting
+            link objects that contain the same relation type.
+        profile:
+          type: string
+          format: uri
+          title: Additional semantics of the target resource
+          description: A URI that, when dereferenced, results in a profile to allow
+            clients to learn about additional semantics (constraints, conventions,
+            extensions) that are associated with the target resource representation,
+            in addition to those defined by the HAL media type and relations.
+        title:
+          type: string
+          title: Human-readable identifier
+          description: When present, is used to label the destination of a link
+            such that it can be used as a human-readable identifier (e.g. a menu
+            entry) in the language indicated by the Content-Language header (if
+            present).
+        hreflang:
+          type: string
+          pattern: "^([a-zA-Z]{2,3}(-[a-zA-Z]{3}(-[a-zA-Z]{3}){0,2})?(-[a-zA-Z]{4})?(-([a-zA-Z]{2}|[0-9]{3}))?(-([a-zA-Z0-9]{5,8}|[0-9][a-zA-Z0-9]{3}))*([0-9A-WY-Za-wy-z](-[a-zA-Z0-9]{2,8}){1,})*(x-[a-zA-Z0-9]{2,8})?)|(x-[a-zA-Z0-9]{2,8})|(en-GB-oed)|(i-ami)|(i-bnn)|(i-default)|(i-enochian)|(i-hak)|(i-klingon)|(i-lux)|(i-mingo)|(i-navajo)|(i-pwn)|(i-tao)|(i-tay)|(i-tsu)|(sgn-BE-FR)|(sgn-BE-NL)|(sgn-CH-DE)|(art-lojban)|(cel-gaulish)|(no-bok)|(no-nyn)|(zh-guoyu)|(zh-hakka)|(zh-min)|(zh-min-nan)|(zh-xiang)$"
+          title: Language indication of the target resource [RFC5988]
+          description: When present, is a hint in RFC5646 format indicating what
+            the language of the result of dereferencing the link should be.  Note
+            that this is only a hint; for example, it does not override the Content-Language
+            header of a HTTP response obtained by actually following the link.
+
+    LinkCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/Link'
+
+    Resource:
+      type: object
+      properties:
+        _links:
+          type: object
+          title: Hyperlink
+          description: Represents a hyperlink from the cotntaining resource to a URI.
+          additionalProperties:
+            oneOf:
+            - $ref: '#/components/schemas/Link'
+            - $ref: '#/components/schemas/LinkCollection'
+        _embedded:
+          type: object
+          additionalProperties:
+            oneOf:
+            - $ref: '#/components/schemas/Resource'
+            - $ref: '#/components/schemas/ResourceCollection'
+      additionalProperties: true
+
+    ResourceCollection:
+      type: array
+      items:      
+        $ref: '#/components/schemas/Resource'
+      uniqueItems: true
+      additionalProperties: false
+
+    PagedListResource:
+      description: A resource representation of a paged list
+      allOf:
+        - $ref: '#/components/schemas/Resource'
+        - type: object
+          required:
+          - _links
+          properties:
+            _links:
+              type: object
+              title: Hyperlinks
+              description: Represents a hyperlink from the containing resource to a URI.
+              properties:
+                items:
+                  anyOf:
+                    - $ref: '#/components/schemas/Link'
+                    - $ref: '#/components/schemas/LinkCollection'
+                next:
+                  $ref: '#/components/schemas/Link'
+              additionalProperties:
+                anyOf:
+                  - $ref: '#/components/schemas/Link'
+                  - $ref: '#/components/schemas/LinkCollection'
+                uniqueItems: true
+          additionalProperties: true
+          
+    PropertyBag:
+      type: object
+      additionalProperties: true
+
+    DateTimeOffset:
+      nullable: true
+      properties:
+        dateTimeOffset:
+          type: string
+        unixTime:
+          type: number
+      required:
+        - dateTimeOffset
+        - unixTime
+
+    ProblemDetails:
+      required:
+        - status
+        - detail
+      properties:
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        title:
+          type: string
+        instance:
+          type: string
+          format: url
+        type: 
+          type: string
+          format: url
+        validationErrors: 
+          type: array
+      additionalProperties: true
+
+  parameters:
+    tenantId:
+      name: tenantId
+      in: path
+      x-ms-parameter-location: method
+      description: The Id of the current tenant
+      required: true
+      schema:
+        type: string
+    workflowId:
+      name: workflowId
+      in: path
+      x-ms-parameter-location: method
+      description: The Id of the workflow
+      required: true
+      schema:
+        type: string
+    workflowInstanceId:
+      name: workflowInstanceId
+      in: path
+      x-ms-parameter-location: method
+      description: The Id of the workflow instance
+      required: true
+      schema:
+        type: string
+    stateId:
+      name: stateId
+      in: path
+      x-ms-parameter-location: method
+      description: The Id of the workflow state
+      required: true
+      schema:
+        type: string
+    stateIdFilter:
+      name: stateId
+      in: query
+      x-ms-parameter-location: method
+      description: The Id of the workflow state
+      required: true
+      schema:
+        type: string
+    continuationToken:
+      name: continuationToken
+      in: query
+      x-ms-parameter-location: method
+      description: A continuation token for an operation where more data is available
+      required: false
+      schema:
+        type: string
+    maxItems:
+      name: maxItems
+      in: query
+      x-ms-parameter-location: method
+      description: The maximum number of items to return in the request. Fewer than this number may be returned.
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    filter:
+      name: filter
+      in: query
+      x-ms-parameter-location: method
+      description: A list of fields and values to filter the results by.
+      required: false
+      schema:
+        type: string
+    sort:
+      name: sort
+      in: query
+      x-ms-parameter-location: method
+      description: A list of fields to sort the results by.
+      required: false
+      schema:
+        type: string

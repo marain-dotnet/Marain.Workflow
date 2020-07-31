@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Marain\Workflows\Api\Services\EngineService.yaml" />
+    <None Remove="Marain\Workflows\Api\Services\Query\QueryService.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Marain\Workflows\Api\Services\Engine\EngineService.yaml" />
+    <EmbeddedResource Include="Marain\Workflows\Api\Services\Query\QueryService.yaml" />
   </ItemGroup>
   
   <ItemGroup>
