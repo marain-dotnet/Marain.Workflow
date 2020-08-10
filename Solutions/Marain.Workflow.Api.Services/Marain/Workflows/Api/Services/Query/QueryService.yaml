@@ -252,7 +252,7 @@ components:
           nullable: false
 
     Workflow:
-      allOf:
+      anyOf:
       - $ref: '#/components/schemas/Resource'
       - type: object
         properties:
@@ -290,7 +290,7 @@ components:
 
     WorkflowState:
       description: A state for a given workflow
-      allOf:
+      anyOf:
       - $ref: '#/components/schemas/Resource'
       - type: object
         properties:
@@ -312,7 +312,7 @@ components:
 
     WorkflowStatesList:
       description: A list of states for a given workflow.
-      allOf:
+      anyOf:
       - $ref: '#/components/schemas/PagedListResource'
       - type: object
         properties:
@@ -328,7 +328,7 @@ components:
 
     WorkflowInstance:
       description: An instance of a particular workflow
-      allOf:
+      anyOf:
       - $ref: '#/components/schemas/Resource'
       - type: object
         properties:
@@ -352,7 +352,7 @@ components:
         
     WorkflowInstancesList:
       description: A set of workflow instances
-      allOf:
+      anyOf:
       - $ref: '#/components/schemas/PagedListResource'
       - type: object
         properties:

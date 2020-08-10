@@ -5,6 +5,7 @@
 namespace Marain.Workflows.Api.Services.Query.Mappers
 {
     using System;
+    using System.Threading.Tasks;
     using Marain.Workflows;
     using Menes;
     using Menes.Hal;
@@ -47,7 +48,7 @@ namespace Marain.Workflows.Api.Services.Query.Mappers
         }
 
         /// <inheritdoc/>
-        public HalDocument Map(Workflow resource, IOpenApiContext context)
+        public ValueTask<HalDocument> MapAsync(Workflow resource, IOpenApiContext context)
         {
             HalDocument resultDoc = this.halDocumentFactory.CreateHalDocumentFrom(new
             {
@@ -72,7 +73,7 @@ namespace Marain.Workflows.Api.Services.Query.Mappers
                 ("tenantId", context.CurrentTenantId),
                 ("workflowId", resource.Id));
 
-            return resultDoc;
+            return new ValueTask<HalDocument>(resultDoc);
         }
     }
 }

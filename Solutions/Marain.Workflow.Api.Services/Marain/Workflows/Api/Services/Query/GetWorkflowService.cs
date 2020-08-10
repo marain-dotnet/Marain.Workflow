@@ -59,7 +59,7 @@ namespace Marain.Workflows.Api.Services.Query
             ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(context.CurrentTenantId).ConfigureAwait(false);
             IWorkflowStore workflowStore = await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
             Workflow workflow = await workflowStore.GetWorkflowAsync(workflowId).ConfigureAwait(false);
-            HalDocument response = this.workflowMapper.Map(workflow, context);
+            HalDocument response = await this.workflowMapper.MapAsync(workflow, context).ConfigureAwait(false);
             OpenApiResult result = this.OkResult(response, "application/json");
 
             if (!string.IsNullOrEmpty(workflow.ETag))
