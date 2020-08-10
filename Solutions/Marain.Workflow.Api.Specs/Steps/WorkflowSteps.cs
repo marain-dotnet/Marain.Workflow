@@ -166,7 +166,7 @@ namespace Marain.Workflows.Api.Specs.Steps
                 () => this.GetWorkflowInstance(instanceId, false),
                 tokenSource.Token,
                 new Linear(TimeSpan.FromSeconds(1), int.MaxValue),
-                new AnyException(),
+                new AnyExceptionPolicy(),
                 false).ConfigureAwait(false);
         }
 
@@ -189,7 +189,7 @@ namespace Marain.Workflows.Api.Specs.Steps
                 () => this.VerifyWorkflowInstanceState(instanceId, expectedStateName, false),
                 tokenSource.Token,
                 new Linear(TimeSpan.FromSeconds(1), int.MaxValue),
-                new AnyException(),
+                new AnyExceptionPolicy(),
                 false).ConfigureAwait(false);
         }
 

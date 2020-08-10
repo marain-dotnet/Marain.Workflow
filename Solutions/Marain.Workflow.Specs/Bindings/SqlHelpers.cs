@@ -1,7 +1,6 @@
 ﻿namespace Marain.Workflows.Specs.Bindings
 {
-    using System;
-    using System.Data.SqlClient;
+    using Microsoft.Data.SqlClient;
     using Microsoft.SqlServer.Dac;
     using Microsoft.SqlServer.Management.Common;
     using Microsoft.SqlServer.Management.Smo;
