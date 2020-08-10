@@ -5,6 +5,8 @@
 namespace Marain.Workflows.Api.Services.Query
 {
     using System.Threading.Tasks;
+    using Corvus.Tenancy;
+    using Marain.Services.Tenancy;
     using Menes;
 
     /// <summary>
@@ -17,6 +19,22 @@ namespace Marain.Workflows.Api.Services.Query
         /// </summary>
         public const string GetWorkflowOperationId = "getWorkflow";
 
+        private readonly IMarainServicesTenancy marainServicesTenancy;
+        private readonly ITenantedWorkflowStoreFactory workflowStoreFactory;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetWorkflowService"/> class.
+        /// </summary>
+        /// <param name="workflowStoreFactory">The workflow store factory.</param>
+        /// <param name="marainServicesTenancy">The tenancy services.</param>
+        public GetWorkflowService(
+            ITenantedWorkflowStoreFactory workflowStoreFactory,
+            IMarainServicesTenancy marainServicesTenancy)
+        {
+            this.marainServicesTenancy = marainServicesTenancy;
+            this.workflowStoreFactory = workflowStoreFactory;
+        }
+
         /// <summary>
         /// Retrieves a specific workflow.
         /// </summary>
@@ -24,11 +42,21 @@ namespace Marain.Workflows.Api.Services.Query
         /// <param name="workflowId">The Id of the workflow to retrieve.</param>
         /// <returns>The workflow, as an OpenApiResult.</returns>
         [OperationId(GetWorkflowOperationId)]
-        public Task<OpenApiResult> GetWorkflowAsync(
+        public async Task<OpenApiResult> GetWorkflowAsync(
             IOpenApiContext context,
             string workflowId)
         {
-            return Task.FromResult(this.NotImplementedResult());
+            ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(context.CurrentTenantId).ConfigureAwait(false);
+            IWorkflowStore workflowStore = await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
+            Workflow workflow = await workflowStore.GetWorkflowAsync(workflowId).ConfigureAwait(false);
+            OpenApiResult result = this.OkResult(workflow, "application/json");
+
+            if (!string.IsNullOrEmpty(workflow.ETag))
+            {
+                result.Results.Add("ETag", workflow.ETag);
+            }
+
+            return result;
         }
     }
 }
