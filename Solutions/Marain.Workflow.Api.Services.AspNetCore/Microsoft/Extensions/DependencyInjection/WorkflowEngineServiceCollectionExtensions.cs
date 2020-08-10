@@ -57,6 +57,8 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             services.AddHalDocumentMapper<Workflow, IOpenApiContext, WorkflowMapper>();
+            services.AddHalDocumentMapper<Workflow, WorkflowStatesMappingContext, WorkflowStatesMapper>();
+            services.AddHalDocumentMapper<WorkflowState, WorkflowStateMappingContext, WorkflowStateMapper>();
 
             services.AddSingleton<IOpenApiService, GetWorkflowInstanceService>();
             services.AddSingleton<IOpenApiService, GetWorkflowInstancesService>();
