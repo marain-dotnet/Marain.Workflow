@@ -199,18 +199,6 @@ namespace Marain.Workflows.Api.Specs.Steps
             return this.VerifyWorkflowInstanceState(instanceId, expectedStateName, true);
         }
 
-        [Then("the response should contain the the workflow '(.*)'")]
-        public void ThenTheResponseShouldContainTheTheWorkflow(string expectedWorkflowName)
-        {
-            Workflow expectedWorkflow = this.scenarioContext.Get<Workflow>(expectedWorkflowName);
-
-            IJsonSerializerSettingsProvider serializationSettingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
-            string actualWorkflowJson = this.scenarioContext.Get<string>("ResponseBody");
-            Workflow actualWorkflow = JsonConvert.DeserializeObject<Workflow>(actualWorkflowJson, serializationSettingsProvider.Instance);
-
-            Assert.AreEqual(expectedWorkflow.Id, actualWorkflow.Id);
-        }
-
         [Then("the response should contain an ETag header")]
         public void ThenTheResponseShouldContainAnETagHeader()
         {

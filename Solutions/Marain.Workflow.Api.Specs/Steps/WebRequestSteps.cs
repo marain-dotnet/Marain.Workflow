@@ -167,6 +167,12 @@ namespace Marain.Workflows.Api.Specs.Steps
                 using var responseReader = new StreamReader(responseStream);
                 string responseBody = responseReader.ReadToEnd();
                 this.context.Set(responseBody, "ResponseBody");
+
+                if (response.ContentType == "application/json")
+                {
+                    var parsedResponse = JObject.Parse(responseBody);
+                    this.context.Set(parsedResponse);
+                }
             }
             catch (WebException ex)
             {
