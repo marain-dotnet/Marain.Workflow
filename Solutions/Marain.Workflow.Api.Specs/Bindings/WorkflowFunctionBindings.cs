@@ -8,7 +8,6 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using Corvus.Testing.AzureFunctions;
     using Corvus.Testing.AzureFunctions.SpecFlow;
     using Corvus.Testing.SpecFlow;
-    using NUnit.Framework;
     using TechTalk.SpecFlow;
 
     /// <summary>

@@ -15,7 +15,6 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System.IO;
     using System.Linq;
     using System.Net;
-    using System.Security.Cryptography.X509Certificates;
     using Corvus.Extensions.Json;
     using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
@@ -64,8 +63,17 @@ namespace Marain.Workflows.Api.Specs.Steps
         }
 
         [When("I get the workflow query path '(.*)'")]
+        [Given("I have requested the workflow query path '(.*)'")]
         public void WhenIGetTheWorkflowQueryPath(string path)
         {
+            this.ExecuteGetRequest(WorkflowFunctionBindings.QueryHostBaseUrl + path);
+        }
+
+        [Given("I have requested the workflow query endpoint with the path called '(.*)'")]
+        [When("I get the workflow query endpoint with the path called '(.*)'")]
+        public void WhenIGetTheWorkflowQueryEndpointWithThePathCalled(string pathValueName)
+        {
+            string path = this.context.Get<string>(pathValueName);
             this.ExecuteGetRequest(WorkflowFunctionBindings.QueryHostBaseUrl + path);
         }
 
@@ -167,6 +175,12 @@ namespace Marain.Workflows.Api.Specs.Steps
                 using var responseReader = new StreamReader(responseStream);
                 string responseBody = responseReader.ReadToEnd();
                 this.context.Set(responseBody, "ResponseBody");
+
+                if (response.ContentType == "application/json")
+                {
+                    var parsedResponse = JObject.Parse(responseBody);
+                    this.context.Set(parsedResponse);
+                }
             }
             catch (WebException ex)
             {

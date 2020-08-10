@@ -12,9 +12,9 @@ namespace Microsoft.Extensions.DependencyInjection
     using Corvus.Leasing;
     using Marain.Tenancy.Client;
     using Marain.Workflows;
-    using Marain.Workflows.Api.Services;
     using Marain.Workflows.Api.Services.Engine;
     using Marain.Workflows.Api.Services.Query;
+    using Marain.Workflows.Api.Services.Query.Mappers;
     using Menes;
     using Microsoft.Extensions.Configuration;
 
@@ -54,6 +54,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 config.Exceptions.Map<WorkflowConflictException>(409);
                 config.Exceptions.Map<WorkflowPreconditionFailedException>(412);
             });
+
+            services.AddHalDocumentMapper<Workflow, IOpenApiContext, WorkflowMapper>();
+            services.AddHalDocumentMapper<WorkflowState[], WorkflowStatesMappingContext, WorkflowStatesMapper>();
+            services.AddHalDocumentMapper<WorkflowState, WorkflowStateMappingContext, WorkflowStateMapper>();
 
             services.AddSingleton<IOpenApiService, GetWorkflowInstanceService>();
             services.AddSingleton<IOpenApiService, GetWorkflowInstancesService>();
