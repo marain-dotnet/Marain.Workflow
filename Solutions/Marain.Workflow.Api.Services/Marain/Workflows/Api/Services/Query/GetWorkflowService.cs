@@ -4,10 +4,13 @@
 
 namespace Marain.Workflows.Api.Services.Query
 {
+    using System;
     using System.Threading.Tasks;
     using Corvus.Tenancy;
     using Marain.Services.Tenancy;
+    using Marain.Workflows.Api.Services.Query.Mappers;
     using Menes;
+    using Menes.Hal;
 
     /// <summary>
     /// Implements the get workflows endpoint for the query API.
@@ -21,18 +24,25 @@ namespace Marain.Workflows.Api.Services.Query
 
         private readonly IMarainServicesTenancy marainServicesTenancy;
         private readonly ITenantedWorkflowStoreFactory workflowStoreFactory;
+        private readonly WorkflowMapper workflowMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetWorkflowService"/> class.
         /// </summary>
         /// <param name="workflowStoreFactory">The workflow store factory.</param>
         /// <param name="marainServicesTenancy">The tenancy services.</param>
+        /// <param name="workflowMapper">The workflow mapper.</param>
         public GetWorkflowService(
             ITenantedWorkflowStoreFactory workflowStoreFactory,
-            IMarainServicesTenancy marainServicesTenancy)
+            IMarainServicesTenancy marainServicesTenancy,
+            WorkflowMapper workflowMapper)
         {
-            this.marainServicesTenancy = marainServicesTenancy;
-            this.workflowStoreFactory = workflowStoreFactory;
+            this.marainServicesTenancy = marainServicesTenancy
+                ?? throw new ArgumentNullException(nameof(marainServicesTenancy));
+            this.workflowStoreFactory = workflowStoreFactory
+                ?? throw new ArgumentNullException(nameof(workflowStoreFactory));
+            this.workflowMapper = workflowMapper
+                ?? throw new ArgumentNullException(nameof(workflowMapper));
         }
 
         /// <summary>
@@ -49,7 +59,8 @@ namespace Marain.Workflows.Api.Services.Query
             ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(context.CurrentTenantId).ConfigureAwait(false);
             IWorkflowStore workflowStore = await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
             Workflow workflow = await workflowStore.GetWorkflowAsync(workflowId).ConfigureAwait(false);
-            OpenApiResult result = this.OkResult(workflow, "application/json");
+            HalDocument response = this.workflowMapper.Map(workflow, context);
+            OpenApiResult result = this.OkResult(response, "application/json");
 
             if (!string.IsNullOrEmpty(workflow.ETag))
             {

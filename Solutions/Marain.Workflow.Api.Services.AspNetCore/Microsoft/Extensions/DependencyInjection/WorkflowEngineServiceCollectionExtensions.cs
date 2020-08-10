@@ -15,6 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
     using Marain.Workflows.Api.Services;
     using Marain.Workflows.Api.Services.Engine;
     using Marain.Workflows.Api.Services.Query;
+    using Marain.Workflows.Api.Services.Query.Mappers;
     using Menes;
     using Microsoft.Extensions.Configuration;
 
@@ -54,6 +55,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 config.Exceptions.Map<WorkflowConflictException>(409);
                 config.Exceptions.Map<WorkflowPreconditionFailedException>(412);
             });
+
+            services.AddHalDocumentMapper<Workflow, IOpenApiContext, WorkflowMapper>();
 
             services.AddSingleton<IOpenApiService, GetWorkflowInstanceService>();
             services.AddSingleton<IOpenApiService, GetWorkflowInstancesService>();
