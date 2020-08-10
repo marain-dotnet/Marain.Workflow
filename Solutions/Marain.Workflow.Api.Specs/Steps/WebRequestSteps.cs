@@ -64,8 +64,17 @@ namespace Marain.Workflows.Api.Specs.Steps
         }
 
         [When("I get the workflow query path '(.*)'")]
+        [Given("I have requested the workflow query path '(.*)'")]
         public void WhenIGetTheWorkflowQueryPath(string path)
         {
+            this.ExecuteGetRequest(WorkflowFunctionBindings.QueryHostBaseUrl + path);
+        }
+
+        [Given("I have requested the workflow query endpoint with the path called '(.*)'")]
+        [When("I get the workflow query endpoint with the path called '(.*)'")]
+        public void WhenIGetTheWorkflowQueryEndpointWithThePathCalled(string pathValueName)
+        {
+            string path = this.context.Get<string>(pathValueName);
             this.ExecuteGetRequest(WorkflowFunctionBindings.QueryHostBaseUrl + path);
         }
 

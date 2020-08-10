@@ -50,6 +50,14 @@ namespace Marain.Workflows.Api.Specs.Steps
             Assert.AreEqual(expectedEntryCount, tokenArray.Length);
         }
 
+        [Given("I have stored the value of the response object property called '(.*)' as '(.*)'")]
+        public void GivenIHaveStoredTheValueOfTheResponseObjectPropertyCalledAs(string propertyPath, string storeAsName)
+        {
+            JToken token = this.GetRequiredTokenFromResponseObject(propertyPath);
+            string valueAsString = token.Value<string>();
+            this.scenarioContext.Set(valueAsString, storeAsName);
+        }
+
         private JToken GetRequiredTokenFromResponseObject(string propertyPath)
         {
             JObject data = this.scenarioContext.Get<JObject>();
