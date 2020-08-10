@@ -10,7 +10,6 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
-    using Corvus.Extensions.Json;
     using Corvus.Leasing;
     using Corvus.Retry;
     using Corvus.Retry.Policies;
@@ -18,8 +17,6 @@ namespace Marain.Workflows.Api.Specs.Steps
     using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
     using Microsoft.Extensions.DependencyInjection;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using NUnit.Framework;
 
     using TechTalk.SpecFlow;

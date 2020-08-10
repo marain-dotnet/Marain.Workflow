@@ -15,7 +15,6 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System.IO;
     using System.Linq;
     using System.Net;
-    using System.Security.Cryptography.X509Certificates;
     using Corvus.Extensions.Json;
     using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;

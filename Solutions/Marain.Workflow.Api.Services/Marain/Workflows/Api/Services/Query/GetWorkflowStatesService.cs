@@ -5,11 +5,15 @@
 namespace Marain.Workflows.Api.Services.Query
 {
     using System;
+    using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using Corvus.Extensions;
     using Corvus.Tenancy;
     using Marain.Services.Tenancy;
     using Marain.Workflows.Api.Services.Query.Mappers;
     using Menes;
+    using Menes.Exceptions;
     using Menes.Hal;
 
     /// <summary>
@@ -21,6 +25,8 @@ namespace Marain.Workflows.Api.Services.Query
         /// The operation Id for the endpoint.
         /// </summary>
         public const string GetWorkflowStatesOperationId = "getWorkflowStates";
+
+        private static readonly Regex MatchContinuationToken = new Regex("skip=([0-9]*)");
 
         private readonly IMarainServicesTenancy marainServicesTenancy;
         private readonly ITenantedWorkflowStoreFactory workflowStoreFactory;
@@ -61,14 +67,80 @@ namespace Marain.Workflows.Api.Services.Query
             string continuationToken)
         {
             ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(context.CurrentTenantId).ConfigureAwait(false);
+
+            int skip = ParseContinuationToken(continuationToken);
+            int actualMaxItems = maxItems ?? 20;
+
             IWorkflowStore workflowStore = await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
             Workflow workflow = await workflowStore.GetWorkflowAsync(workflowId).ConfigureAwait(false);
+            WorkflowState[] states = workflow.States.Values
+                .Skip(skip)
+                .Take(actualMaxItems)
+                .ToArray();
+
+            int nextSkip = skip + actualMaxItems;
+
+            string nextContinuationToken = nextSkip < workflow.States.Count
+                ? BuildContinuationToken(nextSkip)
+                : null;
+
+            var mappingContext = new WorkflowStatesMappingContext(
+                context.CurrentTenantId,
+                workflowId,
+                actualMaxItems,
+                continuationToken,
+                nextContinuationToken);
 
             HalDocument result = await this.workflowStatesMapper.MapAsync(
-                workflow,
-                new WorkflowStatesMappingContext(context.CurrentTenantId, maxItems ?? 50, continuationToken)).ConfigureAwait(false);
+                states,
+                mappingContext).ConfigureAwait(false);
 
             return this.OkResult(result);
+        }
+
+        private static string BuildContinuationToken(int skip)
+        {
+            return $"skip={skip}".Base64UrlEncode();
+        }
+
+        private static int ParseContinuationToken(string continuationToken)
+        {
+            if (string.IsNullOrEmpty(continuationToken))
+            {
+                return 0;
+            }
+
+            string decodedContinuationToken = continuationToken.Base64UrlDecode();
+
+            Match match = MatchContinuationToken.Match(decodedContinuationToken);
+            if (!match.Success)
+            {
+                throw new OpenApiBadRequestException(
+                    "Bad continuation token",
+                    "The continuation token could not be decoded",
+                    "/marain/workflow/query/errors/continuation/unable-to-decode")
+                    .AddProblemDetailsExtension("continuationToken", continuationToken);
+            }
+
+            if (match.Groups.Count != 2)
+            {
+                throw new OpenApiBadRequestException(
+                    "Bad continuation token",
+                    "The continuation token is corrupted",
+                    "/marain/workflow/query/errors/continuation/unable-to-match")
+                    .AddProblemDetailsExtension("continuationToken", continuationToken);
+            }
+
+            if (!int.TryParse(match.Groups[1].Value, out int skip))
+            {
+                throw new OpenApiBadRequestException(
+                    "Bad continuation token",
+                    "The continuation token is corrupted",
+                    "/marain/workflow/query/errors/continuation/token-data-invalid")
+                    .AddProblemDetailsExtension("continuationToken", continuationToken);
+            }
+
+            return skip;
         }
     }
 }

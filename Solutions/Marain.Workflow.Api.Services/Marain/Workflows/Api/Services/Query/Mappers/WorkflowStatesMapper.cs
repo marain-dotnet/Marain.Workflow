@@ -7,23 +7,16 @@ namespace Marain.Workflows.Api.Services.Query.Mappers
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-    using Corvus.Extensions;
-    using Corvus.Leasing.Retry.Policies;
     using Menes;
-    using Menes.Exceptions;
     using Menes.Hal;
     using Menes.Links;
-    using Tavis.UriTemplates;
 
     /// <summary>
     /// Maps a workflow to a response list of states.
     /// </summary>
-    public class WorkflowStatesMapper : IHalDocumentMapper<Workflow, WorkflowStatesMappingContext>
+    public class WorkflowStatesMapper : IHalDocumentMapper<WorkflowState[], WorkflowStatesMappingContext>
     {
-        private static readonly Regex MatchContinuationToken = new Regex("skip=([0-9]*)");
-
         private readonly IHalDocumentFactory halDocumentFactory;
         private readonly IOpenApiWebLinkResolver openApiWebLinkResolver;
         private readonly WorkflowStateMapper workflowStateMapper;
@@ -52,28 +45,25 @@ namespace Marain.Workflows.Api.Services.Query.Mappers
         /// <inheritdoc/>
         public void ConfigureLinkMap(IOpenApiLinkOperationMap links)
         {
+            links.MapByContentTypeAndRelationTypeAndOperationId<WorkflowState[]>(
+                "self",
+                GetWorkflowStatesService.GetWorkflowStatesOperationId);
+
+            links.MapByContentTypeAndRelationTypeAndOperationId<WorkflowState[]>(
+                "next",
+                GetWorkflowStatesService.GetWorkflowStatesOperationId);
         }
 
         /// <inheritdoc/>
-        public async ValueTask<HalDocument> MapAsync(Workflow resource, WorkflowStatesMappingContext context)
+        public async ValueTask<HalDocument> MapAsync(WorkflowState[] resource, WorkflowStatesMappingContext context)
         {
-            int skip = ParseContinuationToken(context.ContinuationToken);
-
-            var workflowStateMappingContext = new WorkflowStateMappingContext(context.CurrentTenantId, resource.Id);
-            IEnumerable<Task<HalDocument>> stateTasks = resource.States.Values
-                .Skip(skip)
-                .Take(context.MaxItems)
-                .Select(state => this.workflowStateMapper.MapAsync(state, workflowStateMappingContext).AsTask());
+            var workflowStateMappingContext = new WorkflowStateMappingContext(context.CurrentTenantId, context.WorkflowId);
+            IEnumerable<Task<HalDocument>> stateTasks = resource.Select(state => this.workflowStateMapper.MapAsync(state, workflowStateMappingContext).AsTask());
 
             HalDocument[] stateDocuments = await Task.WhenAll(stateTasks).ConfigureAwait(false);
 
-            int nextSkip = skip + context.MaxItems;
-
-            string nextContinuationToken = nextSkip < resource.States.Count
-                ? BuildContinuationToken(nextSkip)
-                : null;
-
             HalDocument resultDoc = this.halDocumentFactory.CreateHalDocument();
+
             resultDoc.AddEmbeddedResources("items", stateDocuments);
 
             foreach (HalDocument state in stateDocuments)
@@ -81,73 +71,28 @@ namespace Marain.Workflows.Api.Services.Query.Mappers
                 resultDoc.AddLink("items", state.GetLinksForRelation("self").First());
             }
 
-            resultDoc.ResolveAndAddByOperationIdAndRelationType(
+            resultDoc.ResolveAndAddByOwnerAndRelationType(
                 this.openApiWebLinkResolver,
-                GetWorkflowStatesService.GetWorkflowStatesOperationId,
+                resource,
                 "self",
                 ("tenantId", context.CurrentTenantId),
-                ("workflowId", resource.Id),
+                ("workflowId", context.WorkflowId),
                 ("maxItems", context.MaxItems),
-                ("continuationToken", context.ContinuationToken));
+                ("continuationToken", context.RequestContinuationToken));
 
-            if (!string.IsNullOrEmpty(nextContinuationToken))
+            if (!string.IsNullOrEmpty(context.NextContinuationToken))
             {
-                resultDoc.ResolveAndAddByOperationIdAndRelationType(
+                resultDoc.ResolveAndAddByOwnerAndRelationType(
                     this.openApiWebLinkResolver,
-                    GetWorkflowStatesService.GetWorkflowStatesOperationId,
+                    resource,
                     "next",
                     ("tenantId", context.CurrentTenantId),
-                    ("workflowId", resource.Id),
+                    ("workflowId", context.WorkflowId),
                     ("maxItems", context.MaxItems),
-                    ("continuationToken", nextContinuationToken));
+                    ("continuationToken", context.NextContinuationToken));
             }
 
             return resultDoc;
-        }
-
-        private static string BuildContinuationToken(int skip)
-        {
-            return $"skip={skip}".Base64UrlEncode();
-        }
-
-        private static int ParseContinuationToken(string continuationToken)
-        {
-            if (string.IsNullOrEmpty(continuationToken))
-            {
-                return 0;
-            }
-
-            string decodedContinuationToken = continuationToken.Base64UrlDecode();
-
-            Match match = MatchContinuationToken.Match(decodedContinuationToken);
-            if (!match.Success)
-            {
-                throw new OpenApiBadRequestException(
-                    "Bad continuation token",
-                    "The continuation token could not be decoded",
-                    "/marain/workflow/query/errors/continuation/unable-to-decode")
-                    .AddProblemDetailsExtension("continuationToken", continuationToken);
-            }
-
-            if (match.Groups.Count != 2)
-            {
-                throw new OpenApiBadRequestException(
-                    "Bad continuation token",
-                    "The continuation token is corrupted",
-                    "/marain/workflow/query/errors/continuation/unable-to-match")
-                    .AddProblemDetailsExtension("continuationToken", continuationToken);
-            }
-
-            if (!int.TryParse(match.Groups[1].Value, out int skip))
-            {
-                throw new OpenApiBadRequestException(
-                    "Bad continuation token",
-                    "The continuation token is corrupted",
-                    "/marain/workflow/query/errors/continuation/token-data-invalid")
-                    .AddProblemDetailsExtension("continuationToken", continuationToken);
-            }
-
-            return skip;
         }
     }
 }

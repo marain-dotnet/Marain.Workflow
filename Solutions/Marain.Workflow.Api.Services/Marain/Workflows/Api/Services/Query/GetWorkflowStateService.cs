@@ -12,7 +12,6 @@ namespace Marain.Workflows.Api.Services.Query
     using Marain.Workflows.Api.Services.Query.Mappers;
     using Menes;
     using Menes.Hal;
-    using Microsoft.Azure.Cosmos.Linq;
 
     /// <summary>
     /// Implements the get workflow state endpoint for the query API.
