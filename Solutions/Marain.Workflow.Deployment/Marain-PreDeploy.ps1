@@ -14,6 +14,7 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
 
     $EngineApp = $ServiceDeploymentContext.DefineAzureAdAppForAppService("eng")
     $MessageIngestionApp = $ServiceDeploymentContext.DefineAzureAdAppForAppService("mi")
+    $QueryApp = $ServiceDeploymentContext.DefineAzureAdAppForAppService("qry")
 
     $EngineControllerAppRoleId = "37a5c4e2-38e2-47de-8576-6b1ce7cc0ca2"
     $EngineApp.EnsureAppRolesContain(

@@ -20,6 +20,9 @@
     "engineFunctionAuthAadClientId": {
       "type": "string"
     },
+    "queryFunctionAuthAadClientId": {
+      "type": "string"
+    },
     "operationsControlServiceBaseUrl": {
       "type": "string",
       "minLength": 1
@@ -71,6 +74,7 @@
     "workflowStorageKeySecretName": "WorkflowStorageAccountKey",
     "messageIngestionFunctionsAppName": "[concat(variables('defaultName'), 'mi')]",
     "engineFunctionsAppName": "[concat(variables('defaultName'), 'eng')]",
+    "queryFunctionsAppName": "[concat(variables('defaultName'), 'qry')]",
     "tenantId": "[subscription().tenantID]",
     "workflowEngineClientBaseUrl": "[concat('https://', variables('engineFunctionsAppName'), '.azurewebsites.net')]",
     "keyVaultDeployName": "[concat(deployment().name, '-key-vault')]",
@@ -79,7 +83,8 @@
     "workflowStorageDeployName": "[concat(deployment().name, '-storage-workflow')]",
     "leasingStorageDeployName": "[concat(deployment().name, '-storage-leasing')]",
     "ingestionAppDeployName": "[concat(deployment().name, '-functions-app-message-ingestion')]",
-    "engineAppDeployName": "[concat(deployment().name, '-functions-app-engine')]"
+    "engineAppDeployName": "[concat(deployment().name, '-functions-app-engine')]",
+    "queryAppDeployName": "[concat(deployment().name, '-functions-app-query')]"
   },
   "resources": [
     {
@@ -449,6 +454,116 @@
           },
           "objectName": {
             "value": "[variables('engineFunctionsAppName')]"
+          },
+          "objectResourceGroup": {
+            "value": "[resourceGroup().name]"
+          },
+          "objectResourceType": {
+            "value": "Microsoft.Web/sites"
+          },
+          "permissions": {
+            "value": {
+              "secrets": [
+                "get"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('queryAppDeployName')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": { "value": "[variables('queryFunctionsAppName')]" },
+          "_artifactsLocation": { "value": "[parameters('_artifactsLocation')]" },
+          "_artifactsLocationSasToken": { "value": "[parameters('_artifactsLocationSasToken')]" }
+        }
+      }
+    },
+    {
+      "name": "[concat(deployment().name, '-functions-app-auth-settings-query')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[variables('queryAppDeployName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-auth-settings.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "functionsAppName": {
+            "value": "[variables('queryFunctionsAppName')]"
+          },
+          "aadTenantId": {
+            "value": "[variables('tenantId')]"
+          },
+          "aadClientId": {
+            "value": "[parameters('queryFunctionAuthAadClientId')]"
+          },
+          "unauthenticatedClientAction": {
+            "value": "RedirectToLoginPage"
+          }
+        }
+      }
+    },
+    {
+      "name": "[concat(deployment().name, '-functions-app-settings-query')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[variables('queryAppDeployName')]",
+        "[variables('leasingStorageDeployName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/functions-app-settings-query-host.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountConnectionString": { "value": "[reference(variables('queryAppDeployName'), '2016-09-01').outputs.storageAccountConnectionString.value]" },
+          "runFromPackage": { "value": "1" },
+          "functionsAppName": { "value": "[variables('queryFunctionsAppName')]" },
+          "applicationInsightsInstrumentationKey": { "value": "[parameters('appInsightsInstrumentationKey')]" },
+          "tenancyServiceBaseUri": { "value": "[parameters('tenancyServiceBaseUri')]" },
+          "tenancyServiceResourceIdForMsiAuthentication": { "value": "[parameters('tenancyServiceResourceIdForMsiAuthentication')]" },
+          "marainServiceTenantId": { "value": "[parameters('marainServiceTenantId')]" },
+          "marainServiceTenantDisplayName": { "value": "[parameters('marainServiceTenantDisplayName')]" }
+        }
+      }
+    },
+    {
+      "name": "[concat(deployment().name, '-function-key-vault-access-query')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[variables('queryAppDeployName')]",
+        "[variables('keyVaultDeployName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/Templates/key-vault-access-policy.json', parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          },
+          "objectName": {
+            "value": "[variables('queryFunctionsAppName')]"
           },
           "objectResourceGroup": {
             "value": "[resourceGroup().name]"
