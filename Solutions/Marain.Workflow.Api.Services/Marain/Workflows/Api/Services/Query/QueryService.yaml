@@ -332,6 +332,9 @@ components:
       - $ref: '#/components/schemas/Resource'
       - type: object
         properties:
+          contentType:
+            description: The content type of the instance.
+            type: string
           id:
             description: The Id of the workflow instance.
             type: string
@@ -341,7 +344,21 @@ components:
           stateId:
             description: The Id of the workflow state that this instance is currently in.
             type: string
-          properties:
+          status:
+            description: The current status of the workflow instance.
+            type: string
+            enum:
+              - initializing
+              - waiting
+              - processingTransition
+              - faulted
+              - complete
+          interests:
+            description: A list of Ids or other values that can be used to identify the things that can affect this workflow instance.
+            type: array
+            items:
+              type: string
+          context:
             $ref: '#/components/schemas/PropertyBag'
           _links:
             type: object
