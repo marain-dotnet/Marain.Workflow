@@ -8,7 +8,6 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using Corvus.Testing.AzureFunctions;
     using Corvus.Testing.AzureFunctions.SpecFlow;
     using Corvus.Testing.SpecFlow;
-    using NUnit.Framework;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -26,10 +25,16 @@ namespace Marain.Workflows.Api.Specs.Bindings
         /// <summary>
         /// The base Url that can be used to access the engine host API.
         /// </summary>
+        public static string QueryHostBaseUrl = "http://localhost:" + QueryHostPort;
+
+        /// <summary>
+        /// The base Url that can be used to access the engine host API.
+        /// </summary>
         public static string MessageProcessingHostBaseUrl = "http://localhost:" + MessageProcessingHostPort;
 #pragma warning restore SA1401 // Fields should be private
 
         private const int EngineHostPort = 8765;
+        private const int QueryHostPort = 8767;
         private const int MessageProcessingHostPort = 8766;
 
         /// <summary>
@@ -67,7 +72,23 @@ namespace Marain.Workflows.Api.Specs.Bindings
                 config);
         }
 
-        [AfterScenario("useWorkflowEngineApi", "useWorkflowMessageProcessingApi")]
+        /// <summary>
+        /// Sets up and runs the function using the functions runtime.
+        /// </summary>
+        /// <param name="context">The current <see cref="FeatureContext"/>.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        [BeforeFeature("@useWorkflowQueryApi", Order = BindingSequence.FunctionStartup)]
+        public static Task StartWorkflowQueryFunctionAsync(FeatureContext context)
+        {
+            return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
+                "Marain.Workflow.Api.QueryHost",
+                QueryHostPort,
+                "netcoreapp3.1",
+                "csharp",
+                FunctionsBindings.GetFunctionConfiguration(context));
+        }
+
+        [AfterScenario("useWorkflowEngineApi", "useWorkflowMessageProcessingApi", "useWorkflowQueryApi")]
         public static void WriteFunctionsOutput(FeatureContext featureContext)
         {
             FunctionsController functionsController = FunctionsBindings.GetFunctionsController(featureContext);

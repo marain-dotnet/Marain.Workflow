@@ -22,11 +22,11 @@ namespace Marain.Workflows.Api.Specs.Steps
         {
             var workflow = new Workflow { DisplayName = "Simple expenses workflow" };
 
-            WorkflowState waitingToBeSubmitted = workflow.CreateState(displayName: "Waiting to be submitted");
-            WorkflowState waitingForApproval = workflow.CreateState(displayName: "Waiting for approval");
-            WorkflowState waitingForPayment = workflow.CreateState(displayName: "Waiting for payment");
-            WorkflowState paid = workflow.CreateState(displayName: "Paid");
-            WorkflowState abandoned = workflow.CreateState(displayName: "Abandoned");
+            WorkflowState waitingToBeSubmitted = workflow.CreateState("waiting-to-be-submitted", "Waiting to be submitted");
+            WorkflowState waitingForApproval = workflow.CreateState("waiting-for-approval", "Waiting for approval");
+            WorkflowState waitingForPayment = workflow.CreateState("waiting-for-payment", "Waiting for payment");
+            WorkflowState paid = workflow.CreateState("paid", "Paid");
+            WorkflowState abandoned = workflow.CreateState("abandoned", "Abandoned");
 
             workflow.SetInitialState(waitingToBeSubmitted);
 

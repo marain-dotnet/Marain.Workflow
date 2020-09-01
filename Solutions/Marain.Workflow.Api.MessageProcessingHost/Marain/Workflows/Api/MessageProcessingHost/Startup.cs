@@ -28,6 +28,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
         {
             IServiceCollection services = builder.Services;
 
+            // TODO: Get rid of this and use config from the container in factory methods.
             IConfigurationRoot root = Configure(services);
             services.AddLogging(builder =>
             {
@@ -35,9 +36,13 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
                 builder.SetMinimumLevel(LogLevel.Debug);
             });
 
-            var uri = new Uri(root["Operations:ControlServiceBaseUrl"]);
-            string resourceId = root["Operations:ResourceIdForMsiAuthentication"];
-            services.AddOperationsControlClient(uri, resourceId);
+            var controlClientOptions = new MarainOperationsControlClientOptions
+            {
+                OperationsControlServiceBaseUri = new Uri(root["Operations:ControlServiceBaseUrl"]),
+                ResourceIdForMsiAuthentication = root["Operations:ResourceIdForMsiAuthentication"],
+            };
+
+            services.AddOperationsControlClient(controlClientOptions);
 
             services.AddMarainWorkflowEngineClient(sp =>
             {

@@ -1,0 +1,28 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "APPINSIGHTS_INSTRUMENTATIONKEY": "",
+    "AI:DeveloperMode": "true",
+    "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
+
+    "MarainServiceConfiguration:ServiceTenantId": "3633754ac4c9be44b55bfe791b1780f177b464860334774cabb2f9d1b95b0c18",
+    "MarainServiceConfiguration:ServiceDisplayName": "Workflow v1",
+
+    // If running with a local tenancy service, point TenancyClient:TenancyServiceBaseUri at the localhost address for that
+    // and set the ResourceIdForMsiAuthentication to an empty string.
+    "TenancyClient:TenancyServiceBaseUri": "http://localhost:7071/"
+    //"TenancyClient:TenancyServiceBaseUri": "https://mardevtenancy.azurewebsites.net/",
+    //"TenancyClient:ResourceIdForMsiAuthentication": "e7281b1b-6540-4c1b-ac18-eb0c2d42bfbf",
+
+    // If you are running locally but your tenant configuration is making use of resources in Azure, this local service will
+    // need to authenticate. And for that to work, you won't be able to use the normal az cli-based
+    // AzureServicesAuthConnectionString (because az cli is only able to obtain tokens for a fixed set of known Microsoft
+    // resource; it can't be used to obtain tokens for arbitrary applications that we've defined). Instead, you'll need to
+    // create a suitable service principle in AAD, grant that service principle access to the tenancy service, and set up the
+    // credentials like this instead of the setting above:
+    //"AzureServicesAuthConnectionString": "RunAs=App;AppId=<your app id>;TenantId=<your tenant id>;AppKey=<your secret>"
+  }
+}

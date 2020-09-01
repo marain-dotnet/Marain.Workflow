@@ -14,7 +14,6 @@ namespace Marain.Workflows.Specs.Bindings
     using System.Threading;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
-    using Corvus.Extensions.Json.Internal;
     using Corvus.Testing.SpecFlow;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;

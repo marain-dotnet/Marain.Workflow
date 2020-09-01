@@ -145,8 +145,8 @@ namespace Marain.Workflows.Storage
         /// The list of subjects/.
         /// </param>
         /// <returns>
-        /// A <see cref="string" /> containing the WHERE clause and a <see cref="SqlParameterCollection" /> containing
-        /// the parameters it should be supplied with.
+        /// A <see cref="string" /> containing the WHERE clause and a dictionary containing the parameters it should
+        /// be supplied with.
         /// </returns>
         private static (string, List<(string, string)>) GetSubjectClause(IEnumerable<string> subjects)
         {
