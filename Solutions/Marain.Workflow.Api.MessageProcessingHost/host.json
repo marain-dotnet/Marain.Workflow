@@ -11,7 +11,7 @@
   },
   "logging": {
     "logLevel": {
-      "default": "Debug"
+      "default": "Warning"
     },
     "console": {
       "isEnabled": true
