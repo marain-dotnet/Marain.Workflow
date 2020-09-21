@@ -8,10 +8,9 @@
   },
   "logging": {
     "logLevel": {
-      "default": "Warning"
-    },
-    "console": {
-      "isEnabled": true
+      "default": "Warning",
+      "Host.Results": "Information",
+      "Host.Aggregator": "Information"
     }
   }
 }

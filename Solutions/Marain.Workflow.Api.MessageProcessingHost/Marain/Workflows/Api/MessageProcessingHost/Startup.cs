@@ -29,11 +29,9 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
             IServiceCollection services = builder.Services;
 
             IConfigurationRoot root = Configure(services);
-            services.AddLogging(builder =>
-            {
-                builder.AddConsole();
-                builder.SetMinimumLevel(LogLevel.Debug);
-            });
+
+            services.AddApplicationInsightsInstrumentationTelemetry();
+            services.AddLogging();
 
             var uri = new Uri(root["Operations:ControlServiceBaseUrl"]);
             string resourceId = root["Operations:ResourceIdForMsiAuthentication"];
