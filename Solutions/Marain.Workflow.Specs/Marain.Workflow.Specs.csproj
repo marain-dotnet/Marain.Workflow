@@ -20,34 +20,34 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="0.25.0" />
-    <PackageReference Include="Corvus.Leasing.InMemory" Version="0.5.0-preview.5" />
-    <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="0.2.0-preview.15" />
-    <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="0.25.0" />
+    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="1.0.2" />
+    <PackageReference Include="Corvus.Leasing.InMemory" Version="1.0.0" />
+    <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="1.0.0" />
+    <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="1.0.2" />
     <PackageReference Include="Corvus.Testing.SpecFlow" Version="1.0.2" />
     <PackageReference Include="Endjin.RecommendedPractices" Version="1.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.8" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
-    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="150.4769.1" />
-    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="150.18208.0" />
+    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="150.4897.1" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.41011.9" />
     <PackageReference Include="Moq" Version="4.14.5" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="SpecFlow.NUnit" Version="3.4.8" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.4.8" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="coverlet.msbuild" Version="2.9.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="0.1.0-preview.25" />
+    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>
