@@ -11,10 +11,9 @@
   },
   "logging": {
     "logLevel": {
-      "default": "Debug"
-    },
-    "console": {
-      "isEnabled": true
+      "default": "Warning",
+      "Host.Results": "Information",
+      "Host.Aggregator": "Information"
     }
   }
 }

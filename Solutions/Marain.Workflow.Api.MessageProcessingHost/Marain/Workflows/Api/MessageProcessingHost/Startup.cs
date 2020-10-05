@@ -16,7 +16,6 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
     using Microsoft.Azure.WebJobs.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Startup code for the Function.
@@ -28,16 +27,27 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
         {
             IServiceCollection services = builder.Services;
 
-            IConfigurationRoot root = Configure(services);
-            services.AddLogging(builder =>
-            {
-                builder.AddConsole();
-                builder.SetMinimumLevel(LogLevel.Debug);
-            });
+            services.AddApplicationInsightsInstrumentationTelemetry();
+            services.AddLogging();
 
-            var uri = new Uri(root["Operations:ControlServiceBaseUrl"]);
-            string resourceId = root["Operations:ResourceIdForMsiAuthentication"];
-            services.AddOperationsControlClient(uri, resourceId);
+            services.AddOperationsControlClient(
+                sp =>
+                {
+                    IConfiguration config = sp.GetRequiredService<IConfiguration>();
+
+                    string baseUrl = config["Operations:ControlServiceBaseUrl"];
+
+                    if (string.IsNullOrEmpty(baseUrl))
+                    {
+                        throw new InvalidOperationException("Cannot find a configuration value for 'Operations:ControlServiceBaseUrl'. Please add this configuration value and retry.");
+                    }
+
+                    return new MarainOperationsControlClientOptions
+                    {
+                        OperationsControlServiceBaseUri = new Uri(baseUrl),
+                        ResourceIdForMsiAuthentication = config["Operations:ResourceIdForMsiAuthentication"],
+                    };
+                });
 
             services.AddMarainWorkflowEngineClient(sp =>
             {
@@ -82,19 +92,6 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
             services.AddSingleton<IOpenApiService, MessageIngestionService>();
 
             return services;
-        }
-
-        private static IConfigurationRoot Configure(IServiceCollection services)
-        {
-            // TODO: Get rid of this and replace any of our code that depends on it with custom configuration sections.
-            // https://github.com/marain-dotnet/Marain.Workflow/issues/45
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
-                .AddEnvironmentVariables()
-                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true);
-
-            IConfigurationRoot root = configurationBuilder.Build();
-            services.AddSingleton(root);
-            return root;
         }
     }
 }

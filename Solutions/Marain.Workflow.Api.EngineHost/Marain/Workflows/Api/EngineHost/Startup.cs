@@ -21,11 +21,8 @@ namespace Marain.Workflows.Api.EngineHost
         {
             IServiceCollection services = builder.Services;
 
-            services.AddLogging(builder =>
-            {
-                builder.AddConsole();
-                builder.SetMinimumLevel(LogLevel.Debug);
-            });
+            services.AddApplicationInsightsInstrumentationTelemetry();
+            services.AddLogging();
 
             services.AddTenantedWorkflowEngineApi(config => config.Documents.AddSwaggerEndpoint());
         }
