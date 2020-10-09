@@ -54,7 +54,7 @@ Further, we will publish these events out to Azure Event Grid as a change feed f
 
 ## Consequences
 
-## Data security
+### Data security
 
 Whilst data at rest is siloed by tenant, data we send into Event Grid will not be. This means we can only send the essentials of the event in our events - tenant Id, workflow Id, workflow instance Id, event Id, etc - we cannot send any workflow instance context data or trigger parameters.
 
@@ -62,7 +62,7 @@ However, it is likely that services processing the events will need to access th
 
 If it's possible to read this directly from the event store we will implement in that way; alternatively we may need to persist triggers into blob storage before dispatching the Event Grid event.
 
-## Complexity
+### Complexity
 
 This change adds complexity in two areas:
 
