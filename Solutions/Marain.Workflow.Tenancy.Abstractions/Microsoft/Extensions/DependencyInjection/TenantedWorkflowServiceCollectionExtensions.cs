@@ -4,8 +4,11 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    using System;
     using Corvus.Leasing;
     using Marain.Workflows;
+    using Marain.Workflows.CloudEvents;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -29,6 +32,21 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </remarks>
         public static IServiceCollection AddTenantedWorkflowEngineFactory(this IServiceCollection collection)
         {
+            collection.AddCloudEventPublisher();
+            collection.AddSingleton(
+                sp =>
+            {
+                IConfiguration config = sp.GetRequiredService<IConfiguration>();
+                TenantedWorkflowEngineFactoryConfiguration engineFactoryConfiguration =
+                    config.GetSection("TenantedWorkflowEngineFactoryConfiguration").Get<TenantedWorkflowEngineFactoryConfiguration>();
+
+                if (string.IsNullOrEmpty(engineFactoryConfiguration?.CloudEventBaseSourceName))
+                {
+                    throw new InvalidOperationException("Cannot find a configuration value called 'TenantedWorkflowEngineFactoryConfiguration:CloudEventBaseSourceName'.");
+                }
+
+                return engineFactoryConfiguration;
+            });
             collection.AddSingleton<ITenantedWorkflowEngineFactory, TenantedWorkflowEngineFactory>();
 
             return collection;
