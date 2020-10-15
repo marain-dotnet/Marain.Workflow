@@ -2,13 +2,13 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
 This ADR proposes a solution to several long-standing challenges with Marain.Workflow. They are:
 
-1. The solution does not currently provide any kind of audit log of messages received and/or processed, neither does it provide any kind of history for workflow instances. Some work has been done to address the latter, described in [this GitHub issue](https://github.com/marain-dotnet/Marain.Workflow/issues/132) [and the associated pull request](https://github.com/marain-dotnet/Marain.Workflow/pull/133).
+1. The solution does not currently provide any kind of audit log of messages received and/or processed, neither does it provide any kind of history for workflow instances. Some work has been done to address the latter, described in [this GitHub issue](https://github.com/marain-dotnet/Marain.Workflow/issues/132) [and the associated pull request](https://github.com/marain-dotnet/Marain.Workflow/pull/133). This takes the approach of storing the previous version of the workflow instance each time a new version is stored, which addresses the audit log requirement but does not allow external actors to be notified when changes have occurred.
 
     Without having these features, it is much harder to debug issues with workflow instances as we can't see the actions/events that brought them to their current state.
 
