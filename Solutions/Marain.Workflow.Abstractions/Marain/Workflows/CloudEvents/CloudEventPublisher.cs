@@ -5,6 +5,8 @@
 namespace Marain.Workflows.CloudEvents
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -54,7 +56,7 @@ namespace Marain.Workflows.CloudEvents
             string subject,
             string dataContentType,
             T eventData,
-            params ExternalCloudEventSubscription[] destinationUris)
+            IEnumerable<WorkflowEventSubscription> destinationUris)
         {
             var cloudEvent = new
             {
@@ -71,12 +73,12 @@ namespace Marain.Workflows.CloudEvents
             return Task.WhenAll(destinationUris.Select(destination => this.PublishWithRetryAsync(source, subject, cloudEvent, destination)));
         }
 
-        private Task PublishWithRetryAsync<T>(string source, string subject, T cloudEvent, ExternalCloudEventSubscription destination)
+        private Task PublishWithRetryAsync<T>(string source, string subject, T cloudEvent, WorkflowEventSubscription destination)
         {
             return Retriable.RetryAsync(() => this.PublishAsync(source, subject, cloudEvent, destination));
         }
 
-        private async Task PublishAsync<T>(string source, string subject, T cloudEvent, ExternalCloudEventSubscription destination)
+        private async Task PublishAsync<T>(string source, string subject, T cloudEvent, WorkflowEventSubscription destination)
         {
             this.logger.LogDebug(
                 "Initialising event publish request for subject '{subject}' and source '{source}' to external URL '{externalUrl}'",

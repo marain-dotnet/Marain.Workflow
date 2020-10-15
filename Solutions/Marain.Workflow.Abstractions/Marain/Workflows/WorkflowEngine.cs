@@ -96,6 +96,8 @@ namespace Marain.Workflows
         private async Task ProcessInstanceAsync(IWorkflowTrigger trigger, string instanceId, string partitionKey)
         {
             WorkflowInstance item = null;
+            Workflow workflow = null;
+
             var workflowEventData = new WorkflowInstanceCloudEventData(instanceId, trigger);
             string workflowEventType = WorkflowEventTypes.TransitionCompleted;
 
@@ -110,6 +112,7 @@ namespace Marain.Workflows
             try
             {
                 item = await this.workflowInstanceStore.GetWorkflowInstanceAsync(instanceId, partitionKey).ConfigureAwait(false);
+                workflow = await this.workflowStore.GetWorkflowAsync(item.WorkflowId).ConfigureAwait(false);
 
                 workflowEventData.PreviousContext = item.Context.ToDictionary(x => x.Key, x => x.Value);
                 workflowEventData.WorkflowId = item.WorkflowId;
@@ -119,7 +122,8 @@ namespace Marain.Workflows
                 this.logger.LogDebug($"Accepting trigger {trigger.Id} in instance {item.Id}", trigger, item);
 
                 WorkflowTransition transition = await this.AcceptTriggerAsync(item, trigger).ConfigureAwait(false);
-                workflowEventData.TransitionId = transition.Id;
+
+                workflowEventData.TransitionId = transition?.Id;
                 workflowEventData.NewState = item.StateId;
                 workflowEventData.NewStatus = item.Status;
                 workflowEventData.NewContext = item.Context;
@@ -161,7 +165,8 @@ namespace Marain.Workflows
                         workflowEventType,
                         item.Id,
                         workflowEventData.ContentType,
-                        workflowEventData).ConfigureAwait(false);
+                        workflowEventData,
+                        workflow.WorkflowEventSubscriptions).ConfigureAwait(false);
                 }
             }
         }

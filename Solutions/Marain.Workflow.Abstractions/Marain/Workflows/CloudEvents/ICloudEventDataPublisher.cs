@@ -4,6 +4,7 @@
 
 namespace Marain.Workflows.CloudEvents
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -28,6 +29,6 @@ namespace Marain.Workflows.CloudEvents
             string subject,
             string dataContentType,
             T eventData,
-            params ExternalCloudEventSubscription[] subscriptions);
+            IEnumerable<WorkflowEventSubscription> subscriptions);
     }
 }
