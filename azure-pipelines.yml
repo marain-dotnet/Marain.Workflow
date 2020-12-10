@@ -40,6 +40,7 @@ jobs:
           Write-Host "##vso[task.setvariable variable=MarainServiceConfiguration:ServiceDisplayName]$Env:ENDJIN_MARAINWORKFLOWSERVICEDISPLAYNAME"
           Write-Host "##vso[task.setvariable variable=MarainServiceConfiguration:ServiceTenantId]$Env:ENDJIN_MARAINWORKFLOWSERVICETENANTID"
           Write-Host "##vso[task.setvariable variable=LeasingStorageAccountConnectionString]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
+          Write-Host "##vso[task.setvariable variable=TenantedWorkflowEngineFactoryConfiguration__CloudEventBaseSourceName]azuresubscriptionid.workflowresourcegroupname"
         displayName: 'Set Custom Environment Variables'
         env:
           ENDJIN_AZURESERVICESAUTHCONNECTIONSTRING: $(Endjin_AzureServicesAuthConnectionString)
