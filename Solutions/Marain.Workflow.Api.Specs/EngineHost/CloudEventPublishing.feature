@@ -106,8 +106,6 @@ Scenario: Multiple subscribers receive event when workflow state changes
 	| 1     | subject                         | instance                                                               |
 	| 1     | type                            | io.marain.workflow.instance.transition-completed                       |
 
-Scenario: Subscriber receives an event when a workflow instance moves into the faulted state
-
 Scenario: Workflow instance is not faulted if a subscriber does not return a success status code on publishing
 	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow' and event subscriptions
 	| ExternalUrl           | MsiAuthenticationResource |
@@ -126,6 +124,10 @@ Scenario: Workflow instance is not faulted if a subscriber does not return a suc
 	Then I should have received a 200 status code from the HTTP request
 	And the workflow instance with id 'instance' should be in the state with name 'Waiting for approval'
 	And the workflow instance with id 'instance' should have the status 'Waiting'
+	And CloudEvents should have been published to the subscriber called 'Subscriber'
+	| Index | PropertyPath                    | Value                                                                  |
+	| 1     | subject                         | instance                                                               |
+	| 1     | type                            | io.marain.workflow.instance.transition-completed                       |
 
 Scenario: If one subscriber fails, other subscribers still receive the event
 	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow' and event subscriptions

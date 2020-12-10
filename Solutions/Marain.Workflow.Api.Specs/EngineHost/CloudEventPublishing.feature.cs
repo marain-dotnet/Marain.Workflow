@@ -532,6 +532,127 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
+                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ExternalUrl",
+                            "MsiAuthenticationResource"});
+                table19.AddRow(new string[] {
+                            "http://localhost:7454",
+                            ""});
+#line 110
+ testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
+                        "\'simple-expenses-workflow\' and event subscriptions", ((string)(null)), table19, "Given ");
+#line hidden
+#line 113
+ testRunner.And("there is an event subscriber listening on port \'7454\' called \'Subscriber\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 114
+ testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Key",
+                            "Value"});
+                table20.AddRow(new string[] {
+                            "Claimant",
+                            "J George"});
+                table20.AddRow(new string[] {
+                            "CostCenter",
+                            "GD3724"});
+#line 115
+ testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table20, "And ");
+#line hidden
+#line 119
+ testRunner.And("I have started an instance of the workflow \'simple-expenses-workflow\' with instan" +
+                        "ce id \'instance\' and using context object \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
+                            "TriggerName"});
+                table21.AddRow(new string[] {
+                            "Fault"});
+#line 120
+ testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.trigger\' called" +
+                        " \'trigger\'", ((string)(null)), table21, "And ");
+#line hidden
+#line 123
+ testRunner.When("I post the object called \'trigger\' to the workflow engine path \'/{tenantId}/marai" +
+                        "n/workflow/engine/workflowinstances/instance/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 124
+ testRunner.Then("I should have received a 500 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 125
+ testRunner.And("the workflow instance with id \'instance\' should be in the state with name \'Waitin" +
+                        "g to be submitted\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 126
+ testRunner.And("the workflow instance with id \'instance\' should have the status \'Faulted\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
+                            "0",
+                            "source",
+                            "azuresubscriptionid.workflowresourcegroupname.{tenantId}"});
+                table22.AddRow(new string[] {
+                            "0",
+                            "type",
+                            "io.marain.workflow.instance.created"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "source",
+                            "azuresubscriptionid.workflowresourcegroupname.{tenantId}"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "specversion",
+                            "1.0"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "subject",
+                            "instance"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "type",
+                            "io.marain.workflow.instance.faulted"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "datacontenttype",
+                            "application/marain.workflows.workflowinstance.transitioncloudeventdata"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "data.previousState",
+                            "waiting-for-submission"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "data.previousStatus",
+                            "waiting"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "data.newState",
+                            "waiting-for-submission"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "data.newStatus",
+                            "faulted"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "data.transitionId",
+                            "submit"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "data.previousContext.Claimant",
+                            "J George"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "data.previousContext.CostCenter",
+                            "GD3724"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "data.newContext.Claimant",
+                            "J George"});
+                table22.AddRow(new string[] {
+                            "1",
+                            "data.newContext.CostCenter",
+                            "GD3724"});
+#line 127
+ testRunner.And("CloudEvents should have been published to the subscriber called \'Subscriber\'", ((string)(null)), table22, "And ");
+#line hidden
             }
             this.ScenarioCleanup();
         }
@@ -545,7 +666,7 @@ this.ScenarioInitialize(scenarioInfo);
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Workflow instance is not faulted if a subscriber does not return a success status" +
                     " code on publishing", null, tagsOfScenario, argumentsOfScenario);
-#line 111
+#line 145
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -565,173 +686,60 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-                TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
                             "ExternalUrl",
                             "MsiAuthenticationResource"});
-                table19.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "http://localhost:7454",
                             ""});
-#line 112
+#line 146
  testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
-                        "\'simple-expenses-workflow\' and event subscriptions", ((string)(null)), table19, "Given ");
+                        "\'simple-expenses-workflow\' and event subscriptions", ((string)(null)), table23, "Given ");
 #line hidden
-#line 115
+#line 149
  testRunner.And("there is an event subscriber that will return the status \'InternalServerError\' li" +
                         "stening on port \'7454\' called \'Subscriber\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 116
+#line 150
  testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-                TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Key",
-                            "Value"});
-                table20.AddRow(new string[] {
-                            "Claimant",
-                            "J George"});
-                table20.AddRow(new string[] {
-                            "CostCenter",
-                            "GD3724"});
-#line 117
- testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table20, "And ");
-#line hidden
-#line 121
- testRunner.And("I have started an instance of the workflow \'simple-expenses-workflow\' with instan" +
-                        "ce id \'instance\' and using context object \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-                TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
-                            "TriggerName"});
-                table21.AddRow(new string[] {
-                            "Submit"});
-#line 122
- testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.trigger\' called" +
-                        " \'trigger\'", ((string)(null)), table21, "And ");
-#line hidden
-#line 125
- testRunner.When("I post the object called \'trigger\' to the workflow engine path \'/{tenantId}/marai" +
-                        "n/workflow/engine/workflowinstances/instance/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 126
- testRunner.Then("I should have received a 200 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 127
- testRunner.And("the workflow instance with id \'instance\' should be in the state with name \'Waitin" +
-                        "g for approval\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 128
- testRunner.And("the workflow instance with id \'instance\' should have the status \'Waiting\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-            }
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("If one subscriber fails, other subscribers still receive the event")]
-        public virtual void IfOneSubscriberFailsOtherSubscribersStillReceiveTheEvent()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("If one subscriber fails, other subscribers still receive the event", null, tagsOfScenario, argumentsOfScenario);
-#line 130
-this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            bool isScenarioIgnored = default(bool);
-            bool isFeatureIgnored = default(bool);
-            if ((tagsOfScenario != null))
-            {
-                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((this._featureTags != null))
-            {
-                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
-            }
-            if ((isScenarioIgnored || isFeatureIgnored))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-                TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
-                            "ExternalUrl",
-                            "MsiAuthenticationResource"});
-                table22.AddRow(new string[] {
-                            "http://localhost:7454",
-                            ""});
-                table22.AddRow(new string[] {
-                            "http://localhost:7455",
-                            ""});
-                table22.AddRow(new string[] {
-                            "http://localhost:7456",
-                            ""});
-#line 131
- testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
-                        "\'simple-expenses-workflow\' and event subscriptions", ((string)(null)), table22, "Given ");
-#line hidden
-#line 136
- testRunner.And("there is an event subscriber listening on port \'7454\' called \'Subscriber1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 137
- testRunner.And("there is an event subscriber that will return the status \'InternalServerError\' li" +
-                        "stening on port \'7455\' called \'Subscriber2\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 138
- testRunner.And("there is an event subscriber listening on port \'7456\' called \'Subscriber3\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 139
- testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-                TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Key",
-                            "Value"});
-                table23.AddRow(new string[] {
-                            "Claimant",
-                            "J George"});
-                table23.AddRow(new string[] {
-                            "CostCenter",
-                            "GD3724"});
-#line 140
- testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table23, "And ");
-#line hidden
-#line 144
- testRunner.And("I have started an instance of the workflow \'simple-expenses-workflow\' with instan" +
-                        "ce id \'instance\' and using context object \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
-                            "TriggerName"});
+                            "Key",
+                            "Value"});
                 table24.AddRow(new string[] {
-                            "Submit"});
-#line 145
- testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.trigger\' called" +
-                        " \'trigger\'", ((string)(null)), table24, "And ");
+                            "Claimant",
+                            "J George"});
+                table24.AddRow(new string[] {
+                            "CostCenter",
+                            "GD3724"});
+#line 151
+ testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table24, "And ");
 #line hidden
-#line 148
+#line 155
+ testRunner.And("I have started an instance of the workflow \'simple-expenses-workflow\' with instan" +
+                        "ce id \'instance\' and using context object \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
+                            "TriggerName"});
+                table25.AddRow(new string[] {
+                            "Submit"});
+#line 156
+ testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.trigger\' called" +
+                        " \'trigger\'", ((string)(null)), table25, "And ");
+#line hidden
+#line 159
  testRunner.When("I post the object called \'trigger\' to the workflow engine path \'/{tenantId}/marai" +
                         "n/workflow/engine/workflowinstances/instance/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 149
+#line 160
  testRunner.Then("I should have received a 200 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 150
+#line 161
  testRunner.And("the workflow instance with id \'instance\' should be in the state with name \'Waitin" +
                         "g for approval\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 151
+#line 162
  testRunner.And("the workflow instance with id \'instance\' should have the status \'Waiting\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-                TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Index",
-                            "PropertyPath",
-                            "Value"});
-                table25.AddRow(new string[] {
-                            "1",
-                            "subject",
-                            "instance"});
-                table25.AddRow(new string[] {
-                            "1",
-                            "type",
-                            "io.marain.workflow.instance.transition-completed"});
-#line 152
- testRunner.And("CloudEvents should have been published to the subscriber called \'Subscriber1\'", ((string)(null)), table25, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
                             "Index",
@@ -745,21 +753,21 @@ this.ScenarioInitialize(scenarioInfo);
                             "1",
                             "type",
                             "io.marain.workflow.instance.transition-completed"});
-#line 156
- testRunner.And("CloudEvents should have been published to the subscriber called \'Subscriber3\'", ((string)(null)), table26, "And ");
+#line 163
+ testRunner.And("CloudEvents should have been published to the subscriber called \'Subscriber\'", ((string)(null)), table26, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Cloud event publishing retries 10 times on failure")]
-        public virtual void CloudEventPublishingRetries10TimesOnFailure()
+        [NUnit.Framework.DescriptionAttribute("If one subscriber fails, other subscribers still receive the event")]
+        public virtual void IfOneSubscriberFailsOtherSubscribersStillReceiveTheEvent()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cloud event publishing retries 10 times on failure", null, tagsOfScenario, argumentsOfScenario);
-#line 161
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("If one subscriber fails, other subscribers still receive the event", null, tagsOfScenario, argumentsOfScenario);
+#line 168
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -785,15 +793,27 @@ this.ScenarioInitialize(scenarioInfo);
                 table27.AddRow(new string[] {
                             "http://localhost:7454",
                             ""});
-#line 162
+                table27.AddRow(new string[] {
+                            "http://localhost:7455",
+                            ""});
+                table27.AddRow(new string[] {
+                            "http://localhost:7456",
+                            ""});
+#line 169
  testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
                         "\'simple-expenses-workflow\' and event subscriptions", ((string)(null)), table27, "Given ");
 #line hidden
-#line 165
- testRunner.And("there is an event subscriber that will return the status \'InternalServerError\' li" +
-                        "stening on port \'7454\' called \'Subscriber\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 174
+ testRunner.And("there is an event subscriber listening on port \'7454\' called \'Subscriber1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 166
+#line 175
+ testRunner.And("there is an event subscriber that will return the status \'InternalServerError\' li" +
+                        "stening on port \'7455\' called \'Subscriber2\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 176
+ testRunner.And("there is an event subscriber listening on port \'7456\' called \'Subscriber3\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 177
  testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table28 = new TechTalk.SpecFlow.Table(new string[] {
@@ -805,118 +825,234 @@ this.ScenarioInitialize(scenarioInfo);
                 table28.AddRow(new string[] {
                             "CostCenter",
                             "GD3724"});
-#line 167
+#line 178
  testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table28, "And ");
 #line hidden
+#line 182
+ testRunner.And("I have started an instance of the workflow \'simple-expenses-workflow\' with instan" +
+                        "ce id \'instance\' and using context object \'context\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
                 TechTalk.SpecFlow.Table table29 = new TechTalk.SpecFlow.Table(new string[] {
-                            "WorkflowId",
-                            "WorkflowInstanceId",
-                            "Context"});
+                            "TriggerName"});
                 table29.AddRow(new string[] {
-                            "simple-expenses-workflow",
-                            "instance",
-                            "{context}"});
-#line 171
- testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.startworkflowin" +
-                        "stancerequest\' called \'request\'", ((string)(null)), table29, "And ");
+                            "Submit"});
+#line 183
+ testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.trigger\' called" +
+                        " \'trigger\'", ((string)(null)), table29, "And ");
 #line hidden
-#line 174
- testRunner.When("I post the object called \'request\' to the workflow engine path \'/{tenantId}/marai" +
-                        "n/workflow/engine/workflowinstances\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 186
+ testRunner.When("I post the object called \'trigger\' to the workflow engine path \'/{tenantId}/marai" +
+                        "n/workflow/engine/workflowinstances/instance/triggers\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 175
- testRunner.Then("I should have received a 201 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 187
+ testRunner.Then("I should have received a 200 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 176
- testRunner.And("there should be a workflow instance with the id \'instance\' in the workflow instan" +
-                        "ce store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 188
+ testRunner.And("the workflow instance with id \'instance\' should be in the state with name \'Waitin" +
+                        "g for approval\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 189
+ testRunner.And("the workflow instance with id \'instance\' should have the status \'Waiting\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table30 = new TechTalk.SpecFlow.Table(new string[] {
                             "Index",
                             "PropertyPath",
                             "Value"});
                 table30.AddRow(new string[] {
-                            "0",
-                            "datacontenttype",
-                            "application/marain.workflows.workflowinstance.creationcloudeventdata"});
-                table30.AddRow(new string[] {
-                            "0",
-                            "subject",
-                            "instance"});
-                table30.AddRow(new string[] {
-                            "1",
-                            "datacontenttype",
-                            "application/marain.workflows.workflowinstance.creationcloudeventdata"});
-                table30.AddRow(new string[] {
                             "1",
                             "subject",
                             "instance"});
                 table30.AddRow(new string[] {
+                            "1",
+                            "type",
+                            "io.marain.workflow.instance.transition-completed"});
+#line 190
+ testRunner.And("CloudEvents should have been published to the subscriber called \'Subscriber1\'", ((string)(null)), table30, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table31 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Index",
+                            "PropertyPath",
+                            "Value"});
+                table31.AddRow(new string[] {
+                            "1",
+                            "subject",
+                            "instance"});
+                table31.AddRow(new string[] {
+                            "1",
+                            "type",
+                            "io.marain.workflow.instance.transition-completed"});
+#line 194
+ testRunner.And("CloudEvents should have been published to the subscriber called \'Subscriber3\'", ((string)(null)), table31, "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Cloud event publishing retries 10 times on failure")]
+        public virtual void CloudEventPublishingRetries10TimesOnFailure()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Cloud event publishing retries 10 times on failure", null, tagsOfScenario, argumentsOfScenario);
+#line 199
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+                TechTalk.SpecFlow.Table table32 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ExternalUrl",
+                            "MsiAuthenticationResource"});
+                table32.AddRow(new string[] {
+                            "http://localhost:7454",
+                            ""});
+#line 200
+ testRunner.Given("I have added the workflow \'SimpleExpensesWorkflow\' to the workflow store with Id " +
+                        "\'simple-expenses-workflow\' and event subscriptions", ((string)(null)), table32, "Given ");
+#line hidden
+#line 203
+ testRunner.And("there is an event subscriber that will return the status \'InternalServerError\' li" +
+                        "stening on port \'7454\' called \'Subscriber\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 204
+ testRunner.And("The workflow instance store is empty", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table33 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Key",
+                            "Value"});
+                table33.AddRow(new string[] {
+                            "Claimant",
+                            "J George"});
+                table33.AddRow(new string[] {
+                            "CostCenter",
+                            "GD3724"});
+#line 205
+ testRunner.And("I have a dictionary called \'context\'", ((string)(null)), table33, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table34 = new TechTalk.SpecFlow.Table(new string[] {
+                            "WorkflowId",
+                            "WorkflowInstanceId",
+                            "Context"});
+                table34.AddRow(new string[] {
+                            "simple-expenses-workflow",
+                            "instance",
+                            "{context}"});
+#line 209
+ testRunner.And("I have an object of type \'application/vnd.marain.workflows.hosted.startworkflowin" +
+                        "stancerequest\' called \'request\'", ((string)(null)), table34, "And ");
+#line hidden
+#line 212
+ testRunner.When("I post the object called \'request\' to the workflow engine path \'/{tenantId}/marai" +
+                        "n/workflow/engine/workflowinstances\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 213
+ testRunner.Then("I should have received a 201 status code from the HTTP request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 214
+ testRunner.And("there should be a workflow instance with the id \'instance\' in the workflow instan" +
+                        "ce store", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table35 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Index",
+                            "PropertyPath",
+                            "Value"});
+                table35.AddRow(new string[] {
+                            "0",
+                            "datacontenttype",
+                            "application/marain.workflows.workflowinstance.creationcloudeventdata"});
+                table35.AddRow(new string[] {
+                            "0",
+                            "subject",
+                            "instance"});
+                table35.AddRow(new string[] {
+                            "1",
+                            "datacontenttype",
+                            "application/marain.workflows.workflowinstance.creationcloudeventdata"});
+                table35.AddRow(new string[] {
+                            "1",
+                            "subject",
+                            "instance"});
+                table35.AddRow(new string[] {
                             "2",
                             "datacontenttype",
                             "application/marain.workflows.workflowinstance.creationcloudeventdata"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "2",
                             "subject",
                             "instance"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "3",
                             "datacontenttype",
                             "application/marain.workflows.workflowinstance.creationcloudeventdata"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "3",
                             "subject",
                             "instance"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "4",
                             "datacontenttype",
                             "application/marain.workflows.workflowinstance.creationcloudeventdata"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "4",
                             "subject",
                             "instance"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "5",
                             "datacontenttype",
                             "application/marain.workflows.workflowinstance.creationcloudeventdata"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "5",
                             "subject",
                             "instance"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "6",
                             "datacontenttype",
                             "application/marain.workflows.workflowinstance.creationcloudeventdata"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "6",
                             "subject",
                             "instance"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "7",
                             "datacontenttype",
                             "application/marain.workflows.workflowinstance.creationcloudeventdata"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "7",
                             "subject",
                             "instance"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "8",
                             "datacontenttype",
                             "application/marain.workflows.workflowinstance.creationcloudeventdata"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "8",
                             "subject",
                             "instance"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "9",
                             "datacontenttype",
                             "application/marain.workflows.workflowinstance.creationcloudeventdata"});
-                table30.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "9",
                             "subject",
                             "instance"});
-#line 177
- testRunner.And("CloudEvents should have been published to the subscriber called \'Subscriber\'", ((string)(null)), table30, "And ");
+#line 215
+ testRunner.And("CloudEvents should have been published to the subscriber called \'Subscriber\'", ((string)(null)), table35, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
