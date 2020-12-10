@@ -9,7 +9,7 @@ Feature: Cloud Event Publishing
 	I want to subscribe to events from the workflow engine
 
 Scenario: Subscriber receives event when a workflow instance is created
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow' and event subscriptions
+	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-1' and event subscriptions
 	| ExternalUrl           | MsiAuthenticationResource |
 	| http://localhost:7454 |                           |
 	And there is an event subscriber listening on port '7454' called 'Subscriber'
@@ -19,8 +19,8 @@ Scenario: Subscriber receives event when a workflow instance is created
 	| Claimant   | J George |
 	| CostCenter | GD3724   |
 	And I have an object of type 'application/vnd.marain.workflows.hosted.startworkflowinstancerequest' called 'request'
-	| WorkflowId               | WorkflowInstanceId | Context   |
-	| simple-expenses-workflow | instance           | {context} |
+	| WorkflowId                 | WorkflowInstanceId | Context   |
+	| simple-expenses-workflow-1 | instance           | {context} |
 	When I post the object called 'request' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflowinstances'
 	Then I should have received a 201 status code from the HTTP request
 	And there should be a workflow instance with the id 'instance' in the workflow instance store
@@ -39,7 +39,7 @@ Scenario: Subscriber receives event when a workflow instance is created
 	| 0     | data.newContext.CostCenter      | GD3724                                                                 |
 
 Scenario: Single subscriber receives event when workflow state changes
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow' and event subscriptions
+	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-2' and event subscriptions
 	| ExternalUrl           | MsiAuthenticationResource |
 	| http://localhost:7454 |                           |
 	And there is an event subscriber listening on port '7454' called 'Subscriber'
@@ -48,7 +48,7 @@ Scenario: Single subscriber receives event when workflow state changes
 	| Key        | Value    |
 	| Claimant   | J George |
 	| CostCenter | GD3724   |
-	And I have started an instance of the workflow 'simple-expenses-workflow' with instance id 'instance' and using context object 'context'
+	And I have started an instance of the workflow 'simple-expenses-workflow-2' with instance id 'instance' and using context object 'context'
 	And I have an object of type 'application/vnd.marain.workflows.hosted.trigger' called 'trigger'
 	| TriggerName |
 	| Submit      |
@@ -73,7 +73,7 @@ Scenario: Single subscriber receives event when workflow state changes
 	| 1     | data.newContext.CostCenter      | GD3724                                                                 |
 
 Scenario: Multiple subscribers receive event when workflow state changes
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow' and event subscriptions
+	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-3' and event subscriptions
 	| ExternalUrl           | MsiAuthenticationResource |
 	| http://localhost:7454 |                           |
 	| http://localhost:7455 |                           |
@@ -86,7 +86,7 @@ Scenario: Multiple subscribers receive event when workflow state changes
 	| Key        | Value    |
 	| Claimant   | J George |
 	| CostCenter | GD3724   |
-	And I have started an instance of the workflow 'simple-expenses-workflow' with instance id 'instance' and using context object 'context'
+	And I have started an instance of the workflow 'simple-expenses-workflow-3' with instance id 'instance' and using context object 'context'
 	And I have an object of type 'application/vnd.marain.workflows.hosted.trigger' called 'trigger'
 	| TriggerName |
 	| Submit      |
@@ -107,7 +107,7 @@ Scenario: Multiple subscribers receive event when workflow state changes
 	| 1     | type                            | io.marain.workflow.instance.transition-completed                       |
 
 Scenario: Workflow instance is not faulted if a subscriber does not return a success status code on publishing
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow' and event subscriptions
+	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-4' and event subscriptions
 	| ExternalUrl           | MsiAuthenticationResource |
 	| http://localhost:7454 |                           |
 	And there is an event subscriber that will return the status 'InternalServerError' listening on port '7454' called 'Subscriber'
@@ -116,7 +116,7 @@ Scenario: Workflow instance is not faulted if a subscriber does not return a suc
 	| Key        | Value    |
 	| Claimant   | J George |
 	| CostCenter | GD3724   |
-	And I have started an instance of the workflow 'simple-expenses-workflow' with instance id 'instance' and using context object 'context'
+	And I have started an instance of the workflow 'simple-expenses-workflow-4' with instance id 'instance' and using context object 'context'
 	And I have an object of type 'application/vnd.marain.workflows.hosted.trigger' called 'trigger'
 	| TriggerName |
 	| Submit      |
@@ -125,12 +125,11 @@ Scenario: Workflow instance is not faulted if a subscriber does not return a suc
 	And the workflow instance with id 'instance' should be in the state with name 'Waiting for approval'
 	And the workflow instance with id 'instance' should have the status 'Waiting'
 	And CloudEvents should have been published to the subscriber called 'Subscriber'
-	| Index | PropertyPath                    | Value                                                                  |
-	| 1     | subject                         | instance                                                               |
-	| 1     | type                            | io.marain.workflow.instance.transition-completed                       |
+	| Index | PropertyPath | Value    |
+	| 0     | subject      | instance |
 
 Scenario: If one subscriber fails, other subscribers still receive the event
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow' and event subscriptions
+	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-5' and event subscriptions
 	| ExternalUrl           | MsiAuthenticationResource |
 	| http://localhost:7454 |                           |
 	| http://localhost:7455 |                           |
@@ -143,7 +142,7 @@ Scenario: If one subscriber fails, other subscribers still receive the event
 	| Key        | Value    |
 	| Claimant   | J George |
 	| CostCenter | GD3724   |
-	And I have started an instance of the workflow 'simple-expenses-workflow' with instance id 'instance' and using context object 'context'
+	And I have started an instance of the workflow 'simple-expenses-workflow-5' with instance id 'instance' and using context object 'context'
 	And I have an object of type 'application/vnd.marain.workflows.hosted.trigger' called 'trigger'
 	| TriggerName |
 	| Submit      |
@@ -161,7 +160,7 @@ Scenario: If one subscriber fails, other subscribers still receive the event
 	| 1     | type                            | io.marain.workflow.instance.transition-completed                       |
 
 Scenario: Cloud event publishing retries 10 times on failure
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow' and event subscriptions
+	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-6' and event subscriptions
 	| ExternalUrl           | MsiAuthenticationResource |
 	| http://localhost:7454 |                           |
 	And there is an event subscriber that will return the status 'InternalServerError' listening on port '7454' called 'Subscriber'
@@ -171,8 +170,8 @@ Scenario: Cloud event publishing retries 10 times on failure
 	| Claimant   | J George |
 	| CostCenter | GD3724   |
 	And I have an object of type 'application/vnd.marain.workflows.hosted.startworkflowinstancerequest' called 'request'
-	| WorkflowId               | WorkflowInstanceId | Context   |
-	| simple-expenses-workflow | instance           | {context} |
+	| WorkflowId                 | WorkflowInstanceId | Context   |
+	| simple-expenses-workflow-6 | instance           | {context} |
 	When I post the object called 'request' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflowinstances'
 	Then I should have received a 201 status code from the HTTP request
 	And there should be a workflow instance with the id 'instance' in the workflow instance store

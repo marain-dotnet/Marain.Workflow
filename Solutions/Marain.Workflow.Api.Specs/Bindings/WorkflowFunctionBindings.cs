@@ -40,12 +40,15 @@ namespace Marain.Workflows.Api.Specs.Bindings
         [BeforeFeature("@useWorkflowEngineApi", Order = BindingSequence.FunctionStartup)]
         public static Task StartWorkflowEngineFunctionAsync(FeatureContext context)
         {
+            FunctionConfiguration config = FunctionsBindings.GetFunctionConfiguration(context);
+            config.EnvironmentVariables.Add("AzureFunctionsJobHost:logging:logLevel:default", "Debug");
+
             return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
                     "Marain.Workflow.Api.EngineHost",
                     EngineHostPort,
                     "netcoreapp3.1",
                     "csharp",
-                    FunctionsBindings.GetFunctionConfiguration(context));
+                    config);
         }
 
         /// <summary>
@@ -58,6 +61,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
         {
             FunctionConfiguration config = FunctionsBindings.GetFunctionConfiguration(context);
             config.EnvironmentVariables.Add("Workflow:EngineClient:BaseUrl", EngineHostBaseUrl);
+            config.EnvironmentVariables.Add("AzureFunctionsJobHost:logging:logLevel:default", "Debug");
 
             return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
                 "Marain.Workflow.Api.MessageProcessingHost",
