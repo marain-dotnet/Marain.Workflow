@@ -1,4 +1,4 @@
-﻿// <copyright file="WorkflowInstanceCloudEventData.cs" company="Endjin Limited">
+﻿// <copyright file="WorkflowInstanceTransitionCloudEventData.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
@@ -10,19 +10,19 @@ namespace Marain.Workflows.CloudEvents
     /// Represents the standard data we include when publishing a CloudEvent related to a workflow instance from the
     /// workflow engine.
     /// </summary>
-    public class WorkflowInstanceCloudEventData
+    public class WorkflowInstanceTransitionCloudEventData
     {
         /// <summary>
         /// The registered content type.
         /// </summary>
-        public const string RegisteredContentType = "application/marain.workflows.workflowinstance.cloudeventdata";
+        public const string RegisteredContentType = "application/marain.workflows.workflowinstance.transitioncloudeventdata";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowInstanceCloudEventData"/> class.
+        /// Initializes a new instance of the <see cref="WorkflowInstanceTransitionCloudEventData"/> class.
         /// </summary>
         /// <param name="workflowInstanceId">The <see cref="WorkflowInstanceId"/>.</param>
         /// <param name="trigger">The (optional) <see cref="Trigger"/>.</param>
-        public WorkflowInstanceCloudEventData(string workflowInstanceId, IWorkflowTrigger trigger = null)
+        public WorkflowInstanceTransitionCloudEventData(string workflowInstanceId, IWorkflowTrigger trigger = null)
         {
             this.WorkflowInstanceId = workflowInstanceId;
             this.Trigger = trigger;

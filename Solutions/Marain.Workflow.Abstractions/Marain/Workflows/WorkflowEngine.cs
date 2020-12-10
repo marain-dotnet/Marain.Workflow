@@ -54,24 +54,49 @@ namespace Marain.Workflows
         /// <inheritdoc/>
         public Task<WorkflowInstance> StartWorkflowInstanceAsync(StartWorkflowInstanceRequest request)
         {
-            return Retriable.RetryAsync(() => this.CreateWorkflowInstanceAsync(
+            return this.StartWorkflowInstanceAsync(
                 request.WorkflowId,
                 null,
                 request.WorkflowInstanceId,
                 null,
-                request.Context));
+                request.Context);
         }
 
         /// <inheritdoc/>
-        public Task<WorkflowInstance> StartWorkflowInstanceAsync(
+        public async Task<WorkflowInstance> StartWorkflowInstanceAsync(
             string workflowId,
             string workflowPartitionKey = null,
             string instanceId = null,
             string instancePartitionKey = null,
             IDictionary<string, string> context = null)
         {
-            return Retriable.RetryAsync(() =>
-            this.CreateWorkflowInstanceAsync(workflowId, workflowPartitionKey, instanceId, instancePartitionKey, context));
+            WorkflowInstance newInstance = await Retriable.RetryAsync(() =>
+                this.CreateWorkflowInstanceAsync(workflowId, workflowPartitionKey, instanceId, instancePartitionKey, context)).ConfigureAwait(false);
+
+            // We publish the CloudEvent outside the Retry block because:
+            // a) we only want to publish the event once the instance is created, and
+            // b) we don't want a failure in CloudEvent publishing to cause a retry
+            //    of the whole process. The ICloudEventPublisher implementation is expected
+            //    to provide its own retry mechanism.
+            Workflow workflow = await this.workflowStore.GetWorkflowAsync(newInstance.WorkflowId).ConfigureAwait(false);
+            var workflowEventData = new WorkflowInstanceCreationCloudEventData(newInstance.Id)
+            {
+                NewContext = newInstance.Context,
+                NewState = newInstance.StateId,
+                NewStatus = newInstance.Status,
+                SuppliedContext = context,
+                WorkflowId = newInstance.WorkflowId,
+            };
+
+            await this.cloudEventPublisher.PublishWorkflowEventDataAsync(
+                this.cloudEventSource,
+                WorkflowEventTypes.InstanceCreated,
+                newInstance.Id,
+                workflowEventData.ContentType,
+                workflowEventData,
+                workflow.WorkflowEventSubscriptions).ConfigureAwait(false);
+
+            return newInstance;
         }
 
         /// <inheritdoc/>
@@ -98,17 +123,11 @@ namespace Marain.Workflows
             WorkflowInstance item = null;
             Workflow workflow = null;
 
-            var workflowEventData = new WorkflowInstanceCloudEventData(instanceId, trigger);
+            // We need to gather data for the final CloudEvent prior to applying the transition, as some of the data
+            // we publish is pre-transition - e.g. previous state and context.
+            var workflowEventData = new WorkflowInstanceTransitionCloudEventData(instanceId, trigger);
             string workflowEventType = WorkflowEventTypes.TransitionCompleted;
 
-            // What do we want in the event?
-            // trigger
-            // workflow id
-            // workflow instance id
-            // previous state
-            // new state
-            // transition id/name?
-            // context value changes/removals
             try
             {
                 item = await this.workflowInstanceStore.GetWorkflowInstanceAsync(instanceId, partitionKey).ConfigureAwait(false);

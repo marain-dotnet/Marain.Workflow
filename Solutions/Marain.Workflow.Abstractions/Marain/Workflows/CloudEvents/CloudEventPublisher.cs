@@ -73,9 +73,24 @@ namespace Marain.Workflows.CloudEvents
             return Task.WhenAll(destinationUris.Select(destination => this.PublishWithRetryAsync(source, subject, cloudEvent, destination)));
         }
 
-        private Task PublishWithRetryAsync<T>(string source, string subject, T cloudEvent, WorkflowEventSubscription destination)
+        private async Task PublishWithRetryAsync<T>(string source, string subject, T cloudEvent, WorkflowEventSubscription destination)
         {
-            return Retriable.RetryAsync(() => this.PublishAsync(source, subject, cloudEvent, destination));
+            try
+            {
+                await Retriable.RetryAsync(() => this.PublishAsync(source, subject, cloudEvent, destination)).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                // In this "v1" solution to event publishing, we don't want exceptions to propagate outside the
+                // publisher because we don't want failure in event publishing to break anything.
+                this.logger.LogError(
+                    ex,
+                    "Unexpected exception when trying to a CloudEvent with source '{source}', '{subject}' and destinationUrl '{destinationUrl}' with authentication resource '{msiAuthenticationResource}'.",
+                    source,
+                    subject,
+                    destination?.ExternalUrl,
+                    destination?.MsiAuthenticationResource);
+            }
         }
 
         private async Task PublishAsync<T>(string source, string subject, T cloudEvent, WorkflowEventSubscription destination)

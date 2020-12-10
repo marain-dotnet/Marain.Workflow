@@ -98,7 +98,7 @@ namespace Marain.Workflows
         /// </remarks>
         public IDictionary<string, WorkflowState> States
         {
-            get => this.states ?? (this.states = new Dictionary<string, WorkflowState>());
+            get => this.states ??= new Dictionary<string, WorkflowState>();
 
             set => this.states = value;
         }
@@ -109,7 +109,7 @@ namespace Marain.Workflows
         /// </summary>
         public IList<WorkflowEventSubscription> WorkflowEventSubscriptions
         {
-            get => this.eventSubscriptions ?? (this.eventSubscriptions = new List<WorkflowEventSubscription>());
+            get => this.eventSubscriptions ??= new List<WorkflowEventSubscription>();
 
             set => this.eventSubscriptions = value;
         }

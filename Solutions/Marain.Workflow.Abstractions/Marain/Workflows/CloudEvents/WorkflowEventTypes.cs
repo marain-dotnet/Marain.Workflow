@@ -10,6 +10,11 @@ namespace Marain.Workflows.CloudEvents
     public static class WorkflowEventTypes
     {
         /// <summary>
+        /// Used when a new workflow instance has been created.
+        /// </summary>
+        public const string InstanceCreated = "workflow.instance.created";
+
+        /// <summary>
         /// Used when a workflow instance transition has successfully completed.
         /// </summary>
         public const string TransitionCompleted = "workflow.instance.transition-completed";

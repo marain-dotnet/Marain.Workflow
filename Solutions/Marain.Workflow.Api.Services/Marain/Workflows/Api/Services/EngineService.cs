@@ -27,7 +27,6 @@ namespace Marain.Workflows.Api.Services
 
         private readonly IMarainServicesTenancy marainServicesTenancy;
         private readonly ITenantedWorkflowEngineFactory workflowEngineFactory;
-        private readonly IConfiguration configuration;
         private readonly ITenantedWorkflowStoreFactory workflowStoreFactory;
 
         /// <summary>
@@ -36,16 +35,13 @@ namespace Marain.Workflows.Api.Services
         /// <param name="workflowEngineFactory">The workflow engine factory.</param>
         /// <param name="workflowStoreFactory">The workflow store factory.</param>
         /// <param name="marainServicesTenancy">The tenancy services.</param>
-        /// <param name="configuration">The configuration.</param>
         public EngineService(
             ITenantedWorkflowEngineFactory workflowEngineFactory,
             ITenantedWorkflowStoreFactory workflowStoreFactory,
-            IMarainServicesTenancy marainServicesTenancy,
-            IConfiguration configuration)
+            IMarainServicesTenancy marainServicesTenancy)
         {
             this.workflowEngineFactory = workflowEngineFactory;
             this.marainServicesTenancy = marainServicesTenancy;
-            this.configuration = configuration;
             this.workflowStoreFactory = workflowStoreFactory;
         }
 
