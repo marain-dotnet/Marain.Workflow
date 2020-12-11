@@ -57,7 +57,7 @@
         "FUNCTIONS_WORKER_RUNTIME": "dotnet",
 
         "LeasingStorageAccountConnectionString": "[parameters('leasingStorageAccountConnectionString')]",
-
+        "TenantedWorkflowEngineFactoryConfiguration:CloudEventBaseSourceName": "[concat(subscription().subscriptionId, '.', resourceGroup().name)]",
         "TenancyClient:TenancyServiceBaseUri": "[parameters('tenancyServiceBaseUri')]",
         "TenancyClient:ResourceIdForMsiAuthentication": "[parameters('tenancyServiceResourceIdForMsiAuthentication')]",
         "MarainServiceConfiguration:ServiceTenantId": "[parameters('marainServiceTenantId')]",

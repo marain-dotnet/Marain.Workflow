@@ -71,6 +71,7 @@
         "FUNCTIONS_WORKER_RUNTIME": "dotnet",
 
         "LeasingStorageAccountConnectionString": "[parameters('leasingStorageAccountConnectionString')]",
+        "TenantedWorkflowEngineFactoryConfiguration:CloudEventBaseSourceName": "[concat(subscription().subscriptionId, '.', resourceGroup().name)]",
         "Operations:ControlServiceBaseUrl": "[parameters('operationsControlServiceBaseUrl')]",
         "Operations:ResourceIdForMsiAuthentication": "[parameters('operationsControlResourceIdForMsiAuthentication')]",
         "Workflow:EngineClient:BaseUrl": "[parameters('workflowEngineClientBaseUrl')]",

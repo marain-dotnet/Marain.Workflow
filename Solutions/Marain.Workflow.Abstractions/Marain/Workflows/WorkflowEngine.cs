@@ -6,9 +6,11 @@ namespace Marain.Workflows
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Corvus.Leasing;
     using Corvus.Retry;
+    using Marain.Workflows.CloudEvents;
     using Microsoft.Extensions.Logging;
 
     /// <inheritdoc />
@@ -19,6 +21,8 @@ namespace Marain.Workflows
 
         private readonly IWorkflowInstanceStore workflowInstanceStore;
         private readonly IWorkflowStore workflowStore;
+        private readonly ICloudEventDataPublisher cloudEventPublisher;
+        private readonly string cloudEventSource;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowEngine"/> class.
@@ -26,11 +30,15 @@ namespace Marain.Workflows
         /// <param name="workflowStore">The repository in which to store workflows.</param>
         /// <param name="workflowInstanceStore">The repository in which to store workflow instances.</param>
         /// <param name="leaseProvider">The lease provider.</param>
+        /// <param name="cloudEventSource">The source to use when publishing cloud events.</param>
+        /// <param name="cloudEventPublisher">The publisher for workflow events.</param>
         /// <param name="logger">A logger for the workflow instance service.</param>
         public WorkflowEngine(
             IWorkflowStore workflowStore,
             IWorkflowInstanceStore workflowInstanceStore,
             ILeaseProvider leaseProvider,
+            string cloudEventSource,
+            ICloudEventDataPublisher cloudEventPublisher,
             ILogger<IWorkflowEngine> logger)
         {
             this.workflowStore = workflowStore ?? throw new ArgumentNullException(nameof(workflowStore));
@@ -39,29 +47,56 @@ namespace Marain.Workflows
 
             this.leaseProvider = leaseProvider ?? throw new ArgumentNullException(nameof(leaseProvider));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.cloudEventPublisher = cloudEventPublisher ?? throw new ArgumentNullException(nameof(cloudEventPublisher));
+            this.cloudEventSource = cloudEventSource;
         }
 
         /// <inheritdoc/>
         public Task<WorkflowInstance> StartWorkflowInstanceAsync(StartWorkflowInstanceRequest request)
         {
-            return Retriable.RetryAsync(() => this.CreateWorkflowInstanceAsync(
+            return this.StartWorkflowInstanceAsync(
                 request.WorkflowId,
                 null,
                 request.WorkflowInstanceId,
                 null,
-                request.Context));
+                request.Context);
         }
 
         /// <inheritdoc/>
-        public Task<WorkflowInstance> StartWorkflowInstanceAsync(
+        public async Task<WorkflowInstance> StartWorkflowInstanceAsync(
             string workflowId,
             string workflowPartitionKey = null,
             string instanceId = null,
             string instancePartitionKey = null,
             IDictionary<string, string> context = null)
         {
-            return Retriable.RetryAsync(() =>
-            this.CreateWorkflowInstanceAsync(workflowId, workflowPartitionKey, instanceId, instancePartitionKey, context));
+            WorkflowInstance newInstance = await Retriable.RetryAsync(() =>
+                this.CreateWorkflowInstanceAsync(workflowId, workflowPartitionKey, instanceId, instancePartitionKey, context)).ConfigureAwait(false);
+
+            // We publish the CloudEvent outside the Retry block because:
+            // a) we only want to publish the event once the instance is created, and
+            // b) we don't want a failure in CloudEvent publishing to cause a retry
+            //    of the whole process. The ICloudEventPublisher implementation is expected
+            //    to provide its own retry mechanism.
+            Workflow workflow = await this.workflowStore.GetWorkflowAsync(newInstance.WorkflowId).ConfigureAwait(false);
+            var workflowEventData = new WorkflowInstanceCreationCloudEventData(newInstance.Id)
+            {
+                NewContext = newInstance.Context,
+                NewState = newInstance.StateId,
+                NewStatus = newInstance.Status,
+                SuppliedContext = context,
+                WorkflowId = newInstance.WorkflowId,
+            };
+
+            await this.cloudEventPublisher.PublishWorkflowEventDataAsync(
+                this.cloudEventSource,
+                WorkflowEventTypes.InstanceCreated,
+                newInstance.Id,
+                workflowEventData.ContentType,
+                workflowEventData,
+                workflow.WorkflowEventSubscriptions).ConfigureAwait(false);
+
+            return newInstance;
         }
 
         /// <inheritdoc/>
@@ -86,14 +121,31 @@ namespace Marain.Workflows
         private async Task ProcessInstanceAsync(IWorkflowTrigger trigger, string instanceId, string partitionKey)
         {
             WorkflowInstance item = null;
+            Workflow workflow = null;
+
+            // We need to gather data for the final CloudEvent prior to applying the transition, as some of the data
+            // we publish is pre-transition - e.g. previous state and context.
+            var workflowEventData = new WorkflowInstanceTransitionCloudEventData(instanceId, trigger);
+            string workflowEventType = WorkflowEventTypes.TransitionCompleted;
 
             try
             {
                 item = await this.workflowInstanceStore.GetWorkflowInstanceAsync(instanceId, partitionKey).ConfigureAwait(false);
+                workflow = await this.workflowStore.GetWorkflowAsync(item.WorkflowId).ConfigureAwait(false);
+
+                workflowEventData.PreviousContext = item.Context.ToDictionary(x => x.Key, x => x.Value);
+                workflowEventData.WorkflowId = item.WorkflowId;
+                workflowEventData.PreviousState = item.StateId;
+                workflowEventData.PreviousStatus = item.Status;
 
                 this.logger.LogDebug($"Accepting trigger {trigger.Id} in instance {item.Id}", trigger, item);
 
-                await this.AcceptTriggerAsync(item, trigger).ConfigureAwait(false);
+                WorkflowTransition transition = await this.AcceptTriggerAsync(item, trigger).ConfigureAwait(false);
+
+                workflowEventData.TransitionId = transition?.Id;
+                workflowEventData.NewState = item.StateId;
+                workflowEventData.NewStatus = item.Status;
+                workflowEventData.NewContext = item.Context;
 
                 this.logger.LogDebug($"Accepted trigger {trigger.Id} in instance {item.Id}", trigger, item);
             }
@@ -118,6 +170,8 @@ namespace Marain.Workflows
                 {
                     item.Status = WorkflowStatus.Faulted;
                     item.IsDirty = true;
+                    workflowEventData.NewStatus = item.Status;
+                    workflowEventType = WorkflowEventTypes.InstanceFaulted;
                 }
             }
             finally
@@ -125,6 +179,13 @@ namespace Marain.Workflows
                 if (item?.IsDirty == true)
                 {
                     await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(item, partitionKey).ConfigureAwait(false);
+                    await this.cloudEventPublisher.PublishWorkflowEventDataAsync(
+                        this.cloudEventSource,
+                        workflowEventType,
+                        item.Id,
+                        workflowEventData.ContentType,
+                        workflowEventData,
+                        workflow.WorkflowEventSubscriptions).ConfigureAwait(false);
                 }
             }
         }
@@ -205,7 +266,7 @@ namespace Marain.Workflows
         /// See the documentation for the <see cref="AcceptTriggerAsync(Workflow, WorkflowState, WorkflowInstance, IWorkflowTrigger)"/>
         /// for a full explanation of the processing steps.
         /// </remarks>
-        private async Task<WorkflowState> AcceptTriggerAsync(
+        private async Task<WorkflowTransition> AcceptTriggerAsync(
             WorkflowInstance instance,
             IWorkflowTrigger trigger)
         {
@@ -214,12 +275,12 @@ namespace Marain.Workflows
 
             if (instance.Status == WorkflowStatus.Faulted)
             {
-                return state;
+                return null;
             }
 
             if (instance.Status == WorkflowStatus.Complete)
             {
-                return state;
+                return null;
             }
 
             return await this.AcceptTriggerAsync(workflow, state, instance, trigger).ConfigureAwait(false);
@@ -318,7 +379,7 @@ namespace Marain.Workflows
         /// property is set to true to ensure that the instance is saved by the <see cref="IWorkflowEngine" />.
         /// </para>
         /// </remarks>
-        private async Task<WorkflowState> AcceptTriggerAsync(
+        private async Task<WorkflowTransition> AcceptTriggerAsync(
             Workflow workflow,
             WorkflowState state,
             WorkflowInstance instance,
@@ -333,7 +394,7 @@ namespace Marain.Workflows
                     instance,
                     trigger);
                 instance.Status = WorkflowStatus.Waiting;
-                return state;
+                return null;
             }
 
             WorkflowTransition transition = await this.FindTransitionAsync(state.Transitions, instance, trigger).ConfigureAwait(false);
@@ -345,7 +406,7 @@ namespace Marain.Workflows
                     instance,
                     trigger);
                 instance.Status = WorkflowStatus.Waiting;
-                return state;
+                return transition;
             }
 
             WorkflowState targetState = workflow.GetState(transition.TargetStateId);
@@ -366,7 +427,7 @@ namespace Marain.Workflows
                     instance,
                     trigger);
                 instance.Status = WorkflowStatus.Waiting;
-                return state;
+                return transition;
             }
 
             this.logger.LogDebug(
@@ -396,7 +457,7 @@ namespace Marain.Workflows
 
             // Then update the instance status, set the new state
             instance.IsDirty = true;
-            return targetState;
+            return transition;
         }
 
         /// <summary>

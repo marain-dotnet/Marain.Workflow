@@ -4,9 +4,6 @@
 
 namespace Marain.Workflows.Api.Specs.Steps
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-#pragma warning disable SA1600 // Elements should be documented
-
     public static class TestWorkflowFactory
     {
         public static Workflow Get(string name)
@@ -22,30 +19,30 @@ namespace Marain.Workflows.Api.Specs.Steps
         {
             var workflow = new Workflow { DisplayName = "Simple expenses workflow" };
 
-            WorkflowState waitingToBeSubmitted = workflow.CreateState(displayName: "Waiting to be submitted");
-            WorkflowState waitingForApproval = workflow.CreateState(displayName: "Waiting for approval");
-            WorkflowState waitingForPayment = workflow.CreateState(displayName: "Waiting for payment");
-            WorkflowState paid = workflow.CreateState(displayName: "Paid");
-            WorkflowState abandoned = workflow.CreateState(displayName: "Abandoned");
+            WorkflowState waitingToBeSubmitted = workflow.CreateState("waiting-for-submission", "Waiting to be submitted");
+            WorkflowState waitingForApproval = workflow.CreateState("waiting-for-approval", "Waiting for approval");
+            WorkflowState waitingForPayment = workflow.CreateState("waiting-for-payment", "Waiting for payment");
+            WorkflowState paid = workflow.CreateState("paid", "Paid");
+            WorkflowState abandoned = workflow.CreateState("abandoned", "Abandoned");
 
             workflow.SetInitialState(waitingToBeSubmitted);
 
-            WorkflowTransition updateTransition = waitingToBeSubmitted.CreateTransition(waitingToBeSubmitted, displayName: "Update");
+            WorkflowTransition updateTransition = waitingToBeSubmitted.CreateTransition(waitingToBeSubmitted, "update", "Update");
             updateTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Update" });
 
-            WorkflowTransition submitTransition = waitingToBeSubmitted.CreateTransition(waitingForApproval, displayName: "Submit");
+            WorkflowTransition submitTransition = waitingToBeSubmitted.CreateTransition(waitingForApproval, "submit", "Submit");
             submitTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Submit" });
 
-            WorkflowTransition abandonTransition = waitingToBeSubmitted.CreateTransition(abandoned, displayName: "Abandon");
+            WorkflowTransition abandonTransition = waitingToBeSubmitted.CreateTransition(abandoned, "abandon", "Abandon");
             abandonTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Abandon" });
 
-            WorkflowTransition approveTransition = waitingForApproval.CreateTransition(waitingForPayment, displayName: "Approve");
+            WorkflowTransition approveTransition = waitingForApproval.CreateTransition(waitingForPayment, "approve", "Approve");
             approveTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Approve" });
 
-            WorkflowTransition rejectTransition = waitingForApproval.CreateTransition(waitingToBeSubmitted, displayName: "Reject");
+            WorkflowTransition rejectTransition = waitingForApproval.CreateTransition(waitingToBeSubmitted, "reject", "Reject");
             rejectTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Reject" });
 
-            WorkflowTransition payTransition = waitingForPayment.CreateTransition(paid, displayName: "Pay");
+            WorkflowTransition payTransition = waitingForPayment.CreateTransition(paid, "pay", "Pay");
             payTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Pay" });
 
             return workflow;
