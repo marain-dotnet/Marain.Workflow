@@ -32,7 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </remarks>
         public static IServiceCollection AddTenantedWorkflowEngineFactory(this IServiceCollection collection)
         {
-            collection.AddCloudEventPublisher();
+            collection.AddTenantedCloudEventPublisher();
             collection.AddSingleton(
                 sp =>
             {

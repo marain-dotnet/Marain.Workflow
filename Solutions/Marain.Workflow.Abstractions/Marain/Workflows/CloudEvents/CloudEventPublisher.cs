@@ -5,7 +5,6 @@
 namespace Marain.Workflows.CloudEvents
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
@@ -29,20 +28,24 @@ namespace Marain.Workflows.CloudEvents
         private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private readonly ILogger<CloudEventPublisher> logger;
+        private readonly string marainTenantId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudEventPublisher"/> class.
         /// </summary>
+        /// <param name="marainTenantId">The Marain Tenant Id to add to published events as an extension.</param>
         /// <param name="httpClient">The <see cref="HttpClient"/> to use when POSTing event data to subscribers.</param>
         /// <param name="serviceIdentityTokenSource">The <see cref="IServiceIdentityTokenSource"/> that will be used to aquire authentication tokens.</param>
         /// <param name="serializerSettingsProvider">The current <see cref="IJsonSerializerSettingsProvider"/>.</param>
         /// <param name="logger">The logger.</param>
         public CloudEventPublisher(
+            string marainTenantId,
             HttpClient httpClient,
             IServiceIdentityTokenSource serviceIdentityTokenSource,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             ILogger<CloudEventPublisher> logger)
         {
+            this.marainTenantId = marainTenantId;
             this.httpClient = httpClient;
             this.serviceIdentityTokenSource = serviceIdentityTokenSource;
             this.serializerSettingsProvider = serializerSettingsProvider;
@@ -68,6 +71,7 @@ namespace Marain.Workflows.CloudEvents
                 time = InstantPattern.ExtendedIso.Format(SystemClock.Instance.GetCurrentInstant()),
                 datacontenttype = dataContentType,
                 data = eventData,
+                maraintenantid = this.marainTenantId,
             };
 
             return Task.WhenAll(destinationUris.Select(destination => this.PublishWithRetryAsync(source, subject, cloudEvent, destination)));

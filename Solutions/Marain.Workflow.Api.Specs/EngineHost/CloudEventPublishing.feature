@@ -25,18 +25,19 @@ Scenario: Subscriber receives event when a workflow instance is created
 	Then I should have received a 201 status code from the HTTP request
 	And there should be a workflow instance with the id 'instance' in the workflow instance store
 	And a CloudEvent should have been published to the subscriber called 'Subscriber'
-	| Index | PropertyPath                    | Value                                                                  |
-	| 0     | source                          | azuresubscriptionid.workflowresourcegroupname.{tenantId}               |
-	| 0     | specversion                     | 1.0                                                                    |
-	| 0     | subject                         | instance                                                               |
-	| 0     | type                            | io.marain.workflow.instance.created                                    |
-	| 0     | datacontenttype                 | application/marain.workflows.workflowinstance.creationcloudeventdata   |
-	| 0     | data.newState                   | waiting-for-submission                                                 |
-	| 0     | data.newStatus                  | waiting                                                                |
-	| 0     | data.suppliedContext.Claimant   | J George                                                               |
-	| 0     | data.suppliedContext.CostCenter | GD3724                                                                 |
-	| 0     | data.newContext.Claimant        | J George                                                               |
-	| 0     | data.newContext.CostCenter      | GD3724                                                                 |
+	| Index | PropertyPath                    | Value                                                                |
+	| 0     | source                          | azuresubscriptionid.workflowresourcegroupname.{tenantId}             |
+	| 0     | specversion                     | 1.0                                                                  |
+	| 0     | subject                         | instance                                                             |
+	| 0     | type                            | io.marain.workflow.instance.created                                  |
+	| 0     | datacontenttype                 | application/marain.workflows.workflowinstance.creationcloudeventdata |
+	| 0     | maraintenantid                  | {tenantId}                                                           |
+	| 0     | data.newState                   | waiting-for-submission                                               |
+	| 0     | data.newStatus                  | waiting                                                              |
+	| 0     | data.suppliedContext.Claimant   | J George                                                             |
+	| 0     | data.suppliedContext.CostCenter | GD3724                                                               |
+	| 0     | data.newContext.Claimant        | J George                                                             |
+	| 0     | data.newContext.CostCenter      | GD3724                                                               |
 
 Scenario: Single subscriber receives event when workflow state changes
 	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-2' and event subscriptions
@@ -62,6 +63,7 @@ Scenario: Single subscriber receives event when workflow state changes
 	| 1     | subject                         | instance                                                               |
 	| 1     | type                            | io.marain.workflow.instance.transition-completed                       |
 	| 1     | datacontenttype                 | application/marain.workflows.workflowinstance.transitioncloudeventdata |
+	| 1     | maraintenantid                  | {tenantId}                                                             |
 	| 1     | data.previousState              | waiting-for-submission                                                 |
 	| 1     | data.previousStatus             | waiting                                                                |
 	| 1     | data.newState                   | waiting-for-approval                                                   |

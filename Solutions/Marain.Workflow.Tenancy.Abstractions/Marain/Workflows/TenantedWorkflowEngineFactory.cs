@@ -20,7 +20,7 @@ namespace Marain.Workflows
         private readonly ILogger<IWorkflowEngine> logger;
         private readonly ITenantedWorkflowStoreFactory workflowStoreFactory;
         private readonly ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory;
-        private readonly ICloudEventDataPublisher cloudEventPublisher;
+        private readonly ITenantedCloudEventPublisherFactory cloudEventPublisherFactory;
         private readonly TenantedWorkflowEngineFactoryConfiguration configuration;
 
         /// <summary>
@@ -30,21 +30,21 @@ namespace Marain.Workflows
         /// <param name="workflowStoreFactory">The factory for retrieving tenanted workflow stores.</param>
         /// <param name="workflowInstanceStoreFactory">The factory for retrieving tenanted workflow instance stores.</param>
         /// <param name="leaseProvider">The lease provider.</param>
-        /// <param name="cloudEventPublisher">The publisher for workflow events.</param>
+        /// <param name="cloudEventPublisherFactory">The publisher factory for workflow events.</param>
         /// <param name="logger">The logger.</param>
         public TenantedWorkflowEngineFactory(
             TenantedWorkflowEngineFactoryConfiguration configuration,
             ITenantedWorkflowStoreFactory workflowStoreFactory,
             ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory,
             ILeaseProvider leaseProvider,
-            ICloudEventDataPublisher cloudEventPublisher,
+            ITenantedCloudEventPublisherFactory cloudEventPublisherFactory,
             ILogger<IWorkflowEngine> logger)
         {
             this.leaseProvider = leaseProvider ?? throw new ArgumentNullException(nameof(leaseProvider));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.workflowStoreFactory = workflowStoreFactory ?? throw new ArgumentNullException(nameof(workflowStoreFactory));
             this.workflowInstanceStoreFactory = workflowInstanceStoreFactory ?? throw new ArgumentNullException(nameof(workflowInstanceStoreFactory));
-            this.cloudEventPublisher = cloudEventPublisher ?? throw new ArgumentNullException(nameof(cloudEventPublisher));
+            this.cloudEventPublisherFactory = cloudEventPublisherFactory ?? throw new ArgumentNullException(nameof(cloudEventPublisherFactory));
             this.configuration = configuration;
         }
 
@@ -56,7 +56,7 @@ namespace Marain.Workflows
                 await this.workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenant).ConfigureAwait(false),
                 this.leaseProvider,
                 $"{this.configuration.CloudEventBaseSourceName}.{tenant.Id}",
-                this.cloudEventPublisher,
+                await this.cloudEventPublisherFactory.GetCloudEventPublisherAsync(tenant).ConfigureAwait(false),
                 this.logger);
         }
     }
