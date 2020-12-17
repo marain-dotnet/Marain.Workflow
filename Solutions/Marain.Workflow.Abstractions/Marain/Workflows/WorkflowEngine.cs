@@ -72,7 +72,7 @@ namespace Marain.Workflows
         {
             // We need to clone the original context here in case it's modified by any of the code which creates the
             // workflow instance.
-            var originalSuppliedContext = context.ToDictionary(x => x.Key, x => x.Value);
+            var originalSuppliedContext = context?.ToDictionary(x => x.Key, x => x.Value);
 
             WorkflowInstance newInstance = await Retriable.RetryAsync(() =>
                 this.CreateWorkflowInstanceAsync(workflowId, workflowPartitionKey, instanceId, instancePartitionKey, context)).ConfigureAwait(false);
