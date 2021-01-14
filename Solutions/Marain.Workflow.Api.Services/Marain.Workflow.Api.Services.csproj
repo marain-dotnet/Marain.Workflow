@@ -15,9 +15,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Marain.Operations.ControlClient" Version="1.0.1" />
-    <PackageReference Include="Menes.Abstractions" Version="1.1.0" />
-    <PackageReference Include="Marain.Services.Tenancy" Version="1.1.2" />
+    <PackageReference Include="Marain.Operations.ControlClient" Version="1.1.0" />
+    <PackageReference Include="Menes.Abstractions" Version="1.1.1" />
+    <PackageReference Include="Marain.Services.Tenancy" Version="2.0.0" />
   </ItemGroup>
   
   <ItemGroup>

@@ -53,7 +53,7 @@ namespace Marain.Workflows
         /// </remarks>
         public IDictionary<string, string> Context
         {
-            get => this.context ?? (this.context = new Dictionary<string, string>());
+            get => this.context ??= new Dictionary<string, string>();
 
             set => this.context = value;
         }
