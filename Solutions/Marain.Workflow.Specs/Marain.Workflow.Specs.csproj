@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="1.0.2" />
-    <PackageReference Include="Corvus.Leasing.InMemory" Version="1.0.0" />
+    <PackageReference Include="Corvus.Leasing.InMemory" Version="1.0.2" />
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="1.0.0" />
     <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="1.0.2" />
     <PackageReference Include="Corvus.Testing.SpecFlow" Version="1.0.2" />
