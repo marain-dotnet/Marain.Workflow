@@ -7,7 +7,6 @@ namespace Marain.Workflows.Specs.Steps
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Corvus.ContentHandling;
     using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.TestObjects;
     using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +17,13 @@ namespace Marain.Workflows.Specs.Steps
     [Binding]
     public class WorkflowInstanceSteps : Steps
     {
+        [Given("I have a simple two-state workflow definition with Id '(.*)'")]
+        public void GivenIHaveASimpleTwo_StateWorkflowDefinitionWithId(string instanceId)
+        {
+            Workflow workflow = SimpleWorkflowFactory.CreateTwoStateWorkflow(instanceId);
+            this.ScenarioContext.Set(workflow, instanceId);
+        }
+
         [Given("I have created a new workflow instance")]
         [When("I create a new workflow instance")]
         public void WhenICreateANewWorkflowInstance(Table parameters)
@@ -25,7 +31,10 @@ namespace Marain.Workflows.Specs.Steps
             string instanceId = parameters.Rows[0]["InstanceId"];
             string workflowId = parameters.Rows[0]["WorkflowId"];
             string contextName = parameters.Rows[0]["Context"].Trim('{', '}');
-            Dictionary<string, string> context = this.ScenarioContext.Get<Dictionary<string, string>>(contextName);
+            Dictionary<string, string> context = string.IsNullOrEmpty(contextName)
+                ? new Dictionary<string, string>()
+                : this.ScenarioContext.Get<Dictionary<string, string>>(contextName);
+
             Workflow workflow = this.ScenarioContext.Get<Workflow>(workflowId);
 
             var instance = new WorkflowInstance(instanceId, workflow, context);
@@ -105,6 +114,21 @@ namespace Marain.Workflows.Specs.Steps
             try
             {
                 instance.SetStateExited(actionResult);
+            }
+            catch (Exception ex)
+            {
+                this.ScenarioContext.Set(ex);
+            }
+        }
+
+        [Given("I have set the workflow instance Id '(.*)' as having exited the current state")]
+        public void GivenIHaveSetTheWorkflowInstanceIdAsHavingExitedTheCurrentState(string instanceId)
+        {
+            WorkflowInstance instance = this.ScenarioContext.Get<WorkflowInstance>(instanceId);
+
+            try
+            {
+                instance.SetStateExited(WorkflowActionResult.Empty);
             }
             catch (Exception ex)
             {

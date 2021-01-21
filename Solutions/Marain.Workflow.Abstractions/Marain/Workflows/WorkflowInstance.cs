@@ -234,6 +234,7 @@ namespace Marain.Workflows
                 this.internalState.Version + 1,
                 this.internalState.ActiveTransitionState.TransitionStartedEventVersion,
                 enteredState.Id,
+                enteredState.Transitions.Count == 0,
                 actionResult.ContextItemsToAddOrUpdate,
                 actionResult.ContextItemsToRemove,
                 interests));
@@ -314,9 +315,7 @@ namespace Marain.Workflows
             this.internalState.Interests = domainEvent.Interests;
             this.internalState.Context = this.BuildNewContext(domainEvent.AddedAndUpdatedContextItems, domainEvent.RemovedContextItems);
             this.internalState.ActiveTransitionState = null;
-
-            // TODO: Set status to Complete if this is the final state.
-            this.internalState.Status = WorkflowStatus.Waiting;
+            this.internalState.Status = domainEvent.IsWorkflowComplete ? WorkflowStatus.Complete : WorkflowStatus.Waiting;
         }
 
         private void ApplyEvent(WorkflowInstanceStateExitedEvent domainEvent)

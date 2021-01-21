@@ -117,21 +117,21 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have created and persisted a workflow containing an external action with id \'ex" +
                         "ternal-action-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table98 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table103 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table98.AddRow(new string[] {
+                table103.AddRow(new string[] {
                             "include1",
                             "value1"});
-                table98.AddRow(new string[] {
+                table103.AddRow(new string[] {
                             "include2",
                             "value2"});
-                table98.AddRow(new string[] {
+                table103.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
 #line 12
  testRunner.And("I have created and persisted a new instance with Id \'id1\' of the workflow with Id" +
-                        " \'external-action-workflow\' and supplied the following context items", ((string)(null)), table98, "And ");
+                        " \'external-action-workflow\' and supplied the following context items", ((string)(null)), table103, "And ");
 #line hidden
 #line 17
     testRunner.And("the external service will return a 200 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -183,20 +183,20 @@ this.ScenarioInitialize(scenarioInfo);
 #line 32
  testRunner.And("the workflow instance with Id \'id1\' should be in the state called \'Done\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table99 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table104 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table99.AddRow(new string[] {
+                table104.AddRow(new string[] {
                             "include1",
                             "value1"});
-                table99.AddRow(new string[] {
+                table104.AddRow(new string[] {
                             "include2",
                             "value2"});
-                table99.AddRow(new string[] {
+                table104.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
 #line 33
-    testRunner.And("the workflow instance with Id \'id1\' should contain context items", ((string)(null)), table99, "And ");
+    testRunner.And("the workflow instance with Id \'id1\' should contain context items", ((string)(null)), table104, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -235,43 +235,43 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have created and persisted a workflow containing an external action with id \'ex" +
                         "ternal-action-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table100 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table105 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table100.AddRow(new string[] {
+                table105.AddRow(new string[] {
                             "include1",
                             "value1"});
-                table100.AddRow(new string[] {
+                table105.AddRow(new string[] {
                             "include2",
                             "value2"});
-                table100.AddRow(new string[] {
+                table105.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
 #line 42
  testRunner.And("I have created and persisted a new instance with Id \'id2\' of the workflow with Id" +
-                        " \'external-action-workflow\' and supplied the following context items", ((string)(null)), table100, "And ");
+                        " \'external-action-workflow\' and supplied the following context items", ((string)(null)), table105, "And ");
 #line hidden
 #line 47
     testRunner.And("the external service will return a 200 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table101 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table106 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table101.AddRow(new string[] {
+                table106.AddRow(new string[] {
                             "include1",
                             "value4"});
-                table101.AddRow(new string[] {
+                table106.AddRow(new string[] {
                             "added1",
                             "value5"});
 #line 48
-    testRunner.And("the external service response will specify context items to upsert", ((string)(null)), table101, "And ");
+    testRunner.And("the external service response will specify context items to upsert", ((string)(null)), table106, "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table102 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table107 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key"});
-                table102.AddRow(new string[] {
+                table107.AddRow(new string[] {
                             "include2"});
 #line 52
-    testRunner.And("the external service response will specify context items to remove", ((string)(null)), table102, "And ");
+    testRunner.And("the external service response will specify context items to remove", ((string)(null)), table107, "And ");
 #line hidden
 #line 55
  testRunner.And("the workflow trigger queue is ready to process new triggers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -320,20 +320,20 @@ this.ScenarioInitialize(scenarioInfo);
 #line 69
  testRunner.And("the workflow instance with Id \'id2\' should be in the state called \'Done\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table103 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table108 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table103.AddRow(new string[] {
+                table108.AddRow(new string[] {
                             "include1",
                             "value4"});
-                table103.AddRow(new string[] {
+                table108.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
-                table103.AddRow(new string[] {
+                table108.AddRow(new string[] {
                             "added1",
                             "value5"});
 #line 70
-    testRunner.And("the workflow instance with Id \'id2\' should contain context items", ((string)(null)), table103, "And ");
+    testRunner.And("the workflow instance with Id \'id2\' should contain context items", ((string)(null)), table108, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -372,21 +372,21 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("I have created and persisted a workflow containing an external action with id \'ex" +
                         "ternal-action-workflow\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table104 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table109 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table104.AddRow(new string[] {
+                table109.AddRow(new string[] {
                             "include1",
                             "value1"});
-                table104.AddRow(new string[] {
+                table109.AddRow(new string[] {
                             "include2",
                             "value2"});
-                table104.AddRow(new string[] {
+                table109.AddRow(new string[] {
                             "dontinclude",
                             "value3"});
 #line 79
  testRunner.And("I have created and persisted a new instance with Id \'id3\' of the workflow with Id" +
-                        " \'external-action-workflow\' and supplied the following context items", ((string)(null)), table104, "And ");
+                        " \'external-action-workflow\' and supplied the following context items", ((string)(null)), table109, "And ");
 #line hidden
 #line 84
     testRunner.And("the external service will return a 500 status", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

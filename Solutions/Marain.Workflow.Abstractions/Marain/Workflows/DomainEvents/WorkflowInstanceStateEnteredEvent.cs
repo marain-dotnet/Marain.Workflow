@@ -24,6 +24,7 @@ namespace Marain.Workflows.DomainEvents
         /// <param name="sequenceNumber">The sequence number of the event. Should be monotonically increasing for the aggregate.</param>
         /// <param name="transitionStartedSequenceNumber">The <see cref="TransitionStartedSequenceNumber"/>.</param>
         /// <param name="enteredStateId">The <see cref="EnteredStateId"/>.</param>
+        /// <param name="isWorkflowComplete">The <see cref="IsWorkflowComplete"/> flag.</param>
         /// <param name="addedAndUpdatedContextItems">The <see cref="AddedAndUpdatedContextItems"/>.</param>
         /// <param name="removedContextItems">The <see cref="RemovedContextItems"/>.</param>
         /// <param name="interests">The <see cref="Interests"/>.</param>
@@ -32,6 +33,7 @@ namespace Marain.Workflows.DomainEvents
             long sequenceNumber,
             long transitionStartedSequenceNumber,
             string enteredStateId,
+            bool isWorkflowComplete,
             IEnumerable<KeyValuePair<string, string>> addedAndUpdatedContextItems,
             IEnumerable<string> removedContextItems,
             IEnumerable<string> interests)
@@ -43,6 +45,7 @@ namespace Marain.Workflows.DomainEvents
             this.AddedAndUpdatedContextItems = addedAndUpdatedContextItems.ToImmutableDictionary();
             this.RemovedContextItems = removedContextItems.ToImmutableArray();
             this.Interests = interests.ToImmutableArray();
+            this.IsWorkflowComplete = isWorkflowComplete;
         }
 
         /// <inheritdoc/>
@@ -58,6 +61,11 @@ namespace Marain.Workflows.DomainEvents
         /// this event resulted from initializing the workflow instance, the value will be 0.
         /// </summary>
         public long TransitionStartedSequenceNumber { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the workflow instance has reached an end state in the workflow.
+        /// </summary>
+        public bool IsWorkflowComplete { get; }
 
         /// <summary>
         /// Gets the list of context items that were added/updated as a result of exiting the state.

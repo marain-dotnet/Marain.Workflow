@@ -305,3 +305,29 @@ Scenario: Cannot record transition actions prior to exiting the previous state
 	Then an 'InvalidOperationException' is thrown
 	Then the workflow instance with Id 'instance1' should have 0 uncommitted events
 
+Scenario: Entering the final state in the workflow results in a status of Complete
+	Given I have a simple two-state workflow definition with Id 'simple2state'
+	And I have created a new workflow instance
+	| InstanceId | WorkflowId   | Context |
+	| instance1  | simple2state |         |
+	And I have set the workflow instance Id 'instance1' as having entered the state 'first'
+	And I have started the transition 'transition' for the workflow instance with Id 'instance1' a trigger of type 'application/vnd.endjin.datacatalog.createcatalogitemtrigger'
+	| PropertyName  | Value |
+	| CatalogItemId | id1   |
+	And I have set the workflow instance Id 'instance1' as having exited the current state
+	And I have persisted the workflow instance with Id 'instance1' to storage
+	When I set the workflow instance Id 'instance1' as having entered the state 'last' with the following context updates:
+	| Operation   | Key      | Value  |
+	| AddOrUpdate | Context1 | Value1 |
+	| AddOrUpdate | Context2 | Value2 |
+	Then the workflow instance with Id 'instance1' should have 1 uncommitted event
+	And the workflow instance with Id 'instance1' should have the following properties:
+	| Property | Value    |
+	| Status   | Complete |
+	| StateId  | last     |
+	| IsDirty  | true     |
+	And the workflow instance with Id 'instance1' should have the following context:
+	| Key      | Value  |
+	| Context1 | Value1 |
+	| Context2 | Value2 |
+
