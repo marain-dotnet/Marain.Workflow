@@ -34,15 +34,16 @@ namespace Marain.Workflows.Storage
         public Container Container { get; }
 
         /// <inheritdoc/>
-        public async Task<WorkflowInstance> GetWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
+        public Task<WorkflowInstance> GetWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
         {
             try
             {
-                return await Retriable.RetryAsync(() =>
-                    this.Container.ReadItemAsync<WorkflowInstance>(
-                        workflowInstanceId,
-                        new PartitionKey(partitionKey ?? workflowInstanceId)))
-                    .ConfigureAwait(false);
+                ////return await Retriable.RetryAsync(() =>
+                ////    this.Container.ReadItemAsync<WorkflowInstance>(
+                ////        workflowInstanceId,
+                ////        new PartitionKey(partitionKey ?? workflowInstanceId)))
+                ////    .ConfigureAwait(false);
+                return Task.FromResult((WorkflowInstance)null);
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
@@ -53,16 +54,17 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public async Task UpsertWorkflowInstanceAsync(WorkflowInstance workflowInstance, string partitionKey = null)
+        public Task UpsertWorkflowInstanceAsync(WorkflowInstance workflowInstance, string partitionKey = null)
         {
             try
             {
-                await Retriable.RetryAsync(() =>
-                    this.Container.UpsertItemAsync(
-                        workflowInstance,
-                        new PartitionKey(partitionKey ?? workflowInstance.Id),
-                        new ItemRequestOptions { IfMatchEtag = workflowInstance.ETag }))
-                    .ConfigureAwait(false);
+                ////await Retriable.RetryAsync(() =>
+                ////    this.Container.UpsertItemAsync(
+                ////        workflowInstance,
+                ////        new PartitionKey(partitionKey ?? workflowInstance.Id),
+                ////        new ItemRequestOptions { IfMatchEtag = workflowInstance.ETag }))
+                ////    .ConfigureAwait(false);
+                return Task.CompletedTask;
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
@@ -71,15 +73,16 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public async Task DeleteWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
+        public Task DeleteWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
         {
             try
             {
-                await Retriable.RetryAsync(() =>
-                    this.Container.DeleteItemAsync<WorkflowInstance>(
-                        workflowInstanceId,
-                        new PartitionKey(partitionKey ?? workflowInstanceId)))
-                    .ConfigureAwait(false);
+                ////await Retriable.RetryAsync(() =>
+                ////    this.Container.DeleteItemAsync<WorkflowInstance>(
+                ////        workflowInstanceId,
+                ////        new PartitionKey(partitionKey ?? workflowInstanceId)))
+                ////    .ConfigureAwait(false);
+                return Task.CompletedTask;
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {

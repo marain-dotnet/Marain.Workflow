@@ -7,7 +7,6 @@ namespace Marain.Workflows.Specs.Bindings
     using System.Linq;
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
-    using Corvus.Sql.Tenancy;
     using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Subjects;
@@ -21,6 +20,23 @@ namespace Marain.Workflows.Specs.Bindings
     [Binding]
     public static class WorkflowContainerBindings
     {
+        /// <summary>
+        /// Initialises the content type factory for use with specs that are more "unit test" in nature.
+        /// </summary>
+        /// <param name="scenarioContext">The current scenario context.</param>
+        [BeforeScenario("@perScenarioContainer", Order = ContainerBeforeScenarioOrder.PopulateServiceCollection)]
+        public static void InitializeContentFactory(ScenarioContext scenarioContext)
+        {
+            ContainerBindings.ConfigureServices(
+                scenarioContext,
+                services =>
+                {
+                    services.AddJsonSerializerSettings();
+                    services.RegisterCoreWorkflowContentTypes();
+                    services.AddContent(factory => factory.RegisterTestContentTypes());
+                });
+        }
+
         /// <summary>
         /// Initializes the container before each feature's tests are run.
         /// </summary>
@@ -56,11 +72,6 @@ namespace Marain.Workflows.Specs.Bindings
                         AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
                     });
 
-                    services.AddTenantSqlConnectionFactory(new TenantSqlConnectionFactoryOptions
-                    {
-                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
-                    });
-
                     services.AddInMemoryWorkflowTriggerQueue();
                     services.AddInMemoryLeasing();
 
@@ -71,11 +82,6 @@ namespace Marain.Workflows.Specs.Bindings
                     {
                         services.AddTenantedAzureCosmosWorkflowStore();
                         services.AddTenantedAzureCosmosWorkflowInstanceStore();
-                    }
-                    else if (featureContext.FeatureInfo.Tags.Any(t => t == "useSqlStores"))
-                    {
-                        services.AddTenantedSqlWorkflowStore();
-                        services.AddTenantedSqlWorkflowInstanceStore();
                     }
                     else if (featureContext.FeatureInfo.Tags.Any(t => t == "useAzureBlobStore"))
                     {

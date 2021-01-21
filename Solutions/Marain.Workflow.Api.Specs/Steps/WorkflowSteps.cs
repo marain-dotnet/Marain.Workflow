@@ -6,6 +6,7 @@ namespace Marain.Workflows.Api.Specs.Steps
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using System.Net;
     using System.Threading;
@@ -206,7 +207,7 @@ namespace Marain.Workflows.Api.Specs.Steps
         {
             WorkflowInstance instance = await this.GetWorkflowInstance(instanceId).ConfigureAwait(false);
             var expected = (IDictionary<string, string>)this.scenarioContext[itemName];
-            IDictionary<string, string> actual = instance.Context;
+            IImmutableDictionary<string, string> actual = instance.Context;
 
             CollectionAssert.AreEquivalent(expected, actual);
         }

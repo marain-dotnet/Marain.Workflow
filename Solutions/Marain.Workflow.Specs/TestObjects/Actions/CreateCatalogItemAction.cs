@@ -24,7 +24,7 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
 
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        public async Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
+        public async Task<WorkflowActionResult> ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
         {
             var item = new CatalogItem
                            {
@@ -38,6 +38,8 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
 
             var repository = this.repositoryFactory.GetRepository();
             await repository.UpsertItemAsync(item).ConfigureAwait(false);
+
+            return WorkflowActionResult.Empty;
         }
 
         public string ContentType => RegisteredContentType;

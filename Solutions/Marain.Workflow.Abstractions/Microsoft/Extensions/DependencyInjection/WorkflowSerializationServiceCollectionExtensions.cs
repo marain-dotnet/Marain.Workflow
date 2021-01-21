@@ -42,7 +42,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 factory.RegisterTransientContent<WorkflowTransition>();
                 factory.RegisterTransientContent<WorkflowState>();
                 factory.RegisterTransientContent<Workflow>();
-                factory.RegisterTransientContent<WorkflowInstance>();
                 factory.RegisterTransientContent<ExternalServiceWorkflowRequest>();
                 factory.RegisterTransientContent<ExternalServiceWorkflowResponse>();
             });

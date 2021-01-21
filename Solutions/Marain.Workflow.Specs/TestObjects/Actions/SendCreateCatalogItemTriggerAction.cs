@@ -24,11 +24,13 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
             this.queue = queue;
         }
 
-        public Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
+        public async Task<WorkflowActionResult> ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
         {
             var newTrigger = new CreateCatalogItemTrigger { CatalogItemId = instance.Id };
 
-            return this.queue.EnqueueTriggerAsync(newTrigger, default(Guid));
+            await this.queue.EnqueueTriggerAsync(newTrigger, default(Guid)).ConfigureAwait(false);
+
+            return WorkflowActionResult.Empty;
         }
 
         public string ContentType => RegisteredContentType;

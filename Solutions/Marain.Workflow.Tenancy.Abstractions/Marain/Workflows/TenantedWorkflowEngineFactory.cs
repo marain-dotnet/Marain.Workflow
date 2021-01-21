@@ -55,8 +55,6 @@ namespace Marain.Workflows
                 await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false),
                 await this.workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenant).ConfigureAwait(false),
                 this.leaseProvider,
-                $"{this.configuration.CloudEventBaseSourceName}.{tenant.Id}",
-                await this.cloudEventPublisherFactory.GetCloudEventPublisherAsync(tenant).ConfigureAwait(false),
                 this.logger);
         }
     }

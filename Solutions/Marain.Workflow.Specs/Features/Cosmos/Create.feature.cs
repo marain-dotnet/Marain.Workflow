@@ -126,18 +126,18 @@ this.ScenarioInitialize(scenarioInfo);
 #line 10
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table35 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table11.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "Identifier",
                             "identifier1"});
-                table11.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "Type",
                             "t1"});
 #line 15
  testRunner.When("I create and persist a new instance with Id \'new-instance\' of the workflow with I" +
-                        "d \'dc-workflow\' and supply the following context items", ((string)(null)), table11, "When ");
+                        "d \'dc-workflow\' and supply the following context items", ((string)(null)), table35, "When ");
 #line hidden
 #line 19
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -160,18 +160,18 @@ this.FeatureBackground();
 #line 24
  testRunner.And("the data catalog item with Id \'new-instance\' should have a Type of \'t1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table36 = new TechTalk.SpecFlow.Table(new string[] {
                             "Message"});
-                table12.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Entering state \'Waiting for initialization\'"});
-                table12.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Exiting state \'Waiting for initialization\'"});
-                table12.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Executing transition \'Create catalog item\'"});
-                table12.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Entering state \'Waiting for documentation\'"});
 #line 25
- testRunner.And("the following trace messages should have been recorded", ((string)(null)), table12, "And ");
+ testRunner.And("the following trace messages should have been recorded", ((string)(null)), table36, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -207,15 +207,15 @@ this.ScenarioInitialize(scenarioInfo);
 #line 10
 this.FeatureBackground();
 #line hidden
-                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table37 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
                             "Value"});
-                table13.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "Type",
                             "t1"});
 #line 33
  testRunner.When("I create and persist a new instance with Id \'new-instance-incomplete\' of the work" +
-                        "flow with Id \'dc-workflow\' and supply the following context items", ((string)(null)), table13, "When ");
+                        "flow with Id \'dc-workflow\' and supply the following context items", ((string)(null)), table37, "When ");
 #line hidden
 #line 36
  testRunner.And("I wait for all triggers to be processed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
