@@ -95,6 +95,55 @@ namespace Marain.Workflows.Specs.Steps
             }
         }
 
+        [Given("I have set the workflow instance Id '(.*)' as having exited the current state with the following context updates:")]
+        [When("I set the workflow instance Id '(.*)' as having exited the current state with the following context updates:")]
+        public void WhenISetTheWorkflowInstanceIdAsHavingExitedTheStateWithTheFollowingContextUpdates(string instanceId, Table contextUpdatesTable)
+        {
+            WorkflowActionResult actionResult = this.BuildWorkflowActionResultFrom(contextUpdatesTable);
+            WorkflowInstance instance = this.ScenarioContext.Get<WorkflowInstance>(instanceId);
+
+            try
+            {
+                instance.SetStateExited(actionResult);
+            }
+            catch (Exception ex)
+            {
+                this.ScenarioContext.Set(ex);
+            }
+        }
+
+        [Given("I have set the workflow instance Id '(.*)' as having executed transition actions with the following context updates:")]
+        [When("I set the workflow instance Id '(.*)' as having executed transition actions with the following context updates:")]
+        public void WhenISetTheWorkflowInstanceIdAsHavingExecutedTransitionActionsWithTheFollowingContextUpdates(string instanceId, Table contextUpdatesTable)
+        {
+            WorkflowActionResult actionResult = this.BuildWorkflowActionResultFrom(contextUpdatesTable);
+            WorkflowInstance instance = this.ScenarioContext.Get<WorkflowInstance>(instanceId);
+
+            try
+            {
+                instance.SetTransitionExecuted(actionResult);
+            }
+            catch (Exception ex)
+            {
+                this.ScenarioContext.Set(ex);
+            }
+        }
+
+        [When("I set the workflow instance Id '(.*)' as having executed transition actions")]
+        public void WhenISetTheWorkflowInstanceIdAsHavingExecutedTransitionActions(string instanceId)
+        {
+            WorkflowInstance instance = this.ScenarioContext.Get<WorkflowInstance>(instanceId);
+
+            try
+            {
+                instance.SetTransitionExecuted(WorkflowActionResult.Empty);
+            }
+            catch (Exception ex)
+            {
+                this.ScenarioContext.Set(ex);
+            }
+        }
+
         [Given("I have set the workflow instance Id '(.*)' as having entered the state '(.*)'")]
         [When("I set the workflow instance Id '(.*)' as having entered the state '(.*)'")]
         public void WhenISetTheWorkflowInstanceIdAsHavingEnteredTheState(string instanceId, string stateId)
@@ -177,6 +226,17 @@ namespace Marain.Workflows.Specs.Steps
                         break;
                 }
             }
+        }
+
+        [Then("the workflow instance with Id '(.*)' should have the following context:")]
+        public void ThenTheWorkflowInstanceWithIdShouldHaveTheFollowingContext(string instanceId, Table table)
+        {
+            WorkflowInstance instance = this.ScenarioContext.Get<WorkflowInstance>(instanceId);
+
+            IEnumerable<KeyValuePair<string, string>> data = table.CreateSet<KeyValuePair<string, string>>();
+            var expectedContext = data.ToDictionary(x => x.Key, x => x.Value);
+
+            CollectionAssert.AreEquivalent(expectedContext, instance.Context);
         }
 
         private WorkflowActionResult BuildWorkflowActionResultFrom(Table table)

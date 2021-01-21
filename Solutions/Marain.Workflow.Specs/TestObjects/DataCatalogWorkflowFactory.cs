@@ -98,11 +98,11 @@ namespace Marain.Workflows.Specs.TestObjects
                 "Data Catalog item workflow",
                 "Controls the lifecycle of a data catalog item");
 
-            WorkflowState initializing = workflow.CreateState("waiting-for-documentation", "Waiting for initialization");
-            WorkflowState waitingForDocumentation = workflow.CreateState(displayName: "Waiting for documentation");
-            WorkflowState published = workflow.CreateState(displayName: "Published");
-            WorkflowState deleted = workflow.CreateState(displayName: "Deleted");
-            WorkflowState deprecated = workflow.CreateState(displayName: "Deprecated");
+            WorkflowState initializing = workflow.CreateState("initializing", "Waiting for initialization");
+            WorkflowState waitingForDocumentation = workflow.CreateState("waiting-for-documentation", "Waiting for documentation");
+            WorkflowState published = workflow.CreateState("published", "Published");
+            WorkflowState deleted = workflow.CreateState("deleted", "Deleted");
+            WorkflowState deprecated = workflow.CreateState("deprecated", "Deprecated");
 
             workflow.SetInitialState(initializing);
 
