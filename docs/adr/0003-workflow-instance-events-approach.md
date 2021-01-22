@@ -81,3 +81,14 @@ This is the preferred approach and has the advantage that we can execute multipl
 
 ## Decision
 
+TL;DR: We will adopt option 3: medium verbosity.
+
+Option 1 would give us the simplest solution but would result in an awkward split in responsibilities during transitions. As mentioned above, it makes sense for actions that are part of a set to be executed using same context data. However, it then makes sense for the next set of actions to receive context data which has been updated with the results of previous sets.
+
+For example, during a transition there are three sets of actions that are executed: state exit, transition, and state entry. All of the state exit actions should receive the workflow instance context as it was when the transition started. However, we would expect any updates resulting from those actions to be applied to the context before the transition actions were executed, and we would then expect similar behaviour before the state entry actions were executed.
+
+If we only update the workflow instance at the point where all actions have been executed, it will be necessary for the workflow engine to manage the exact version of the context which gets sent to the different sets of actions. That management belongs inside the `WorkflowInstance`.
+
+Option 2 has a number of advantages, especially in terms of handling error scenarios. It would also, in the event of those error scenarios, give us much greater detail on exactly which actions had succeeded or failed. However, it is too granular; while the events represent the process of what is happening in the workflow engine, they do not represent changes to the actual workflow instance in question. Again, this approach mixes the responsibilities of the workflow engine (managing execution of the actions) and the instance (tracking the changes in the instance that result from those actions being executed).
+
+The third option strikes the correct balance between the two options, allowing for the right division of responsibilities between the workflow instance (tracking state) and the workflow engine (executing actions and updating the workflow instance accordingly).
