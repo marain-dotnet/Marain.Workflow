@@ -52,7 +52,7 @@ We represent "creation and initialisation" as one event (`WorkflowInstanceCreate
 | 15 | `WorkflowInstanceActionExecuted` | An entry action for the target state has executed. |
 | 16 | `WorkflowInstanceActionExecuted` | An entry action for the target state has executed. |
 | 17 | `WorkflowInstanceStateEntered` | Entry actions for the target state have been executed and the workflow instance is now in that state. |
-| 18 | `WorkflowInstanceTransitionComplted` | The transition started at sequence number 7 has been completed. |
+| 18 | `WorkflowInstanceTransitionCompleted` | The transition started at sequence number 7 has been completed. |
 
 ### 3. Medium verbosity
 

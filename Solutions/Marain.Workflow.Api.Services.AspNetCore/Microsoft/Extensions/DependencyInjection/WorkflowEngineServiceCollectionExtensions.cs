@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
     using Microsoft.Extensions.Configuration;
 
     /// <summary>
-    /// Extension methods for configuring DI for the the Workflow Engine OpenApi services.
+    /// Extension methods for configuring DI for the Workflow Engine OpenApi services.
     /// </summary>
     public static class WorkflowEngineServiceCollectionExtensions
     {
@@ -112,7 +112,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     ?? new TenantCosmosContainerFactoryOptions();
             });
 
-            services.AddTenantedAzureCosmosWorkflowInstanceStore();
+            // TODO: Add workflow instance store.
+            //// services.AddTenantedAzureCosmosWorkflowInstanceStore();
 
             services.AddTenantedWorkflowEngineFactory();
 

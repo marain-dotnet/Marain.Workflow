@@ -95,13 +95,10 @@ namespace Marain.Workflows
         private async Task ProcessInstanceAsync(IWorkflowTrigger trigger, string instanceId, string partitionKey)
         {
             WorkflowInstance item = null;
-            Workflow workflow = null;
-
             try
             {
                 item = await this.workflowInstanceStore.GetWorkflowInstanceAsync(instanceId, partitionKey).ConfigureAwait(false);
-                workflow = await this.workflowStore.GetWorkflowAsync(item.WorkflowId).ConfigureAwait(false);
-
+                Workflow workflow = await this.workflowStore.GetWorkflowAsync(item.WorkflowId).ConfigureAwait(false);
                 this.logger.LogDebug($"Accepting trigger {trigger.Id} in instance {item.Id}", trigger, item);
 
                 await this.AcceptTriggerAsync(item, trigger).ConfigureAwait(false);
@@ -180,7 +177,7 @@ namespace Marain.Workflows
                     async _ =>
                     {
                         await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
-                        await this.InitializeInstanceAsync(instance, workflow, context).ConfigureAwait(false);
+                        await this.InitializeInstanceAsync(instance, workflow).ConfigureAwait(false);
                         await this.workflowInstanceStore.UpsertWorkflowInstanceAsync(instance, workflowInstancePartitionKey).ConfigureAwait(false);
                     },
                     instance.Id)
@@ -506,7 +503,6 @@ namespace Marain.Workflows
         /// </summary>
         /// <param name="instance">The workflow instance.</param>
         /// <param name="workflow">The <see cref="Workflow" /> that this is an instance of.</param>
-        /// <param name="context">The dictionary of context values that was supplied when this instance was created.</param>
         /// <returns>A <see cref="Task" /> that completes when the instance is initialised.</returns>
         /// <remarks>
         /// <para>
@@ -524,7 +520,7 @@ namespace Marain.Workflows
         /// takes a shared lease at the earliest possible moment.
         /// </para>
         /// </remarks>
-        private async Task InitializeInstanceAsync(WorkflowInstance instance, Workflow workflow, IDictionary<string, string> context = null)
+        private async Task InitializeInstanceAsync(WorkflowInstance instance, Workflow workflow)
         {
             WorkflowState workflowState = workflow.GetInitialState();
 

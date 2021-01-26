@@ -54,6 +54,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Storage.Azu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marain.Workflow.Deployment", "Marain.Workflow.Deployment\Marain.Workflow.Deployment.csproj", "{B5ED5ADD-080B-4EB5-B42A-E37F876420C7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marain.Workflow.Storage.NEventStore", "Marain.Workflow.Storage.NEventStore\Marain.Workflow.Storage.NEventStore.csproj", "{2C4D0DE1-D348-4BEC-AE1A-2070A8C99C09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marain.Workflow.Tenancy.NEventStore", "Marain.Workflow.Tenancy.NEventStore\Marain.Workflow.Tenancy.NEventStore.csproj", "{588C0A73-6ABB-433B-B20D-49DB343F953E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +124,14 @@ Global
 		{B5ED5ADD-080B-4EB5-B42A-E37F876420C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5ED5ADD-080B-4EB5-B42A-E37F876420C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5ED5ADD-080B-4EB5-B42A-E37F876420C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C4D0DE1-D348-4BEC-AE1A-2070A8C99C09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C4D0DE1-D348-4BEC-AE1A-2070A8C99C09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C4D0DE1-D348-4BEC-AE1A-2070A8C99C09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C4D0DE1-D348-4BEC-AE1A-2070A8C99C09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{588C0A73-6ABB-433B-B20D-49DB343F953E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{588C0A73-6ABB-433B-B20D-49DB343F953E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{588C0A73-6ABB-433B-B20D-49DB343F953E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{588C0A73-6ABB-433B-B20D-49DB343F953E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,6 +148,7 @@ Global
 		{B4F2E79B-C2D2-4E3E-BB0F-E85AC8F1E331} = {7239829F-870D-4ABB-A8B3-0B2EEF84397B}
 		{D3D7D753-ADE7-4860-A12C-1C2C161079D9} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
 		{B5ED5ADD-080B-4EB5-B42A-E37F876420C7} = {D29CABE7-467E-4CF6-B44B-3C58AB76145A}
+		{588C0A73-6ABB-433B-B20D-49DB343F953E} = {D9BFBB66-AEA3-499A-A3B9-B7E18B7CA41B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EED79307-5690-4CE6-A80D-F41857C97EFF}

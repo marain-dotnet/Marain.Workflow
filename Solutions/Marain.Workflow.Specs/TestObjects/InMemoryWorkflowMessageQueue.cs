@@ -50,9 +50,9 @@ namespace Marain.Workflows.Specs.TestObjects
         private readonly ITenantedWorkflowEngineFactory workflowEngineFactory;
 
         /// <summary>
-        /// The factory for the workflow instance store.
+        /// The factory for the workflow instance interests index store.
         /// </summary>
-        private readonly ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory;
+        private readonly ITenantedWorkflowInstanceInterestsIndexFactory workflowInstanceInterestsIndexFactory;
 
         /// <summary>
         /// The <see cref="IPropertyBagFactory"/> that will be used when creating new
@@ -78,7 +78,7 @@ namespace Marain.Workflows.Specs.TestObjects
         /// <param name="workflowEngineFactory">
         /// The workflow engine factory to create the engine to which to hand off the triggers.
         /// </param>
-        /// <param name="workflowInstanceStoreFactory">
+        /// <param name="workflowInstanceInterestsIndexFactory">
         /// The workflow instance store factory to use to access underlying instance storage.
         /// </param>
         /// <param name="tenantProvider">
@@ -99,7 +99,7 @@ namespace Marain.Workflows.Specs.TestObjects
         /// </remarks>
         public InMemoryWorkflowMessageQueue(
             ITenantedWorkflowEngineFactory workflowEngineFactory,
-            ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory,
+            ITenantedWorkflowInstanceInterestsIndexFactory workflowInstanceInterestsIndexFactory,
             ITenantProvider tenantProvider,
             IPropertyBagFactory propertyBagFactory,
             ILogger<InMemoryWorkflowMessageQueue> logger)
@@ -108,7 +108,7 @@ namespace Marain.Workflows.Specs.TestObjects
             this.tenantProvider = tenantProvider;
             this.workflowEngineFactory = workflowEngineFactory;
             this.queue = new ConcurrentQueue<WorkflowMessageEnvelope>();
-            this.workflowInstanceStoreFactory = workflowInstanceStoreFactory;
+            this.workflowInstanceInterestsIndexFactory = workflowInstanceInterestsIndexFactory;
             this.propertyBagFactory = propertyBagFactory;
         }
 
@@ -209,8 +209,10 @@ namespace Marain.Workflows.Specs.TestObjects
 
                 this.queue.TryPeek(out WorkflowMessageEnvelope item);
 
-                IWorkflowInstanceStore instanceStore =
-                    await this.workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(this.tenantProvider.Root).ConfigureAwait(false);
+                IWorkflowInstanceInterestsIndexStore indexStore =
+                    await this.workflowInstanceInterestsIndexFactory.GetWorkflowInstanceInterestsIndexStoreForTenantAsync(
+                        this.tenantProvider.Root).ConfigureAwait(false);
+
                 IWorkflowEngine engine =
                     await this.workflowEngineFactory.GetWorkflowEngineAsync(this.tenantProvider.Root).ConfigureAwait(false);
 
@@ -220,7 +222,7 @@ namespace Marain.Workflows.Specs.TestObjects
 
                     IWorkflowTrigger trigger = item.Trigger;
 
-                    IEnumerable<string> instanceIds = await instanceStore.GetMatchingWorkflowInstanceIdsForSubjectsAsync(
+                    IEnumerable<string> instanceIds = await indexStore.GetMatchingWorkflowInstanceIdsForSubjectsAsync(
                                           item.Trigger.GetSubjects(),
                                           int.MaxValue,
                                           0).ConfigureAwait(false);

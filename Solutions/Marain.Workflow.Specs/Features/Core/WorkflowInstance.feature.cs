@@ -140,10 +140,10 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 17
- testRunner.When("I create a new workflow instance", ((string)(null)), table2, "When ");
+ testRunner.When("I create a new workflow instance and call it \'instance1\'", ((string)(null)), table2, "When ");
 #line hidden
 #line 20
- testRunner.Then("the workflow instance with Id \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
@@ -167,7 +167,7 @@ this.FeatureBackground();
                             "IsDirty",
                             "true"});
 #line 21
- testRunner.And("the workflow instance with Id \'instance1\' should have the following properties:", ((string)(null)), table3, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following properties:", ((string)(null)), table3, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -212,13 +212,13 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 31
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table4, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table4, "Given ");
 #line hidden
 #line 34
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 35
- testRunner.Then("the workflow instance with Id \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
@@ -227,7 +227,7 @@ this.FeatureBackground();
                             "IsDirty",
                             "false"});
 #line 36
- testRunner.And("the workflow instance with Id \'instance1\' should have the following properties:", ((string)(null)), table5, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following properties:", ((string)(null)), table5, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -272,7 +272,7 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 41
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table6, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table6, "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -281,8 +281,9 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 44
- testRunner.When("I start the transition \'create\' for the workflow instance with Id \'instance1\' a t" +
-                        "rigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigger\'", ((string)(null)), table7, "When ");
+ testRunner.When("I start the transition \'create\' for the workflow instance called \'instance1\' with" +
+                        " a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigger\'" +
+                        "", ((string)(null)), table7, "When ");
 #line hidden
 #line 47
  testRunner.Then("an \'InvalidOperationException\' is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
@@ -330,10 +331,10 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 50
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table8, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table8, "Given ");
 #line hidden
 #line 53
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
@@ -345,11 +346,11 @@ this.FeatureBackground();
                             "Item2",
                             "Data 2"});
 #line 54
- testRunner.When("I set the workflow instance with Id \'instance1\' as faulted with the message \'Inte" +
-                        "ntional fault\' and data", ((string)(null)), table9, "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as faulted with the message \'Inten" +
+                        "tional fault\' and data", ((string)(null)), table9, "When ");
 #line hidden
 #line 58
- testRunner.Then("the workflow instance with Id \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
@@ -370,7 +371,7 @@ this.FeatureBackground();
                             "IsDirty",
                             "true"});
 #line 59
- testRunner.And("the workflow instance with Id \'instance1\' should have the following properties:", ((string)(null)), table10, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following properties:", ((string)(null)), table10, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -417,20 +418,20 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 68
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table11, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table11, "Given ");
 #line hidden
 #line 71
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 72
- testRunner.When("I set the workflow instance Id \'instance1\' as having entered the state \'waiting-f" +
-                        "or-documentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having entered the state \'waiti" +
+                        "ng-for-documentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 73
  testRunner.Then("an \'InvalidOperationException\' is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 74
- testRunner.And("the workflow instance with Id \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -475,7 +476,7 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 77
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table12, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table12, "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -494,11 +495,11 @@ this.FeatureBackground();
                             "Context2",
                             ""});
 #line 80
- testRunner.When("I set the workflow instance Id \'instance1\' as having entered the state \'initializ" +
-                        "ing\' with the following context updates:", ((string)(null)), table13, "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having entered the state \'initi" +
+                        "alizing\' with the following context updates:", ((string)(null)), table13, "When ");
 #line hidden
 #line 85
- testRunner.Then("the workflow instance with Id \'instance1\' should have 2 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 2 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
@@ -516,7 +517,7 @@ this.FeatureBackground();
                             "IsDirty",
                             "true"});
 #line 86
- testRunner.And("the workflow instance with Id \'instance1\' should have the following properties:", ((string)(null)), table14, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following properties:", ((string)(null)), table14, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
@@ -528,7 +529,7 @@ this.FeatureBackground();
                             "Context3",
                             "Value3"});
 #line 92
- testRunner.And("the workflow instance with Id \'instance1\' should have the following context:", ((string)(null)), table15, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following context:", ((string)(null)), table15, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -573,14 +574,14 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 98
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table16, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table16, "Given ");
 #line hidden
 #line 101
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 102
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -589,11 +590,12 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 103
- testRunner.When("I start the transition \'create\' for the workflow instance with Id \'instance1\' a t" +
-                        "rigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigger\'", ((string)(null)), table17, "When ");
+ testRunner.When("I start the transition \'create\' for the workflow instance called \'instance1\' with" +
+                        " a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigger\'" +
+                        "", ((string)(null)), table17, "When ");
 #line hidden
 #line 106
- testRunner.Then("the workflow instance with Id \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
@@ -611,7 +613,7 @@ this.FeatureBackground();
                             "IsDirty",
                             "true"});
 #line 107
- testRunner.And("the workflow instance with Id \'instance1\' should have the following properties:", ((string)(null)), table18, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following properties:", ((string)(null)), table18, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -656,11 +658,11 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 115
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table19, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table19, "Given ");
 #line hidden
 #line 118
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -669,12 +671,12 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 119
- testRunner.And("I have started the transition \'create\' for the workflow instance with Id \'instanc" +
-                        "e1\' a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigg" +
-                        "er\'", ((string)(null)), table20, "And ");
+ testRunner.And("I have started the transition \'create\' for the workflow instance called \'instance" +
+                        "1\' with a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemt" +
+                        "rigger\'", ((string)(null)), table20, "And ");
 #line hidden
 #line 122
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -685,11 +687,11 @@ this.FeatureBackground();
                             "Context1",
                             "Updated Value1"});
 #line 123
- testRunner.When("I set the workflow instance Id \'instance1\' as having exited the current state wit" +
-                        "h the following context updates:", ((string)(null)), table21, "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having exited the current state" +
+                        " with the following context updates:", ((string)(null)), table21, "When ");
 #line hidden
 #line 126
- testRunner.Then("the workflow instance with Id \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
@@ -704,7 +706,7 @@ this.FeatureBackground();
                             "IsDirty",
                             "true"});
 #line 127
- testRunner.And("the workflow instance with Id \'instance1\' should have the following properties:", ((string)(null)), table22, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following properties:", ((string)(null)), table22, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
@@ -716,7 +718,7 @@ this.FeatureBackground();
                             "Context2",
                             "Value2"});
 #line 132
- testRunner.And("the workflow instance with Id \'instance1\' should have the following context:", ((string)(null)), table23, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following context:", ((string)(null)), table23, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -763,11 +765,11 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 138
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table24, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table24, "Given ");
 #line hidden
 #line 141
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -776,9 +778,9 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 142
- testRunner.And("I have started the transition \'create\' for the workflow instance with Id \'instanc" +
-                        "e1\' a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigg" +
-                        "er\'", ((string)(null)), table25, "And ");
+ testRunner.And("I have started the transition \'create\' for the workflow instance called \'instance" +
+                        "1\' with a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemt" +
+                        "rigger\'", ((string)(null)), table25, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -789,11 +791,11 @@ this.FeatureBackground();
                             "Context1",
                             "Value1.1"});
 #line 145
- testRunner.And("I have set the workflow instance Id \'instance1\' as having exited the current stat" +
-                        "e with the following context updates:", ((string)(null)), table26, "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having exited the current " +
+                        "state with the following context updates:", ((string)(null)), table26, "And ");
 #line hidden
 #line 148
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table27 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -812,11 +814,11 @@ this.FeatureBackground();
                             "Context2",
                             ""});
 #line 149
- testRunner.When("I set the workflow instance Id \'instance1\' as having executed transition actions " +
-                        "with the following context updates:", ((string)(null)), table27, "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having executed transition acti" +
+                        "ons with the following context updates:", ((string)(null)), table27, "When ");
 #line hidden
 #line 154
- testRunner.Then("the workflow instance with Id \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table28 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
@@ -831,7 +833,7 @@ this.FeatureBackground();
                             "IsDirty",
                             "true"});
 #line 155
- testRunner.And("the workflow instance with Id \'instance1\' should have the following properties:", ((string)(null)), table28, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following properties:", ((string)(null)), table28, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table29 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
@@ -843,7 +845,7 @@ this.FeatureBackground();
                             "Context3",
                             "Value3"});
 #line 160
- testRunner.And("the workflow instance with Id \'instance1\' should have the following context:", ((string)(null)), table29, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following context:", ((string)(null)), table29, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -890,11 +892,11 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 166
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table30, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table30, "Given ");
 #line hidden
 #line 169
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table31 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -903,9 +905,9 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 170
- testRunner.And("I have started the transition \'create\' for the workflow instance with Id \'instanc" +
-                        "e1\' a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigg" +
-                        "er\'", ((string)(null)), table31, "And ");
+ testRunner.And("I have started the transition \'create\' for the workflow instance called \'instance" +
+                        "1\' with a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemt" +
+                        "rigger\'", ((string)(null)), table31, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table32 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -916,8 +918,8 @@ this.FeatureBackground();
                             "Context1",
                             "Value1.1"});
 #line 173
- testRunner.And("I have set the workflow instance Id \'instance1\' as having exited the current stat" +
-                        "e with the following context updates:", ((string)(null)), table32, "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having exited the current " +
+                        "state with the following context updates:", ((string)(null)), table32, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table33 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -936,11 +938,11 @@ this.FeatureBackground();
                             "Context2",
                             ""});
 #line 176
- testRunner.And("I have set the workflow instance Id \'instance1\' as having executed transition act" +
-                        "ions with the following context updates:", ((string)(null)), table33, "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having executed transition" +
+                        " actions with the following context updates:", ((string)(null)), table33, "And ");
 #line hidden
 #line 181
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table34 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -955,11 +957,11 @@ this.FeatureBackground();
                             "Context3",
                             ""});
 #line 182
- testRunner.When("I set the workflow instance Id \'instance1\' as having entered the state \'waiting-f" +
-                        "or-documentation\' with the following context updates:", ((string)(null)), table34, "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having entered the state \'waiti" +
+                        "ng-for-documentation\' with the following context updates:", ((string)(null)), table34, "When ");
 #line hidden
 #line 186
- testRunner.Then("the workflow instance with Id \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table35 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
@@ -974,7 +976,7 @@ this.FeatureBackground();
                             "IsDirty",
                             "true"});
 #line 187
- testRunner.And("the workflow instance with Id \'instance1\' should have the following properties:", ((string)(null)), table35, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following properties:", ((string)(null)), table35, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table36 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
@@ -986,7 +988,7 @@ this.FeatureBackground();
                             "Context4",
                             "Value4.1"});
 #line 192
- testRunner.And("the workflow instance with Id \'instance1\' should have the following context:", ((string)(null)), table36, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following context:", ((string)(null)), table36, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1031,11 +1033,11 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 198
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table37, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table37, "Given ");
 #line hidden
 #line 201
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table38 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -1044,9 +1046,9 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 202
- testRunner.And("I have started the transition \'create\' for the workflow instance with Id \'instanc" +
-                        "e1\' a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigg" +
-                        "er\'", ((string)(null)), table38, "And ");
+ testRunner.And("I have started the transition \'create\' for the workflow instance called \'instance" +
+                        "1\' with a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemt" +
+                        "rigger\'", ((string)(null)), table38, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table39 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -1057,8 +1059,8 @@ this.FeatureBackground();
                             "Context1",
                             "Value1.1"});
 #line 205
- testRunner.And("I have set the workflow instance Id \'instance1\' as having exited the current stat" +
-                        "e with the following context updates:", ((string)(null)), table39, "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having exited the current " +
+                        "state with the following context updates:", ((string)(null)), table39, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table40 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -1077,21 +1079,21 @@ this.FeatureBackground();
                             "Context2",
                             ""});
 #line 208
- testRunner.And("I have set the workflow instance Id \'instance1\' as having executed transition act" +
-                        "ions with the following context updates:", ((string)(null)), table40, "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having executed transition" +
+                        " actions with the following context updates:", ((string)(null)), table40, "And ");
 #line hidden
 #line 213
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 214
- testRunner.When("I set the workflow instance Id \'instance1\' as having entered the state \'published" +
-                        "\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having entered the state \'publi" +
+                        "shed\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 215
  testRunner.Then("an \'InvalidOperationException\' is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 216
- testRunner.And("the workflow instance with Id \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1136,11 +1138,11 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 219
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table41, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table41, "Given ");
 #line hidden
 #line 222
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'wait" +
-                        "ing-for-documentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "waiting-for-documentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table42 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -1149,12 +1151,12 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 223
- testRunner.And("I have started the transition \'create\' for the workflow instance with Id \'instanc" +
-                        "e1\' a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigg" +
-                        "er\'", ((string)(null)), table42, "And ");
+ testRunner.And("I have started the transition \'create\' for the workflow instance called \'instance" +
+                        "1\' with a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemt" +
+                        "rigger\'", ((string)(null)), table42, "And ");
 #line hidden
 #line 226
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table43 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -1163,14 +1165,15 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 227
- testRunner.When("I start the transition \'create\' for the workflow instance with Id \'instance1\' a t" +
-                        "rigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigger\'", ((string)(null)), table43, "When ");
+ testRunner.When("I start the transition \'create\' for the workflow instance called \'instance1\' with" +
+                        " a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigger\'" +
+                        "", ((string)(null)), table43, "When ");
 #line hidden
 #line 230
  testRunner.Then("an \'InvalidOperationException\' is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 231
- testRunner.Then("the workflow instance with Id \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1215,18 +1218,18 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 234
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table44, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table44, "Given ");
 #line hidden
 #line 237
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 238
- testRunner.And("I have set the workflow instance with Id \'instance1\' as faulted with the message " +
-                        "\'Intentional fault\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as faulted with the message \'" +
+                        "Intentional fault\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 239
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table45 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -1235,14 +1238,15 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 240
- testRunner.When("I start the transition \'create\' for the workflow instance with Id \'instance1\' a t" +
-                        "rigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigger\'", ((string)(null)), table45, "When ");
+ testRunner.When("I start the transition \'create\' for the workflow instance called \'instance1\' with" +
+                        " a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigger\'" +
+                        "", ((string)(null)), table45, "When ");
 #line hidden
 #line 243
  testRunner.Then("an \'InvalidOperationException\' is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 244
- testRunner.Then("the workflow instance with Id \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1287,14 +1291,14 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 247
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table46, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table46, "Given ");
 #line hidden
 #line 250
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 251
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table47 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -1305,14 +1309,14 @@ this.FeatureBackground();
                             "Context1",
                             "Updated Value1"});
 #line 252
- testRunner.When("I set the workflow instance Id \'instance1\' as having exited the current state wit" +
-                        "h the following context updates:", ((string)(null)), table47, "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having exited the current state" +
+                        " with the following context updates:", ((string)(null)), table47, "When ");
 #line hidden
 #line 255
  testRunner.Then("an \'InvalidOperationException\' is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 256
- testRunner.Then("the workflow instance with Id \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1357,24 +1361,24 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 259
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table48, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table48, "Given ");
 #line hidden
 #line 262
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 263
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 264
- testRunner.When("I set the workflow instance Id \'instance1\' as having entered the state \'waiting-f" +
-                        "or-documentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having entered the state \'waiti" +
+                        "ng-for-documentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 265
  testRunner.Then("an \'InvalidOperationException\' is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 266
- testRunner.Then("the workflow instance with Id \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1419,11 +1423,11 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 269
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table49, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table49, "Given ");
 #line hidden
 #line 272
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table50 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -1432,22 +1436,22 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 273
- testRunner.And("I have started the transition \'create\' for the workflow instance with Id \'instanc" +
-                        "e1\' a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigg" +
-                        "er\'", ((string)(null)), table50, "And ");
+ testRunner.And("I have started the transition \'create\' for the workflow instance called \'instance" +
+                        "1\' with a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemt" +
+                        "rigger\'", ((string)(null)), table50, "And ");
 #line hidden
 #line 276
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 277
- testRunner.When("I set the workflow instance Id \'instance1\' as having entered the state \'waiting-f" +
-                        "or-documentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having entered the state \'waiti" +
+                        "ng-for-documentation\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 278
  testRunner.Then("an \'InvalidOperationException\' is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 279
- testRunner.Then("the workflow instance with Id \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1492,14 +1496,14 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 282
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table51, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table51, "Given ");
 #line hidden
 #line 285
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 286
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table52 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -1518,14 +1522,14 @@ this.FeatureBackground();
                             "Context2",
                             ""});
 #line 287
- testRunner.When("I set the workflow instance Id \'instance1\' as having executed transition actions " +
-                        "with the following context updates:", ((string)(null)), table52, "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having executed transition acti" +
+                        "ons with the following context updates:", ((string)(null)), table52, "When ");
 #line hidden
 #line 292
  testRunner.Then("an \'InvalidOperationException\' is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 293
- testRunner.Then("the workflow instance with Id \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1570,11 +1574,11 @@ this.FeatureBackground();
                             "workflow1",
                             "{Context1}"});
 #line 296
- testRunner.Given("I have created a new workflow instance", ((string)(null)), table53, "Given ");
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table53, "Given ");
 #line hidden
 #line 299
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'init" +
-                        "ializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table54 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -1583,21 +1587,22 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 300
- testRunner.And("I have started the transition \'create\' for the workflow instance with Id \'instanc" +
-                        "e1\' a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemtrigg" +
-                        "er\'", ((string)(null)), table54, "And ");
+ testRunner.And("I have started the transition \'create\' for the workflow instance called \'instance" +
+                        "1\' with a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemt" +
+                        "rigger\'", ((string)(null)), table54, "And ");
 #line hidden
 #line 303
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 304
- testRunner.When("I set the workflow instance Id \'instance1\' as having executed transition actions", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having executed transition acti" +
+                        "ons", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 305
  testRunner.Then("an \'InvalidOperationException\' is thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 306
- testRunner.Then("the workflow instance with Id \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 0 uncommitted events", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -1634,7 +1639,7 @@ this.ScenarioInitialize(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 309
- testRunner.Given("I have a simple two-state workflow definition with Id \'simple2state\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have a simple two-state workflow definition called \'simple2state\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table55 = new TechTalk.SpecFlow.Table(new string[] {
                             "InstanceId",
@@ -1645,11 +1650,11 @@ this.FeatureBackground();
                             "simple2state",
                             ""});
 #line 310
- testRunner.And("I have created a new workflow instance", ((string)(null)), table55, "And ");
+ testRunner.And("I have created a new workflow instance called \'instance1\'", ((string)(null)), table55, "And ");
 #line hidden
 #line 313
- testRunner.And("I have set the workflow instance Id \'instance1\' as having entered the state \'firs" +
-                        "t\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "first\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table56 = new TechTalk.SpecFlow.Table(new string[] {
                             "PropertyName",
@@ -1658,16 +1663,16 @@ this.FeatureBackground();
                             "CatalogItemId",
                             "id1"});
 #line 314
- testRunner.And("I have started the transition \'transition\' for the workflow instance with Id \'ins" +
-                        "tance1\' a trigger of type \'application/vnd.endjin.datacatalog.createcatalogitemt" +
-                        "rigger\'", ((string)(null)), table56, "And ");
+ testRunner.And("I have started the transition \'transition\' for the workflow instance called \'inst" +
+                        "ance1\' with a trigger of type \'application/vnd.endjin.datacatalog.createcatalogi" +
+                        "temtrigger\'", ((string)(null)), table56, "And ");
 #line hidden
 #line 317
- testRunner.And("I have set the workflow instance Id \'instance1\' as having exited the current stat" +
-                        "e", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have set the workflow instance called \'instance1\' as having exited the current " +
+                        "state", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 318
- testRunner.And("I have persisted the workflow instance with Id \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have persisted the workflow instance called \'instance1\' to storage", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table57 = new TechTalk.SpecFlow.Table(new string[] {
                             "Operation",
@@ -1682,11 +1687,11 @@ this.FeatureBackground();
                             "Context2",
                             "Value2"});
 #line 319
- testRunner.When("I set the workflow instance Id \'instance1\' as having entered the state \'last\' wit" +
-                        "h the following context updates:", ((string)(null)), table57, "When ");
+ testRunner.When("I set the workflow instance called \'instance1\' as having entered the state \'last\'" +
+                        " with the following context updates:", ((string)(null)), table57, "When ");
 #line hidden
 #line 323
- testRunner.Then("the workflow instance with Id \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the workflow instance called \'instance1\' should have 1 uncommitted event", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table58 = new TechTalk.SpecFlow.Table(new string[] {
                             "Property",
@@ -1701,7 +1706,7 @@ this.FeatureBackground();
                             "IsDirty",
                             "true"});
 #line 324
- testRunner.And("the workflow instance with Id \'instance1\' should have the following properties:", ((string)(null)), table58, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following properties:", ((string)(null)), table58, "And ");
 #line hidden
                 TechTalk.SpecFlow.Table table59 = new TechTalk.SpecFlow.Table(new string[] {
                             "Key",
@@ -1713,7 +1718,7 @@ this.FeatureBackground();
                             "Context2",
                             "Value2"});
 #line 329
- testRunner.And("the workflow instance with Id \'instance1\' should have the following context:", ((string)(null)), table59, "And ");
+ testRunner.And("the workflow instance called \'instance1\' should have the following context:", ((string)(null)), table59, "And ");
 #line hidden
             }
             this.ScenarioCleanup();

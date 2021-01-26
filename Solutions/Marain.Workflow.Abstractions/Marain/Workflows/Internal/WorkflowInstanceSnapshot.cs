@@ -66,22 +66,5 @@ namespace Marain.Workflows.Internal
         /// </para>
         /// </remarks>
         public IImmutableDictionary<string, string> Context { get; set; } = ImmutableDictionary<string, string>.Empty;
-
-        /// <summary>
-        /// Gets or sets the list of interests for this workflow instance.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This list is automatically updated whenever the instance's current <see cref="StateId" />
-        /// changes. The list will be populated by calling <see cref="WorkflowState.GetInterests" />
-        /// on the current state and  will always include the value of the <see cref="Id" /> property.
-        /// </para>
-        /// <para>
-        /// This list is intended for use by the <see cref="IWorkflowInstanceStore.GetMatchingWorkflowInstanceIdsForSubjectsAsync(IEnumerable{string}, int, int)" />
-        /// method to search for <see cref="WorkflowInstance" />s whose interests match at least one of the
-        /// current trigger's subjects (see <see cref="IWorkflowTrigger.GetSubjects" />).
-        /// </para>
-        /// </remarks>
-        public IImmutableList<string> Interests { get; set; } = ImmutableList<string>.Empty;
     }
 }

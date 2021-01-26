@@ -20,12 +20,6 @@ namespace Microsoft.Extensions.DependencyInjection
             new CosmosContainerDefinition("workflow", "definitions", "/id");
 
         /// <summary>
-        /// Gets the container definition that will be used for the tenanted workflow instance store.
-        /// </summary>
-        public static CosmosContainerDefinition WorkflowInstanceStoreContainerDefinition { get; } =
-            new CosmosContainerDefinition("workflow", "instances", "/id");
-
-        /// <summary>
         /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
         /// </summary>
         /// <param name="services">The collection.</param>
@@ -42,27 +36,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ITenantedWorkflowStoreFactory>(svc => new TenantedCosmosWorkflowStoreFactory(
                 svc.GetRequiredService<ITenantCosmosContainerFactory>(),
                 WorkflowStoreContainerDefinition));
-
-            return services;
-        }
-
-        /// <summary>
-        /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
-        /// </summary>
-        /// <param name="services">The collection.</param>
-        /// <returns>The configured <see cref="IServiceCollection"/>.</returns>
-        public static IServiceCollection AddTenantedAzureCosmosWorkflowInstanceStore(
-            this IServiceCollection services)
-        {
-            if (services.Any(s => s.ServiceType is ITenantedWorkflowInstanceStoreFactory))
-            {
-                return services;
-            }
-
-            services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions());
-            services.AddSingleton<ITenantedWorkflowInstanceStoreFactory>(svc => new TenantedCosmosWorkflowInstanceStoreFactory(
-                svc.GetRequiredService<ITenantCosmosContainerFactory>(),
-                WorkflowInstanceStoreContainerDefinition));
 
             return services;
         }

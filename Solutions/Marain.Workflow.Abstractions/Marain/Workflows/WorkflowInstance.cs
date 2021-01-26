@@ -32,6 +32,17 @@ namespace Marain.Workflows
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowInstance" /> class.
+        /// </summary>
+        /// <remarks>
+        /// This constructor is intended for use when rehydrating a <see cref="WorkflowInstance"/> from a set of
+        /// committed <see cref="DomainEvent"/>s.
+        /// </remarks>
+        private WorkflowInstance()
+        {
+        }
+
+        /// <summary>
         /// Gets the workflow instance Id.
         /// </summary>
         public string Id => this.internalState.Id;
@@ -66,26 +77,26 @@ namespace Marain.Workflows
         public IImmutableDictionary<string, string> Context => this.internalState.Context;
 
         /// <summary>
-        /// Gets the list of interests for this workflow instance.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// This list is automatically updated whenever the instance's current <see cref="StateId" />
-        /// changes. The list will be populated by calling <see cref="WorkflowState.GetInterests" />
-        /// on the current state and  will always include the value of the <see cref="Id" /> property.
-        /// </para>
-        /// <para>
-        /// This list is intended for use by the <see cref="IWorkflowInstanceStore.GetMatchingWorkflowInstanceIdsForSubjectsAsync(IEnumerable{string}, int, int)" />
-        /// method to search for <see cref="WorkflowInstance" />s whose interests match at least one of the
-        /// current trigger's subjects (see <see cref="IWorkflowTrigger.GetSubjects" />).
-        /// </para>
-        /// </remarks>
-        public IImmutableList<string> Interests => this.internalState.Interests;
-
-        /// <summary>
         /// Gets a value indicating whether or not this object contains uncommitted changes.
         /// </summary>
         public bool IsDirty => this.uncommittedEvents.Count > 0;
+
+        /// <summary>
+        /// Rehydrates a <see cref="WorkflowInstance"/> from a list of events.
+        /// </summary>
+        /// <param name="events">The events for the instance.</param>
+        /// <returns>The rehydrated <see cref="WorkflowInstance"/>.</returns>
+        public static WorkflowInstance FromCommittedEvents(IEnumerable<DomainEvent> events)
+        {
+            var instance = new WorkflowInstance();
+
+            foreach (DomainEvent ev in events)
+            {
+                instance.ApplyEvent(ev);
+            }
+
+            return instance;
+        }
 
         /// <summary>
         /// Retrieves the list of events that have been created but not persisted to storage.
@@ -304,7 +315,11 @@ namespace Marain.Workflows
             };
         }
 
+#pragma warning disable RCS1163 // Unused parameter.
+#pragma warning disable IDE0060 // Unused parameter.
         private void ApplyEvent(WorkflowInstanceFaultedEvent domainEvent)
+#pragma warning restore IDE0060 // Unused parameter.
+#pragma warning restore RCS1163 // Unused parameter.
         {
             this.internalState.Status = WorkflowStatus.Faulted;
         }
@@ -312,7 +327,6 @@ namespace Marain.Workflows
         private void ApplyEvent(WorkflowInstanceStateEnteredEvent domainEvent)
         {
             this.internalState.StateId = domainEvent.EnteredStateId;
-            this.internalState.Interests = domainEvent.Interests;
             this.internalState.Context = this.BuildNewContext(domainEvent.AddedAndUpdatedContextItems, domainEvent.RemovedContextItems);
             this.internalState.ActiveTransitionState = null;
             this.internalState.Status = domainEvent.IsWorkflowComplete ? WorkflowStatus.Complete : WorkflowStatus.Waiting;

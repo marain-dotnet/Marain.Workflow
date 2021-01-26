@@ -122,10 +122,13 @@ namespace Marain.Workflows.Api.Specs.Steps
         [Given("The workflow instance store is empty")]
         public async Task TheWorkflowInstanceStoreIsEmpty()
         {
+            ITenantedWorkflowInstanceInterestsIndexFactory indexFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowInstanceInterestsIndexFactory>();
+            IWorkflowInstanceInterestsIndexStore index = await indexFactory.GetWorkflowInstanceInterestsIndexStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
+
             ITenantedWorkflowInstanceStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
             IWorkflowInstanceStore store = await storeFactory.GetWorkflowInstanceStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
 
-            IEnumerable<string> instanceIds = await store.GetMatchingWorkflowInstanceIdsForSubjectsAsync(new string[0], int.MaxValue, 0).ConfigureAwait(false);
+            IEnumerable<string> instanceIds = await index.GetMatchingWorkflowInstanceIdsForSubjectsAsync(new string[0], int.MaxValue, 0).ConfigureAwait(false);
             foreach (string current in instanceIds)
             {
                 await store.DeleteWorkflowInstanceAsync(current).ConfigureAwait(false);
@@ -152,9 +155,10 @@ namespace Marain.Workflows.Api.Specs.Steps
         [Then("there should be (.*) workflow instances in the workflow instance store")]
         public async Task ThenThereShouldBeANewWorkflowInstanceInTheWorkflowInstanceStore(int expected)
         {
-            ITenantedWorkflowInstanceStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
-            IWorkflowInstanceStore store = await storeFactory.GetWorkflowInstanceStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
-            IEnumerable<string> instances = await store.GetMatchingWorkflowInstanceIdsForSubjectsAsync(new string[0], int.MaxValue, 0).ConfigureAwait(false);
+            ITenantedWorkflowInstanceInterestsIndexFactory indexFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowInstanceInterestsIndexFactory>();
+            IWorkflowInstanceInterestsIndexStore index = await indexFactory.GetWorkflowInstanceInterestsIndexStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
+
+            IEnumerable<string> instances = await index.GetMatchingWorkflowInstanceIdsForSubjectsAsync(new string[0], int.MaxValue, 0).ConfigureAwait(false);
 
             Assert.AreEqual(expected, instances.Count());
         }

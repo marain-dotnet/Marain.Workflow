@@ -1,4 +1,4 @@
-﻿// <copyright file="CosmosWorkflowInstanceStore.cs" company="Endjin Limited">
+﻿// <copyright file="CosmosWorkflowInstanceInterestsIndexStore.cs" company="Endjin Limited">
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
@@ -6,7 +6,6 @@ namespace Marain.Workflows.Storage
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Text;
     using System.Threading.Tasks;
     using Corvus.Extensions;
@@ -14,81 +13,24 @@ namespace Marain.Workflows.Storage
     using Microsoft.Azure.Cosmos;
 
     /// <summary>
-    /// A CosmosDb implementation of the workflow instance store.
+    /// A CosmosDb implementation of the workflow instance/interests index store.
     /// </summary>
-    public class CosmosWorkflowInstanceStore : IWorkflowInstanceStore
+    public class CosmosWorkflowInstanceInterestsIndexStore : IWorkflowInstanceInterestsIndexStore
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CosmosWorkflowInstanceStore"/> class.
+        /// Initializes a new instance of the <see cref="CosmosWorkflowInstanceInterestsIndexStore"/> class.
         /// </summary>
-        /// <param name="workflowInstanceContainer">The repository in which to store workflow instances.</param>
-        public CosmosWorkflowInstanceStore(
-            Container workflowInstanceContainer)
+        /// <param name="instanceIndexContainer">The repository in which to store the index.</param>
+        public CosmosWorkflowInstanceInterestsIndexStore(
+            Container instanceIndexContainer)
         {
-            this.Container = workflowInstanceContainer;
+            this.Container = instanceIndexContainer;
         }
 
         /// <summary>
         /// Gets the underlying Cosmos <see cref="Container"/> for this workflow instance store.
         /// </summary>
         public Container Container { get; }
-
-        /// <inheritdoc/>
-        public Task<WorkflowInstance> GetWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
-        {
-            try
-            {
-                ////return await Retriable.RetryAsync(() =>
-                ////    this.Container.ReadItemAsync<WorkflowInstance>(
-                ////        workflowInstanceId,
-                ////        new PartitionKey(partitionKey ?? workflowInstanceId)))
-                ////    .ConfigureAwait(false);
-                return Task.FromResult((WorkflowInstance)null);
-            }
-            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                throw new WorkflowInstanceNotFoundException(
-                    $"The workflow instance with id {workflowInstanceId} was not found",
-                    ex);
-            }
-        }
-
-        /// <inheritdoc/>
-        public Task UpsertWorkflowInstanceAsync(WorkflowInstance workflowInstance, string partitionKey = null)
-        {
-            try
-            {
-                ////await Retriable.RetryAsync(() =>
-                ////    this.Container.UpsertItemAsync(
-                ////        workflowInstance,
-                ////        new PartitionKey(partitionKey ?? workflowInstance.Id),
-                ////        new ItemRequestOptions { IfMatchEtag = workflowInstance.ETag }))
-                ////    .ConfigureAwait(false);
-                return Task.CompletedTask;
-            }
-            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                throw new WorkflowInstanceConflictException($"The workflow instance with id {workflowInstance.Id} was already modified.", ex);
-            }
-        }
-
-        /// <inheritdoc/>
-        public Task DeleteWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
-        {
-            try
-            {
-                ////await Retriable.RetryAsync(() =>
-                ////    this.Container.DeleteItemAsync<WorkflowInstance>(
-                ////        workflowInstanceId,
-                ////        new PartitionKey(partitionKey ?? workflowInstanceId)))
-                ////    .ConfigureAwait(false);
-                return Task.CompletedTask;
-            }
-            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                throw new WorkflowInstanceNotFoundException($"The workflow instance with id {workflowInstanceId} was not found", ex);
-            }
-        }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<string>> GetMatchingWorkflowInstanceIdsForSubjectsAsync(

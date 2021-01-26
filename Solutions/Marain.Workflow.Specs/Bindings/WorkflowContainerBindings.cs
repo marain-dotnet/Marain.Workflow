@@ -31,6 +31,7 @@ namespace Marain.Workflows.Specs.Bindings
                 scenarioContext,
                 services =>
                 {
+                    services.AddLogging();
                     services.AddJsonSerializerSettings();
                     services.RegisterCoreWorkflowContentTypes();
                     services.AddContent(factory => factory.RegisterTestContentTypes());
@@ -81,7 +82,9 @@ namespace Marain.Workflows.Specs.Bindings
                     if (featureContext.FeatureInfo.Tags.Any(t => t == "useCosmosStores"))
                     {
                         services.AddTenantedAzureCosmosWorkflowStore();
-                        services.AddTenantedAzureCosmosWorkflowInstanceStore();
+
+                        // TODO: Add workflow instance store.
+                        // services.AddTenantedAzureCosmosWorkflowInstanceStore();
                     }
                     else if (featureContext.FeatureInfo.Tags.Any(t => t == "useAzureBlobStore"))
                     {
