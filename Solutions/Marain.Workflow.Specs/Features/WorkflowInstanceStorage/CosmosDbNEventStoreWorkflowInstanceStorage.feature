@@ -1,7 +1,7 @@
 ﻿@perScenarioContainer
-@usingInMemoryNEventStore
+@usingCosmosDbNEventStore
 
-Feature: Workflow instance store - In memory NEventStore version
+Feature: Workflow instance store - CosmosDb NEventStore version
 
 Background: 
 	Given I have a data catalog workflow definition with Id 'workflow1'
@@ -74,8 +74,7 @@ Scenario: Load, update and persist a workflow instance
 	| Remove      | Context3 |          |
 	And I have stored the workflow instance called 'firstReload'
 	When I load the workflow instance with Id 'instance1' and call it 'result'
-	Then no exception is thrown
-	And the workflow instance called 'result' should have the following properties:
+	Then the workflow instance called 'result' should have the following properties:
 	| Property | Value        |
 	| Id       | instance1    |
 	| Status   | Waiting      |

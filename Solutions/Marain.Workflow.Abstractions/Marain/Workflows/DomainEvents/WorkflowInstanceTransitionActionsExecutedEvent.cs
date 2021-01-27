@@ -22,20 +22,20 @@ namespace Marain.Workflows.DomainEvents
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstanceTransitionActionsExecutedEvent"/> class.
         /// </summary>
-        /// <param name="workflowInstanceId">The <see cref="DomainEvent.AggregateId"/>.</param>
+        /// <param name="aggregateId">The <see cref="DomainEvent.AggregateId"/>.</param>
         /// <param name="sequenceNumber">The sequence number of the event. Should be monotonically increasing for the aggregate.</param>
         /// <param name="transitionStartedSequenceNumber">The <see cref="TransitionStartedSequenceNumber"/>.</param>
         /// <param name="transitionId">The <see cref="TransitionId"/>.</param>
         /// <param name="addedAndUpdatedContextItems">The <see cref="AddedAndUpdatedContextItems"/>.</param>
         /// <param name="removedContextItems">The <see cref="RemovedContextItems"/>.</param>
         public WorkflowInstanceTransitionActionsExecutedEvent(
-            string workflowInstanceId,
+            string aggregateId,
             long sequenceNumber,
             long transitionStartedSequenceNumber,
             string transitionId,
-            IEnumerable<KeyValuePair<string, string>> addedAndUpdatedContextItems,
-            IEnumerable<string> removedContextItems)
-            : base(workflowInstanceId, sequenceNumber)
+            IImmutableDictionary<string, string> addedAndUpdatedContextItems,
+            IImmutableList<string> removedContextItems)
+            : base(aggregateId, sequenceNumber)
         {
             // TODO: Null checks.
             this.TransitionId = transitionId;

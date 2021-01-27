@@ -94,11 +94,12 @@ namespace Marain.Workflows.Specs.Steps
             Assert.AreEqual(blob.Properties.ETag, workflow.ETag);
         }
 
+        [Then("no exception is thrown")]
         [Then("the request is successful")]
         public void ThenTheRequestIsSuccessful()
         {
             Assert.IsFalse(
-                this.scenarioContext.TryGetValue<Exception>(out Exception thrownException),
+                this.scenarioContext.TryGetValue(out Exception thrownException),
                 $"An unexpected exception was thrown whilst making the request:\n{thrownException}");
         }
 
@@ -106,7 +107,7 @@ namespace Marain.Workflows.Specs.Steps
         [Then("a '(.*)' is thrown")]
         public void ThenAIsThrown(string exceptionTypeName)
         {
-            Assert.IsTrue(this.scenarioContext.TryGetValue<Exception>(out Exception thrownException), "No exception was thrown");
+            Assert.IsTrue(this.scenarioContext.TryGetValue(out Exception thrownException), "No exception was thrown");
             Assert.AreEqual(
                 exceptionTypeName,
                 thrownException.GetType().Name,

@@ -28,7 +28,7 @@ namespace Marain.Workflows
         /// <param name="context">The context for the workflow instance to create.</param>
         public WorkflowInstance(string instanceId, Workflow workflow, IDictionary<string, string> context)
         {
-            this.RaiseEvent(new WorkflowInstanceCreatedEvent(instanceId, this.internalState.Version + 1, workflow.Id, workflow.InitialStateId, context));
+            this.RaiseEvent(new WorkflowInstanceCreatedEvent(instanceId, this.internalState.Version + 1, workflow.Id, workflow.InitialStateId, context.ToImmutableDictionary()));
         }
 
         /// <summary>
@@ -123,7 +123,8 @@ namespace Marain.Workflows
         /// <param name="data">A list of additional data associated with the fault.</param>
         public void SetFaulted(string errorMessage, IDictionary<string, string> data = null)
         {
-            this.RaiseEvent(new WorkflowInstanceFaultedEvent(this.Id, this.internalState.Version + 1, errorMessage, data ?? new Dictionary<string, string>()));
+            data ??= new Dictionary<string, string>();
+            this.RaiseEvent(new WorkflowInstanceFaultedEvent(this.Id, this.internalState.Version + 1, errorMessage, data.ToImmutableDictionary()));
         }
 
         /// <summary>
@@ -248,7 +249,7 @@ namespace Marain.Workflows
                 enteredState.Transitions.Count == 0,
                 actionResult.ContextItemsToAddOrUpdate,
                 actionResult.ContextItemsToRemove,
-                interests));
+                interests.ToImmutableList()));
         }
 
         /// <summary>

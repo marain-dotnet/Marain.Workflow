@@ -8,9 +8,11 @@ namespace Marain.Workflows
     using System.Collections.Concurrent;
     using System.Threading.Tasks;
     using Corvus.Tenancy;
+    using Marain.Workflows.Internal;
     using Marain.Workflows.Storage;
     using Microsoft.Extensions.Logging;
     using NEventStore;
+    using NEventStore.Serialization.Json;
 
     /// <summary>
     /// Factory class for retrieving in-memory event store instances of <see cref="IWorkflowInstanceStore"/> for specific <see cref="Tenant"/>s.
@@ -24,7 +26,8 @@ namespace Marain.Workflows
         /// Initializes a new instance of the <see cref="TenantedInMemoryNEventStoreWorkflowInstanceStoreFactory"/> class.
         /// </summary>
         /// <param name="storeLogger">The logger for the workflow instance store.</param>
-        public TenantedInMemoryNEventStoreWorkflowInstanceStoreFactory(ILogger<NEventStoreWorkflowInstanceStore> storeLogger)
+        public TenantedInMemoryNEventStoreWorkflowInstanceStoreFactory(
+            ILogger<NEventStoreWorkflowInstanceStore> storeLogger)
         {
             this.storeLogger = storeLogger
                 ?? throw new ArgumentNullException(nameof(storeLogger));
@@ -49,8 +52,7 @@ namespace Marain.Workflows
         {
             IStoreEvents result = Wireup.Init()
                 .UsingInMemoryPersistence()
-                .UsingBinarySerialization()
-                .Compress()
+                .UsingJsonSerialization()
                 .Build();
 
             return Task.FromResult(result);

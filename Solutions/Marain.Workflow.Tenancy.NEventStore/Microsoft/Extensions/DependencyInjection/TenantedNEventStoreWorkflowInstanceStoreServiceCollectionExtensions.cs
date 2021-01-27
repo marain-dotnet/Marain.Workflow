@@ -4,7 +4,10 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    using Corvus.ContentHandling;
     using Marain.Workflows;
+    using Marain.Workflows.Internal;
+    using NEventStore.Persistence.CosmosDb.Internal;
 
     /// <summary>
     /// Service collection extensions to add NEventStore based implementations of
@@ -21,9 +24,34 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddInMemoryWorkflowInstanceEventStore(
             this IServiceCollection services)
         {
+            AddCommon(services);
+
             services.AddSingleton<ITenantedWorkflowInstanceStoreFactory, TenantedInMemoryNEventStoreWorkflowInstanceStoreFactory>();
 
             return services;
+        }
+
+        /// <summary>
+        /// Adds a CosmosDb backed event store implementation of <see cref="ITenantedWorkflowInstanceStoreFactory"/> to the
+        /// supplied <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The collection.</param>
+        /// <returns>The configured <see cref="IServiceCollection"/>.</returns>
+        public static IServiceCollection AddCosmosDbWorkflowInstanceEventStore(
+            this IServiceCollection services)
+        {
+            AddCommon(services);
+
+            services.AddSingleton<ITenantedWorkflowInstanceStoreFactory, TenantedCosmosDbNEventStoreWorkflowInstanceStoreFactory>();
+
+            return services;
+        }
+
+        private static void AddCommon(IServiceCollection services)
+        {
+            // TODO: Put this somewhere more sensible.
+            // Problem is - it's specific to how we create our clients, so doesn't belong in the NEventStore code.
+            services.AddContent(factory => factory.RegisterContent<CosmosDbCommit>());
         }
     }
 }

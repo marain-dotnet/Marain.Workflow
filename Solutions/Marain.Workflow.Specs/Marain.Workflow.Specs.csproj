@@ -20,6 +20,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <SpecFlowObsoleteCodeBehindFiles Remove="Features\WorkflowInstanceStorage\InMemoryNEventStoreWorkflowInstanceStorage - Copy.feature.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="1.1.0" />
     <PackageReference Include="Corvus.Leasing.InMemory" Version="1.0.2" />
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="1.0.0" />
@@ -59,6 +63,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Features\WorkflowInstanceStorage\CosmosDbNEventStoreWorkflowInstanceStorage.feature.cs">
+      <DependentUpon>CosmosDbNEventStoreWorkflowInstanceStorage.feature</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="local.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -68,6 +78,13 @@
     <None Update="specflow.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\WorkflowInstanceStorage\CosmosDbNEventStoreWorkflowInstanceStorage.feature">
+      <Visible>$(UsingMicrosoftNETSdk)</Visible>
+      <CodeBehindFile>%(RelativeDir)%(Filename).feature$(DefaultLanguageSourceExtension)</CodeBehindFile>
+    </SpecFlowFeatureFiles>
   </ItemGroup>
 
 </Project>

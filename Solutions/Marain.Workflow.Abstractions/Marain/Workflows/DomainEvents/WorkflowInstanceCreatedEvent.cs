@@ -20,18 +20,23 @@ namespace Marain.Workflows.DomainEvents
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstanceCreatedEvent"/> class.
         /// </summary>
-        /// <param name="workflowInstanceId">The <see cref="DomainEvent.AggregateId"/>.</param>
+        /// <param name="aggregateId">The <see cref="DomainEvent.AggregateId"/>.</param>
         /// <param name="sequenceNumber">The sequence number of the event. Should be monotonically increasing for the aggregate.</param>
         /// <param name="workflowId">The <see cref="WorkflowId"/>.</param>
         /// <param name="initialStateId">The <see cref="InitialStateId"/>.</param>
         /// <param name="context">The <see cref="Context"/>.</param>
-        public WorkflowInstanceCreatedEvent(string workflowInstanceId, long sequenceNumber, string workflowId, string initialStateId, IDictionary<string, string> context)
-            : base(workflowInstanceId, sequenceNumber)
+        public WorkflowInstanceCreatedEvent(
+            string aggregateId,
+            long sequenceNumber,
+            string workflowId,
+            string initialStateId,
+            IImmutableDictionary<string, string> context)
+            : base(aggregateId, sequenceNumber)
         {
             // TODO: Null checks
             this.WorkflowId = workflowId;
             this.InitialStateId = initialStateId;
-            this.Context = context.ToImmutableDictionary();
+            this.Context = context;
         }
 
         /// <inheritdoc/>

@@ -21,14 +21,8 @@ namespace Marain.Workflows.Specs.Steps
         [When("I store the workflow instance called '(.*)'")]
         public async Task WhenIStoreTheWorkflowInstanceWithId(string instanceId)
         {
-            IPropertyBagFactory propertyBagFactory = ContainerBindings.GetServiceProvider(this.ScenarioContext)
-                .GetRequiredService<IPropertyBagFactory>();
-
-            var tenant = new Tenant("test", "test", propertyBagFactory.Create(Enumerable.Empty<KeyValuePair<string, object>>())) as ITenant;
-            this.ScenarioContext.Set(tenant);
-
+            ITenant tenant = this.ScenarioContext.Get<ITenant>();
             IWorkflowInstanceStore store = await this.GetWorkflowInstanceStore(tenant).ConfigureAwait(false);
-
             WorkflowInstance instance = this.ScenarioContext.Get<WorkflowInstance>(instanceId);
 
             try

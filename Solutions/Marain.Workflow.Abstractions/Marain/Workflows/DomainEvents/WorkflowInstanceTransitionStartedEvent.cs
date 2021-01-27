@@ -17,18 +17,18 @@ namespace Marain.Workflows.DomainEvents
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstanceCreatedEvent"/> class.
         /// </summary>
-        /// <param name="workflowInstanceId">The <see cref="DomainEvent.AggregateId"/>.</param>
+        /// <param name="aggregateId">The <see cref="DomainEvent.AggregateId"/>.</param>
         /// <param name="sequenceNumber">The sequence number of the event. Should be monotonically increasing for the aggregate.</param>
         /// <param name="transitionId">The <see cref="TransitionId"/>.</param>
         /// <param name="targetStateId">The <see cref="TargetStateId"/>.</param>
         /// <param name="trigger">The <see cref="Trigger"/>.</param>
         public WorkflowInstanceTransitionStartedEvent(
-            string workflowInstanceId,
+            string aggregateId,
             long sequenceNumber,
             string transitionId,
             string targetStateId,
             IWorkflowTrigger trigger)
-            : base(workflowInstanceId, sequenceNumber)
+            : base(aggregateId, sequenceNumber)
         {
             this.TransitionId = transitionId;
             this.TargetStateId = targetStateId;

@@ -4,8 +4,12 @@
 
 namespace Microsoft.Extensions.DependencyInjection
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Corvus.ContentHandling;
     using Marain.Workflows;
+    using Marain.Workflows.DomainEvents;
 
     /// <summary>
     /// Extension method for adding workflow objects tp the service
@@ -44,6 +48,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 factory.RegisterTransientContent<Workflow>();
                 factory.RegisterTransientContent<ExternalServiceWorkflowRequest>();
                 factory.RegisterTransientContent<ExternalServiceWorkflowResponse>();
+
+                // Register all domain events
+                Type domainEventType = typeof(DomainEvent);
+                IEnumerable<Type> domainEventTypes = typeof(WorkflowSerializationServiceCollectionExtensions).Assembly
+                    .GetExportedTypes()
+                    .Where(x => domainEventType.IsAssignableFrom(x) && !x.IsAbstract);
+
+                foreach (Type t in domainEventTypes)
+                {
+                    factory.RegisterTransientContent(t);
+                }
             });
 
             return services;

@@ -4,12 +4,18 @@
 
 namespace Marain.Workflows.Specs.Bindings
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Json;
+    using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Subjects;
+    using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
@@ -25,17 +31,79 @@ namespace Marain.Workflows.Specs.Bindings
         /// </summary>
         /// <param name="scenarioContext">The current scenario context.</param>
         [BeforeScenario("@perScenarioContainer", Order = ContainerBeforeScenarioOrder.PopulateServiceCollection)]
-        public static void InitializeContentFactory(ScenarioContext scenarioContext)
+        public static void InitializeContainerForScenario(ScenarioContext scenarioContext)
         {
             ContainerBindings.ConfigureServices(
                 scenarioContext,
                 services =>
                 {
+                    IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
+                        .AddEnvironmentVariables()
+                        .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true);
+
+                    IConfiguration root = configurationBuilder.Build();
+
+                    services.AddSingleton(root);
+
                     services.AddLogging();
                     services.AddJsonSerializerSettings();
                     services.RegisterCoreWorkflowContentTypes();
                     services.AddContent(factory => factory.RegisterTestContentTypes());
                 });
+        }
+
+        [BeforeScenario("@perScenarioContainer", Order = ContainerBeforeScenarioOrder.ServiceProviderAvailable)]
+        public static void CreateScenarioTenant(FeatureContext featureContext, ScenarioContext scenarioContext)
+        {
+            IServiceProvider sp = ContainerBindings.GetServiceProvider(scenarioContext);
+
+            IPropertyBagFactory propertyBagFactory = sp.GetRequiredService<IPropertyBagFactory>();
+
+            IEnumerable<KeyValuePair<string, object>> newConfig = Enumerable.Empty<KeyValuePair<string, object>>();
+
+            if (scenarioContext.ScenarioInfo.Tags.Contains("usingCosmosDbNEventStore")
+                || featureContext.FeatureInfo.Tags.Contains("usingCosmosDbNEventStore"))
+            {
+                // Add CosmosConfiguration for the store.
+                // TODO: Wire this up to config so we can run against real storage during the CI builds
+                newConfig = newConfig.AddCosmosConfiguration(
+                    TenantedCosmosDbNEventStoreWorkflowInstanceStoreFactory.EventsContainerDefinition,
+                    new CosmosConfiguration { DatabaseName = "workflowspecs", DisableTenantIdPrefix = true });
+
+                newConfig = newConfig.AddCosmosConfiguration(
+                    TenantedCosmosDbNEventStoreWorkflowInstanceStoreFactory.SnapshotsContainerDefinition,
+                    new CosmosConfiguration { DatabaseName = "workflowspecs", DisableTenantIdPrefix = true });
+            }
+
+            var tenant = new Tenant(
+                RootTenant.RootTenantId.CreateChildId(Guid.NewGuid()),
+                "Marain.Workflow.Specs test run",
+                propertyBagFactory.Create(newConfig)) as ITenant;
+
+            scenarioContext.Set(tenant);
+        }
+
+        [AfterScenario("perScenarioContainer", "usingCosmosDbNEventStore")]
+        public static async Task TearDownCosmosEventStoreContainers(ScenarioContext scenarioContext)
+        {
+            IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(scenarioContext);
+            ITenantCosmosContainerFactory containerFactory = serviceProvider.GetRequiredService<ITenantCosmosContainerFactory>();
+
+            ITenant tenant = scenarioContext.Get<ITenant>();
+
+            await scenarioContext.RunAndStoreExceptionsAsync(
+                async () =>
+                {
+                    Container container = await containerFactory.GetContainerForTenantAsync(tenant, TenantedCosmosDbNEventStoreWorkflowInstanceStoreFactory.EventsContainerDefinition).ConfigureAwait(false);
+                    await container.DeleteContainerAsync().ConfigureAwait(false);
+                }).ConfigureAwait(false);
+
+            await scenarioContext.RunAndStoreExceptionsAsync(
+                async () =>
+                {
+                    Container container = await containerFactory.GetContainerForTenantAsync(tenant, TenantedCosmosDbNEventStoreWorkflowInstanceStoreFactory.SnapshotsContainerDefinition).ConfigureAwait(false);
+                    await container.DeleteContainerAsync().ConfigureAwait(false);
+                }).ConfigureAwait(false);
         }
 
         /// <summary>

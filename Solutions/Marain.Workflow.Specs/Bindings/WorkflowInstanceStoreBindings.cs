@@ -4,7 +4,9 @@
 
 namespace Marain.Workflows.Specs.Bindings
 {
+    using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Testing.SpecFlow;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
 
@@ -17,6 +19,23 @@ namespace Marain.Workflows.Specs.Bindings
             ContainerBindings.ConfigureServices(
                 scenarioContext,
                 services => services.AddInMemoryWorkflowInstanceEventStore());
+        }
+
+        [BeforeScenario("usingCosmosDbNEventStore", Order = ContainerBeforeScenarioOrder.PopulateServiceCollection)]
+        public static void RegisterCosmosDbWorkflowInstanceStore(ScenarioContext scenarioContext)
+        {
+            ContainerBindings.ConfigureServices(
+                scenarioContext,
+                services =>
+                {
+                    services.AddTenantCosmosContainerFactory(
+                        sp => new TenantCosmosContainerFactoryOptions
+                        {
+                            AzureServicesAuthConnectionString = sp.GetRequiredService<IConfiguration>()["AzureServicesAuthConnectionString"],
+                        });
+
+                    services.AddCosmosDbWorkflowInstanceEventStore();
+                });
         }
     }
 }

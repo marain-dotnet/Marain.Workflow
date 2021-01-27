@@ -20,7 +20,7 @@ namespace Marain.Workflows.DomainEvents
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstanceCreatedEvent"/> class.
         /// </summary>
-        /// <param name="workflowInstanceId">The <see cref="DomainEvent.AggregateId"/>.</param>
+        /// <param name="aggregateId">The <see cref="DomainEvent.AggregateId"/>.</param>
         /// <param name="sequenceNumber">The sequence number of the event. Should be monotonically increasing for the aggregate.</param>
         /// <param name="transitionStartedSequenceNumber">The <see cref="TransitionStartedSequenceNumber"/>.</param>
         /// <param name="enteredStateId">The <see cref="EnteredStateId"/>.</param>
@@ -29,22 +29,22 @@ namespace Marain.Workflows.DomainEvents
         /// <param name="removedContextItems">The <see cref="RemovedContextItems"/>.</param>
         /// <param name="interests">The <see cref="Interests"/>.</param>
         public WorkflowInstanceStateEnteredEvent(
-            string workflowInstanceId,
+            string aggregateId,
             long sequenceNumber,
             long transitionStartedSequenceNumber,
             string enteredStateId,
             bool isWorkflowComplete,
-            IEnumerable<KeyValuePair<string, string>> addedAndUpdatedContextItems,
-            IEnumerable<string> removedContextItems,
-            IEnumerable<string> interests)
-            : base(workflowInstanceId, sequenceNumber)
+            IImmutableDictionary<string, string> addedAndUpdatedContextItems,
+            IImmutableList<string> removedContextItems,
+            IImmutableList<string> interests)
+            : base(aggregateId, sequenceNumber)
         {
             // TODO: Null checks.
             this.EnteredStateId = enteredStateId;
             this.TransitionStartedSequenceNumber = transitionStartedSequenceNumber;
-            this.AddedAndUpdatedContextItems = addedAndUpdatedContextItems.ToImmutableDictionary();
-            this.RemovedContextItems = removedContextItems.ToImmutableArray();
-            this.Interests = interests.ToImmutableArray();
+            this.AddedAndUpdatedContextItems = addedAndUpdatedContextItems;
+            this.RemovedContextItems = removedContextItems;
+            this.Interests = interests;
             this.IsWorkflowComplete = isWorkflowComplete;
         }
 
