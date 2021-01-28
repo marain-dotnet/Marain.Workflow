@@ -1,8 +1,7 @@
 ﻿namespace NEventStore.Persistence.CosmosDb.Internal
 {
+    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using NEventStore.Serialization;
 
     public static class DataExtensions
@@ -21,7 +20,7 @@
                 commit.CommitSequence,
                 commit.Headers,
                 checkpoint,
-                Encoding.UTF8.GetString(serializedPayload),
+                Convert.ToBase64String(serializedPayload),
                 false);
         }
 
@@ -33,7 +32,7 @@
                 snapshot.BucketId,
                 snapshot.StreamId,
                 snapshot.StreamRevision,
-                Encoding.UTF8.GetString(serializedPayload));
+                Convert.ToBase64String(serializedPayload));
         }
 
         public static Commit? ToCommit(this CosmosDbCommit cosmosCommit, ISerialize serializer)
@@ -43,7 +42,7 @@
                 return null;
             }
 
-            ICollection<EventMessage> deserializedPayload = serializer.Deserialize<ICollection<EventMessage>>(Encoding.UTF8.GetBytes(cosmosCommit.Payload));
+            ICollection<EventMessage> deserializedPayload = serializer.Deserialize<ICollection<EventMessage>>(Convert.FromBase64String(cosmosCommit.Payload));
 
             return new Commit(
                 cosmosCommit.BucketId,
@@ -64,7 +63,7 @@
                 return null;
             }
 
-            object deserializedPayload = serializer.Deserialize<object>(Encoding.UTF8.GetBytes(cosmosSnapshot.Payload));
+            object deserializedPayload = serializer.Deserialize<object>(Convert.FromBase64String(cosmosSnapshot.Payload));
 
             return new Snapshot(
                 cosmosSnapshot.BucketId,

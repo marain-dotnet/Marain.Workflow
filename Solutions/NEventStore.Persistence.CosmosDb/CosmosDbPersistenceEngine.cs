@@ -133,6 +133,9 @@
         {
             Container container = await this.settings.EventsContainerFactory().ConfigureAwait(false);
 
+            // TODO: Is this a good idea?
+            // Can we verify that they've set partition key correctly?
+            // If we're relying on them setting the partition key correctly, we may as well rely on them doing this too.
             var checkpointKey = new UniqueKey();
             checkpointKey.Paths.Add("/checkpointNumber");
 
@@ -360,8 +363,8 @@
                   WHERE c.bucketId = @bucketId 
                     AND c.contentType = @contentType
                     AND c.streamId = @streamId
-                    AND s.streamRevision <= @maxRevision
-                  ORDER BY s.streamRevision DESC
+                    AND c.streamRevision <= @maxRevision
+                  ORDER BY c.streamRevision DESC
                   OFFSET 0 LIMIT 1")
                 .WithParameter("@bucketId", bucketId)
                 .WithParameter("@contentType", CosmosDbSnapshot.RegisteredContentType)

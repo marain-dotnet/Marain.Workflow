@@ -63,6 +63,11 @@ namespace Marain.Workflows.Storage
 
             ISnapshot? snapshot = this.store.Advanced.GetSnapshot(workflowInstanceId, workflowInstanceId, int.MaxValue);
 
+            // We now need to retrieve events. Annoyingly, if we ask for events *after* the snapshot's stream revision
+            // and there aren't any (i.e. no new events since the snapshot was taken) then NEventStore will throw a
+            // StreamNotFound exception. As a result, we ask for events including the one whose StreamRevision matches
+            // the snapshot, guaranteeing that we'll always get at least one event back (which we then need to skip
+            // when rehydrating the workflow instance).
             IEventStream stream = this.store.OpenStream(
                 partitionKey ?? workflowInstanceId,
                 workflowInstanceId,
@@ -70,7 +75,7 @@ namespace Marain.Workflows.Storage
                 int.MaxValue);
 
             // Map the committed events to something we recognise.
-            IEnumerable<DomainEvent> domainEvents = stream.CommittedEvents.Select(ev => (DomainEvent)ev.Body);
+            IEnumerable<DomainEvent> domainEvents = stream.CommittedEvents.Skip(1).Select(ev => (DomainEvent)ev.Body);
 
             var instance = WorkflowInstance.FromSnapshotAndCommittedEvents(
                 snapshot?.Payload as WorkflowInstanceSnapshot,

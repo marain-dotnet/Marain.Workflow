@@ -28,7 +28,7 @@ namespace Marain.Workflows
         /// <param name="context">The context for the workflow instance to create.</param>
         public WorkflowInstance(string instanceId, Workflow workflow, IDictionary<string, string> context)
         {
-            this.RaiseEvent(new WorkflowInstanceCreatedEvent(instanceId, this.internalState.Version + 1, workflow.Id, workflow.InitialStateId, context.ToImmutableDictionary()));
+            this.RaiseEvent(new WorkflowInstanceCreatedEvent(instanceId, 1, workflow.Id, workflow.InitialStateId, context.ToImmutableDictionary()));
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ namespace Marain.Workflows
         /// <remarks>Not thread safe.</remarks>
         public void ApplyEvent(DomainEvent domainEvent)
         {
-            if (domainEvent.SequenceNumber != (this.internalState.Version + 1))
+            if (domainEvent.SequenceNumber != ((this.internalState?.Version ?? 0) + 1))
             {
                 throw new ArgumentException($"The supplied event with sequence number '{domainEvent.SequenceNumber}' cannot be applied to this aggregate which currently has version number '{this.internalState.Version}'.");
             }
