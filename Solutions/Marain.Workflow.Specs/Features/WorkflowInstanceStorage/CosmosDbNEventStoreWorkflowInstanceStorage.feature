@@ -115,3 +115,38 @@ Scenario: Attempt to persist a new workflow instance when an instance with the s
 	And I have stored the workflow instance called 'instance1'
 	When I store the workflow instance called 'instance2'
 	Then a 'ConcurrencyException' is thrown
+
+Scenario: Write and read a commit containing a large number of events
+	Given I have created a new workflow instance called 'instance1'
+	| InstanceId | WorkflowId | Context    |
+	| instance1  | workflow1  | {Context1} |
+	And I have set the workflow instance called 'instance1' as having entered the state 'initializing'
+	Given I have created a new workflow instance called 'originalInstance'
+	| InstanceId | WorkflowId | Context    |
+	| instance1  | workflow1  | {Context1} |
+	And I have set the workflow instance called 'originalInstance' as having entered the state 'initializing'
+	And I have started the transition 'create' for the workflow instance called 'originalInstance' with a trigger of type 'application/vnd.endjin.datacatalog.createcatalogitemtrigger'
+	| PropertyName  | Value |
+	| CatalogItemId | id1   |
+	And I have set the workflow instance called 'originalInstance' as having exited the current state with the following context updates:
+	| Operation   | Key      | Value          |
+	| AddOrUpdate | Context1 | Value1.1 |
+	And I have set the workflow instance called 'originalInstance' as having executed transition actions with the following context updates:
+	| Operation   | Key      | Value    |
+	| AddOrUpdate | Context1 | Value1.2 |
+	| AddOrUpdate | Context3 | Value3   |
+	| Remove      | Context2 |          |
+	And I have set the workflow instance called 'originalInstance' as having entered the state 'waiting-for-documentation' with the following context updates:
+	| Operation   | Key      | Value    |
+	| AddOrUpdate | Context4 | Value4.1 |
+	| Remove      | Context3 |          |
+	And I have stored the workflow instance called 'originalInstance'
+	And I have loaded the workflow instance with Id 'instance1' and called it 'reloaded'
+	And I apply the 'edit' transition 200 times to the workflow instance called 'reloaded', saving on every iteration
+	When I load the workflow instance with Id 'instance1' and call it 'result'
+	Then the workflow instance called 'result' should have the following properties:
+	| Property | Value        |
+	| Id       | instance1    |
+	| Status   | Waiting      |
+	| StateId  | waiting-for-documentation |
+	| IsDirty  | false        |

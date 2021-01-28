@@ -140,7 +140,7 @@ namespace Marain.Workflows.Specs.TestObjects
             createCatalogItemTransition.AddTraceAction();
 
             WorkflowTransition waitingForDocumentationEditTransition =
-                waitingForDocumentation.CreateTransition(waitingForDocumentation, displayName: "Edit");
+                waitingForDocumentation.CreateTransition(waitingForDocumentation, "edit", "Edit");
             waitingForDocumentationEditTransition.Conditions.Add(
                 new TriggerContentTypeCondition { TriggerContentType = EditCatalogItemTrigger.RegisteredContentType });
             waitingForDocumentationEditTransition.Conditions.Add(new CatalogItemIdCondition());

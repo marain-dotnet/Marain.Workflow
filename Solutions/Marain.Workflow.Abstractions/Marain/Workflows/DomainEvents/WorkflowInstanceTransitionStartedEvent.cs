@@ -24,7 +24,7 @@ namespace Marain.Workflows.DomainEvents
         /// <param name="trigger">The <see cref="Trigger"/>.</param>
         public WorkflowInstanceTransitionStartedEvent(
             string aggregateId,
-            long sequenceNumber,
+            int sequenceNumber,
             string transitionId,
             string targetStateId,
             IWorkflowTrigger trigger)

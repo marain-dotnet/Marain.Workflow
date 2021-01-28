@@ -27,7 +27,7 @@ namespace Marain.Workflows.DomainEvents
         /// <param name="context">The <see cref="Context"/>.</param>
         public WorkflowInstanceCreatedEvent(
             string aggregateId,
-            long sequenceNumber,
+            int sequenceNumber,
             string workflowId,
             string initialStateId,
             IImmutableDictionary<string, string> context)

@@ -11,22 +11,32 @@
         {
             byte[] serializedPayload = serializer.Serialize(commit.Events);
 
-            return new CosmosDbCommit
-            {
-                CheckpointNumber = checkpoint,
-                CommitId = commit.CommitId,
-                CommitStamp = commit.CommitStamp,
-                Headers = commit.Headers,
-                Payload = Encoding.UTF8.GetString(serializedPayload),
-                StreamRevisionFrom = commit.StreamRevision - commit.Events.Count + 1,
-                StreamRevisionTo = commit.StreamRevision,
-                BucketId = commit.BucketId,
-                StreamId = commit.StreamId,
-                CommitSequence = commit.CommitSequence
-            };
+            return new CosmosDbCommit(
+                commit.CommitId,
+                commit.CommitStamp,
+                commit.BucketId,
+                commit.StreamId,
+                commit.StreamRevision - commit.Events.Count + 1,
+                commit.StreamRevision,
+                commit.CommitSequence,
+                commit.Headers,
+                checkpoint,
+                Encoding.UTF8.GetString(serializedPayload),
+                false);
         }
 
-        public static Commit ToCommit(this CosmosDbCommit cosmosCommit, ISerialize serializer)
+        public static CosmosDbSnapshot ToCosmosDbSnapshot(this ISnapshot snapshot, ISerialize serializer)
+        {
+            byte[] serializedPayload = serializer.Serialize(snapshot.Payload);
+
+            return new CosmosDbSnapshot(
+                snapshot.BucketId,
+                snapshot.StreamId,
+                snapshot.StreamRevision,
+                Encoding.UTF8.GetString(serializedPayload));
+        }
+
+        public static Commit? ToCommit(this CosmosDbCommit cosmosCommit, ISerialize serializer)
         {
             if (cosmosCommit is null)
             {
@@ -44,6 +54,22 @@
                 cosmosCommit.CommitStamp,
                 cosmosCommit.CheckpointNumber,
                 cosmosCommit.Headers,
+                deserializedPayload);
+        }
+
+        public static ISnapshot? ToSnapshot(this CosmosDbSnapshot cosmosSnapshot, ISerialize serializer)
+        {
+            if (cosmosSnapshot is null)
+            {
+                return null;
+            }
+
+            object deserializedPayload = serializer.Deserialize<object>(Encoding.UTF8.GetBytes(cosmosSnapshot.Payload));
+
+            return new Snapshot(
+                cosmosSnapshot.BucketId,
+                cosmosSnapshot.StreamId,
+                cosmosSnapshot.StreamRevision,
                 deserializedPayload);
         }
     }

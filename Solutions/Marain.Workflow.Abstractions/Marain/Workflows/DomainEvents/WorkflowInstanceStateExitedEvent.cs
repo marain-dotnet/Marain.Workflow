@@ -28,7 +28,7 @@ namespace Marain.Workflows.DomainEvents
         /// <param name="removedContextItems">The <see cref="RemovedContextItems"/>.</param>
         public WorkflowInstanceStateExitedEvent(
             string aggregateId,
-            long sequenceNumber,
+            int sequenceNumber,
             long transitionStartedSequenceNumber,
             string exitedStateId,
             IImmutableDictionary<string, string> addedAndUpdatedContextItems,

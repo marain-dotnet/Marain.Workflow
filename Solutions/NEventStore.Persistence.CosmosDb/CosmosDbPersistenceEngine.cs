@@ -2,8 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.IO;
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
@@ -35,7 +33,7 @@
 
         public bool AddSnapshot(ISnapshot snapshot)
         {
-            throw new NotImplementedException();
+            return AsyncHelper.RunSync(() => this.AddSnapshotAsync(snapshot));
         }
 
         public ICommit Commit(CommitAttempt attempt)
@@ -95,14 +93,14 @@
             return AsyncHelper.RunSync(() => this.GetFromToAsync(bucketId, from, to));
         }
 
-        public ISnapshot GetSnapshot(string bucketId, string streamId, int maxRevision)
+        public ISnapshot? GetSnapshot(string bucketId, string streamId, int maxRevision)
         {
-            throw new NotImplementedException();
+            return AsyncHelper.RunSync(() => this.GetSnapshotAsync(bucketId, streamId, maxRevision));
         }
 
         public IEnumerable<IStreamHead> GetStreamsToSnapshot(string bucketId, int maxThreshold)
         {
-            throw new NotImplementedException();
+            return Enumerable.Empty<IStreamHead>();
         }
 
         public void Initialize()
@@ -172,7 +170,7 @@
                     commit,
                     new PartitionKey(commit.BucketId)).ConfigureAwait(false);
 
-                return result.Resource.ToCommit(this.serializer);
+                return result.Resource.ToCommit(this.serializer)!;
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
             {
@@ -280,7 +278,6 @@
         {
             Container container = await this.settings.EventsContainerFactory().ConfigureAwait(false);
 
-            // TODO: Make this more efficient by only returning Ids of items to delete.
             QueryDefinition query = new QueryDefinition(
                 @"SELECT c.id
                     FROM c
@@ -297,18 +294,18 @@
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
-        private async Task<IEnumerable<ICommit>> GetCommitsAsync(QueryDefinition queryDefinition, string partitionKey = null)
+        private async Task<IEnumerable<ICommit>> GetCommitsAsync(QueryDefinition queryDefinition, string? partitionKey = null)
         {
             IEnumerable<CosmosDbCommit> commits = await this.ExecuteQueryAllAsync<CosmosDbCommit>(queryDefinition, partitionKey).ConfigureAwait(false);
-            return commits.Select(x => x.ToCommit(this.serializer));
+            return commits.Select(x => x.ToCommit(this.serializer)!);
         }
 
-        private async Task<IEnumerable<T>> ExecuteQueryAllAsync<T>(QueryDefinition queryDefinition, string partitionKey = null)
+        private async Task<IEnumerable<T>> ExecuteQueryAllAsync<T>(QueryDefinition queryDefinition, string? partitionKey = null, Container? container = null)
         {
             var results = new List<T>();
 
-            Container container = await this.settings.EventsContainerFactory().ConfigureAwait(false);
-            string continuationToken = null;
+            container ??= await this.settings.EventsContainerFactory().ConfigureAwait(false);
+            string? continuationToken = null;
 
             var options = new QueryRequestOptions
             {
@@ -331,6 +328,49 @@
             while (!string.IsNullOrEmpty(continuationToken));
 
             return results;
+        }
+
+        private async Task<bool> AddSnapshotAsync(ISnapshot snapshot)
+        {
+            var cosmosSnapshot = snapshot.ToCosmosDbSnapshot(this.serializer);
+
+            Container container = await this.settings.SnapshotContainerFactory().ConfigureAwait(false);
+
+            try
+            {
+                await container.CreateItemAsync(
+                    cosmosSnapshot,
+                    new PartitionKey(snapshot.BucketId)).ConfigureAwait(false);
+            }
+            catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task<ISnapshot?> GetSnapshotAsync(string bucketId, string streamId, int maxRevision)
+        {
+            Container container = await this.settings.SnapshotContainerFactory().ConfigureAwait(false);
+
+            QueryDefinition query = new QueryDefinition(
+                @"SELECT *
+                    FROM c
+                  WHERE c.bucketId = @bucketId 
+                    AND c.contentType = @contentType
+                    AND c.streamId = @streamId
+                    AND s.streamRevision <= @maxRevision
+                  ORDER BY s.streamRevision DESC
+                  OFFSET 0 LIMIT 1")
+                .WithParameter("@bucketId", bucketId)
+                .WithParameter("@contentType", CosmosDbSnapshot.RegisteredContentType)
+                .WithParameter("@streamId", streamId)
+                .WithParameter("@maxRevision", maxRevision);
+
+            IEnumerable<CosmosDbSnapshot> snapshots = await this.ExecuteQueryAllAsync<CosmosDbSnapshot>(query, bucketId, container).ConfigureAwait(false);
+
+            return snapshots.FirstOrDefault()?.ToSnapshot(this.serializer);
         }
 
         private async Task DropAsync()

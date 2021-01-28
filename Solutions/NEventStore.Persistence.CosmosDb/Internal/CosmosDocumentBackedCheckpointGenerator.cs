@@ -21,11 +21,15 @@
             Container container = await this.containerFactory().ConfigureAwait(false);
             var partitionKey = new PartitionKey(NextCheckpointIdDocument.DefaultId);
 
+            // TODO: Everything from here on down has to be in a retry block. Rather than taking a dependency on
+            // Corvus.Retry we should manually implement here.
+            // TODO: Rather than query every time, we should stash the most recent value and only re-query if we get
+            // a conflict.
             return await Retriable.RetryAsync(
                 async () =>
                 {
                     // Query for the current checkpoint value.
-                    string etag = null;
+                    string? etag = null;
                     NextCheckpointIdDocument nextIdDocument;
 
                     try

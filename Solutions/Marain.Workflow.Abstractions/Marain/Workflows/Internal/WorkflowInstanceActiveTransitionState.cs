@@ -12,29 +12,51 @@ namespace Marain.Workflows.Internal
     public class WorkflowInstanceActiveTransitionState
     {
         /// <summary>
-        /// Gets or sets the sequence number of the <see cref="WorkflowInstanceTransitionStartedEvent"/> that
+        /// Initializes a new instance of the <see cref="WorkflowInstanceActiveTransitionState"/> class.
+        /// </summary>
+        /// <param name="transitionStartedEventVersion">The <see cref="TransitionStartedEventVersion"/>.</param>
+        /// <param name="transitionId">The <see cref="TransitionId"/>.</param>
+        /// <param name="targetStateId">The <see cref="TargetStateId"/>.</param>
+        /// <param name="trigger">The <see cref="Trigger"/>.</param>
+        /// <param name="previousStateId">The <see cref="PreviousStateId"/>.</param>
+        public WorkflowInstanceActiveTransitionState(
+            long transitionStartedEventVersion,
+            string transitionId,
+            string targetStateId,
+            IWorkflowTrigger trigger,
+            string previousStateId)
+        {
+            this.TransitionStartedEventVersion = transitionStartedEventVersion;
+            this.TransitionId = transitionId;
+            this.TargetStateId = targetStateId;
+            this.Trigger = trigger;
+            this.PreviousStateId = previousStateId;
+        }
+
+        /// <summary>
+        /// Gets the sequence number of the <see cref="WorkflowInstanceTransitionStartedEvent"/> that
         /// began the active transition.
         /// </summary>
-        public long TransitionStartedEventVersion { get; set; }
+        public long TransitionStartedEventVersion { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="WorkflowTransition.Id"/> of the transition that is executing.
+        /// Gets the <see cref="WorkflowTransition.Id"/> of the transition that is executing.
         /// </summary>
-        public string TransitionId { get; set; }
+        public string TransitionId { get; }
 
         /// <summary>
-        /// Gets or sets the target state for the transition.
+        /// Gets the target state for the transition.
         /// </summary>
-        public string TargetStateId { get; set; }
+        public string TargetStateId { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="IWorkflowTrigger"/> that initiated this transition.
+        /// Gets the <see cref="IWorkflowTrigger"/> that initiated this transition.
         /// </summary>
-        public IWorkflowTrigger Trigger { get; set; }
+        public IWorkflowTrigger Trigger { get; }
 
         /// <summary>
-        /// Gets or sets the Id of the state that the instance was in when this transition started.
+        /// Gets the Id of the state that the instance was in when this transition started.
         /// </summary>
-        public string InitialStateId { get; set; }
+        public string PreviousStateId { get; }
     }
 }

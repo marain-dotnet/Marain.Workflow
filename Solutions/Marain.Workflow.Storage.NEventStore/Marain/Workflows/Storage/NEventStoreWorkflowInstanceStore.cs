@@ -9,6 +9,7 @@ namespace Marain.Workflows.Storage
     using System.Collections.Immutable;
     using System.Linq;
     using System.Threading.Tasks;
+    using Marain.Workflows;
     using Marain.Workflows.DomainEvents;
     using Microsoft.Extensions.Logging;
     using NEventStore;
@@ -60,17 +61,20 @@ namespace Marain.Workflows.Storage
                 throw new ArgumentNullException(nameof(workflowInstanceId));
             }
 
-            // TODO: Integrate snapshotting
+            ISnapshot? snapshot = this.store.Advanced.GetSnapshot(workflowInstanceId, workflowInstanceId, int.MaxValue);
+
             IEventStream stream = this.store.OpenStream(
                 partitionKey ?? workflowInstanceId,
                 workflowInstanceId,
-                int.MinValue,
+                snapshot?.StreamRevision ?? 0,
                 int.MaxValue);
 
             // Map the committed events to something we recognise.
             IEnumerable<DomainEvent> domainEvents = stream.CommittedEvents.Select(ev => (DomainEvent)ev.Body);
 
-            var instance = WorkflowInstance.FromCommittedEvents(domainEvents);
+            var instance = WorkflowInstance.FromSnapshotAndCommittedEvents(
+                snapshot?.Payload as WorkflowInstanceSnapshot,
+                domainEvents);
 
             return Task.FromResult(instance);
         }
@@ -78,6 +82,8 @@ namespace Marain.Workflows.Storage
         /// <inheritdoc/>
         public Task UpsertWorkflowInstanceAsync(WorkflowInstance workflowInstance, string? partitionKey = null)
         {
+            // TODO: We know that a bunch of stuff in here could take a while and runs async itself.
+            // What's the best way to run this stuff async? Task.Run? Something else?
             IImmutableList<DomainEvent>? eventsToStore = workflowInstance.GetUncommittedEvents();
 
             long firstSequenceNumber = eventsToStore[0].SequenceNumber;
@@ -111,6 +117,15 @@ namespace Marain.Workflows.Storage
             stream.CommitChanges(commitId);
 
             workflowInstance.ClearUncommittedEvents();
+
+            WorkflowInstanceSnapshot instanceSnapshot = workflowInstance.GetSnapshot();
+            var snapshot = new Snapshot(
+                workflowInstance.Id,
+                workflowInstance.Id,
+                (int)instanceSnapshot.Version,
+                instanceSnapshot);
+
+            this.store.Advanced.AddSnapshot(snapshot);
 
             return Task.CompletedTask;
         }

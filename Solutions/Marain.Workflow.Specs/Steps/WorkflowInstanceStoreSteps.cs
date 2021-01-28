@@ -6,6 +6,7 @@ namespace Marain.Workflows.Specs.Steps
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
     using Corvus.Json;
@@ -33,6 +34,57 @@ namespace Marain.Workflows.Specs.Steps
             {
                 this.ScenarioContext.Set(ex);
             }
+        }
+
+        [Given("I apply the '(.*)' transition (.*) times to the workflow instance called '(.*)', saving on every iteration")]
+        public async Task GivenIApplyTheTransitionTimesToTheWorkflowInstanceCalledSavingOnEveryIteration(string transitionName, int count, string instanceName)
+        {
+            ITenant tenant = this.ScenarioContext.Get<ITenant>();
+            IWorkflowInstanceStore store = await this.GetWorkflowInstanceStore(tenant).ConfigureAwait(false);
+            WorkflowInstance instance = this.ScenarioContext.Get<WorkflowInstance>(instanceName);
+            Workflow workflow = this.ScenarioContext.Get<Workflow>(instance.WorkflowId);
+            WorkflowTransition transition = workflow.GetState(instance.StateId).Transitions.First(x => x.Id == transitionName);
+            WorkflowState targetState = workflow.GetState(transition.TargetStateId);
+
+            var stopwatch = new Stopwatch();
+
+            for (int i = 0; i < count; i++)
+            {
+                instance.SetTransitionStarted(workflow, transition, new EntityIdTrigger());
+                instance.SetStateExited(WorkflowActionResult.Empty);
+                instance.SetTransitionExecuted(WorkflowActionResult.Empty);
+                instance.SetStateEntered(targetState, WorkflowActionResult.Empty);
+                stopwatch.Start();
+                await store.UpsertWorkflowInstanceAsync(instance).ConfigureAwait(false);
+                stopwatch.Stop();
+                Console.WriteLine($"Executed an update-save iteration in {stopwatch.ElapsedMilliseconds}ms");
+                stopwatch.Reset();
+            }
+        }
+
+        [Given("I apply the '(.*)' transition (.*) times to the workflow instance called '(.*)', saving at the end")]
+        public async Task GivenIApplyTheTransitionTimesToTheWorkflowInstanceCalledSavingAtTheEnd(string transitionName, int count, string instanceName)
+        {
+            ITenant tenant = this.ScenarioContext.Get<ITenant>();
+            IWorkflowInstanceStore store = await this.GetWorkflowInstanceStore(tenant).ConfigureAwait(false);
+            WorkflowInstance instance = this.ScenarioContext.Get<WorkflowInstance>(instanceName);
+            Workflow workflow = this.ScenarioContext.Get<Workflow>(instance.WorkflowId);
+            WorkflowTransition transition = workflow.GetState(instance.StateId).Transitions.First(x => x.Id == transitionName);
+            WorkflowState targetState = workflow.GetState(transition.TargetStateId);
+
+            for (int i = 0; i < count; i++)
+            {
+                instance.SetTransitionStarted(workflow, transition, new EntityIdTrigger());
+                instance.SetStateExited(WorkflowActionResult.Empty);
+                instance.SetTransitionExecuted(WorkflowActionResult.Empty);
+                instance.SetStateEntered(targetState, WorkflowActionResult.Empty);
+            }
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            await store.UpsertWorkflowInstanceAsync(instance).ConfigureAwait(false);
+            stopwatch.Stop();
+            Console.WriteLine($"Executed an update-save iteration in {stopwatch.ElapsedMilliseconds}ms");
         }
 
         [Given("I have loaded the workflow instance with Id '(.*)' and called it '(.*)'")]

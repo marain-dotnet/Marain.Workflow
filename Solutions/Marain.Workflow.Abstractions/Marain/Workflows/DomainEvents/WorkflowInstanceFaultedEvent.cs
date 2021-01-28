@@ -24,7 +24,7 @@ namespace Marain.Workflows.DomainEvents
         /// <param name="sequenceNumber">The sequence number of the event. Should be monotonically increasing for the aggregate.</param>
         /// <param name="errorMessage">The <see cref="ErrorMessage"/>.</param>
         /// <param name="data">The <see cref="Data"/>.</param>
-        public WorkflowInstanceFaultedEvent(string workflowInstanceId, long sequenceNumber, string errorMessage, IImmutableDictionary<string, string> data)
+        public WorkflowInstanceFaultedEvent(string workflowInstanceId, int sequenceNumber, string errorMessage, IImmutableDictionary<string, string> data)
             : base(workflowInstanceId, sequenceNumber)
         {
             this.ErrorMessage = errorMessage;

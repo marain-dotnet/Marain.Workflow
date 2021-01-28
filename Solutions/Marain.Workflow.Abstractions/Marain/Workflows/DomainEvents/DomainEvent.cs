@@ -19,7 +19,7 @@ namespace Marain.Workflows.DomainEvents
         /// </summary>
         /// <param name="aggregateId">The <see cref="AggregateId"/>.</param>
         /// <param name="sequenceNumber">The <see cref="SequenceNumber"/>.</param>
-        protected DomainEvent(string aggregateId, long sequenceNumber)
+        protected DomainEvent(string aggregateId, int sequenceNumber)
         {
             this.AggregateId = aggregateId;
             this.SequenceNumber = sequenceNumber;
@@ -33,7 +33,7 @@ namespace Marain.Workflows.DomainEvents
         /// <summary>
         /// Gets the sequence number of the event.
         /// </summary>
-        public long SequenceNumber { get; }
+        public int SequenceNumber { get; }
 
         /// <summary>
         /// Gets the type of the event. This will be a well-known type defined by the <see cref="WorkflowInstance"/>.

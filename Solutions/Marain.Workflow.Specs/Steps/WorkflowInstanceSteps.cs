@@ -18,10 +18,10 @@ namespace Marain.Workflows.Specs.Steps
     public class WorkflowInstanceSteps : Steps
     {
         [Given("I have a simple two-state workflow definition called '(.*)'")]
-        public void GivenIHaveASimpleTwo_StateWorkflowDefinitionWithId(string instanceId)
+        public void GivenIHaveASimpleTwo_StateWorkflowDefinitionWithId(string workflowId)
         {
-            Workflow workflow = SimpleWorkflowFactory.CreateTwoStateWorkflow(instanceId);
-            this.ScenarioContext.Set(workflow, instanceId);
+            Workflow workflow = SimpleWorkflowFactory.CreateTwoStateWorkflow(workflowId);
+            this.ScenarioContext.Set(workflow, workflowId);
         }
 
         [Given("I have created a new workflow instance called '(.*)'")]

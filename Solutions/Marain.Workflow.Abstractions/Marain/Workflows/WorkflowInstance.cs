@@ -16,9 +16,9 @@ namespace Marain.Workflows
     /// </summary>
     public class WorkflowInstance
     {
-        private readonly WorkflowInstanceSnapshot internalState = new WorkflowInstanceSnapshot();
-
         private readonly IList<DomainEvent> uncommittedEvents = new List<DomainEvent>();
+
+        private WorkflowInstanceSnapshot internalState;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance" /> class.
@@ -34,12 +34,17 @@ namespace Marain.Workflows
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance" /> class.
         /// </summary>
+        /// <param name="snapshot">The snapshot to initialise the workflow state with.</param>
         /// <remarks>
         /// This constructor is intended for use when rehydrating a <see cref="WorkflowInstance"/> from a set of
         /// committed <see cref="DomainEvent"/>s.
         /// </remarks>
-        private WorkflowInstance()
+        private WorkflowInstance(WorkflowInstanceSnapshot snapshot = null)
         {
+            if (snapshot is not null)
+            {
+                this.internalState = snapshot;
+            }
         }
 
         /// <summary>
@@ -88,7 +93,20 @@ namespace Marain.Workflows
         /// <returns>The rehydrated <see cref="WorkflowInstance"/>.</returns>
         public static WorkflowInstance FromCommittedEvents(IEnumerable<DomainEvent> events)
         {
-            var instance = new WorkflowInstance();
+            return WorkflowInstance.FromSnapshotAndCommittedEvents(null, events);
+        }
+
+        /// <summary>
+        /// Rehydrates a <see cref="WorkflowInstance"/> from a snapshot and additional list of events.
+        /// </summary>
+        /// <param name="snapshot">The snapshot for the instance.</param>
+        /// <param name="events">The events for the instance.</param>
+        /// <returns>The rehydrated <see cref="WorkflowInstance"/>.</returns>
+        public static WorkflowInstance FromSnapshotAndCommittedEvents(
+            WorkflowInstanceSnapshot snapshot,
+            IEnumerable<DomainEvent> events)
+        {
+            var instance = new WorkflowInstance(snapshot);
 
             foreach (DomainEvent ev in events)
             {
@@ -293,8 +311,16 @@ namespace Marain.Workflows
                 default:
                     throw new ArgumentException($"Unrecognised domain event type '{domainEvent.ContentType}'.");
             }
+        }
 
-            this.internalState.Version = domainEvent.SequenceNumber;
+        /// <summary>
+        /// Retrieves a snapshot (aka a Memento) that can be used to recreate the <see cref="WorkflowInstance"/> in
+        /// its current state.
+        /// </summary>
+        /// <returns>The <see cref="WorkflowInstanceSnapshot"/>.</returns>
+        public WorkflowInstanceSnapshot GetSnapshot()
+        {
+            return this.internalState;
         }
 
         private void RaiseEvent(DomainEvent newEvent)
@@ -305,57 +331,84 @@ namespace Marain.Workflows
 
         private void ApplyEvent(WorkflowInstanceCreatedEvent domainEvent)
         {
-            this.internalState.Id = domainEvent.AggregateId;
-            this.internalState.WorkflowId = domainEvent.WorkflowId;
-            this.internalState.Status = WorkflowStatus.Initializing;
-            this.internalState.Context = domainEvent.Context;
-            this.internalState.ActiveTransitionState = new WorkflowInstanceActiveTransitionState
-            {
-               TargetStateId = domainEvent.InitialStateId,
-               TransitionStartedEventVersion = 0,
-            };
+            this.internalState = new WorkflowInstanceSnapshot(
+                domainEvent.AggregateId,
+                domainEvent.SequenceNumber,
+                domainEvent.WorkflowId,
+                null,
+                WorkflowStatus.Initializing,
+                domainEvent.Context,
+                new WorkflowInstanceActiveTransitionState(
+                    0,
+                    null,
+                    domainEvent.InitialStateId,
+                    null,
+                    null));
         }
 
-#pragma warning disable RCS1163 // Unused parameter.
-#pragma warning disable IDE0060 // Unused parameter.
         private void ApplyEvent(WorkflowInstanceFaultedEvent domainEvent)
-#pragma warning restore IDE0060 // Unused parameter.
-#pragma warning restore RCS1163 // Unused parameter.
         {
-            this.internalState.Status = WorkflowStatus.Faulted;
+            this.internalState = new WorkflowInstanceSnapshot(
+                this.internalState.Id,
+                domainEvent.SequenceNumber,
+                this.internalState.WorkflowId,
+                this.internalState.StateId,
+                WorkflowStatus.Faulted,
+                this.internalState.Context,
+                this.internalState.ActiveTransitionState);
         }
 
         private void ApplyEvent(WorkflowInstanceStateEnteredEvent domainEvent)
         {
-            this.internalState.StateId = domainEvent.EnteredStateId;
-            this.internalState.Context = this.BuildNewContext(domainEvent.AddedAndUpdatedContextItems, domainEvent.RemovedContextItems);
-            this.internalState.ActiveTransitionState = null;
-            this.internalState.Status = domainEvent.IsWorkflowComplete ? WorkflowStatus.Complete : WorkflowStatus.Waiting;
+            this.internalState = new WorkflowInstanceSnapshot(
+                this.internalState.Id,
+                domainEvent.SequenceNumber,
+                this.internalState.WorkflowId,
+                domainEvent.EnteredStateId,
+                domainEvent.IsWorkflowComplete ? WorkflowStatus.Complete : WorkflowStatus.Waiting,
+                this.BuildNewContext(domainEvent.AddedAndUpdatedContextItems, domainEvent.RemovedContextItems),
+                null);
         }
 
         private void ApplyEvent(WorkflowInstanceStateExitedEvent domainEvent)
         {
-            this.internalState.StateId = null;
-            this.internalState.Context = this.BuildNewContext(domainEvent.AddedAndUpdatedContextItems, domainEvent.RemovedContextItems);
+            this.internalState = new WorkflowInstanceSnapshot(
+                this.internalState.Id,
+                domainEvent.SequenceNumber,
+                this.internalState.WorkflowId,
+                null,
+                this.internalState.Status,
+                this.BuildNewContext(domainEvent.AddedAndUpdatedContextItems, domainEvent.RemovedContextItems),
+                this.internalState.ActiveTransitionState);
         }
 
         private void ApplyEvent(WorkflowInstanceTransitionActionsExecutedEvent domainEvent)
         {
-            this.internalState.Context = this.BuildNewContext(domainEvent.AddedAndUpdatedContextItems, domainEvent.RemovedContextItems);
+            this.internalState = new WorkflowInstanceSnapshot(
+                this.internalState.Id,
+                domainEvent.SequenceNumber,
+                this.internalState.WorkflowId,
+                this.internalState.StateId,
+                this.internalState.Status,
+                this.BuildNewContext(domainEvent.AddedAndUpdatedContextItems, domainEvent.RemovedContextItems),
+                this.internalState.ActiveTransitionState);
         }
 
         private void ApplyEvent(WorkflowInstanceTransitionStartedEvent domainEvent)
         {
-            this.internalState.Status = WorkflowStatus.ProcessingTransition;
-
-            this.internalState.ActiveTransitionState = new WorkflowInstanceActiveTransitionState
-            {
-                TransitionId = domainEvent.TransitionId,
-                TransitionStartedEventVersion = domainEvent.SequenceNumber,
-                InitialStateId = this.internalState.StateId,
-                TargetStateId = domainEvent.TargetStateId,
-                Trigger = domainEvent.Trigger,
-            };
+            this.internalState = new WorkflowInstanceSnapshot(
+                this.internalState.Id,
+                domainEvent.SequenceNumber,
+                this.internalState.WorkflowId,
+                this.internalState.StateId,
+                WorkflowStatus.ProcessingTransition,
+                this.internalState.Context,
+                new WorkflowInstanceActiveTransitionState(
+                    domainEvent.SequenceNumber,
+                    domainEvent.TransitionId,
+                    domainEvent.TargetStateId,
+                    domainEvent.Trigger,
+                    this.internalState.StateId));
         }
 
         private IImmutableDictionary<string, string> BuildNewContext(IImmutableDictionary<string, string> addedAndUpdatedContextItems, IImmutableList<string> removedContextItems)

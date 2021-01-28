@@ -630,6 +630,160 @@ this.FeatureBackground();
             }
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Write and read a commit containing a large number of events")]
+        public virtual void WriteAndReadACommitContainingALargeNumberOfEvents()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Write and read a commit containing a large number of events", null, tagsOfScenario, argumentsOfScenario);
+#line 119
+this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            bool isScenarioIgnored = default(bool);
+            bool isFeatureIgnored = default(bool);
+            if ((tagsOfScenario != null))
+            {
+                isScenarioIgnored = tagsOfScenario.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((this._featureTags != null))
+            {
+                isFeatureIgnored = this._featureTags.Where(__entry => __entry != null).Where(__entry => String.Equals(__entry, "ignore", StringComparison.CurrentCultureIgnoreCase)).Any();
+            }
+            if ((isScenarioIgnored || isFeatureIgnored))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 6
+this.FeatureBackground();
+#line hidden
+                TechTalk.SpecFlow.Table table138 = new TechTalk.SpecFlow.Table(new string[] {
+                            "InstanceId",
+                            "WorkflowId",
+                            "Context"});
+                table138.AddRow(new string[] {
+                            "instance1",
+                            "workflow1",
+                            "{Context1}"});
+#line 120
+ testRunner.Given("I have created a new workflow instance called \'instance1\'", ((string)(null)), table138, "Given ");
+#line hidden
+#line 123
+ testRunner.And("I have set the workflow instance called \'instance1\' as having entered the state \'" +
+                        "initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table139 = new TechTalk.SpecFlow.Table(new string[] {
+                            "InstanceId",
+                            "WorkflowId",
+                            "Context"});
+                table139.AddRow(new string[] {
+                            "instance1",
+                            "workflow1",
+                            "{Context1}"});
+#line 124
+ testRunner.Given("I have created a new workflow instance called \'originalInstance\'", ((string)(null)), table139, "Given ");
+#line hidden
+#line 127
+ testRunner.And("I have set the workflow instance called \'originalInstance\' as having entered the " +
+                        "state \'initializing\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table140 = new TechTalk.SpecFlow.Table(new string[] {
+                            "PropertyName",
+                            "Value"});
+                table140.AddRow(new string[] {
+                            "CatalogItemId",
+                            "id1"});
+#line 128
+ testRunner.And("I have started the transition \'create\' for the workflow instance called \'original" +
+                        "Instance\' with a trigger of type \'application/vnd.endjin.datacatalog.createcatal" +
+                        "ogitemtrigger\'", ((string)(null)), table140, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table141 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Operation",
+                            "Key",
+                            "Value"});
+                table141.AddRow(new string[] {
+                            "AddOrUpdate",
+                            "Context1",
+                            "Value1.1"});
+#line 131
+ testRunner.And("I have set the workflow instance called \'originalInstance\' as having exited the c" +
+                        "urrent state with the following context updates:", ((string)(null)), table141, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table142 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Operation",
+                            "Key",
+                            "Value"});
+                table142.AddRow(new string[] {
+                            "AddOrUpdate",
+                            "Context1",
+                            "Value1.2"});
+                table142.AddRow(new string[] {
+                            "AddOrUpdate",
+                            "Context3",
+                            "Value3"});
+                table142.AddRow(new string[] {
+                            "Remove",
+                            "Context2",
+                            ""});
+#line 134
+ testRunner.And("I have set the workflow instance called \'originalInstance\' as having executed tra" +
+                        "nsition actions with the following context updates:", ((string)(null)), table142, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table143 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Operation",
+                            "Key",
+                            "Value"});
+                table143.AddRow(new string[] {
+                            "AddOrUpdate",
+                            "Context4",
+                            "Value4.1"});
+                table143.AddRow(new string[] {
+                            "Remove",
+                            "Context3",
+                            ""});
+#line 139
+ testRunner.And("I have set the workflow instance called \'originalInstance\' as having entered the " +
+                        "state \'waiting-for-documentation\' with the following context updates:", ((string)(null)), table143, "And ");
+#line hidden
+#line 143
+ testRunner.And("I have stored the workflow instance called \'originalInstance\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 144
+ testRunner.And("I have loaded the workflow instance with Id \'instance1\' and called it \'reloaded\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 145
+ testRunner.And("I apply the \'edit\' transition 200 times to the workflow instance called \'reloaded" +
+                        "\', saving on every iteration", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 146
+ testRunner.When("I load the workflow instance with Id \'instance1\' and call it \'result\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+                TechTalk.SpecFlow.Table table144 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Property",
+                            "Value"});
+                table144.AddRow(new string[] {
+                            "Id",
+                            "instance1"});
+                table144.AddRow(new string[] {
+                            "Status",
+                            "Waiting"});
+                table144.AddRow(new string[] {
+                            "StateId",
+                            "waiting-for-documentation"});
+                table144.AddRow(new string[] {
+                            "IsDirty",
+                            "false"});
+#line 147
+ testRunner.Then("the workflow instance called \'result\' should have the following properties:", ((string)(null)), table144, "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

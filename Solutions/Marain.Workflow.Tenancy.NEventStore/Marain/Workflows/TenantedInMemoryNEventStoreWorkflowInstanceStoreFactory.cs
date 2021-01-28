@@ -8,7 +8,6 @@ namespace Marain.Workflows
     using System.Collections.Concurrent;
     using System.Threading.Tasks;
     using Corvus.Tenancy;
-    using Marain.Workflows.Internal;
     using Marain.Workflows.Storage;
     using Microsoft.Extensions.Logging;
     using NEventStore;

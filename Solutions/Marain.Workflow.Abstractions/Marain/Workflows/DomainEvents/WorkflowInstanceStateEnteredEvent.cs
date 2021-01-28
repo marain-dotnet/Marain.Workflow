@@ -30,7 +30,7 @@ namespace Marain.Workflows.DomainEvents
         /// <param name="interests">The <see cref="Interests"/>.</param>
         public WorkflowInstanceStateEnteredEvent(
             string aggregateId,
-            long sequenceNumber,
+            int sequenceNumber,
             long transitionStartedSequenceNumber,
             string enteredStateId,
             bool isWorkflowComplete,
