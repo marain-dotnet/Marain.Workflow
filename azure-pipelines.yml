@@ -40,6 +40,7 @@ jobs:
           Write-Host "##vso[task.setvariable variable=MarainServiceConfiguration:ServiceDisplayName]$Env:ENDJIN_MARAINWORKFLOWSERVICEDISPLAYNAME"
           Write-Host "##vso[task.setvariable variable=MarainServiceConfiguration:ServiceTenantId]$Env:ENDJIN_MARAINWORKFLOWSERVICETENANTID"
           Write-Host "##vso[task.setvariable variable=LeasingStorageAccountConnectionString]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
+          Write-Host "##vso[task.setvariable variable=TenantedWorkflowEngineFactoryConfiguration__CloudEventBaseSourceName]azuresubscriptionid.workflowresourcegroupname"
         displayName: 'Set Custom Environment Variables'
         env:
           ENDJIN_AZURESERVICESAUTHCONNECTIONSTRING: $(Endjin_AzureServicesAuthConnectionString)
@@ -60,7 +61,7 @@ jobs:
         inputs:
           command: custom
           verbose: false
-          customCommand: 'install -g azure-functions-core-tools@3 --unsafe-perm true'
+          customCommand: 'install -g azure-functions-core-tools@3.0.2630 --unsafe-perm true'
       - task: MSBuild@1
         displayName: 'Build SQL DACPAC'
         inputs:

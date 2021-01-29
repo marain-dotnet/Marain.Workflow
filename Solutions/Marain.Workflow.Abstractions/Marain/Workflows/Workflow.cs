@@ -24,6 +24,8 @@ namespace Marain.Workflows
         /// </summary>
         private IDictionary<string, WorkflowState> states;
 
+        private IList<WorkflowEventSubscription> eventSubscriptions;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Workflow" /> class.
         /// </summary>
@@ -96,9 +98,20 @@ namespace Marain.Workflows
         /// </remarks>
         public IDictionary<string, WorkflowState> States
         {
-            get => this.states ?? (this.states = new Dictionary<string, WorkflowState>());
+            get => this.states ??= new Dictionary<string, WorkflowState>();
 
             set => this.states = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the list of subscriptions for events raised as a result of activity against instances of this
+        /// workflow.
+        /// </summary>
+        public IList<WorkflowEventSubscription> WorkflowEventSubscriptions
+        {
+            get => this.eventSubscriptions ??= new List<WorkflowEventSubscription>();
+
+            set => this.eventSubscriptions = value;
         }
 
         /// <summary>

@@ -17,15 +17,14 @@ namespace Marain.Workflows.Api.Specs.Steps
     using Corvus.Retry.Strategies;
     using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
+    using Marain.Workflows.Api.Specs.Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using NUnit.Framework;
 
     using TechTalk.SpecFlow;
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-#pragma warning disable SA1600 // Elements should be documented
+    using TechTalk.SpecFlow.Assist;
 
     [Binding]
     public class WorkflowSteps
@@ -46,27 +45,59 @@ namespace Marain.Workflows.Api.Specs.Steps
         }
 
         [Given("I have added the workflow '(.*)' to the workflow store with Id '(.*)'")]
-        public async Task GivenIHaveAddedTheToTheWorkflowStoreWithId(string workflowName, string workflowId)
+        public Task GivenIHaveAddedTheToTheWorkflowStoreWithId(string workflowName, string workflowId)
         {
-            Workflow workflow = TestWorkflowFactory.Get(workflowName);
-            workflow.Id = workflowId;
+            return this.AddWorkflowToStore(workflowName, workflowId, new WorkflowEventSubscription[0]);
+        }
 
-            ITenantedWorkflowStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
-            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(
-                this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
+        [Given("I have added the workflow '(.*)' to the workflow store with Id '(.*)' and event subscriptions")]
+        public Task GivenIHaveAddedTheWorkflowToTheWorkflowStoreWithIdAndEventSubscriptions(string workflowName, string workflowId, Table table)
+        {
+            WorkflowEventSubscription[] subscriptions = table.CreateSet<WorkflowEventSubscription>().ToArray();
+            return this.AddWorkflowToStore(workflowName, workflowId, subscriptions);
+        }
 
-            try
+        [Given("there is an event subscriber listening on port '(.*)' called '(.*)'")]
+        public void GivenThereIsAnEventSubscriberListeningOnPortCalled(int port, string name)
+        {
+            var subscriber = new StubWorkflowEventSubscriber(port, HttpStatusCode.Accepted);
+            subscriber.Start();
+            this.scenarioContext.Set(subscriber, name);
+        }
+
+        [Given("there is an event subscriber that will return the status '(.*)' listening on port '(.*)' called '(.*)'")]
+        public void GivenThereIsAnEventSubscriberListeningOnPortCalled(HttpStatusCode response, int port, string name)
+        {
+            var subscriber = new StubWorkflowEventSubscriber(port, response);
+            subscriber.Start();
+            this.scenarioContext.Set(subscriber, name);
+        }
+
+        [Then("a CloudEvent should have been published to the subscriber called '(.*)'")]
+        [Then("CloudEvents should have been published to the subscriber called '(.*)'")]
+        public void ThenACloudEventShouldHaveBeenPublishedToTheSubscriberCalled(string subscriberName, Table table)
+        {
+            StubWorkflowEventSubscriber subscriber = this.scenarioContext.Get<StubWorkflowEventSubscriber>(subscriberName);
+
+            // Get the data from the requests as JObjects so we can check their values...
+            JObject[] requestPayloads = subscriber.ReceivedRequests.Select(x => JObject.Parse(x.Content)).ToArray();
+
+            foreach (TableRow row in table.Rows)
             {
-                await store.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
-            }
-            catch (WorkflowConflictException)
-            {
-                // The workflow already exists. Move on.
-            }
+                int index = int.Parse(row[0]);
+                string path = row[1];
+                string expectedValue = row[2];
 
-            // Get the workflow so we have the correct etag.
-            workflow = await store.GetWorkflowAsync(workflow.Id).ConfigureAwait(false);
-            this.scenarioContext.Set(workflow, workflowName);
+                // We might need to substitute the tenant Id in...
+                expectedValue = expectedValue.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
+
+                Assert.IsTrue(index < requestPayloads.Length, $"Expected an event at index {index} but was not present.");
+
+                JToken targetToken = requestPayloads[index].SelectToken(path);
+                Assert.IsNotNull(targetToken, $"Expected to find a data item at index '{index}' and path '{path}', but was not present.");
+
+                Assert.AreEqual(expectedValue, targetToken.ToString(), $"Value did not match at index '{index}' and path '{path}'.");
+            }
         }
 
         [Given("I have started an instance of the workflow '(.*)' with instance id '(.*)' and using context object '(.*)'")]
@@ -199,6 +230,13 @@ namespace Marain.Workflows.Api.Specs.Steps
             return this.VerifyWorkflowInstanceState(instanceId, expectedStateName, true);
         }
 
+        [Then("the workflow instance with id '(.*)' should have the status '(.*)'")]
+        public async Task ThenTheWorkflowInstanceWithIdShouldHaveTheStatus(string instanceId, WorkflowStatus expectedStatus)
+        {
+            WorkflowInstance instance = await this.GetWorkflowInstance(instanceId).ConfigureAwait(false);
+            Assert.AreEqual(expectedStatus, instance.Status);
+        }
+
         [Then("the response should contain the the workflow '(.*)'")]
         public void ThenTheResponseShouldContainTheTheWorkflow(string expectedWorkflowName)
         {
@@ -271,6 +309,30 @@ namespace Marain.Workflows.Api.Specs.Steps
                 _ => Console.WriteLine($"Acquired lease for instance {instanceId}"),
                 instanceId,
                 new Linear(TimeSpan.FromSeconds(1), 30)).ConfigureAwait(false);
+        }
+
+        private async Task AddWorkflowToStore(string workflowName, string workflowId, WorkflowEventSubscription[] subscriptions)
+        {
+            Workflow workflow = TestWorkflowFactory.Get(workflowName);
+            workflow.WorkflowEventSubscriptions = subscriptions;
+            workflow.Id = workflowId;
+
+            ITenantedWorkflowStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
+            IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(
+                this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
+
+            try
+            {
+                await store.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
+            }
+            catch (WorkflowConflictException)
+            {
+                // The workflow already exists. Move on.
+            }
+
+            // Get the workflow so we have the correct etag.
+            workflow = await store.GetWorkflowAsync(workflow.Id).ConfigureAwait(false);
+            this.scenarioContext.Set(workflow, workflowName);
         }
     }
 }
