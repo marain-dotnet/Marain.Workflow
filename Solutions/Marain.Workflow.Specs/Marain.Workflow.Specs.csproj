@@ -36,10 +36,6 @@
     <PackageReference Include="Microsoft.SqlServer.DACFx" Version="150.4897.1" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.46041.41" />
     <PackageReference Include="Moq" Version="4.15.2" />
-    <PackageReference Include="coverlet.msbuild" Version="3.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Marain.Services.Tenancy.Testing" Version="2.0.0" />
   </ItemGroup>
 
