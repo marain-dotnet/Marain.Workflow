@@ -31,7 +31,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.10" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.10" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.11" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.10" />
     <PackageReference Include="Microsoft.SqlServer.DACFx" Version="150.4897.1" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.46041.41" />
