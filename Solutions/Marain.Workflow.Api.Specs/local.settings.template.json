@@ -1,6 +1,8 @@
 {
   "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
 
+  "TenantedWorkflowEngineFactoryConfiguration:CloudEventBaseSourceName": "azuresubscriptionid.workflowresourcegroupname",
+
   // If running with a local tenancy service, point TenancyClient:TenancyServiceBaseUri at the localhost address for that
   // and set the ResourceIdForMsiAuthentication to an empty string.
   "TenancyClient:TenancyServiceBaseUri": "https://mardevtenancy.azurewebsites.net/",

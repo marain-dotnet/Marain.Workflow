@@ -1,6 +1,8 @@
 {
   "LeasingStorageAccountConnectionString": "UseDevelopmentStorage=true",
 
+  "TenantedWorkflowEngineFactoryConfiguration:CloudEventBaseSourceName": "azuresubscriptionid.workflowresourcegroupname",
+
   // If using a real Cosmos account, provide the details using these settings. To use the emulator, omit the settings
   // completely.
   "TestCosmosConfiguration:AccountUri": "https://endjintestsql.documents.azure.com/",
