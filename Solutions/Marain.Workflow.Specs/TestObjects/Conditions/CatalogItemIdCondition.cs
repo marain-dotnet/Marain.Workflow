@@ -25,10 +25,10 @@ namespace Marain.Workflows.Specs.TestObjects.Conditions
         {
             if (trigger is ICatalogItemTrigger itemTrigger)
             {
-                instance.Context["CatalogItemId"] = itemTrigger.CatalogItemId;
+                return Task.FromResult(instance.Context["CatalogItemId"] == itemTrigger.CatalogItemId);
             }
 
-            return Task.FromResult(true);
+            return Task.FromResult(false);
         }
 
         public IEnumerable<string> GetInterests(WorkflowInstance instance)

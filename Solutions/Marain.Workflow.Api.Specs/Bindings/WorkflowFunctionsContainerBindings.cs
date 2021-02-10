@@ -73,7 +73,8 @@ namespace Marain.Workflows.Api.Specs.Bindings
                         AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
                     });
 
-                    services.AddTenantedAzureCosmosWorkflowInstanceStore();
+                    // TODO: Add workflow instance store
+                    //// services.AddTenantedAzureCosmosWorkflowInstanceStore();
 
                     services.AddTenantedWorkflowEngineFactory();
 

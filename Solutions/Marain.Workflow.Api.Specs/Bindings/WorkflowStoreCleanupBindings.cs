@@ -46,13 +46,6 @@ namespace Marain.Workflows.Api.Specs.Bindings
                         var workflowStore = (CosmosWorkflowStore)await workflowStoreFactory.GetWorkflowStoreForTenantAsync(transientTenant).ConfigureAwait(false);
                         await workflowStore.Container.DeleteContainerAsync().ConfigureAwait(false);
                     }).ConfigureAwait(false);
-
-                await context.RunAndStoreExceptionsAsync(async () =>
-                {
-                    ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
-                    var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(transientTenant).ConfigureAwait(false);
-                    await workflowInstanceStore.Container.DeleteContainerAsync().ConfigureAwait(false);
-                }).ConfigureAwait(false);
             }
         }
     }

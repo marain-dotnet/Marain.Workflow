@@ -24,13 +24,13 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
 
         public string Message { get; set; }
 
-        public Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
+        public Task<WorkflowActionResult> ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
         {
             var log = GetTraces();
 
             log.Add(this.Message);
 
-            return Task.CompletedTask;
+            return Task.FromResult(WorkflowActionResult.Empty);
         }
 
         public static IList<string> GetTraces()

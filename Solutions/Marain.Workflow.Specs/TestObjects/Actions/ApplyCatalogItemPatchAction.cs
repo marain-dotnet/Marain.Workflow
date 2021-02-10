@@ -28,12 +28,14 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
 
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        public async Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
+        public async Task<WorkflowActionResult> ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
         {
             if (trigger is EditCatalogItemTrigger patchTrigger)
             {
                 await this.ExecuteAsync(instance, patchTrigger.PatchDetails);
             }
+
+            return WorkflowActionResult.Empty;
         }
 
         protected async Task ExecuteAsync(WorkflowInstance instance, CatalogItemPatch content)

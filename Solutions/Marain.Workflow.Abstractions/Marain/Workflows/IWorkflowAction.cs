@@ -34,6 +34,6 @@ namespace Marain.Workflows
         /// <param name="instance">The instance on which the action is being executed.</param>
         /// <param name="trigger">The trigger that has caused the action to execute.</param>
         /// <returns>A <see cref="Task" /> that completes when the action has finished executing.</returns>
-        Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger);
+        Task<WorkflowActionResult> ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger);
     }
 }

@@ -56,10 +56,6 @@ namespace Marain.Workflows.Specs.Bindings
                 TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
                 cosmosConfig));
 
-            tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
-                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
-                cosmosConfig));
-
             var testDocumentRepositoryContainerDefinition = new CosmosContainerDefinition("workflow", "testdocuments", "/id");
             tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
                 testDocumentRepositoryContainerDefinition,
@@ -90,12 +86,6 @@ namespace Marain.Workflows.Specs.Bindings
 
             await featureContext.RunAndStoreExceptionsAsync(
                 () => workflowStore.Container.DeleteContainerAsync()).ConfigureAwait(false);
-
-            ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
-            var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
-
-            await featureContext.RunAndStoreExceptionsAsync(
-                () => workflowInstanceStore.Container.DeleteContainerAsync()).ConfigureAwait(false);
 
             await featureContext.RunAndStoreExceptionsAsync(
                 () => featureContext.Get<Container>(TestDocumentsRepository).DeleteContainerAsync()).ConfigureAwait(false);

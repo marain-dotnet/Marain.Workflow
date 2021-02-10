@@ -100,7 +100,7 @@ namespace Marain.Workflows
         public string MsiAuthenticationResource { get; set; }
 
         /// <inheritdoc />
-        public async Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
+        public async Task<WorkflowActionResult> ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
         {
             HttpRequestMessage request =
                 await this.PrepareRequestAsync(instance, trigger).ConfigureAwait(false);
@@ -108,10 +108,10 @@ namespace Marain.Workflows
             HttpResponseMessage httpResponse =
                 await this.ExecuteRequestAsync(request, instance, trigger).ConfigureAwait(false);
 
-            await this.ProcessResponseAsync(httpResponse, instance, trigger).ConfigureAwait(false);
+            return await this.ProcessResponseAsync(httpResponse, instance, trigger).ConfigureAwait(false);
         }
 
-        private async Task ProcessResponseAsync(
+        private async Task<WorkflowActionResult> ProcessResponseAsync(
             HttpResponseMessage httpResponse,
             WorkflowInstance instance,
             IWorkflowTrigger trigger)
@@ -132,19 +132,7 @@ namespace Marain.Workflows
                     responseContent,
                     this.serializerSettingsProvider.Instance);
 
-                foreach (string key in response.ContextValuesToRemove.Where(k => instance.Context.ContainsKey(k)))
-                {
-                    this.logger.LogDebug("Removing context item with key '{key}'", key);
-
-                    instance.Context.Remove(key);
-                }
-
-                foreach (KeyValuePair<string, string> item in response.ContextValuesToSetOrAdd)
-                {
-                    this.logger.LogDebug("Adding/updating context item with key '{key}'", item.Key);
-
-                    instance.Context[item.Key] = item.Value;
-                }
+                return new WorkflowActionResult(response.ContextValuesToSetOrAdd, response.ContextValuesToRemove);
             }
             else
             {
@@ -152,6 +140,8 @@ namespace Marain.Workflows
                     "Request to external URL '{externalUrl}' did not return any response.",
                     instance.Id,
                     this.ExternalUrl);
+
+                return WorkflowActionResult.Empty;
             }
         }
 

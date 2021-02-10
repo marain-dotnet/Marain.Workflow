@@ -27,7 +27,7 @@ namespace Marain.Workflows.Specs.TestObjects
         ///     The workflow generated is shown in the following diagram:
         /// </para>
         /// <para>
-        ///     <c>
+        ///     <code>
         ///                          Start
         ///                            |
         ///                            |
@@ -63,7 +63,7 @@ namespace Marain.Workflows.Specs.TestObjects
         ///                    |     (end)     |
         ///                    |               |
         ///                    +---------------+
-        ///     </c>.
+        ///     </code>.
         /// </para>
         /// <para>
         ///     To assist with testing it has the following notable points:
@@ -98,11 +98,11 @@ namespace Marain.Workflows.Specs.TestObjects
                 "Data Catalog item workflow",
                 "Controls the lifecycle of a data catalog item");
 
-            WorkflowState initializing = workflow.CreateState(displayName: "Waiting for initialization");
-            WorkflowState waitingForDocumentation = workflow.CreateState(displayName: "Waiting for documentation");
-            WorkflowState published = workflow.CreateState(displayName: "Published");
-            WorkflowState deleted = workflow.CreateState(displayName: "Deleted");
-            WorkflowState deprecated = workflow.CreateState(displayName: "Deprecated");
+            WorkflowState initializing = workflow.CreateState("initializing", "Waiting for initialization");
+            WorkflowState waitingForDocumentation = workflow.CreateState("waiting-for-documentation", "Waiting for documentation");
+            WorkflowState published = workflow.CreateState("published", "Published");
+            WorkflowState deleted = workflow.CreateState("deleted", "Deleted");
+            WorkflowState deprecated = workflow.CreateState("deprecated", "Deprecated");
 
             workflow.SetInitialState(initializing);
 
@@ -129,7 +129,7 @@ namespace Marain.Workflows.Specs.TestObjects
             deprecated.AddTraceActionForExit();
 
             WorkflowTransition createCatalogItemTransition =
-                initializing.CreateTransition(waitingForDocumentation, displayName: "Create catalog item");
+                initializing.CreateTransition(waitingForDocumentation, "create", "Create catalog item");
             createCatalogItemTransition.Conditions.Add(
                 new TriggerContentTypeCondition
                 {
@@ -140,7 +140,7 @@ namespace Marain.Workflows.Specs.TestObjects
             createCatalogItemTransition.AddTraceAction();
 
             WorkflowTransition waitingForDocumentationEditTransition =
-                waitingForDocumentation.CreateTransition(waitingForDocumentation, displayName: "Edit");
+                waitingForDocumentation.CreateTransition(waitingForDocumentation, "edit", "Edit");
             waitingForDocumentationEditTransition.Conditions.Add(
                 new TriggerContentTypeCondition { TriggerContentType = EditCatalogItemTrigger.RegisteredContentType });
             waitingForDocumentationEditTransition.Conditions.Add(new CatalogItemIdCondition());

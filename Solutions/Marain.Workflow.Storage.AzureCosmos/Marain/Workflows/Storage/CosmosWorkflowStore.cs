@@ -16,7 +16,7 @@ namespace Marain.Workflows.Storage
     public class CosmosWorkflowStore : IWorkflowStore
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CosmosWorkflowInstanceStore"/> class.
+        /// Initializes a new instance of the <see cref="CosmosWorkflowStore"/> class.
         /// </summary>
         /// <param name="workflowContainer">The repository in which to store workflows.</param>
         public CosmosWorkflowStore(

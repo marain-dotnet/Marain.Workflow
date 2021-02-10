@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Corvus.Retry" Version="1.0.0" />
+    <PackageReference Include="NEventStore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.8.0" />
+  </ItemGroup>
+
+</Project>
