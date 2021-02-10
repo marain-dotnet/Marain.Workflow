@@ -26,7 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             AddCommon(services);
 
-            services.AddSingleton<ITenantedWorkflowInstanceStoreFactory, TenantedInMemoryNEventStoreWorkflowInstanceStoreFactory>();
+            services.AddSingleton<ITenantedNEventStoreFactory, TenantedInMemoryNEventStoreFactory>();
 
             return services;
         }
@@ -42,7 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             AddCommon(services);
 
-            services.AddSingleton<ITenantedWorkflowInstanceStoreFactory, TenantedCosmosDbNEventStoreWorkflowInstanceStoreFactory>();
+            services.AddSingleton<ITenantedNEventStoreFactory, TenantedCosmosDbNEventStoreFactory>();
 
             return services;
         }
@@ -51,8 +51,13 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             // TODO: Put this somewhere more sensible.
             // Problem is - it's specific to how we create our clients, so doesn't belong in the NEventStore code.
-            services.AddContent(factory => factory.RegisterContent<CosmosDbCommit>());
-            services.AddContent(factory => factory.RegisterContent<CosmosDbSnapshot>());
+            services.AddSingleton<ITenantedWorkflowInstanceStoreFactory, TenantedNEventStoreWorkflowInstanceStoreFactory>();
+
+            services.AddContent(factory =>
+            {
+                factory.RegisterContent<CosmosDbCommit>();
+                factory.RegisterContent<CosmosDbSnapshot>();
+            });
         }
     }
 }

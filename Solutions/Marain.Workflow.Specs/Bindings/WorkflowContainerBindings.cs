@@ -67,11 +67,11 @@ namespace Marain.Workflows.Specs.Bindings
                 // Add CosmosConfiguration for the store.
                 // TODO: Wire this up to config so we can run against real storage during the CI builds
                 newConfig = newConfig.AddCosmosConfiguration(
-                    TenantedCosmosDbNEventStoreWorkflowInstanceStoreFactory.EventsContainerDefinition,
+                    TenantedCosmosDbNEventStoreFactory.EventsContainerDefinition,
                     new CosmosConfiguration { DatabaseName = "workflowspecs", DisableTenantIdPrefix = true });
 
                 newConfig = newConfig.AddCosmosConfiguration(
-                    TenantedCosmosDbNEventStoreWorkflowInstanceStoreFactory.SnapshotsContainerDefinition,
+                    TenantedCosmosDbNEventStoreFactory.SnapshotsContainerDefinition,
                     new CosmosConfiguration { DatabaseName = "workflowspecs", DisableTenantIdPrefix = true });
             }
 
@@ -94,14 +94,14 @@ namespace Marain.Workflows.Specs.Bindings
             await scenarioContext.RunAndStoreExceptionsAsync(
                 async () =>
                 {
-                    Container container = await containerFactory.GetContainerForTenantAsync(tenant, TenantedCosmosDbNEventStoreWorkflowInstanceStoreFactory.EventsContainerDefinition).ConfigureAwait(false);
+                    Container container = await containerFactory.GetContainerForTenantAsync(tenant, TenantedCosmosDbNEventStoreFactory.EventsContainerDefinition).ConfigureAwait(false);
                     await container.DeleteContainerAsync().ConfigureAwait(false);
                 }).ConfigureAwait(false);
 
             await scenarioContext.RunAndStoreExceptionsAsync(
                 async () =>
                 {
-                    Container container = await containerFactory.GetContainerForTenantAsync(tenant, TenantedCosmosDbNEventStoreWorkflowInstanceStoreFactory.SnapshotsContainerDefinition).ConfigureAwait(false);
+                    Container container = await containerFactory.GetContainerForTenantAsync(tenant, TenantedCosmosDbNEventStoreFactory.SnapshotsContainerDefinition).ConfigureAwait(false);
                     await container.DeleteContainerAsync().ConfigureAwait(false);
                 }).ConfigureAwait(false);
         }
