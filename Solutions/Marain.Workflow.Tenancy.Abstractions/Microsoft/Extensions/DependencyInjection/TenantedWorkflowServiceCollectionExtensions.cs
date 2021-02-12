@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
     using System;
     using Corvus.Leasing;
     using Marain.Workflows;
+    using Marain.Workflows.CloudEventPublishing.EventGrid;
     using Marain.Workflows.CloudEvents;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
@@ -33,20 +34,34 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddTenantedWorkflowEngineFactory(this IServiceCollection collection)
         {
             collection.AddTenantedCloudEventPublisher();
+
+            collection.AddEventGridCloudEventPublisherSink(
+                sp =>
+                {
+                    IConfiguration config = sp.GetRequiredService<IConfiguration>();
+                    EventGridConfiguration eventGridConfiguration =
+                        config.GetSection("EventGridConfiguration").Get<EventGridConfiguration>()
+                        ?? new EventGridConfiguration();
+
+                    eventGridConfiguration.EnsureValid();
+                    return eventGridConfiguration;
+                });
+
             collection.AddSingleton(
                 sp =>
-            {
-                IConfiguration config = sp.GetRequiredService<IConfiguration>();
-                TenantedWorkflowEngineFactoryConfiguration engineFactoryConfiguration =
-                    config.GetSection("TenantedWorkflowEngineFactoryConfiguration").Get<TenantedWorkflowEngineFactoryConfiguration>();
-
-                if (string.IsNullOrEmpty(engineFactoryConfiguration?.CloudEventBaseSourceName))
                 {
-                    throw new InvalidOperationException("Cannot find a configuration value called 'TenantedWorkflowEngineFactoryConfiguration:CloudEventBaseSourceName'.");
-                }
+                    IConfiguration config = sp.GetRequiredService<IConfiguration>();
+                    TenantedWorkflowEngineFactoryConfiguration engineFactoryConfiguration =
+                        config.GetSection("TenantedWorkflowEngineFactoryConfiguration").Get<TenantedWorkflowEngineFactoryConfiguration>();
 
-                return engineFactoryConfiguration;
-            });
+                    if (string.IsNullOrEmpty(engineFactoryConfiguration?.CloudEventBaseSourceName))
+                    {
+                        throw new InvalidOperationException("Cannot find a configuration value called 'TenantedWorkflowEngineFactoryConfiguration:CloudEventBaseSourceName'.");
+                    }
+
+                    return engineFactoryConfiguration;
+                });
+
             collection.AddSingleton<ITenantedWorkflowEngineFactory, TenantedWorkflowEngineFactory>();
 
             return collection;

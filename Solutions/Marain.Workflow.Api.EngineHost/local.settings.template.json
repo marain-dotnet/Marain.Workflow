@@ -13,6 +13,15 @@
 
     "TenantedWorkflowEngineFactoryConfiguration:CloudEventBaseSourceName": "azuresubscriptionid.workflowresourcegroupname",
 
+    // Event grid configuration for CloudEvent publishing. If enabled, either TopicEndpointKey or
+    // KeyVaultName and TopicEndpointKeySecretName should be defined so that the code can access the key for the
+    // specified endpoint.
+    "EventGridConfiguration:Enabled": false,
+    "EventGridConfiguration:TopicEndpoint": "",
+    "EventGridConfiguration:TopicEndpointKey": "",
+    "EventGridConfiguration:KeyVaultName": "",
+    "EventGridConfiguration:TopicEndpointKeySecretName": "",
+
     // If running with a local tenancy service, point TenancyClient:TenancyServiceBaseUri at the localhost address for that
     // and set the ResourceIdForMsiAuthentication to an empty string.
     "TenancyClient:TenancyServiceBaseUri": "https://mardevtenancy.azurewebsites.net/",
