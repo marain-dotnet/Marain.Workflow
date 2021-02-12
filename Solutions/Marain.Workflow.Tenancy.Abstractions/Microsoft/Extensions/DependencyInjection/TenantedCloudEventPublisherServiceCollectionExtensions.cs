@@ -11,6 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Marain.Workflows;
     using Marain.Workflows.CloudEvents;
+    using Marain.Workflows.CloudEvents.Internal;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -19,7 +20,8 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class TenantedCloudEventPublisherServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds the <see cref="TenantedCloudEventPublisherFactory"/> to the specified service collection.
+        /// Adds the <see cref="TenantedCloudEventPublisherFactory"/> to the specified service collection, along with
+        /// the cloud event sink supporting direct publishing to Uris specified in a workflow definition.
         /// </summary>
         /// <param name="services">The service collection to add to.</param>
         /// <returns>The service collection, for chaining.</returns>
@@ -35,10 +37,17 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ITenantedCloudEventPublisherFactory>(sp =>
             {
                 return new TenantedCloudEventPublisherFactory(
+                    sp.GetServices<ICloudEventPublisherSink>(),
+                    sp.GetRequiredService<ILogger<CloudEventPublisher>>());
+            });
+
+            services.AddSingleton<ICloudEventPublisherSink>(sp =>
+            {
+                return new DirectSubscriberCloudEventSink(
                     HttpClientFactory.Create(),
                     sp.GetRequiredService<IServiceIdentityTokenSource>(),
                     sp.GetRequiredService<IJsonSerializerSettingsProvider>(),
-                    sp.GetRequiredService<ILogger<CloudEventPublisher>>());
+                    sp.GetRequiredService<ILogger<DirectSubscriberCloudEventSink>>());
             });
 
             return services;

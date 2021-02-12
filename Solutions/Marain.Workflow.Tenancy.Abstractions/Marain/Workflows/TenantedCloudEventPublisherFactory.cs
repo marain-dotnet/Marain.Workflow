@@ -4,10 +4,8 @@
 
 namespace Marain.Workflows
 {
-    using System.Net.Http;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
     using Corvus.Tenancy;
     using Marain.Workflows.CloudEvents;
     using Microsoft.Extensions.Logging;
@@ -17,27 +15,20 @@ namespace Marain.Workflows
     /// </summary>
     public class TenantedCloudEventPublisherFactory : ITenantedCloudEventPublisherFactory
     {
-        private readonly HttpClient httpClient;
-        private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
-        private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private readonly ILogger<CloudEventPublisher> logger;
+        private readonly IEnumerable<ICloudEventPublisherSink> eventPublisherSinks;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudEventPublisher"/> class.
         /// </summary>
-        /// <param name="httpClient">The <see cref="HttpClient"/> to use when POSTing event data to subscribers.</param>
-        /// <param name="serviceIdentityTokenSource">The <see cref="IServiceIdentityTokenSource"/> that will be used to aquire authentication tokens.</param>
-        /// <param name="serializerSettingsProvider">The current <see cref="IJsonSerializerSettingsProvider"/>.</param>
+        /// <param name="eventPublisherSinks">The set of event publisher sinks in use.</param>
         /// <param name="logger">The logger.</param>
         public TenantedCloudEventPublisherFactory(
-            HttpClient httpClient,
-            IServiceIdentityTokenSource serviceIdentityTokenSource,
-            IJsonSerializerSettingsProvider serializerSettingsProvider,
+            IEnumerable<ICloudEventPublisherSink> eventPublisherSinks,
             ILogger<CloudEventPublisher> logger)
         {
-            this.httpClient = httpClient;
-            this.serviceIdentityTokenSource = serviceIdentityTokenSource;
-            this.serializerSettingsProvider = serializerSettingsProvider;
+            // TODO: validation & logging if no sinks present.
+            this.eventPublisherSinks = eventPublisherSinks;
             this.logger = logger;
         }
 
@@ -47,9 +38,7 @@ namespace Marain.Workflows
             return Task.FromResult(
                 new CloudEventPublisher(
                     tenant.Id,
-                    this.httpClient,
-                    this.serviceIdentityTokenSource,
-                    this.serializerSettingsProvider,
+                    this.eventPublisherSinks,
                     this.logger));
         }
     }
