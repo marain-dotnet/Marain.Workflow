@@ -20,13 +20,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Monitoring.ApplicationInsights" Version="1.0.0" />
+    <PackageReference Include="Corvus.Monitoring.ApplicationInsights" Version="1.2.0" />
     <PackageReference Include="Endjin.RecommendedPractices" Version="1.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
-    <PackageReference Include="Marain.Services.Tenancy" Version="2.0.0" />
+    <PackageReference Include="Marain.Services.Tenancy" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,7 +40,7 @@
   <ItemGroup>
     <PackageReference Include="Marain.Operations.ControlClient" Version="1.1.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.16.0" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.4.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.4.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
