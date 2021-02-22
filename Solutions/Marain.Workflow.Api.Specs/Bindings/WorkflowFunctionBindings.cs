@@ -8,6 +8,8 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using Corvus.Testing.AzureFunctions;
     using Corvus.Testing.AzureFunctions.SpecFlow;
     using Corvus.Testing.SpecFlow;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
     using NUnit.Framework;
     using TechTalk.SpecFlow;
 
@@ -74,8 +76,9 @@ namespace Marain.Workflows.Api.Specs.Bindings
         [AfterScenario("useWorkflowEngineApi", "useWorkflowMessageProcessingApi")]
         public static void WriteFunctionsOutput(FeatureContext featureContext)
         {
+            ILogger<FunctionsController> logger = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<ILogger<FunctionsController>>();
             FunctionsController functionsController = FunctionsBindings.GetFunctionsController(featureContext);
-            functionsController.GetFunctionsOutput().WriteAllToConsoleAndClear();
+            logger.LogAllAndClear(functionsController.GetFunctionsOutput());
         }
 
         /// <summary>
