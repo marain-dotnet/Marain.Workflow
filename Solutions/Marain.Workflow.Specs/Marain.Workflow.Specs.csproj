@@ -35,7 +35,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.12" />
     <PackageReference Include="Microsoft.SqlServer.DACFx" Version="150.4897.1" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.46041.41" />
-    <PackageReference Include="Moq" Version="4.16.0" />
+    <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="Marain.Services.Tenancy.Testing" Version="2.0.1" />
   </ItemGroup>
 
