@@ -17,7 +17,7 @@
     </PackageReference>
     <PackageReference Include="Marain.Operations.ControlClient" Version="1.1.0" />
     <PackageReference Include="Menes.Abstractions" Version="1.1.1" />
-    <PackageReference Include="Marain.Services.Tenancy" Version="2.2.0" />
+    <PackageReference Include="Marain.Services.Tenancy" Version="2.3.1" />
   </ItemGroup>
   
   <ItemGroup>
