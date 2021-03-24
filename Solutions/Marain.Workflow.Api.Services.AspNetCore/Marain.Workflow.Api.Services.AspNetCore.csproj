@@ -12,7 +12,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Marain.Tenancy.ClientTenantProvider" Version="1.1.1" />
+    <PackageReference Include="Marain.Tenancy.ClientTenantProvider" Version="1.1.5" />
     <PackageReference Include="Menes.Hosting.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.12" />
   </ItemGroup>
