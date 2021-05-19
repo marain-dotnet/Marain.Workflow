@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.ContentHandling" Version="1.1.0" />
+    <PackageReference Include="Corvus.ContentHandling" Version="2.0.5" />
     <PackageReference Include="Corvus.Extensions.Newtonsoft.Json" Version="1.2.0" />
     <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="1.0.3" />
     <PackageReference Include="Corvus.Leasing.Abstractions" Version="1.2.1" />
