@@ -13,6 +13,8 @@ namespace Marain.Workflows.Specs.Bindings
     using Marain.Workflows.Specs.TestObjects.Subjects;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -46,10 +48,13 @@ namespace Marain.Workflows.Specs.Bindings
 
                     services.AddLogging();
 
-                    services.AddRootTenant();
                     services.AddInMemoryTenantProvider();
 
-                    services.AddJsonSerializerSettings();
+                    services.AddJsonNetSerializerSettingsProvider();
+                    services.AddJsonNetPropertyBag();
+                    services.AddJsonNetCultureInfoConverter();
+                    services.AddJsonNetDateTimeOffsetToIso8601AndUnixTimeConverter();
+                    services.AddSingleton<JsonConverter>(new StringEnumConverter(true));
 
                     services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
                     {
