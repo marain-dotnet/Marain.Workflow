@@ -9,8 +9,8 @@ namespace Marain.Workflows.Specs.Steps
     using System.Threading.Tasks;
     using Corvus.Azure.Storage.Tenancy;
     using Corvus.Extensions.Json;
-    using Corvus.SpecFlow.Extensions;
     using Corvus.Tenancy;
+    using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.TestObjects;
     using Microsoft.Azure.Storage.Blob;
     using Microsoft.Extensions.DependencyInjection;
