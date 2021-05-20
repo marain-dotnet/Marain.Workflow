@@ -14,6 +14,9 @@ namespace Marain.Workflows
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Retry;
+    using Corvus.Retry.Policies;
+    using Corvus.Retry.Strategies;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
 
@@ -100,7 +103,16 @@ namespace Marain.Workflows
         public string MsiAuthenticationResource { get; set; }
 
         /// <inheritdoc />
-        public async Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
+        public Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
+        {
+            return Retriable.Retry(
+                () => this.ExecuteInternalAsync(instance, trigger),
+                CancellationToken.None,
+                new Linear(TimeSpan.FromMilliseconds(500), 10),
+                new AnyExceptionPolicy());
+        }
+
+        private async Task ExecuteInternalAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
         {
             HttpRequestMessage request =
                 await this.PrepareRequestAsync(instance, trigger).ConfigureAwait(false);

@@ -10,9 +10,13 @@ namespace Marain.Workflows
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Retry;
+    using Corvus.Retry.Policies;
+    using Corvus.Retry.Strategies;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -120,7 +124,19 @@ namespace Marain.Workflows
         public string MsiAuthenticationResource { get; set; }
 
         /// <inheritdoc />
-        public async Task<bool> EvaluateAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
+        public Task<bool> EvaluateAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
+        {
+            return Retriable.Retry(
+                () => this.EvaluateInternalAsync(instance, trigger),
+                CancellationToken.None,
+                new Linear(TimeSpan.FromMilliseconds(500), 10),
+                new AnyExceptionPolicy());
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<string> GetInterests(WorkflowInstance instance) => this.Interests ?? Enumerable.Empty<string>();
+
+        private async Task<bool> EvaluateInternalAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
         {
             var request = new HttpRequestMessage(this.HttpMethod, this.ExternalUrl);
 
@@ -170,8 +186,5 @@ namespace Marain.Workflows
             string responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return responseString == "true";
         }
-
-        /// <inheritdoc />
-        public IEnumerable<string> GetInterests(WorkflowInstance instance) => this.Interests ?? Enumerable.Empty<string>();
     }
 }
