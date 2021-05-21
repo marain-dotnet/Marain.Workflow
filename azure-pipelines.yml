@@ -23,6 +23,7 @@ jobs:
     postCustomEnvironmentVariables:
       - powershell: |
           Write-Host "##vso[task.setvariable variable=AzureServicesAuthConnectionString]$Env:ENDJIN_AZURESERVICESAUTHCONNECTIONSTRING"
+          Write-Host "##vso[task.setvariable variable=APPINSIGHTS_INSTRUMENTATIONKEY]$Env:ENDJIN_APPINSIGHTSINSTRUMENTATIONKEY"
           Write-Host "##vso[task.setvariable variable=AzureWebJobsStorage]$Env:ENDJIN_AZURESTORAGECONNECTIONSTRING"
           Write-Host "##vso[task.setvariable variable=TenancyClient__TenancyServiceBaseUri]$Env:ENDJIN_MARAINTENANCYBASEURL"
           Write-Host "##vso[task.setvariable variable=TenancyClient__ResourceIdForMsiAuthentication]$Env:ENDJIN_MARAINTENANCYRESOURCEIDFORMSIAUTHENTICATION"
@@ -44,6 +45,7 @@ jobs:
         displayName: 'Set Custom Environment Variables'
         env:
           ENDJIN_AZURESERVICESAUTHCONNECTIONSTRING: $(Endjin_AzureServicesAuthConnectionString)
+          ENDJIN_APPINSIGHTSINSTRUMENTATIONKEY: $(Endjin_AppInsightsInstrumentationKey)
           ENDJIN_AZURESTORAGECONNECTIONSTRING: $(Endjin_AzureStorageConnectionString)
           ENDJIN_MARAINTENANCYBASEURL: $(Endjin_MarainTenancyBaseUrl)
           ENDJIN_MARAINTENANCYRESOURCEIDFORMSIAUTHENTICATION: $(Endjin_MarainTenancyResourceIdForMsiAuthentication)
