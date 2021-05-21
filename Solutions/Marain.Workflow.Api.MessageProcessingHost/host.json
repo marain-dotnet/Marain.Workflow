@@ -6,7 +6,11 @@
       "routePrefix": ""
     },
     "durableTask": {
-      "hubName": "TaskHubV2"
+      "hubName": "TaskHubV2",
+      "tracing": {
+        "distributedTracingEnabled": true,
+        "distributedTracingProtocol": "W3CTraceContext"
+      }
     }
   },
   "logging": {
@@ -14,6 +18,14 @@
       "default": "Warning",
       "Host.Results": "Information",
       "Host.Aggregator": "Information"
+    },
+    "applicationInsights": {
+      "httpAutoCollectionOptions": {
+        "enableW3CDistributedTracing": true
+      },
+      "samplingSettings": {
+        "isEnabled": false
+      }
     }
   }
 }
