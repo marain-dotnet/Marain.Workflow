@@ -33,7 +33,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.16" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.16" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.16" />
-    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="150.5084.2" />
+    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="150.5164.1" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.46367.54" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="Marain.Services.Tenancy.Testing" Version="2.3.3" />
