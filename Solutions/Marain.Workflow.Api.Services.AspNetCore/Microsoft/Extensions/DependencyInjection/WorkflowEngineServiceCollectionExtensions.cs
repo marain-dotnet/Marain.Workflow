@@ -83,7 +83,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddMarainServicesTenancy();
             services.AddSingleton(sp => sp.GetRequiredService<IConfiguration>().GetSection("TenancyClient").Get<TenancyClientOptions>());
-            services.AddTenantProviderServiceClient();
+            services.AddTenantProviderServiceClient(true);
 
             services.AddAzureManagedIdentityBasedTokenSource(
                 sp => new AzureManagedIdentityTokenSourceOptions

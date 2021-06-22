@@ -63,7 +63,10 @@ namespace Marain.Workflows.Api.Specs.Bindings
 
                     services.AddSingleton(new MarainServiceConfiguration());
                     services.AddMarainServicesTenancy();
-                    services.AddTenantProviderServiceClient();
+
+                    // Add tenant provider with caching disabled to prevent issues with the TransientTenantManager
+                    // creating and updating tenants.
+                    services.AddTenantProviderServiceClient(false);
 
                     // Workflow definitions get stored in blob storage
                     services.AddTenantCloudBlobContainerFactory(new TenantCloudBlobContainerFactoryOptions
