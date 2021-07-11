@@ -14,10 +14,12 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
     [MarainAppService]$OperationsService = $ServiceDeploymentContext.InstanceContext.GetCommonAppService("Marain.Tenancy.Operations.Control")
 
     $EngineAppId = $ServiceDeploymentContext.GetAppId("eng")
+    $QueryAppId = $ServiceDeploymentContext.GetAppId("qry")
     $MessageIngestionAppId = $ServiceDeploymentContext.GetAppId("mi")
     $TemplateParameters = @{
         appName="workflow"
         engineFunctionAuthAadClientId=$EngineAppId
+        queryFunctionAuthAadClientId=$QueryAppId
         messageIngestionFunctionAuthAadClientId=$MessageIngestionAppId
         operationsControlServiceBaseUrl=$OperationsService.BaseUrl
         operationsControlResourceIdForMsiAuthentication=$OperationsService.AuthAppId
@@ -36,6 +38,7 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
 
     $ServiceDeploymentContext.SetAppServiceDetails($DeploymentResult.Outputs.messageIngestionFunctionServicePrincipalId.Value, "mi", $null)
     $ServiceDeploymentContext.SetAppServiceDetails($DeploymentResult.Outputs.engineFunctionServicePrincipalId.Value, "eng", $null)
+    $ServiceDeploymentContext.SetAppServiceDetails($DeploymentResult.Outputs.queryFunctionServicePrincipalId.Value, "qry", $null)
 
 
     # ensure the service tenancy exists

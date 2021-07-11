@@ -33,5 +33,11 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
         $TenancyReaderAppRoleId,
         "eng"
     )
+    
+    $ServiceDeploymentContext.AssignServicePrincipalToCommonServiceAppRole(
+        "Marain.Tenancy",
+        $TenancyReaderAppRoleId,
+        "qry"
+    )
 
 }

@@ -1,0 +1,64 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccountConnectionString": {
+      "type": "string"
+    },
+    "runFromPackage": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "functionsAppName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "applicationInsightsInstrumentationKey": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenancyServiceBaseUri": {
+      "type": "string"
+    },
+    "tenancyServiceResourceIdForMsiAuthentication": {
+      "type": "string"
+    },
+    "marainServiceTenantId": {
+      "type": "string"
+    },
+    "marainServiceTenantDisplayName": {
+      "type": "string"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "name": "[concat(parameters('functionsAppName'),'/appsettings')]",
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+      ],
+      "tags": {
+        "displayName": "AppSettings"
+      },
+      "properties": {
+        "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[parameters('storageAccountConnectionString')]",
+        "WEBSITE_CONTENTSHARE": "[toLower(parameters('functionsAppName'))]",
+        "WEBSITE_RUN_FROM_PACKAGE": "[parameters('runFromPackage')]",
+        "AzureWebJobsDashboard": "[parameters('storageAccountConnectionString')]",
+        "AzureWebJobsStorage": "[parameters('storageAccountConnectionString')]",
+        "APPINSIGHTS_INSTRUMENTATIONKEY": "[parameters('applicationInsightsInstrumentationKey')]",
+        "FUNCTIONS_EXTENSION_VERSION": "~3",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+
+        "TenancyClient:TenancyServiceBaseUri": "[parameters('tenancyServiceBaseUri')]",
+        "TenancyClient:ResourceIdForMsiAuthentication": "[parameters('tenancyServiceResourceIdForMsiAuthentication')]",
+        "MarainServiceConfiguration:ServiceTenantId": "[parameters('marainServiceTenantId')]",
+        "MarainServiceConfiguration:ServiceDisplayName": "[parameters('marainServiceTenantDisplayName')]"
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

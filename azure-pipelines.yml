@@ -84,6 +84,14 @@ jobs:
           archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Api.EngineHost.zip'
           replaceExistingArchive: true
       - task: ArchiveFiles@2
+        displayName: 'Archive Query Host Function App'
+        inputs:
+          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.QueryHost/bin/Release/netcoreapp3.1/'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Api.QueryHost.zip'
+          replaceExistingArchive: true
+      - task: ArchiveFiles@2
         displayName: 'Archive Deployment Artifacts'
         inputs:
           rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/Marain.Workflow.Deployment'

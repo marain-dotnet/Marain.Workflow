@@ -17,5 +17,9 @@ Function MarainDeployment([MarainServiceDeploymentContext] $ServiceDeploymentCon
         "Marain.Workflow.Api.EngineHost.zip",
         $ServiceDeploymentContext.AppName + "eng"
     )
+    $ServiceDeploymentContext.UploadReleaseAssetAsAppServiceSitePackage(
+        "Marain.Workflow.Api.QueryHost.zip",
+        $ServiceDeploymentContext.AppName + "qry"
+    )
 
 }

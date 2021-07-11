@@ -34,6 +34,7 @@
     <None Include="packages.config" />
     <Content Include="Templates\cosmos-db.json" />
     <Content Include="Templates\functions-app-auth-settings.json" />
+    <Content Include="Templates\functions-app-settings-query-host.json" />
     <Content Include="Templates\functions-app-settings-engine-host.json" />
     <Content Include="Templates\functions-app-settings-message-ingestion-host.json" />
     <Content Include="Templates\functions-app.json" />
