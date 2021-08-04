@@ -40,7 +40,7 @@
   <ItemGroup>
     <PackageReference Include="Marain.Operations.ControlClient" Version="1.2.1" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.20.0" />
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.4.3" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
