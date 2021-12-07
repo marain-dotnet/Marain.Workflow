@@ -79,7 +79,9 @@
     "workflowStorageDeployName": "[concat(deployment().name, '-storage-workflow')]",
     "leasingStorageDeployName": "[concat(deployment().name, '-storage-leasing')]",
     "ingestionAppDeployName": "[concat(deployment().name, '-functions-app-message-ingestion')]",
-    "engineAppDeployName": "[concat(deployment().name, '-functions-app-engine')]"
+    "engineAppDeployName": "[concat(deployment().name, '-functions-app-engine')]",
+    "ingestionAppKeyVaultAccessPolicyDeployName": "[concat(deployment().name, '-function-key-vault-access-message-ingestion')]",
+    "engineAppKeyVaultAccessPolicyDeployName": "[concat(deployment().name, '-function-key-vault-access-engine')]"
   },
   "resources": [
     {
@@ -319,7 +321,7 @@
       }
     },
     {
-      "name": "[concat(deployment().name, '-function-key-vault-access-message-ingestion')]",
+      "name": "[variables('ingestionAppKeyVaultAccessPolicyDeployName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [
@@ -430,12 +432,13 @@
       }
     },
     {
-      "name": "[concat(deployment().name, '-function-key-vault-access-engine')]",
+      "name": "[variables('engineAppKeyVaultAccessPolicyDeployName')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [
         "[variables('engineAppDeployName')]",
-        "[variables('keyVaultDeployName')]"
+        "[variables('keyVaultDeployName')]",
+        "[variables('ingestionAppKeyVaultAccessPolicyDeployName')]"
       ],
       "properties": {
         "mode": "Incremental",
