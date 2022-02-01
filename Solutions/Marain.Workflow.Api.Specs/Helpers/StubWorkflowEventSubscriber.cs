@@ -11,7 +11,7 @@ namespace Marain.Workflows.Api.Specs.Helpers
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class StubWorkflowEventSubscriber : IAsyncDisposable
+    public sealed class StubWorkflowEventSubscriber : IAsyncDisposable
     {
         private CancellationTokenSource tokenSource;
         private HttpListener listener;

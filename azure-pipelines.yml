@@ -73,7 +73,7 @@ jobs:
       - task: ArchiveFiles@2
         displayName: 'Archive Message Ingestion Host Function App'
         inputs:
-          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.MessageProcessingHost/bin/Release/netcoreapp3.1/'
+          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.MessageProcessingHost/bin/Release/net6.0/'
           includeRootFolder: false
           archiveType: 'zip'
           archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Api.MessageProcessingHost.zip'
@@ -81,7 +81,7 @@ jobs:
       - task: ArchiveFiles@2
         displayName: 'Archive Engine Host Function App'
         inputs:
-          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.EngineHost/bin/Release/netcoreapp3.1/'
+          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.EngineHost/bin/Release/net6.0/'
           includeRootFolder: false
           archiveType: 'zip'
           archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Api.EngineHost.zip'
@@ -102,4 +102,4 @@ jobs:
             **/bin/$(BuildConfiguration)/*.dacpac
           TargetFolder: '$(Build.ArtifactStagingDirectory)/Release/DACPACs'
           flattenFolders: true
-    netSdkVersion: '3.x'
+    netSdkVersion: '6.x'

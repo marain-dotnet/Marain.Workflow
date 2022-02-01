@@ -134,7 +134,7 @@ namespace Marain.Workflows
             if (!string.IsNullOrEmpty(responseContent))
             {
                 this.logger.LogDebug(
-                    "Processing response for workflow instance '{workflowInstanceId} from call to external URL '{externalUrl}' resulting from trigger '{triggerId}'",
+                    "Processing response for workflow instance '{workflowInstanceId}' from call to external URL '{externalUrl}' resulting from trigger '{triggerId}'",
                     instance.Id,
                     this.ExternalUrl,
                     trigger?.Id ?? "{no trigger}");
@@ -161,7 +161,7 @@ namespace Marain.Workflows
             else
             {
                 this.logger.LogDebug(
-                    "Request to external URL '{externalUrl}' did not return any response.",
+                    "Request work workflow instance '{workflowInstanceId}' to external URL '{externalUrl}' did not return any response.",
                     instance.Id,
                     this.ExternalUrl);
             }
@@ -203,7 +203,7 @@ namespace Marain.Workflows
                     .Where(kv => this.ContextItemsToInclude.Contains(kv.Key))
                     .ToDictionary(kv => kv.Key, kv => kv.Value);
 
-                this.logger.LogDebug($"Including context keys {string.Join(',', requestBody.ContextProperties.Keys)}");
+                this.logger.LogDebug("Including context keys {contextKeys}", string.Join(',', requestBody.ContextProperties.Keys));
             }
 
             request.Content = new StringContent(

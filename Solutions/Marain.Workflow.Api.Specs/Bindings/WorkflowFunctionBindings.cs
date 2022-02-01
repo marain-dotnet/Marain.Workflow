@@ -22,6 +22,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
     public static class WorkflowFunctionBindings
     {
 #pragma warning disable SA1401 // Fields should be private
+#pragma warning disable CA2211 // Non-constant fields should not be visible
         /// <summary>
         /// The base Url that can be used to access the engine host API.
         /// </summary>
@@ -31,7 +32,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
         /// The base Url that can be used to access the engine host API.
         /// </summary>
         public static string MessageProcessingHostBaseUrl = "http://localhost:" + MessageProcessingHostPort;
-#pragma warning restore SA1401 // Fields should be private
+#pragma warning restore CA2211, SA1401
 
         private const int EngineHostPort = 8765;
         private const int MessageProcessingHostPort = 8766;
@@ -50,7 +51,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
             return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
                     "Marain.Workflow.Api.EngineHost",
                     EngineHostPort,
-                    "netcoreapp3.1",
+                    "net6.0",
                     "csharp",
                     config);
         }
@@ -70,7 +71,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
             return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
                 "Marain.Workflow.Api.MessageProcessingHost",
                 MessageProcessingHostPort,
-                "netcoreapp3.1",
+                "net6.0",
                 "csharp",
                 config);
         }

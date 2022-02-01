@@ -2,7 +2,7 @@
   <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <RootNamespace>Marain.Workflows.Api.Specs</RootNamespace>
   </PropertyGroup>
@@ -11,7 +11,6 @@
     <!--
     SA1600, CS1591 - Mandatory XML doc comments
     Not necessary for test projects
-    <NoWarn>$(NoWarn);RCS1029;CS1591;SA1600;SA1633</NoWarn>
     -->
     <NoWarn>$(NoWarn);CS1591;SA1600</NoWarn>
   </PropertyGroup>

@@ -51,7 +51,9 @@ namespace Marain.Workflows
         /// <inheritdoc />
         public Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
         {
+#pragma warning disable CA2254 // Template should be a static expression - the whole point of this action type is to allow user-defined log messages
             this.logger.LogDebug(BuildMessage(this.LogMessage, instance));
+#pragma warning restore CA2254
             return Task.CompletedTask;
         }
 

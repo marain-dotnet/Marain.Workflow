@@ -161,7 +161,7 @@ namespace Marain.Workflows.Storage
                         result.Append(" OR ");
                     }
 
-                    result.Append("ARRAY_CONTAINS(root.interests, @subject").Append(i).Append(")");
+                    result.Append("ARRAY_CONTAINS(root.interests, @subject").Append(i).Append(')');
                     parameters.Add(($"@subject{i}", s));
                 });
 

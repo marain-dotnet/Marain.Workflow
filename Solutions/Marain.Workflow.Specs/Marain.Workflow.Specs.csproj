@@ -2,7 +2,7 @@
   <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <RootNamespace>Marain.Workflows.Specs</RootNamespace>
   </PropertyGroup>
@@ -11,9 +11,10 @@
     <!--
     SA1600, CS1591 - Mandatory XML doc comments
     Not necessary for test projects
-    <NoWarn>RCS1029; CS1591; SA1600; SA1633</NoWarn>
+    CA1822 - mark as static
+    Test frameworks want test methods to be non-static
     -->
-    <NoWarn>$(NoWarn);CS1591;SA1600</NoWarn>
+    <NoWarn>$(NoWarn);CS1591;CA1822;SA1600</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -31,10 +32,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.16" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.16" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.16" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.16" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="[6.*,)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="[6.*,)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="[6.*,)" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="[6.*,)" />
     <PackageReference Include="Microsoft.SqlServer.DACFx" Version="160.5400.1" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.46521.71" />
     <PackageReference Include="Moq" Version="4.16.1" />

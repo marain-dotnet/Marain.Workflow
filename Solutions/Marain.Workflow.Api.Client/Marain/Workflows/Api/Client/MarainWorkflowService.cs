@@ -8,9 +8,11 @@ namespace Marain.Workflows.Api.Client
 {
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
+
     using Models;
+
     using Newtonsoft.Json;
-    using System.Collections;
+
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
