@@ -14,7 +14,7 @@ resources:
       endpoint: marain-github
 
 jobs:
-- template: templates/build.and.release.yml@recommended_practices
+- template: templates/build.and.release.scripted.yml@recommended_practices
   parameters:
     vmImage: 'windows-latest'
     service_connection_nuget_org: $(Endjin_Service_Connection_NuGet_Org)
@@ -69,7 +69,7 @@ jobs:
         inputs:
           solution: '**/Marain.Workflow.SqlDatabase.sln' 
           configuration: $(BuildConfiguration)
-    postSpecs:
+    preCopyNugetPackages:
       - task: ArchiveFiles@2
         displayName: 'Archive Message Ingestion Host Function App'
         inputs:
@@ -94,7 +94,6 @@ jobs:
           archiveType: 'zip'
           archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Deployment.zip'
           replaceExistingArchive: true
-    postPack:
       - task: CopyFiles@2
         displayName: 'Copy DACPACs To Release Folder'
         inputs:
