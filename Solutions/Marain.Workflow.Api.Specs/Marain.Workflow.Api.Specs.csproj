@@ -16,7 +16,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Corvus.Testing.AzureFunctions.SpecFlow.NUnit" Version="1.4.2" />
+    <PackageReference Include="Corvus.Testing.AzureFunctions.SpecFlow.NUnit" Version="1.4.7" />
     <PackageReference Include="Marain.Services.Tenancy.Testing" Version="2.3.3" />
     <PackageReference Include="Endjin.RecommendedPractices" Version="1.2.0">
       <PrivateAssets>all</PrivateAssets>
