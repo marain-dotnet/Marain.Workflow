@@ -26,8 +26,7 @@ namespace Marain.Workflows.Specs.TestObjects
         /// <para>
         ///     The workflow generated is shown in the following diagram:
         /// </para>
-        /// <para>
-        ///     <c>
+        /// <code>
         ///                          Start
         ///                            |
         ///                            |
@@ -63,8 +62,7 @@ namespace Marain.Workflows.Specs.TestObjects
         ///                    |     (end)     |
         ///                    |               |
         ///                    +---------------+
-        ///     </c>.
-        /// </para>
+        /// </code>
         /// <para>
         ///     To assist with testing it has the following notable points:
         ///     <list type="bullet">

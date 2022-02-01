@@ -148,7 +148,7 @@ namespace Marain.Workflows.Storage
         /// A <see cref="string" /> containing the WHERE clause and a List containing
         /// the parameters it should be supplied with.
         /// </returns>
-        private static (string, List<(string, string)>) GetSubjectClause(IEnumerable<string> subjects)
+        private static (string WhereClause, List<(string Name, string Value)> ParameterList) GetSubjectClause(IEnumerable<string> subjects)
         {
             var result = new StringBuilder();
             var parameters = new List<(string, string)>();

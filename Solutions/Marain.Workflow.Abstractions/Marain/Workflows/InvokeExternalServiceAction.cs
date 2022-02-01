@@ -44,7 +44,7 @@ namespace Marain.Workflows
         // on the time taken for total request execution time. For example, on the Azure Functions consumption plan,
         // the maximum function execution time is 10 minutes. However, other hosting environments permit longer
         // execution time, and we don't want to impose unnecessary limitations on external service execution time.
-        private static readonly HttpClient HttpClient = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
+        private static readonly HttpClient HttpClient = new() { Timeout = Timeout.InfiniteTimeSpan };
         private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private readonly ILogger<InvokeExternalServiceAction> logger;

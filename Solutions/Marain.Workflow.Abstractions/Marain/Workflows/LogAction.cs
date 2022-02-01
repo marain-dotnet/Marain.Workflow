@@ -110,9 +110,7 @@ namespace Marain.Workflows
                     case LogActionMessageParsePhase.LookingForVariableNameEnd:
                         if (currentChar == '}')
                         {
-                            string variableName = logMessage.Substring(
-                                state.IndexOfVariableNameStart,
-                                i - state.IndexOfVariableNameStart);
+                            string variableName = logMessage[state.IndexOfVariableNameStart..i];
                             if (instance.Context.TryGetValue(variableName, out _))
                             {
                                 sb.Append(instance.Context[variableName]);

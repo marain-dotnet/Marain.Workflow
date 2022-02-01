@@ -5,12 +5,14 @@
 namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System.Threading.Tasks;
+
     using Corvus.Testing.AzureFunctions;
     using Corvus.Testing.AzureFunctions.SpecFlow;
     using Corvus.Testing.SpecFlow;
+
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using NUnit.Framework;
+
     using TechTalk.SpecFlow;
 
     /// <summary>

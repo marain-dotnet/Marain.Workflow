@@ -5,8 +5,9 @@
 namespace Marain.Workflows
 {
     using System;
-    using Corvus.Extensions.Json;
+
     using Corvus.Json;
+
     using Newtonsoft.Json;
 
     /// <summary>

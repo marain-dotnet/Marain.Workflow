@@ -1,7 +1,10 @@
-﻿namespace Marain.Workflows.Api.Specs.Helpers
+﻿// <copyright file="StubWorkflowEventSubscriber.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
+// </copyright>
+
+namespace Marain.Workflows.Api.Specs.Helpers
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
     using System.Net;
@@ -61,16 +64,13 @@
                 }
             }
             catch (Exception)
+            when (cancellationToken.IsCancellationRequested)
             {
                 // An exception gets thrown from the call to GetContextAsync when the listener is stopped. Depending
                 // on exactly how the listener is stopped, we either get an HttpListenerException or an
                 // ObjectDisposedException. If the cancellation token has been cancelled, then swallow the exception as
                 // it means we're expecting this to happen. Otherwise it happened without us attempting to stop the
                 // listener, so let the exception propagate.
-                if (!cancellationToken.IsCancellationRequested)
-                {
-                    throw;
-                }
             }
         }
     }

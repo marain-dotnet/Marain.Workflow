@@ -8,7 +8,7 @@ namespace Marain.Workflows.Specs.TestObjects
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Corvus.Tenancy;
+
     using Marain.Workflows;
 
     public class FakeTenantedWorkflowInstanceStore : IWorkflowInstanceStore

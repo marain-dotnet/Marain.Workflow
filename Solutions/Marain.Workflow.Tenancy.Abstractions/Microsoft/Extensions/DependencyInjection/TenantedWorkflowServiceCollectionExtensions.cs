@@ -5,9 +5,11 @@
 namespace Microsoft.Extensions.DependencyInjection
 {
     using System;
+
     using Corvus.Leasing;
+
     using Marain.Workflows;
-    using Marain.Workflows.CloudEvents;
+
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 

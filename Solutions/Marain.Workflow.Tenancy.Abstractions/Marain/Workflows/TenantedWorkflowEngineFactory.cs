@@ -6,9 +6,10 @@ namespace Marain.Workflows
 {
     using System;
     using System.Threading.Tasks;
+
     using Corvus.Leasing;
     using Corvus.Tenancy;
-    using Marain.Workflows.CloudEvents;
+
     using Microsoft.Extensions.Logging;
 
     /// <summary>
