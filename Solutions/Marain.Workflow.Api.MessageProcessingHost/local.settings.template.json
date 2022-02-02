@@ -11,6 +11,8 @@
     "MarainServiceConfiguration:ServiceTenantId": "3633754ac4c9be44b55bfe791b1780f177b464860334774cabb2f9d1b95b0c18",
     "MarainServiceConfiguration:ServiceDisplayName": "Workflow v1",
 
+    "TenantedWorkflowEngineFactoryConfiguration:CloudEventBaseSourceName": "azuresubscriptionid.workflowresourcegroupname",
+
     "Workflow:EngineClient:BaseUrl": "http://localhost:7075",
     "Workflow:EngineClient:ResourceIdForAuthentication": "",
 

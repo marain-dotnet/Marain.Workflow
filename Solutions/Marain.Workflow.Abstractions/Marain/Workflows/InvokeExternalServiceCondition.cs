@@ -45,7 +45,7 @@ namespace Marain.Workflows
         /// </summary>
         public const string RegisteredContentType = "application/vnd.marain.workflows.invokeexternalservicecondition";
 
-        private static readonly HttpClient HttpClient = new HttpClient();
+        private static readonly HttpClient HttpClient = new();
         private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private HttpMethod httpMethod;

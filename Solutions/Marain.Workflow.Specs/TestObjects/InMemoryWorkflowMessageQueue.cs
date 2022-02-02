@@ -8,10 +8,11 @@ namespace Marain.Workflows.Specs.TestObjects
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using Corvus.Json;
     using Corvus.Tenancy;
+
     using Microsoft.Extensions.Logging;
-    using NUnit.Framework.Internal;
 
     /// <inheritdoc />
     /// <summary>
@@ -216,7 +217,7 @@ namespace Marain.Workflows.Specs.TestObjects
 
                 if (item.IsTrigger)
                 {
-                    this.logger.LogInformation("Processing trigger with content type " + item.ContentType);
+                    this.logger.LogInformation("Processing trigger with content type {ContentType}", item.ContentType);
 
                     IWorkflowTrigger trigger = item.Trigger;
 

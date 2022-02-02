@@ -6,13 +6,16 @@ namespace Marain.Workflows.Specs.Bindings
 {
     using System;
     using System.Threading.Tasks;
+
     using Corvus.Azure.Storage.Tenancy;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
-    using Marain.Workflows.Specs.Steps;
+
     using Marain.Workflows.Storage;
+
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+
     using TechTalk.SpecFlow;
 
     /// <summary>

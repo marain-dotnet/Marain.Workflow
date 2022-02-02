@@ -9,7 +9,6 @@ namespace Marain.Workflows.Api.EngineHost
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Hosting;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Startup code for the Function.

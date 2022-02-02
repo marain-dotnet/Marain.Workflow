@@ -4,14 +4,13 @@
 
 namespace Marain.Workflows.Api.Services
 {
-    using System.Net;
     using System.Threading.Tasks;
+
     using Corvus.Tenancy;
-    using Marain.Operations.Client.OperationsControl.Models;
+
     using Marain.Services.Tenancy;
+
     using Menes;
-    using Microsoft.Azure.Cosmos;
-    using Microsoft.Extensions.Configuration;
 
     /// <summary>
     /// Handles incoming triggers posted to the trigger service.

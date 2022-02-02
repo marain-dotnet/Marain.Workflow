@@ -8,6 +8,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
@@ -47,7 +48,7 @@ namespace Marain.Workflows.Api.Specs.Steps
         [Given("I have added the workflow '(.*)' to the workflow store with Id '(.*)'")]
         public Task GivenIHaveAddedTheToTheWorkflowStoreWithId(string workflowName, string workflowId)
         {
-            return this.AddWorkflowToStore(workflowName, workflowId, new WorkflowEventSubscription[0]);
+            return this.AddWorkflowToStore(workflowName, workflowId, Array.Empty<WorkflowEventSubscription>());
         }
 
         [Given("I have added the workflow '(.*)' to the workflow store with Id '(.*)' and event subscriptions")]
@@ -124,7 +125,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             ITenantedWorkflowInstanceStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
             IWorkflowInstanceStore store = await storeFactory.GetWorkflowInstanceStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
 
-            IEnumerable<string> instanceIds = await store.GetMatchingWorkflowInstanceIdsForSubjectsAsync(new string[0], int.MaxValue, 0).ConfigureAwait(false);
+            IEnumerable<string> instanceIds = await store.GetMatchingWorkflowInstanceIdsForSubjectsAsync(Array.Empty<string>(), int.MaxValue, 0).ConfigureAwait(false);
             foreach (string current in instanceIds)
             {
                 await store.DeleteWorkflowInstanceAsync(current).ConfigureAwait(false);
@@ -153,7 +154,7 @@ namespace Marain.Workflows.Api.Specs.Steps
         {
             ITenantedWorkflowInstanceStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
             IWorkflowInstanceStore store = await storeFactory.GetWorkflowInstanceStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
-            IEnumerable<string> instances = await store.GetMatchingWorkflowInstanceIdsForSubjectsAsync(new string[0], int.MaxValue, 0).ConfigureAwait(false);
+            IEnumerable<string> instances = await store.GetMatchingWorkflowInstanceIdsForSubjectsAsync(Array.Empty<string>(), int.MaxValue, 0).ConfigureAwait(false);
 
             Assert.AreEqual(expected, instances.Count());
         }
@@ -252,8 +253,8 @@ namespace Marain.Workflows.Api.Specs.Steps
         [Then("the response should contain an ETag header")]
         public void ThenTheResponseShouldContainAnETagHeader()
         {
-            HttpWebResponse response = this.scenarioContext.Get<HttpWebResponse>();
-            string etagHeader = response.Headers.Get("ETag");
+            HttpResponseMessage response = this.scenarioContext.Get<HttpResponseMessage>();
+            string etagHeader = response.Headers.ETag?.Tag;
             Assert.IsNotNull(etagHeader);
         }
 

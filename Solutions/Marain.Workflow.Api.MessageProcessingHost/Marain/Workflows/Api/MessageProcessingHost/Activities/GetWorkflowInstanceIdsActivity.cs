@@ -2,7 +2,6 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-#pragma warning disable RCS1090 // Call 'ConfigureAwait(false)'
 namespace Marain.Workflows.Api.MessageProcessingHost.Activities
 {
     using System.Collections.Generic;

@@ -1,4 +1,8 @@
-﻿namespace Marain.Workflows.Specs.Bindings
+﻿// <copyright file="SqlHelpers.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
+// </copyright>
+
+namespace Marain.Workflows.Specs.Bindings
 {
     using Microsoft.Data.SqlClient;
     using Microsoft.SqlServer.Dac;

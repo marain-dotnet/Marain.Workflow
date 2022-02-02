@@ -1,4 +1,8 @@
-﻿namespace Marain.Workflows.Api.Specs.Bindings
+﻿// <copyright file="StubWorkflowEventSubscriberBindings.cs" company="Endjin Limited">
+// Copyright (c) Endjin Limited. All rights reserved.
+// </copyright>
+
+namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System.Collections.Generic;
     using System.Linq;

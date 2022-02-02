@@ -94,7 +94,7 @@ namespace Marain.Workflows
         /// </summary>
         public IList<IWorkflowAction> EntryActions
         {
-            get => this.entryActions ?? (this.entryActions = new List<IWorkflowAction>());
+            get => this.entryActions ??= new List<IWorkflowAction>();
 
             private set => this.entryActions = value;
         }
@@ -104,7 +104,7 @@ namespace Marain.Workflows
         /// </summary>
         public IList<IWorkflowCondition> EntryConditions
         {
-            get => this.entryConditions ?? (this.entryConditions = new List<IWorkflowCondition>());
+            get => this.entryConditions ??= new List<IWorkflowCondition>();
 
             private set => this.entryConditions = value;
         }
@@ -114,7 +114,7 @@ namespace Marain.Workflows
         /// </summary>
         public IList<IWorkflowAction> ExitActions
         {
-            get => this.exitActions ?? (this.exitActions = new List<IWorkflowAction>());
+            get => this.exitActions ??= new List<IWorkflowAction>();
 
             private set => this.exitActions = value;
         }
@@ -124,7 +124,7 @@ namespace Marain.Workflows
         /// </summary>
         public IList<IWorkflowCondition> ExitConditions
         {
-            get => this.exitConditions ?? (this.exitConditions = new List<IWorkflowCondition>());
+            get => this.exitConditions ??= new List<IWorkflowCondition>();
 
             private set => this.exitConditions = value;
         }
@@ -139,7 +139,7 @@ namespace Marain.Workflows
         /// </summary>
         public IList<WorkflowTransition> Transitions
         {
-            get => this.transitions ?? (this.transitions = new List<WorkflowTransition>());
+            get => this.transitions ??= new List<WorkflowTransition>();
 
             private set => this.transitions = value;
         }

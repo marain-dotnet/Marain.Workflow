@@ -2,8 +2,6 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-#pragma warning disable SA1600, CS1591
-
 namespace Marain.Workflows.Specs.TestObjects.Triggers
 {
     using System.Collections.Generic;

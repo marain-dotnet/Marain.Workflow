@@ -8,8 +8,6 @@ namespace Marain.Workflows.Specs.TestObjects
     using System.Threading.Tasks;
     using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
 
-#pragma warning disable RCS1079 // Throwing of new NotImplementedException.
-
     /// <summary>
     /// Stub implementation of <see cref="IServiceIdentityTokenSource"/>.
     /// </summary>
@@ -25,5 +23,3 @@ namespace Marain.Workflows.Specs.TestObjects
             throw new NotImplementedException();
     }
 }
-
-#pragma warning restore RCS1079 // Throwing of new NotImplementedException.

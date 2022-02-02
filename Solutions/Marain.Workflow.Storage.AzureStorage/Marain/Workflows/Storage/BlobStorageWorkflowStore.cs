@@ -18,7 +18,7 @@ namespace Marain.Workflows.Storage
     /// </summary>
     public class BlobStorageWorkflowStore : IWorkflowStore
     {
-        private JsonSerializerSettings serializerSettings;
+        private readonly JsonSerializerSettings serializerSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BlobStorageWorkflowStore"/> class.
