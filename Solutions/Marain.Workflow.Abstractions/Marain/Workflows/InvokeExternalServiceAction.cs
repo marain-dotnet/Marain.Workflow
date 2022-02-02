@@ -161,7 +161,7 @@ namespace Marain.Workflows
             else
             {
                 this.logger.LogDebug(
-                    "Request work workflow instance '{workflowInstanceId}' to external URL '{externalUrl}' did not return any response.",
+                    "Request for workflow instance '{workflowInstanceId}' to external URL '{externalUrl}' did not return any response.",
                     instance.Id,
                     this.ExternalUrl);
             }
