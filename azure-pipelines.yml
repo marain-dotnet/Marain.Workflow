@@ -59,11 +59,11 @@ jobs:
           ENDJIN_MARAINWORKFLOWSERVICEDISPLAYNAME: $(Endjin_MarainWorkflowServiceDisplayName)
           ENDJIN_MARAINWORKFLOWSERVICETENANTID: $(Endjin_MarainWorkflowServiceTenantId)
       - task: Npm@1
-        displayName: 'Install Latest Azure Functions V3 Runtime'
+        displayName: 'Install Latest Azure Functions V4 Runtime'
         inputs:
           command: custom
           verbose: false
-          customCommand: 'install -g azure-functions-core-tools@3.0.2630 --unsafe-perm true'
+          customCommand: 'install -g azure-functions-core-tools@4 --unsafe-perm true'
       - task: MSBuild@1
         displayName: 'Build SQL DACPAC'
         inputs:
