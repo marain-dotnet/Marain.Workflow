@@ -5,8 +5,13 @@
 namespace Marain.Workflows.Specs.Bindings
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
-    using Corvus.Azure.Cosmos.Tenancy;
+
+    using Corvus.CosmosClient;
+    using Corvus.Extensions.Json;
+    using Corvus.Storage.Azure.Cosmos.Tenancy;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.Steps;
@@ -39,36 +44,42 @@ namespace Marain.Workflows.Specs.Bindings
         public static void SetupCosmosDbRepository(FeatureContext featureContext)
         {
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
-            ITenantCosmosContainerFactory factory = serviceProvider.GetRequiredService<ITenantCosmosContainerFactory>();
+            ICosmosContainerSourceWithTenantLegacyTransition factory = serviceProvider.GetRequiredService<ICosmosContainerSourceWithTenantLegacyTransition>();
+            ICosmosOptionsFactory optionsFactory = serviceProvider.GetRequiredService<ICosmosOptionsFactory>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
             IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
             ITenant rootTenant = tenantProvider.Root;
 
-            CosmosConfiguration cosmosConfig =
-                configuration.GetSection("TestCosmosConfiguration").Get<CosmosConfiguration>()
-                    ?? new CosmosConfiguration();
+            LegacyV2CosmosContainerConfiguration cosmosConfig =
+                configuration.GetSection("TestCosmosConfiguration").Get<LegacyV2CosmosContainerConfiguration>()
+                    ?? new LegacyV2CosmosContainerConfiguration();
 
             cosmosConfig.DatabaseName = "endjinspecssharedthroughput";
             cosmosConfig.DisableTenantIdPrefix = true;
 
-            tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
-                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
-                cosmosConfig));
+            tenantProvider.Root.UpdateProperties(data => data.Append(new KeyValuePair<string, object>(
+                $"StorageConfiguration__{TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreLogicalDatabaseName}__{TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowDefinitionStoreLogicalContainerName}",
+                cosmosConfig)));
 
-            tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
-                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
-                cosmosConfig));
+            tenantProvider.Root.UpdateProperties(data => data.Append(new KeyValuePair<string, object>(
+                $"StorageConfiguration__{TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreLogicalDatabaseName}__{TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreLogicalContainerName}",
+                cosmosConfig)));
 
-            var testDocumentRepositoryContainerDefinition = new CosmosContainerDefinition("workflow", "testdocuments", "/id");
-            tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
-                testDocumentRepositoryContainerDefinition,
-                cosmosConfig));
+            tenantProvider.Root.UpdateProperties(data => data.Append(new KeyValuePair<string, object>(
+                "StorageConfiguration__workflow__testdocuments",
+                cosmosConfig)));
 
+            Newtonsoft.Json.JsonSerializerSettings jsonSettings = serviceProvider.GetRequiredService<IJsonSerializerSettingsProvider>().Instance;
             Container testDocumentsRepository = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => factory.GetContainerForTenantAsync(
+                async () => await factory.GetContainerForTenantAsync(
                     rootTenant,
-                    testDocumentRepositoryContainerDefinition)).Result;
+                    "StorageConfiguration__workflow__testdocuments",
+                    "NotUsed",
+                    "workflow",
+                    "testdocuments",
+                    "/id",
+                    cosmosClientOptions: optionsFactory.CreateCosmosClientOptions())).Result;
 
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
         }

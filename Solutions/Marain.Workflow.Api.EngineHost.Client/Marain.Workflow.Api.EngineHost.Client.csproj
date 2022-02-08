@@ -2,7 +2,7 @@
   <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace />
     <DocumentationFile>$(OutputPath)$(TargetFramework.ToLowerInvariant())\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
@@ -33,14 +33,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Extensions" Version="1.1.4" />
     <PackageReference Include="Corvus.Extensions.Newtonsoft.Json" Version="2.0.6" />
-    <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="1.0.7" />
+    <PackageReference Include="Corvus.Identity.MicrosoftRest" Version="3.0.0" />
     <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.23" />
   </ItemGroup>
 </Project>

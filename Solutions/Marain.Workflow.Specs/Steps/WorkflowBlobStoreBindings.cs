@@ -5,14 +5,19 @@
 namespace Marain.Workflows.Specs.Steps
 {
     using System;
+    using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
-    using Corvus.Azure.Storage.Tenancy;
+
+    using Azure;
+    using Azure.Storage.Blobs;
+    using Azure.Storage.Blobs.Models;
+
     using Corvus.Extensions.Json;
+    using Corvus.Storage.Azure.BlobStorage.Tenancy;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.TestObjects;
-    using Microsoft.Azure.Storage.Blob;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using NUnit.Framework;
@@ -21,6 +26,7 @@ namespace Marain.Workflows.Specs.Steps
     [Binding]
     public class WorkflowBlobStoreBindings
     {
+        private readonly Dictionary<string, Workflow> workflows = new();
         private readonly FeatureContext featureContext;
         private readonly ScenarioContext scenarioContext;
 
@@ -33,8 +39,7 @@ namespace Marain.Workflows.Specs.Steps
         [Given("I have a workflow definition with Id '(.*)' called '(.*)'")]
         public void GivenIHaveAWorkflowDefinitionWithIdCalled(string workflowId, string workflowName)
         {
-            Workflow workflow = DataCatalogWorkflowFactory.Create(workflowId, null);
-            this.scenarioContext.Set(workflow, workflowName);
+            this.workflows.Add(workflowName, DataCatalogWorkflowFactory.Create(workflowId, null));
         }
 
         [Given("I have stored the workflow called '(.*)' in the Azure storage workflow store")]
@@ -43,7 +48,7 @@ namespace Marain.Workflows.Specs.Steps
         {
             IWorkflowStore workflowStore = await this.GetWorkflowStoreForCurrentTenantAsync().ConfigureAwait(false);
 
-            Workflow workflow = this.scenarioContext.Get<Workflow>(workflowName);
+            Workflow workflow = this.workflows[workflowName];
 
             try
             {
@@ -58,7 +63,7 @@ namespace Marain.Workflows.Specs.Steps
         [Then("a new blob with Id '(.*)' is created in the container for the current tenant")]
         public async Task ThenANewBlobWithIdIsCreatedInTheContainerForTheCurrentTenant(string blobId)
         {
-            CloudBlockBlob blob = await this.GetCloudBlockBlobForCurrentTenantAsync(blobId).ConfigureAwait(false);
+            BlobClient blob = await this.GetBlobClientForCurrentTenantAsync(blobId).ConfigureAwait(false);
             bool exists = await blob.ExistsAsync().ConfigureAwait(false);
 
             Assert.IsTrue(exists);
@@ -72,11 +77,12 @@ namespace Marain.Workflows.Specs.Steps
             IJsonSerializerSettingsProvider serializerSettingsProvider = ContainerBindings.GetServiceProvider(this.featureContext)
                 .GetRequiredService<IJsonSerializerSettingsProvider>();
 
-            CloudBlockBlob blob = await this.GetCloudBlockBlobForCurrentTenantAsync(blobId).ConfigureAwait(false);
-            string blobContents = await blob.DownloadTextAsync(Encoding.UTF8, null, null, null).ConfigureAwait(false);
+            BlobClient blob = await this.GetBlobClientForCurrentTenantAsync(blobId).ConfigureAwait(false);
+            Response<BlobDownloadResult> getResponse = await blob.DownloadContentAsync().ConfigureAwait(false);
+            string blobContents = getResponse.Value.Content.ToString();
             Workflow actualWorkflow = JsonConvert.DeserializeObject<Workflow>(blobContents, serializerSettingsProvider.Instance);
 
-            Workflow expectedWorkflow = this.scenarioContext.Get<Workflow>(workflowName);
+            Workflow expectedWorkflow = this.workflows[workflowName];
 
             // We don't need to check that every property has deserialized correctly - we're not testing JSON.NET.
             // It's enough to know that we've successfully deserialized the JSON from the blob and that it's the
@@ -87,11 +93,14 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the workflow called '(.*)' has its etag updated to match the etag of the blob with Id '(.*)'")]
         public async Task WhenTheWorkflowCalledHasItsEtagUpdatedToMatchTheEtagOfTheBlobWithId(string workflowName, string blobId)
         {
-            Workflow workflow = this.scenarioContext.Get<Workflow>(workflowName);
-            CloudBlockBlob blob = await this.GetCloudBlockBlobForCurrentTenantAsync(blobId).ConfigureAwait(false);
-            await blob.FetchAttributesAsync().ConfigureAwait(false);
+            Workflow workflow = this.workflows[workflowName];
+            BlobClient blob = await this.GetBlobClientForCurrentTenantAsync(blobId).ConfigureAwait(false);
+            Response<BlobProperties> propertiesResponse = await blob.GetPropertiesAsync().ConfigureAwait(false);
 
-            Assert.AreEqual(blob.Properties.ETag, workflow.ETag);
+            // Note: we want the form that includes the double quotes (because that's what we were doing
+            // back before the storage libraries made you choose explicitly), which is what the "H"
+            // form gives us.
+            Assert.AreEqual(propertiesResponse.Value.ETag.ToString("H"), workflow.ETag);
         }
 
         [Then("the request is successful")]
@@ -120,8 +129,9 @@ namespace Marain.Workflows.Specs.Steps
 
             try
             {
-                Workflow actualWorkflow = await workflowStore.GetWorkflowAsync(workflowId).ConfigureAwait(false);
-                this.scenarioContext.Set(actualWorkflow, workflowName);
+                this.workflows.Add(
+                    workflowName,
+                    await workflowStore.GetWorkflowAsync(workflowId).ConfigureAwait(false));
             }
             catch (Exception ex)
             {
@@ -132,8 +142,8 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the workflow called '(.*)' has an etag matching the workflow called '(.*)'")]
         public void ThenTheWorkflowCalledHasAnEtagMatchingTheWorkflowCalled(string workflow1Name, string workflow2Name)
         {
-            Workflow workflow1 = this.scenarioContext.Get<Workflow>(workflow1Name);
-            Workflow workflow2 = this.scenarioContext.Get<Workflow>(workflow2Name);
+            Workflow workflow1 = this.workflows[workflow1Name];
+            Workflow workflow2 = this.workflows[workflow2Name];
 
             Assert.AreEqual(workflow2.ETag, workflow1.ETag);
         }
@@ -141,14 +151,14 @@ namespace Marain.Workflows.Specs.Steps
         [Given("I change the description of the workflow definition called '(.*)' to '(.*)'")]
         public void GivenIChangeTheDescriptionOfTheWorkflowDefinitionCalledTo(string workflowName, string newDescription)
         {
-            Workflow workflow = this.scenarioContext.Get<Workflow>(workflowName);
+            Workflow workflow = this.workflows[workflowName];
             workflow.Description = newDescription;
         }
 
         [Given("I set the etag of the workflow definition called '(.*)' to '(.*)'")]
         public void GivenISetTheEtagOfTheWorkflowDefinitionCalledTo(string workflowName, string newEtag)
         {
-            Workflow workflow = this.scenarioContext.Get<Workflow>(workflowName);
+            Workflow workflow = this.workflows[workflowName];
             workflow.ETag = newEtag;
         }
 
@@ -162,17 +172,18 @@ namespace Marain.Workflows.Specs.Steps
             return workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root);
         }
 
-        private async Task<CloudBlockBlob> GetCloudBlockBlobForCurrentTenantAsync(string blobId)
+        private async Task<BlobClient> GetBlobClientForCurrentTenantAsync(string blobId)
         {
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(this.featureContext);
-            ITenantCloudBlobContainerFactory containerFactory = serviceProvider.GetRequiredService<ITenantCloudBlobContainerFactory>();
+            IBlobContainerSourceWithTenantLegacyTransition containerFactory = serviceProvider.GetRequiredService<IBlobContainerSourceWithTenantLegacyTransition>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
 
-            CloudBlobContainer container = await containerFactory.GetBlobContainerForTenantAsync(
+            BlobContainerClient container = await containerFactory.GetBlobContainerClientFromTenantAsync(
                 tenantProvider.Root,
-                TenantedBlobWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition).ConfigureAwait(false);
+                "StorageConfiguration__workflowdefinitions",
+                "Workflow_BlobStorage_Definitions").ConfigureAwait(false);
 
-            return container.GetBlockBlobReference(blobId);
+            return container.GetBlobClient(blobId);
         }
     }
 }

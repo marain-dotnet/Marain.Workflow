@@ -7,10 +7,13 @@ namespace Microsoft.Extensions.DependencyInjection
     using System;
     using System.Linq;
     using System.Net.Http;
+
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication;
+
     using Marain.Workflows;
     using Marain.Workflows.CloudEvents;
+
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -36,7 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 return new TenantedCloudEventPublisherFactory(
                     HttpClientFactory.Create(),
-                    sp.GetRequiredService<IServiceIdentityTokenSource>(),
+                    sp.GetRequiredService<IServiceIdentityAccessTokenSource>(),
                     sp.GetRequiredService<IJsonSerializerSettingsProvider>(),
                     sp.GetRequiredService<ILogger<CloudEventPublisher>>());
             });

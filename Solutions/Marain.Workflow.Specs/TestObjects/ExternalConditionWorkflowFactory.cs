@@ -7,7 +7,7 @@ namespace Marain.Workflows.Specs.TestObjects
     using System;
     using System.Net.Http;
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication;
 
     /// <summary>
     /// Creates a workflow for testing external conditions.
@@ -25,7 +25,7 @@ namespace Marain.Workflows.Specs.TestObjects
         public static Workflow Create(
             string id,
             string externalServiceUrl,
-            IServiceIdentityTokenSource serviceIdentityTokenSource,
+            IServiceIdentityAccessTokenSource serviceIdentityTokenSource,
             IJsonSerializerSettingsProvider serializerSettingsProvider)
         {
             var workflow = new Workflow(
