@@ -6,10 +6,13 @@ namespace Marain.Workflows
 {
     using System.Net.Http;
     using System.Threading.Tasks;
+
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication;
     using Corvus.Tenancy;
+
     using Marain.Workflows.CloudEvents;
+
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -18,7 +21,7 @@ namespace Marain.Workflows
     public class TenantedCloudEventPublisherFactory : ITenantedCloudEventPublisherFactory
     {
         private readonly HttpClient httpClient;
-        private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
+        private readonly IServiceIdentityAccessTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private readonly ILogger<CloudEventPublisher> logger;
 
@@ -26,12 +29,12 @@ namespace Marain.Workflows
         /// Initializes a new instance of the <see cref="CloudEventPublisher"/> class.
         /// </summary>
         /// <param name="httpClient">The <see cref="HttpClient"/> to use when POSTing event data to subscribers.</param>
-        /// <param name="serviceIdentityTokenSource">The <see cref="IServiceIdentityTokenSource"/> that will be used to aquire authentication tokens.</param>
+        /// <param name="serviceIdentityTokenSource">The <see cref="IServiceIdentityAccessTokenSource"/> that will be used to aquire authentication tokens.</param>
         /// <param name="serializerSettingsProvider">The current <see cref="IJsonSerializerSettingsProvider"/>.</param>
         /// <param name="logger">The logger.</param>
         public TenantedCloudEventPublisherFactory(
             HttpClient httpClient,
-            IServiceIdentityTokenSource serviceIdentityTokenSource,
+            IServiceIdentityAccessTokenSource serviceIdentityTokenSource,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             ILogger<CloudEventPublisher> logger)
         {

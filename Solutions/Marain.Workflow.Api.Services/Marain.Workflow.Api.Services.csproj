@@ -3,7 +3,16 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageDescription>
+    </PackageDescription>
+    <PackageTags>
+    </PackageTags>
+    <PackageReleaseNotes>
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,8 +24,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Marain.Operations.ControlClient" Version="1.2.1" />
-    <PackageReference Include="Menes.Abstractions" Version="2.0.1" />
+    <PackageReference Include="Marain.Operations.ControlClient" Version="2.0.0" />
+    <PackageReference Include="Menes.Abstractions" Version="3.1.2" />
     <PackageReference Include="Marain.Services.Tenancy" Version="2.3.3" />
   </ItemGroup>
   

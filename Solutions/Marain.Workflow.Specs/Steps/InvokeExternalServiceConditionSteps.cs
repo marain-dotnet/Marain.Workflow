@@ -8,7 +8,7 @@ namespace Marain.Workflows.Specs.Steps
     using System.Linq;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.Bindings;
@@ -37,8 +37,8 @@ namespace Marain.Workflows.Specs.Steps
         public async Task GivenGivenIHaveCreatedAndPersistedAWorkflowContainingAnExternalConditionWithIdAsync(string workflowId)
         {
             ExternalServiceBindings.ExternalService externalService = ExternalServiceBindings.GetService(this.scenarioContext);
-            IServiceIdentityTokenSource serviceIdentityTokenSource =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IServiceIdentityTokenSource>();
+            IServiceIdentityAccessTokenSource serviceIdentityTokenSource =
+                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IServiceIdentityAccessTokenSource>();
 
             IJsonSerializerSettingsProvider serializerSettingsProvider =
                 ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
@@ -125,11 +125,13 @@ namespace Marain.Workflows.Specs.Steps
                 this.requestInfo.Headers.TryGetValue("Authorization", out string authorizationHeader),
                 "Should contain authorization header");
 
-            IServiceIdentityTokenSource tokenSource =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IServiceIdentityTokenSource>();
+            IServiceIdentityAccessTokenSource tokenSource =
+                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IServiceIdentityAccessTokenSource>();
 
-            string token = await tokenSource.GetAccessToken(this.condition.MsiAuthenticationResource).ConfigureAwait(false);
-            string expectedHeader = "Bearer " + token;
+            AccessTokenDetail tokenDetail = await tokenSource.GetAccessTokenAsync(
+                new AccessTokenRequest(new[] { $"{this.condition.MsiAuthenticationResource}/.default" }))
+                .ConfigureAwait(false);
+            string expectedHeader = "Bearer " + tokenDetail.AccessToken;
             Assert.AreEqual(expectedHeader, authorizationHeader);
         }
 

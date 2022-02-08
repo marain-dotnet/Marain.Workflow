@@ -8,7 +8,7 @@ namespace Marain.Workflows.Specs.Steps
     using System.Linq;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.Bindings;
@@ -41,8 +41,8 @@ namespace Marain.Workflows.Specs.Steps
 
             IServiceProvider container = ContainerBindings.GetServiceProvider(this.featureContext);
 
-            IServiceIdentityTokenSource serviceIdentityTokenSource =
-                container.GetRequiredService<IServiceIdentityTokenSource>();
+            IServiceIdentityAccessTokenSource serviceIdentityTokenSource =
+                container.GetRequiredService<IServiceIdentityAccessTokenSource>();
 
             IJsonSerializerSettingsProvider serializerSettingsProvider =
                 container.GetRequiredService<IJsonSerializerSettingsProvider>();
@@ -119,13 +119,15 @@ namespace Marain.Workflows.Specs.Steps
                 this.requestInfo.Headers.TryGetValue("Authorization", out string authorizationHeader),
                 "Should contain authorization header");
 
-            IServiceIdentityTokenSource serviceIdentityTokenSource =
-                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IServiceIdentityTokenSource>();
+            IServiceIdentityAccessTokenSource serviceIdentityTokenSource =
+                ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IServiceIdentityAccessTokenSource>();
 
-            string token =
-                await serviceIdentityTokenSource.GetAccessToken(this.action.MsiAuthenticationResource).ConfigureAwait(false);
+            AccessTokenDetail tokenDetails =
+                await serviceIdentityTokenSource.GetAccessTokenAsync(
+                    new AccessTokenRequest(new[] { $"{this.action.MsiAuthenticationResource}/.default" }))
+                .ConfigureAwait(false);
 
-            string expectedHeader = "Bearer " + token;
+            string expectedHeader = "Bearer " + tokenDetails.AccessToken;
 
             Assert.AreEqual(expectedHeader, authorizationHeader);
         }

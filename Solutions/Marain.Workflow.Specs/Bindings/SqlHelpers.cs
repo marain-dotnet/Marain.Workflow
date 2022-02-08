@@ -30,11 +30,10 @@ namespace Marain.Workflows.Specs.Bindings
         /// <summary>
         /// Delete a database if it exists.
         /// </summary>
-        /// <param name="connectionString">The connection string to the server.</param>
+        /// <param name="connection">The connection to the server.</param>
         /// <param name="database">The database to delete if it exists.</param>
-        public static void DeleteDatabase(string connectionString, string database)
+        public static void DeleteDatabase(SqlConnection connection, string database)
         {
-            using var connection = new SqlConnection(connectionString);
             var serverConnection = new ServerConnection(connection);
             var server = new Server(serverConnection);
 

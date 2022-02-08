@@ -5,15 +5,24 @@
 namespace Marain.Workflows.Specs.Bindings
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
-    using Corvus.Azure.Cosmos.Tenancy;
-    using Corvus.Sql.Tenancy;
+
+    using Corvus.CosmosClient;
+    using Corvus.Storage.Azure.Cosmos.Tenancy;
+    using Corvus.Storage.Sql;
+    using Corvus.Storage.Sql.Tenancy;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
+
     using Marain.Workflows.Specs.Steps;
+
     using Microsoft.Azure.Cosmos;
+    using Microsoft.Data.SqlClient;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -35,51 +44,55 @@ namespace Marain.Workflows.Specs.Bindings
         public static void SetupDatabases(FeatureContext featureContext)
         {
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
-            ITenantSqlConnectionFactory sqlConnectionFactory = serviceProvider.GetRequiredService<ITenantSqlConnectionFactory>();
-            ITenantCosmosContainerFactory factory = serviceProvider.GetRequiredService<ITenantCosmosContainerFactory>();
+            ISqlConnectionFromDynamicConfiguration sqlConnectionFactory = serviceProvider.GetRequiredService<ISqlConnectionFromDynamicConfiguration>();
+            ICosmosContainerSourceWithTenantLegacyTransition factory = serviceProvider.GetRequiredService<ICosmosContainerSourceWithTenantLegacyTransition>();
+            ICosmosOptionsFactory optionsFactory = serviceProvider.GetRequiredService<ICosmosOptionsFactory>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
             IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
-            SqlConfiguration sqlConfig =
-                configuration.GetSection("TestSqlConfiguration").Get<SqlConfiguration>()
-                ?? new SqlConfiguration();
-
             string containerBase = Guid.NewGuid().ToString();
+            string databaseName = $"workflow-{containerBase}";
 
-            sqlConfig.ConnectionString = "Server=(localdb)\\mssqllocaldb;Trusted_Connection=True;MultipleActiveResultSets=true";
-            sqlConfig.Database = $"workflow-{containerBase}";
-            sqlConfig.ConnectionStringSecretName = null;
-            sqlConfig.KeyVaultName = null;
-            sqlConfig.IsLocalDatabase = true;
-            sqlConfig.DisableTenantIdPrefix = true;
-            tenantProvider.Root.UpdateProperties(data => data.AddSqlConfiguration(
-                TenantedSqlWorkflowStoreServiceCollectionExtensions.WorkflowConnectionDefinition,
+            SqlDatabaseConfiguration sqlConfig = new()
+            {
+                ConnectionStringPlainText = $"Server=(localdb)\\mssqllocaldb;Initial Catalog={databaseName};Trusted_Connection=True;MultipleActiveResultSets=true",
+            };
+            tenantProvider.Root.UpdateProperties(data => data.AddSqlDatabaseConfiguration(
+                TenantedSqlWorkflowStoreServiceCollectionExtensions.WorkflowConnectionKey,
                 sqlConfig));
 
-            CosmosConfiguration cosmosConfig =
-                configuration.GetSection("TestCosmosConfiguration").Get<CosmosConfiguration>()
-                ?? new CosmosConfiguration();
+            LegacyV2CosmosContainerConfiguration cosmosConfig =
+                configuration.GetSection("TestCosmosConfiguration").Get<LegacyV2CosmosContainerConfiguration>()
+                ?? new LegacyV2CosmosContainerConfiguration();
 
             cosmosConfig.DatabaseName = "endjinspecssharedthroughput";
             cosmosConfig.DisableTenantIdPrefix = true;
 
-            tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
-                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
-                cosmosConfig));
+            // Configuring with V2-style configuration because for now, the application uses the
+            // ICosmosContainerSourceWithTenantLegacyTransition in the mode where all the tenant
+            // configuration remains in V2 mode.
+            tenantProvider.Root.UpdateProperties(data => data.Append(new KeyValuePair<string, object>(
+                $"StorageConfiguration__{TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreLogicalDatabaseName}__{TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowDefinitionStoreLogicalContainerName}",
+                cosmosConfig)));
 
-            tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
-                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreContainerDefinition,
-                cosmosConfig));
+            tenantProvider.Root.UpdateProperties(data => data.Append(new KeyValuePair<string, object>(
+                $"StorageConfiguration__{TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowStoreLogicalDatabaseName}__{TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStoreLogicalContainerName}",
+                cosmosConfig)));
 
-            var testDocumentRepositoryContainerDefinition = new CosmosContainerDefinition("workflow", "testdocuments", "/id");
-            tenantProvider.Root.UpdateProperties(data => data.AddCosmosConfiguration(
-                testDocumentRepositoryContainerDefinition,
-                cosmosConfig));
+            tenantProvider.Root.UpdateProperties(data => data.Append(new KeyValuePair<string, object>(
+                "StorageConfiguration__workflow__testdocuments",
+                cosmosConfig)));
 
+            // This is required by the various bits of the test that work with the "data catalog".
             Container testDocumentsRepository = WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
-                () => factory.GetContainerForTenantAsync(
+                async () => await factory.GetContainerForTenantAsync(
                     tenantProvider.Root,
-                    testDocumentRepositoryContainerDefinition)).Result;
+                    "StorageConfiguration__workflow__testdocuments",
+                    "NotUsed",
+                    "workflow",
+                    "testdocuments",
+                    "/id",
+                    cosmosClientOptions: optionsFactory.CreateCosmosClientOptions())).Result;
 
             featureContext.Set(testDocumentsRepository, TestDocumentsRepository);
 
@@ -90,7 +103,7 @@ namespace Marain.Workflows.Specs.Bindings
             const string BUILD = "release";
 #endif
 
-            SqlHelpers.SetupDatabaseFromDacPac(sqlConfig.ConnectionString, sqlConfig.Database, @$"..\..\..\..\Marain.Workflow.Storage.Sql.Database\bin\{BUILD}\Marain.Workflow.Storage.Sql.Database.dacpac");
+            SqlHelpers.SetupDatabaseFromDacPac(sqlConfig.ConnectionStringPlainText, databaseName, @$"..\..\..\..\Marain.Workflow.Storage.Sql.Database\bin\{BUILD}\Marain.Workflow.Storage.Sql.Database.dacpac");
         }
 
         /// <summary>
@@ -102,16 +115,16 @@ namespace Marain.Workflows.Specs.Bindings
         public static async Task TeardownDatabases(FeatureContext featureContext)
         {
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
-            ITenantSqlConnectionFactory sqlConnectionFactory = serviceProvider.GetRequiredService<ITenantSqlConnectionFactory>();
+            ISqlConnectionFromDynamicConfiguration sqlConnectionFactory = serviceProvider.GetRequiredService<ISqlConnectionFromDynamicConfiguration>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
 
-            SqlConfiguration config = tenantProvider.Root.GetSqlConfiguration(TenantedSqlWorkflowStoreServiceCollectionExtensions.WorkflowConnectionDefinition);
+            SqlDatabaseConfiguration config = tenantProvider.Root.GetSqlDatabaseConfiguration(TenantedSqlWorkflowStoreServiceCollectionExtensions.WorkflowConnectionKey);
 
-            featureContext.RunAndStoreExceptions(() =>
-                SqlHelpers.DeleteDatabase(config.ConnectionString, config.Database));
-
-            await featureContext.RunAndStoreExceptionsAsync(
-                () => featureContext.Get<Container>(TestDocumentsRepository).DeleteContainerAsync()).ConfigureAwait(false);
+            await featureContext.RunAndStoreExceptionsAsync(async () =>
+            {
+                SqlConnection connection = await sqlConnectionFactory.GetStorageContextAsync(config).ConfigureAwait(false);
+                SqlHelpers.DeleteDatabase(connection, connection.Database);
+            });
         }
     }
 }

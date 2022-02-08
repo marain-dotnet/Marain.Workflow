@@ -5,9 +5,11 @@
 namespace Marain.Workflows.Specs.Bindings
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
-    using Corvus.Azure.Storage.Tenancy;
+    using Corvus.Storage.Azure.BlobStorage.Tenancy;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
 
@@ -41,23 +43,23 @@ namespace Marain.Workflows.Specs.Bindings
         public static void SetupBlobStorageRepository(FeatureContext featureContext)
         {
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
-            ITenantCloudBlobContainerFactory factory = serviceProvider.GetRequiredService<ITenantCloudBlobContainerFactory>();
+            IBlobContainerSourceWithTenantLegacyTransition factory = serviceProvider.GetRequiredService<IBlobContainerSourceWithTenantLegacyTransition>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
             IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
             ITenant rootTenant = tenantProvider.Root;
 
-            BlobStorageConfiguration storageConfig =
-                configuration.GetSection("TestStorageConfiguration").Get<BlobStorageConfiguration>()
-                    ?? new BlobStorageConfiguration();
+            LegacyV2BlobStorageConfiguration storageConfig =
+                configuration.GetSection("TestStorageConfiguration").Get<LegacyV2BlobStorageConfiguration>()
+                    ?? new LegacyV2BlobStorageConfiguration();
 
             // Generate a container name just for this test, otherwise you can end up with collisions
             // on subsequent tests runs while containers are still being deleted.
             storageConfig.Container = Guid.NewGuid().ToString();
 
-            tenantProvider.Root.UpdateProperties(data => data.AddBlobStorageConfiguration(
-                TenantedBlobWorkflowStoreServiceCollectionExtensions.WorkflowStoreContainerDefinition,
-                storageConfig));
+            tenantProvider.Root.UpdateProperties(data => data.Append(new KeyValuePair<string, object>(
+                "StorageConfiguration__workflowdefinitions",
+                storageConfig)));
         }
 
         /// <summary>
