@@ -5,12 +5,18 @@
 namespace Marain.Workflows.Storage
 {
     using System;
+    using System.IO;
     using System.Net;
     using System.Text;
     using System.Threading.Tasks;
+
+    using Azure;
+    using Azure.Storage.Blobs;
+    using Azure.Storage.Blobs.Models;
+    using Azure.Storage.Blobs.Specialized;
+
     using Corvus.Extensions.Json;
-    using Microsoft.Azure.Storage;
-    using Microsoft.Azure.Storage.Blob;
+
     using Newtonsoft.Json;
 
     /// <summary>
@@ -18,7 +24,8 @@ namespace Marain.Workflows.Storage
     /// </summary>
     public class BlobStorageWorkflowStore : IWorkflowStore
     {
-        private readonly JsonSerializerSettings serializerSettings;
+        private static readonly Encoding UTF8WithoutBom = new UTF8Encoding(false);
+        private readonly JsonSerializer jsonSerializer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BlobStorageWorkflowStore"/> class.
@@ -26,34 +33,41 @@ namespace Marain.Workflows.Storage
         /// <param name="workflowContainer">The container in which to store workflows.</param>
         /// <param name="serializerSettingsProvider">The current <see cref="IJsonSerializerSettingsProvider"/>.</param>
         public BlobStorageWorkflowStore(
-            CloudBlobContainer workflowContainer,
+            BlobContainerClient workflowContainer,
             IJsonSerializerSettingsProvider serializerSettingsProvider)
         {
             this.Container = workflowContainer;
-            this.serializerSettings = serializerSettingsProvider.Instance;
+            this.jsonSerializer = JsonSerializer.Create(serializerSettingsProvider.Instance);
         }
 
         /// <summary>
-        /// Gets the underlying <see cref="CloudBlobContainer"/> for this workflow store.
+        /// Gets the underlying <see cref="BlobContainerClient"/> for this workflow store.
         /// </summary>
-        public CloudBlobContainer Container { get; }
+        public BlobContainerClient Container { get; }
 
         /// <inheritdoc/>
         public async Task<Workflow> GetWorkflowAsync(string workflowId, string partitionKey = null)
         {
+            BlockBlobClient blob = this.Container.GetBlockBlobClient(workflowId);
+            Response<BlobDownloadResult> response;
             try
             {
-                CloudBlockBlob blob = this.Container.GetBlockBlobReference(workflowId);
-
-                string text = await blob.DownloadTextAsync(Encoding.UTF8, null, null, null).ConfigureAwait(false);
-                Workflow workflow = JsonConvert.DeserializeObject<Workflow>(text, this.serializerSettings);
-                workflow.ETag = blob.Properties.ETag;
-                return workflow;
+                response = await blob.DownloadContentAsync().ConfigureAwait(false);
             }
-            catch (StorageException ex) when (ex.RequestInformation.HttpStatusCode == (int)HttpStatusCode.NotFound)
+            catch (RequestFailedException ex) when (ex.Status == (int)HttpStatusCode.NotFound)
             {
                 throw new WorkflowNotFoundException($"The workflow with id {workflowId} was not found", ex);
             }
+
+            Workflow workflow;
+            using (StreamReader sr = new(response.Value.Content.ToStream(), leaveOpen: false))
+            using (JsonTextReader jr = new(sr))
+            {
+                workflow = this.jsonSerializer.Deserialize<Workflow>(jr);
+            }
+
+            workflow.ETag = response.Value.Details.ETag.ToString("H");
+            return workflow;
         }
 
         /// <inheritdoc/>
@@ -64,24 +78,38 @@ namespace Marain.Workflows.Storage
                 throw new ArgumentNullException(nameof(workflow));
             }
 
+            BlockBlobClient blob = this.Container.GetBlockBlobClient(workflow.Id);
+            MemoryStream content = new();
+            using (var sw = new StreamWriter(content, UTF8WithoutBom, leaveOpen: true))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                this.jsonSerializer.Serialize(writer, workflow);
+            }
+
+            content.Position = 0;
             try
             {
-                CloudBlockBlob blob = this.Container.GetBlockBlobReference(workflow.Id);
-                string text = JsonConvert.SerializeObject(workflow, this.serializerSettings);
+                BlobRequestConditions requestConditions = new();
+                if (string.IsNullOrEmpty(workflow.ETag))
+                {
+                    requestConditions.IfNoneMatch = ETag.All;
+                }
+                else
+                {
+                    requestConditions.IfMatch = new ETag(workflow.ETag);
+                }
 
-                AccessCondition accessCondition = string.IsNullOrEmpty(workflow.ETag)
-                    ? AccessCondition.GenerateIfNoneMatchCondition("*")
-                    : AccessCondition.GenerateIfMatchCondition(workflow.ETag);
-
-                await blob.UploadTextAsync(text, Encoding.UTF8, accessCondition, null, null).ConfigureAwait(false);
-
-                workflow.ETag = blob.Properties.ETag;
+                Response<BlobContentInfo> response = await blob.UploadAsync(
+                    content,
+                    new BlobUploadOptions { Conditions = requestConditions })
+                    .ConfigureAwait(false);
+                workflow.ETag = response.Value.ETag.ToString("H");
             }
-            catch (StorageException ex) when (ex.RequestInformation.HttpStatusCode == (int)HttpStatusCode.Conflict)
+            catch (RequestFailedException ex) when (ex.Status == (int)HttpStatusCode.Conflict)
             {
                 throw new WorkflowConflictException();
             }
-            catch (StorageException ex) when (ex.RequestInformation.HttpStatusCode == (int)HttpStatusCode.PreconditionFailed)
+            catch (RequestFailedException ex) when (ex.Status == (int)HttpStatusCode.PreconditionFailed)
             {
                 throw new WorkflowPreconditionFailedException();
             }

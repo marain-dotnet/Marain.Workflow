@@ -6,11 +6,15 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     using System;
     using System.Linq;
+
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication.MicrosoftRest;
+
     using Marain.Workflows.EngineHost.Client;
-    using Microsoft.Extensions.DependencyInjection;
+
     using Microsoft.Rest;
+
+    using Newtonsoft.Json;
 
     /// <summary>
     /// DI initialization for clients of the workflow engine service.
@@ -41,12 +45,15 @@ namespace Microsoft.Extensions.DependencyInjection
                     return new UnauthenticatedMarainWorkflowEngine(options.BaseUrl);
                 }
 
-                var service = new MarainWorkflowEngine(options.BaseUrl, new TokenCredentials(
-                    new ServiceIdentityTokenProvider(
-                        sp.GetRequiredService<IServiceIdentityTokenSource>(),
-                        options.ResourceIdForAuthentication)));
+                var tokenCredentials = new TokenCredentials(
+                        sp.GetRequiredService<IServiceIdentityMicrosoftRestTokenProviderSource>().GetTokenProvider(
+                            $"{options.ResourceIdForAuthentication}/.default"));
+                var service = new MarainWorkflowEngine(options.BaseUrl, tokenCredentials);
 
-                sp.GetRequiredService<IJsonSerializerSettingsProvider>().Instance.Converters.ForEach(service.SerializationSettings.Converters.Add);
+                foreach (JsonConverter converter in sp.GetRequiredService<IJsonSerializerSettingsProvider>().Instance.Converters)
+                {
+                    service.SerializationSettings.Converters.Add(converter);
+                }
 
                 return service;
             });

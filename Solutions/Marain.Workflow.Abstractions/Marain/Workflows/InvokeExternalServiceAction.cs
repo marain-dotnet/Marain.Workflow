@@ -12,12 +12,15 @@ namespace Marain.Workflows
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication;
     using Corvus.Retry;
     using Corvus.Retry.Policies;
     using Corvus.Retry.Strategies;
+
     using Microsoft.Extensions.Logging;
+
     using Newtonsoft.Json;
 
     /// <summary>
@@ -45,7 +48,7 @@ namespace Marain.Workflows
         // the maximum function execution time is 10 minutes. However, other hosting environments permit longer
         // execution time, and we don't want to impose unnecessary limitations on external service execution time.
         private static readonly HttpClient HttpClient = new() { Timeout = Timeout.InfiniteTimeSpan };
-        private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
+        private readonly IServiceIdentityAccessTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private readonly ILogger<InvokeExternalServiceAction> logger;
 
@@ -56,7 +59,7 @@ namespace Marain.Workflows
         /// <param name="serializerSettingsProvider">The serialization settings to use when serializing requests.</param>
         /// <param name="logger">The logger.</param>
         public InvokeExternalServiceAction(
-            IServiceIdentityTokenSource serviceIdentityTokenSource,
+            IServiceIdentityAccessTokenSource serviceIdentityTokenSource,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             ILogger<InvokeExternalServiceAction> logger)
         {
@@ -181,10 +184,11 @@ namespace Marain.Workflows
 
             if (this.AuthenticateWithManagedServiceIdentity)
             {
-                string token = await this.serviceIdentityTokenSource.GetAccessToken(
-                    this.MsiAuthenticationResource).ConfigureAwait(false);
+                AccessTokenDetail tokenDetails = await this.serviceIdentityTokenSource.GetAccessTokenAsync(
+                    new AccessTokenRequest(new[] { $"{this.MsiAuthenticationResource}/.default" }))
+                    .ConfigureAwait(false);
 
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenDetails.AccessToken);
             }
 
             var requestBody = new ExternalServiceWorkflowRequest

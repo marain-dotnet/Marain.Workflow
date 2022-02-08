@@ -6,6 +6,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System;
     using System.Threading.Tasks;
+
     using Corvus.Azure.Cosmos.Tenancy;
     using Corvus.Azure.Storage.Tenancy;
     using Corvus.Tenancy;
@@ -115,6 +116,11 @@ namespace Marain.Workflows.Api.Specs.Bindings
             IConfiguration configuration = ContainerBindings
                 .GetServiceProvider(featureContext)
                 .GetRequiredService<IConfiguration>();
+
+            // Note: this next part is using configuration types from the old (v2) Corvus.Tenancy
+            // libraries. Unfortunately, this is currently unavoidable because the current version
+            // of Marain.TenantManagement.Abstractions defines enrollment mechanism in terms of
+            // those older types.
 
             // Load the config items we need:
             CosmosConfiguration cosmosConfiguration =

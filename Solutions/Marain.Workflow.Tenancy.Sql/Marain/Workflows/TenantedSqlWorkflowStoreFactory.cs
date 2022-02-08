@@ -4,12 +4,16 @@
 
 namespace Marain.Workflows
 {
-    using System.Data.SqlClient;
     using System.Threading.Tasks;
+
     using Corvus.Extensions.Json;
-    using Corvus.Sql.Tenancy;
+    using Corvus.Storage.Sql;
+    using Corvus.Storage.Sql.Tenancy;
     using Corvus.Tenancy;
+
     using Marain.Workflows.Storage;
+
+    using Microsoft.Data.SqlClient;
 
     /// <summary>
     /// Factory class for retrieving Sql-based instances of <see cref="IWorkflowStore"/> for specific <see cref="Tenant"/>s.
@@ -17,25 +21,28 @@ namespace Marain.Workflows
     public class TenantedSqlWorkflowStoreFactory : ITenantedWorkflowStoreFactory
     {
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
-        private readonly ITenantSqlConnectionFactory containerFactory;
-        private readonly SqlConnectionDefinition connectionDefinition;
+        private readonly ISqlConnectionFromDynamicConfiguration connectionSource;
+        private readonly string configurationKey;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TenantedSqlWorkflowStoreFactory"/> class.
         /// </summary>
         /// <param name="serializerSettingsProvider">The JSON serializer settings provider.</param>
-        /// <param name="containerFactory">The <see cref="ITenantSqlConnectionFactory"/> that will be used to create
-        /// underlying <see cref="SqlConnection"/> instances for the content stores.</param>
-        /// <param name="connectionDefinition">The <see cref="SqlConnectionDefinition"/> to use when creating tenanted
-        /// <see cref="SqlConnection"/> instances.</param>
+        /// <param name="connectionSource">
+        /// The <see cref="ISqlConnectionFromDynamicConfiguration"/> that will be used to create
+        /// underlying <see cref="SqlConnection"/> instances for the content stores.
+        /// </param>
+        /// <param name="configurationKey">The tenant properties configuration key in which to find
+        /// settings.
+        /// </param>
         public TenantedSqlWorkflowStoreFactory(
             IJsonSerializerSettingsProvider serializerSettingsProvider,
-            ITenantSqlConnectionFactory containerFactory,
-            SqlConnectionDefinition connectionDefinition)
+            ISqlConnectionFromDynamicConfiguration connectionSource,
+            string configurationKey)
         {
             this.serializerSettingsProvider = serializerSettingsProvider;
-            this.containerFactory = containerFactory;
-            this.connectionDefinition = connectionDefinition;
+            this.connectionSource = connectionSource;
+            this.configurationKey = configurationKey;
         }
 
         /// <inheritdoc/>
@@ -44,7 +51,7 @@ namespace Marain.Workflows
             return Task.FromResult<IWorkflowStore>(
                 new SqlWorkflowStore(
                     this.serializerSettingsProvider,
-                    () => this.containerFactory.GetSqlConnectionForTenantAsync(tenant, this.connectionDefinition)));
+                    () => this.connectionSource.GetSqlConnectionForTenantAsync(tenant, this.configurationKey)));
         }
     }
 }

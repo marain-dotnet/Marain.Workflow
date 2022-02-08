@@ -11,11 +11,15 @@ namespace Marain.Workflows.CloudEvents
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
+
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication;
     using Corvus.Retry;
+
     using Microsoft.Extensions.Logging;
+
     using Newtonsoft.Json;
+
     using NodaTime;
     using NodaTime.Text;
 
@@ -25,7 +29,7 @@ namespace Marain.Workflows.CloudEvents
     public class CloudEventPublisher : ICloudEventDataPublisher
     {
         private readonly HttpClient httpClient;
-        private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
+        private readonly IServiceIdentityAccessTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private readonly ILogger<CloudEventPublisher> logger;
         private readonly string marainTenantId;
@@ -35,13 +39,13 @@ namespace Marain.Workflows.CloudEvents
         /// </summary>
         /// <param name="marainTenantId">The Marain Tenant Id to add to published events as an extension.</param>
         /// <param name="httpClient">The <see cref="HttpClient"/> to use when POSTing event data to subscribers.</param>
-        /// <param name="serviceIdentityTokenSource">The <see cref="IServiceIdentityTokenSource"/> that will be used to aquire authentication tokens.</param>
+        /// <param name="serviceIdentityTokenSource">The <see cref="IServiceIdentityAccessTokenSource"/> that will be used to aquire authentication tokens.</param>
         /// <param name="serializerSettingsProvider">The current <see cref="IJsonSerializerSettingsProvider"/>.</param>
         /// <param name="logger">The logger.</param>
         public CloudEventPublisher(
             string marainTenantId,
             HttpClient httpClient,
-            IServiceIdentityTokenSource serviceIdentityTokenSource,
+            IServiceIdentityAccessTokenSource serviceIdentityTokenSource,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             ILogger<CloudEventPublisher> logger)
         {
@@ -109,10 +113,11 @@ namespace Marain.Workflows.CloudEvents
 
             if (destination.AuthenticateWithManagedServiceIdentity)
             {
-                string token = await this.serviceIdentityTokenSource.GetAccessToken(
-                    destination.MsiAuthenticationResource).ConfigureAwait(false);
+                AccessTokenDetail tokenDetails = await this.serviceIdentityTokenSource.GetAccessTokenAsync(
+                    new AccessTokenRequest(new[] { $"{destination.MsiAuthenticationResource}/.default" }))
+                    .ConfigureAwait(false);
 
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenDetails.AccessToken);
             }
 
             request.Content = new StringContent(
