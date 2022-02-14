@@ -6,14 +6,15 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     using System;
     using System.Linq;
-    using Corvus.Azure.Cosmos.Tenancy;
-    using Corvus.Azure.Storage.Tenancy;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+
     using Corvus.Leasing;
+
     using Marain.Tenancy.Client;
     using Marain.Workflows;
     using Marain.Workflows.Api.Services;
+
     using Menes;
+
     using Microsoft.Extensions.Configuration;
 
     /// <summary>
@@ -27,8 +28,28 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">The service collection.</param>
         /// <param name="configureHost">Optional callback for additional host configuration.</param>
         /// <returns>The service collection, to enable chaining.</returns>
+        [Obsolete("Use AddTenancyApiWithOpenApiActionResultHosting, or consider changing to AddTenancyApiWithAspNetPipelineHosting")]
         public static IServiceCollection AddTenantedWorkflowEngineApi(
             this IServiceCollection services,
+            Action<IOpenApiHostConfiguration> configureHost = null)
+        {
+            // The new APIs require an IConfiguration to be passed directly instead of via the
+            // callback mechanism that older versions of Functions forced us into. This method
+            // Is still here only so we can generate a deprecation warning that tells people
+            // what to use instead.
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Adds services required by workflow engine API.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <param name="configuration">Configuration source.</param>
+        /// <param name="configureHost">Optional callback for additional host configuration.</param>
+        /// <returns>The service collection, to enable chaining.</returns>
+        public static IServiceCollection AddTenantedWorkflowEngineApiWithAspNetPipelineHosting(
+            this IServiceCollection services,
+            IConfiguration configuration,
             Action<IOpenApiHostConfiguration> configureHost = null)
         {
             // Verify that these services aren't already present
@@ -40,20 +61,36 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            services.AddTenantedWorkflowEngine();
+            services.AddTenantedWorkflowEngine(configuration);
+            services.AddOpenApiAspNetPipelineHosting<SimpleOpenApiContext>(MakeOpenApiHostConfigurer(configureHost));
+            services.AddSingleton<IOpenApiService, EngineService>();
 
-            services.AddOpenApiHttpRequestHosting<SimpleOpenApiContext>(config =>
+            return services;
+        }
+
+        /// <summary>
+        /// Adds services required by workflow engine API.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <param name="configuration">Configuration source.</param>
+        /// <param name="configureHost">Optional callback for additional host configuration.</param>
+        /// <returns>The service collection, to enable chaining.</returns>
+        public static IServiceCollection AddTenantedWorkflowEngineApiWithOpenApiActionResultHosting(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Action<IOpenApiHostConfiguration> configureHost = null)
+        {
+            // Verify that these services aren't already present
+            Type engineServiceType = typeof(EngineService);
+
+            // If any of the OpenApi services are already installed, assume we've already completed installation and return.
+            if (services.Any(services => engineServiceType.IsAssignableFrom(services.ImplementationType)))
             {
-                config.Documents.RegisterOpenApiServiceWithEmbeddedDefinition<EngineService>();
+                return services;
+            }
 
-                configureHost?.Invoke(config);
-
-                config.Exceptions.Map<WorkflowNotFoundException>(404);
-                config.Exceptions.Map<WorkflowInstanceNotFoundException>(404);
-                config.Exceptions.Map<WorkflowConflictException>(409);
-                config.Exceptions.Map<WorkflowPreconditionFailedException>(412);
-            });
-
+            services.AddTenantedWorkflowEngine(configuration);
+            services.AddOpenApiActionResultHosting<SimpleOpenApiContext>(MakeOpenApiHostConfigurer(configureHost));
             services.AddSingleton<IOpenApiService, EngineService>();
 
             return services;
@@ -63,9 +100,11 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds services required by to use the workflow engine.
         /// </summary>
         /// <param name="services">The service collection.</param>
+        /// <param name="configuration">Configuration source.</param>
         /// <returns>The service collection, to enable chaining.</returns>
         public static IServiceCollection AddTenantedWorkflowEngine(
-            this IServiceCollection services)
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             // Verify that these services aren't already present
             Type engineFactoryServiceType = typeof(ITenantedWorkflowEngineFactory);
@@ -82,36 +121,18 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddMarainServiceConfiguration();
 
             services.AddMarainServicesTenancy();
-            services.AddSingleton(sp => sp.GetRequiredService<IConfiguration>().GetSection("TenancyClient").Get<TenancyClientOptions>());
+            services.AddSingleton(configuration.GetSection("TenancyClient").Get<TenancyClientOptions>());
             services.AddTenantProviderServiceClient(true);
 
-            services.AddAzureManagedIdentityBasedTokenSource(
-                sp => new AzureManagedIdentityTokenSourceOptions
-                {
-                    AzureServicesAuthConnectionString = sp.GetRequiredService<IConfiguration>()["AzureServicesAuthConnectionString"],
-                });
+            services.AddServiceIdentityAzureTokenCredentialSourceFromLegacyConnectionString(configuration["AzureServicesAuthConnectionString"]);
+            services.AddMicrosoftRestAdapterForServiceIdentityAccessTokenSource();
 
             // Workflow definitions get stored in blob storage
-            services.AddTenantCloudBlobContainerFactory(sp =>
-            {
-                IConfiguration config = sp.GetRequiredService<IConfiguration>();
-
-                return config.GetSection("TenantCloudBlobContainerFactoryOptions").Get<TenantCloudBlobContainerFactoryOptions>()
-                    ?? new TenantCloudBlobContainerFactoryOptions();
-            });
-
             services.AddTenantedBlobWorkflowStore();
 
             // Workflow instances get stored in CosmosDB
-            services.AddTenantCosmosContainerFactory(sp =>
-            {
-                IConfiguration config = sp.GetRequiredService<IConfiguration>();
-
-                return config.GetSection("TenantCosmosContainerFactoryOptions").Get<TenantCosmosContainerFactoryOptions>()
-                    ?? new TenantCosmosContainerFactoryOptions();
-            });
-
             services.AddTenantedAzureCosmosWorkflowInstanceStore();
+            services.AddCosmosClientBuilderWithNewtonsoftJsonIntegration();
 
             services.AddTenantedWorkflowEngineFactory();
 
@@ -127,6 +148,28 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             return services;
+        }
+
+        /// <summary>
+        /// API host configuration code common to all hosting modes.
+        /// </summary>
+        /// <param name="configureHost">Optional callback for additional host configuration.</param>
+        /// <returns>
+        /// A callback suitable for passing to <c>AddOpenApiActionResultHosting</c>.
+        /// </returns>
+        private static Action<IOpenApiHostConfiguration> MakeOpenApiHostConfigurer(Action<IOpenApiHostConfiguration> configureHost)
+        {
+            return (IOpenApiHostConfiguration config) =>
+            {
+                config.Documents.RegisterOpenApiServiceWithEmbeddedDefinition<EngineService>();
+
+                configureHost?.Invoke(config);
+
+                config.Exceptions.Map<WorkflowNotFoundException>(404);
+                config.Exceptions.Map<WorkflowInstanceNotFoundException>(404);
+                config.Exceptions.Map<WorkflowConflictException>(409);
+                config.Exceptions.Map<WorkflowPreconditionFailedException>(412);
+            };
         }
     }
 }

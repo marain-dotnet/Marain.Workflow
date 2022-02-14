@@ -12,11 +12,13 @@ namespace Marain.Workflows
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication;
     using Corvus.Retry;
     using Corvus.Retry.Policies;
     using Corvus.Retry.Strategies;
+
     using Newtonsoft.Json;
 
     /// <summary>
@@ -46,7 +48,7 @@ namespace Marain.Workflows
         public const string RegisteredContentType = "application/vnd.marain.workflows.invokeexternalservicecondition";
 
         private static readonly HttpClient HttpClient = new();
-        private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
+        private readonly IServiceIdentityAccessTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private HttpMethod httpMethod;
 
@@ -56,7 +58,7 @@ namespace Marain.Workflows
         /// <param name="serviceIdentityTokenSource">The token source to use when authenticating to third party services.</param>
         /// <param name="serializerSettingsProvider">The serialization settings to use when serializing requests.</param>
         public InvokeExternalServiceCondition(
-            IServiceIdentityTokenSource serviceIdentityTokenSource,
+            IServiceIdentityAccessTokenSource serviceIdentityTokenSource,
             IJsonSerializerSettingsProvider serializerSettingsProvider)
         {
             this.serviceIdentityTokenSource =
@@ -142,10 +144,11 @@ namespace Marain.Workflows
 
             if (this.AuthenticateWithManagedServiceIdentity)
             {
-                string token =
-                    await this.serviceIdentityTokenSource.GetAccessToken(this.MsiAuthenticationResource).ConfigureAwait(false);
+                AccessTokenDetail tokenDetails = await this.serviceIdentityTokenSource.GetAccessTokenAsync(
+                    new AccessTokenRequest(new[] { $"{this.MsiAuthenticationResource}/.default" }))
+                    .ConfigureAwait(false);
 
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenDetails.AccessToken);
             }
 
             var responseBody = new ExternalServiceWorkflowRequest

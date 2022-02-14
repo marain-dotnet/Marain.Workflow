@@ -23,11 +23,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="2.0.7" />
     <PackageReference Include="Corvus.Leasing.InMemory" Version="1.2.9" />
-    <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="1.0.7" />
-    <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="2.0.7" />
-    <PackageReference Include="Corvus.Testing.SpecFlow.NUnit" Version="1.4.7" />
+    <PackageReference Include="Corvus.Testing.SpecFlow.NUnit" Version="1.4.8" />
     <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

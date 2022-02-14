@@ -6,11 +6,15 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     using System;
     using System.Linq;
+
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication.MicrosoftRest;
+
     using Marain.Workflows.EngineHost.Client;
-    using Microsoft.Extensions.DependencyInjection;
+
     using Microsoft.Rest;
+
+    using Newtonsoft.Json;
 
     /// <summary>
     /// DI initialization for clients of the workflow engine service.
@@ -27,6 +31,18 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             Func<IServiceProvider, MarainWorkflowEngineClientOptions> getOptions)
         {
+            return services
+                .AddSingleton(sp => getOptions(sp))
+                .AddMarainWorkflowEngineClient();
+        }
+
+        /// <summary>
+        /// Adds the workflow engine client to a service collection.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <returns>The modified service collection.</returns>
+        public static IServiceCollection AddMarainWorkflowEngineClient(this IServiceCollection services)
+        {
             if (services.Any(s => s.ServiceType == typeof(IMarainWorkflowEngine)))
             {
                 return services;
@@ -34,19 +50,22 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<IMarainWorkflowEngine>(sp =>
             {
-                MarainWorkflowEngineClientOptions options = getOptions(sp);
+                MarainWorkflowEngineClientOptions options = sp.GetRequiredService<MarainWorkflowEngineClientOptions>();
 
                 if (string.IsNullOrEmpty(options.ResourceIdForAuthentication))
                 {
                     return new UnauthenticatedMarainWorkflowEngine(options.BaseUrl);
                 }
 
-                var service = new MarainWorkflowEngine(options.BaseUrl, new TokenCredentials(
-                    new ServiceIdentityTokenProvider(
-                        sp.GetRequiredService<IServiceIdentityTokenSource>(),
-                        options.ResourceIdForAuthentication)));
+                var tokenCredentials = new TokenCredentials(
+                        sp.GetRequiredService<IServiceIdentityMicrosoftRestTokenProviderSource>().GetTokenProvider(
+                            $"{options.ResourceIdForAuthentication}/.default"));
+                var service = new MarainWorkflowEngine(options.BaseUrl, tokenCredentials);
 
-                sp.GetRequiredService<IJsonSerializerSettingsProvider>().Instance.Converters.ForEach(service.SerializationSettings.Converters.Add);
+                foreach (JsonConverter converter in sp.GetRequiredService<IJsonSerializerSettingsProvider>().Instance.Converters)
+                {
+                    service.SerializationSettings.Converters.Add(converter);
+                }
 
                 return service;
             });

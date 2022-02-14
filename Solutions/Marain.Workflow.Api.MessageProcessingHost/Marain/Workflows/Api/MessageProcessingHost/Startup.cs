@@ -8,23 +8,26 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
 {
     using System;
     using System.Linq;
+
     using Marain.Operations.Client.OperationsControl;
     using Marain.Workflows.Api.MessageProcessingHost.OpenApi;
     using Marain.Workflows.EngineHost.Client;
+
     using Menes;
-    using Microsoft.Azure.WebJobs;
-    using Microsoft.Azure.WebJobs.Hosting;
+
+    using Microsoft.Azure.Functions.Extensions.DependencyInjection;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Startup code for the Function.
     /// </summary>
-    public class Startup : IWebJobsStartup
+    public class Startup : FunctionsStartup
     {
         /// <inheritdoc/>
-        public void Configure(IWebJobsBuilder builder)
+        public override void Configure(IFunctionsHostBuilder builder)
         {
+            IConfiguration configuration = builder.GetContext().Configuration;
             IServiceCollection services = builder.Services;
 
             services.AddApplicationInsightsInstrumentationTelemetry();
@@ -56,17 +59,19 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
                 return config.GetSection("Workflow:EngineClient").Get<MarainWorkflowEngineClientOptions>();
             });
 
-            services.AddTenantedWorkflowEngine();
-            AddMessageProcessingMenesServices(services);
+            services.AddTenantedWorkflowEngine(configuration);
+            AddMessageProcessingMenesServices(services, configuration);
         }
 
         /// <summary>
         /// Adds services required by workflow engine API.
         /// </summary>
         /// <param name="services">The service collection.</param>
+        /// <param name="configuration">Configuration soruce.</param>
         /// <returns>The service collection, to enable chaining.</returns>
         private static IServiceCollection AddMessageProcessingMenesServices(
-            IServiceCollection services)
+            IServiceCollection services,
+            IConfiguration configuration)
         {
             // Verify that these services aren't already present
             Type ingestionServiceType = typeof(MessageIngestionService);
@@ -77,9 +82,9 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Shared
                 return services;
             }
 
-            services.AddTenantedWorkflowEngine();
+            services.AddTenantedWorkflowEngine(configuration);
 
-            services.AddOpenApiHttpRequestHosting<DurableFunctionsOpenApiContext>(config =>
+            services.AddOpenApiActionResultHosting<DurableFunctionsOpenApiContext>(config =>
             {
                 config.Documents.RegisterOpenApiServiceWithEmbeddedDefinition<MessageIngestionService>();
 

@@ -5,7 +5,11 @@
 namespace Microsoft.Extensions.DependencyInjection
 {
     using System.Linq;
-    using Corvus.Azure.Cosmos.Tenancy;
+
+    using Corvus.CosmosClient;
+    using Corvus.Extensions.Json;
+    using Corvus.Storage.Azure.Cosmos.Tenancy;
+
     using Marain.Workflows;
 
     /// <summary>
@@ -14,16 +18,45 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class TenantedCosmosWorkflowStoreServiceCollectionExtensions
     {
         /// <summary>
-        /// Gets the container definition that will be used for the tenanted workflow store.
+        /// The logical name for the Cosmos Database containing the workflow definition store and
+        /// the workflow instance store.
         /// </summary>
-        public static CosmosContainerDefinition WorkflowStoreContainerDefinition { get; } =
-            new CosmosContainerDefinition("workflow", "definitions", "/id");
+        /// <remarks>
+        /// This is used as the basis for generating tenant-specific database names.
+        /// </remarks>
+        public const string WorkflowStoreLogicalDatabaseName = "workflow";
 
         /// <summary>
-        /// Gets the container definition that will be used for the tenanted workflow instance store.
+        /// The logical name for the workflow definition Cosmos container.
         /// </summary>
-        public static CosmosContainerDefinition WorkflowInstanceStoreContainerDefinition { get; } =
-            new CosmosContainerDefinition("workflow", "instances", "/id");
+        /// <remarks>
+        /// This might also be the real name. But in scenarios where multiple tenants share a
+        /// single Cosmos database (e.g., to enable database-level throughput provisioning to
+        /// reduce costs for tenants that don't need privately provisioned throughput) the
+        /// real name will be tenant-specific.
+        /// </remarks>
+        public const string WorkflowDefinitionStoreLogicalContainerName = "definitions";
+
+        /// <summary>
+        /// The partition key path for the workflow definition Cosmos container.
+        /// </summary>
+        public const string WorkflowDefinitionStorePartitionKeyPath = "/id";
+
+        /// <summary>
+        /// The logical name for the workflow instance Cosmos container.
+        /// </summary>
+        /// <remarks>
+        /// This might also be the real name. But in scenarios where multiple tenants share a
+        /// single Cosmos database (e.g., to enable database-level throughput provisioning to
+        /// reduce costs for tenants that don't need privately provisioned throughput) the
+        /// real name will be tenant-specific.
+        /// </remarks>
+        public const string WorkflowInstanceStoreLogicalContainerName = "instances";
+
+        /// <summary>
+        /// The partition key path for the workflow instance Cosmos container.
+        /// </summary>
+        public const string WorkflowInstanceStorePartitionKeyPath = "/id";
 
         /// <summary>
         /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
@@ -38,10 +71,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions());
+            services.AddTenantCosmosContainerFactory();
+            services.AddCosmosContainerV2ToV3Transition();
             services.AddSingleton<ITenantedWorkflowStoreFactory>(svc => new TenantedCosmosWorkflowStoreFactory(
-                svc.GetRequiredService<ITenantCosmosContainerFactory>(),
-                WorkflowStoreContainerDefinition));
+                svc.GetRequiredService<ICosmosContainerSourceWithTenantLegacyTransition>(),
+                svc.GetRequiredService<ICosmosOptionsFactory>(),
+                WorkflowStoreLogicalDatabaseName,
+                WorkflowDefinitionStoreLogicalContainerName,
+                WorkflowDefinitionStorePartitionKeyPath));
 
             return services;
         }
@@ -59,10 +96,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions());
+            services.AddTenantCosmosContainerFactory();
+            services.AddCosmosContainerV2ToV3Transition();
             services.AddSingleton<ITenantedWorkflowInstanceStoreFactory>(svc => new TenantedCosmosWorkflowInstanceStoreFactory(
-                svc.GetRequiredService<ITenantCosmosContainerFactory>(),
-                WorkflowInstanceStoreContainerDefinition));
+                svc.GetRequiredService<ICosmosContainerSourceWithTenantLegacyTransition>(),
+                svc.GetRequiredService<ICosmosOptionsFactory>(),
+                WorkflowStoreLogicalDatabaseName,
+                WorkflowInstanceStoreLogicalContainerName,
+                WorkflowInstanceStorePartitionKeyPath));
 
             return services;
         }

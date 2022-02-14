@@ -7,12 +7,12 @@ namespace Marain.Workflows.Storage
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Data.SqlClient;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Corvus.Retry;
     using Marain.Workflows;
     using Marain.Workflows.Storage.Internal;
+    using Microsoft.Data.SqlClient;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -20,7 +20,7 @@ namespace Marain.Workflows.Storage
     /// </summary>
     public class SqlWorkflowInstanceStore : IWorkflowInstanceStore
     {
-        private readonly Func<Task<SqlConnection>> connectionFactory;
+        private readonly Func<ValueTask<SqlConnection>> connectionFactory;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
         /// <summary>
@@ -28,7 +28,9 @@ namespace Marain.Workflows.Storage
         /// </summary>
         /// <param name="serializerSettingsProvider">The serializer settings provider for the store.</param>
         /// <param name="connectionFactory">A factory method to create a sqlconnection for the workflow store.</param>
-        public SqlWorkflowInstanceStore(IJsonSerializerSettingsProvider serializerSettingsProvider, Func<Task<SqlConnection>> connectionFactory)
+        public SqlWorkflowInstanceStore(
+            IJsonSerializerSettingsProvider serializerSettingsProvider,
+            Func<ValueTask<SqlConnection>> connectionFactory)
         {
             this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
             this.serializerSettingsProvider = serializerSettingsProvider;
