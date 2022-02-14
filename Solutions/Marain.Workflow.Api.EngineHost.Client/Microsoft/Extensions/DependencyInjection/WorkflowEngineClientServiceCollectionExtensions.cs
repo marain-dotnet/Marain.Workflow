@@ -31,6 +31,18 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             Func<IServiceProvider, MarainWorkflowEngineClientOptions> getOptions)
         {
+            return services
+                .AddSingleton(sp => getOptions(sp))
+                .AddMarainWorkflowEngineClient();
+        }
+
+        /// <summary>
+        /// Adds the workflow engine client to a service collection.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <returns>The modified service collection.</returns>
+        public static IServiceCollection AddMarainWorkflowEngineClient(this IServiceCollection services)
+        {
             if (services.Any(s => s.ServiceType == typeof(IMarainWorkflowEngine)))
             {
                 return services;
@@ -38,7 +50,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<IMarainWorkflowEngine>(sp =>
             {
-                MarainWorkflowEngineClientOptions options = getOptions(sp);
+                MarainWorkflowEngineClientOptions options = sp.GetRequiredService<MarainWorkflowEngineClientOptions>();
 
                 if (string.IsNullOrEmpty(options.ResourceIdForAuthentication))
                 {
