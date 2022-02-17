@@ -8,14 +8,20 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Net;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Threading.Tasks;
+
     using Corvus.Extensions.Json;
     using Corvus.Testing.SpecFlow;
+
     using Marain.TenantManagement.Testing;
     using Marain.Workflows.Api.Specs.Bindings;
+
     using Microsoft.Extensions.DependencyInjection;
+
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
+
     using NUnit.Framework;
 
     using TechTalk.SpecFlow;
@@ -23,6 +29,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     [Binding]
     public class WebRequestSteps
     {
+        private readonly HttpClient http = new();
         private readonly ScenarioContext context;
         private readonly FeatureContext featureContext;
         private readonly TransientTenantManager transientTenantManager;
@@ -51,58 +58,47 @@ namespace Marain.Workflows.Api.Specs.Steps
         }
 
         [When("I get the workflow engine path '(.*)'")]
-        public void WhenIGetTheWorkflowEnginePath(string path)
+        public async Task WhenIGetTheWorkflowEnginePath(string path)
         {
             string url = WorkflowFunctionBindings.EngineHostBaseUrl + path;
             url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
 
-            HttpWebRequest request = WebRequest.CreateHttp(url);
-            request.Accept = "application/json";
-            request.Method = "GET";
+            HttpRequestMessage request = new(HttpMethod.Get, url);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             if (!this.context.ContainsKey("HttpResponses"))
             {
                 this.context.Add("HttpResponses", new List<int>());
             }
 
-            try
-            {
-                var response = (HttpWebResponse)request.GetResponse();
+            HttpResponseMessage response = await this.http.SendAsync(request).ConfigureAwait(false);
 
-                this.context.Get<List<int>>("HttpResponses").Add((int)response.StatusCode);
-                this.context.Set(response);
+            this.context.Get<List<int>>("HttpResponses").Add((int)response.StatusCode);
+            this.context.Set(response);
 
-                using Stream responseStream = response.GetResponseStream();
-                using var responseReader = new StreamReader(responseStream);
-                string responseBody = responseReader.ReadToEnd();
-                this.context.Set(responseBody, "ResponseBody");
-            }
-            catch (WebException ex)
-            {
-                if (ex.Response is HttpWebResponse response)
-                {
-                    this.context.Get<List<int>>("HttpResponses").Add((int)response.StatusCode);
-                }
-            }
+            using Stream responseStream = response.Content.ReadAsStream();
+            using var responseReader = new StreamReader(responseStream);
+            string responseBody = responseReader.ReadToEnd();
+            this.context.Set(responseBody, "ResponseBody");
         }
 
         [When("I post the object called '(.*)' to the workflow engine path '(.*)'")]
-        public void WhenIPostTheObjectCalledToTheWorkflowEnginePath(string instanceName, string path)
+        public async Task WhenIPostTheObjectCalledToTheWorkflowEnginePath(string instanceName, string path)
         {
             string url = WorkflowFunctionBindings.EngineHostBaseUrl + path;
-            this.PostContextObjectToEndpoint(instanceName, url);
+            await this.PostContextObjectToEndpoint(instanceName, url).ConfigureAwait(false);
         }
 
         [When("I post the object called '(.*)' to the workflow message processing path '(.*)'")]
-        public void WhenIPostTheObjectCalledToTheWorkflowMessageProcessingPath(string instanceName, string path)
+        public async Task WhenIPostTheObjectCalledToTheWorkflowMessageProcessingPath(string instanceName, string path)
         {
             string url = WorkflowFunctionBindings.MessageProcessingHostBaseUrl + path;
-            this.PostContextObjectToEndpoint(instanceName, url);
+            await this.PostContextObjectToEndpoint(instanceName, url).ConfigureAwait(false);
         }
 
         [Given("I have posted the workflow called '(.*)' to the workflow engine path '(.*)'")]
         [When("I post the workflow called '(.*)' to the workflow engine path '(.*)'")]
-        public void WhenIPostTheWorkflowCalledToTheWorkflowEnginePath(string workflowName, string path)
+        public async Task WhenIPostTheWorkflowCalledToTheWorkflowEnginePath(string workflowName, string path)
         {
             string url = WorkflowFunctionBindings.EngineHostBaseUrl + path;
             url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
@@ -110,96 +106,67 @@ namespace Marain.Workflows.Api.Specs.Steps
 
             // When POSTing, we shouldn't send an etag.
             workflow.ETag = null;
-            this.SendObjectToEndpoint(workflow, url);
+            await this.SendObjectToEndpoint(workflow, url, HttpMethod.Post).ConfigureAwait(false);
         }
 
         [When("I put the workflow called '(.*)' to the workflow engine path '(.*)'")]
-        public void WhenIPutTheWorkflowCalledToTheWorkflowEnginePath(string workflowName, string path)
+        public async Task WhenIPutTheWorkflowCalledToTheWorkflowEnginePath(string workflowName, string path)
         {
             string url = WorkflowFunctionBindings.EngineHostBaseUrl + path;
             url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
             Workflow workflow = this.context.Get<Workflow>(workflowName);
-            this.SendObjectToEndpoint(workflow, url, "PUT");
+            await this.SendObjectToEndpoint(workflow, url, HttpMethod.Put).ConfigureAwait(false);
         }
 
         [When("I put the workflow called '(.*)' to the workflow engine path '(.*)' with an If-Match header value from the etag of the workflow")]
-        public void WhenIPutTheWorkflowCalledToTheWorkflowEnginePathWithAnIfMatchHeaderValueFromTheEtagOfTheWorkflow(string workflowName, string path)
+        public async Task WhenIPutTheWorkflowCalledToTheWorkflowEnginePathWithAnIfMatchHeaderValueFromTheEtagOfTheWorkflow(string workflowName, string path)
         {
             string url = WorkflowFunctionBindings.EngineHostBaseUrl + path;
             url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
             Workflow workflow = this.context.Get<Workflow>(workflowName);
-            var headers = new Dictionary<HttpRequestHeader, string>
-            {
-                { HttpRequestHeader.IfMatch, workflow.ETag },
-            };
 
-            this.SendObjectToEndpoint(workflow, url, "PUT", headers);
+            await this.SendObjectToEndpoint(workflow, url, HttpMethod.Put, setHeaders: msg => msg.Headers.IfMatch.Add(new EntityTagHeaderValue(workflow.ETag))).ConfigureAwait(false);
         }
 
         [When("I put the workflow called '(.*)' to the workflow engine path '(.*)' with '(.*)' as the If-Match header value")]
-        public void WhenIPutTheWorkflowCalledToTheWorkflowEnginePathWithAnIfMatchHeaderValueOf(string workflowName, string path, string ifMatchHeaderValue)
+        public async Task WhenIPutTheWorkflowCalledToTheWorkflowEnginePathWithAnIfMatchHeaderValueOf(string workflowName, string path, string ifMatchHeaderValue)
         {
             string url = WorkflowFunctionBindings.EngineHostBaseUrl + path;
             url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
             Workflow workflow = this.context.Get<Workflow>(workflowName);
-            var headers = new Dictionary<HttpRequestHeader, string>
-            {
-                { HttpRequestHeader.IfMatch, ifMatchHeaderValue },
-            };
 
-            this.SendObjectToEndpoint(workflow, url, "PUT", headers);
+            await this.SendObjectToEndpoint(workflow, url, HttpMethod.Put, setHeaders: msg => msg.Headers.IfMatch.Add(new EntityTagHeaderValue(ifMatchHeaderValue))).ConfigureAwait(false);
         }
 
-        private void PostContextObjectToEndpoint(string instanceName, string url)
+        private async Task PostContextObjectToEndpoint(string instanceName, string url)
         {
             url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
 
             foreach (object obj in this.context.Get<IEnumerable<object>>(instanceName))
             {
-                this.SendObjectToEndpoint(obj, url);
+                await this.SendObjectToEndpoint(obj, url, HttpMethod.Post).ConfigureAwait(false);
             }
         }
 
-        private void SendObjectToEndpoint(object instance, string url, string method = "POST", Dictionary<HttpRequestHeader, string> headers = null)
+        private async Task SendObjectToEndpoint(object instance, string url, HttpMethod method, Action<HttpRequestMessage> setHeaders = null)
         {
             IJsonSerializerSettingsProvider serializationSettingsProvider = ContainerBindings.GetServiceProvider(this.featureContext).GetRequiredService<IJsonSerializerSettingsProvider>();
             string body = JsonConvert.SerializeObject(instance, serializationSettingsProvider.Instance);
             var address = new Uri(url);
 
-            HttpWebRequest request = WebRequest.CreateHttp(address);
-            request.ContentType = "application/json";
-            request.Method = method;
+            HttpRequestMessage request = new(method, address);
+            request.Content = new StringContent(body, encoding: null, mediaType: "application/json");
 
-            if (headers != null)
-            {
-                foreach (KeyValuePair<HttpRequestHeader, string> header in headers)
-                {
-                    request.Headers.Add(header.Key, header.Value);
-                }
-            }
-
-            var requestWriter = new StreamWriter(request.GetRequestStream());
-            requestWriter.Write(body);
-            requestWriter.Close();
+            setHeaders?.Invoke(request);
 
             if (!this.context.ContainsKey("HttpResponses"))
             {
                 this.context.Add("HttpResponses", new List<int>());
             }
 
-            try
-            {
-                var response = (HttpWebResponse)request.GetResponse();
+            HttpResponseMessage response = await this.http.SendAsync(request).ConfigureAwait(false);
 
-                this.context.Get<List<int>>("HttpResponses").Add((int)response.StatusCode);
-            }
-            catch (WebException ex)
-            {
-                if (ex.Response is HttpWebResponse response)
-                {
-                    this.context.Get<List<int>>("HttpResponses").Add((int)response.StatusCode);
-                }
-            }
+            this.context.Get<List<int>>("HttpResponses").Add((int)response.StatusCode);
         }
     }
 }

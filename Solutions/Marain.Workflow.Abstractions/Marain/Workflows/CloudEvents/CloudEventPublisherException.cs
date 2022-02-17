@@ -2,7 +2,6 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
-#pragma warning disable RCS1194 // Implement exception constructors.
 namespace Marain.Workflows.CloudEvents
 {
     using System;

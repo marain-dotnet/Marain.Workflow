@@ -4,10 +4,10 @@
 
 namespace Marain.Workflows.Specs.Bindings
 {
+    using System;
     using System.Linq;
-    using Corvus.Azure.Cosmos.Tenancy;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
-    using Corvus.Sql.Tenancy;
+
+    using Corvus.Identity.ClientAuthentication.Azure;
     using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Subjects;
@@ -42,8 +42,6 @@ namespace Marain.Workflows.Specs.Bindings
 
                     IConfiguration root = configurationBuilder.Build();
 
-                    string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
-
                     services.AddSingleton(root);
 
                     services.AddLogging();
@@ -55,16 +53,12 @@ namespace Marain.Workflows.Specs.Bindings
                     services.AddJsonNetCultureInfoConverter();
                     services.AddJsonNetDateTimeOffsetToIso8601AndUnixTimeConverter();
                     services.AddSingleton<JsonConverter>(new StringEnumConverter(true));
+                    services.AddCosmosClientBuilderWithNewtonsoftJsonIntegration();
 
-                    services.AddTenantCosmosContainerFactory(new TenantCosmosContainerFactoryOptions
-                    {
-                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
-                    });
-
-                    services.AddTenantSqlConnectionFactory(new TenantSqlConnectionFactoryOptions
-                    {
-                        AzureServicesAuthConnectionString = azureServicesAuthConnectionString,
-                    });
+                    // Even non-cosmos tests depend on ICosmosContainerSourceWithTenantLegacyTransition
+                    // because the various 'data catalog' parts of the test use a Cosmos DB.
+                    services.AddTenantCosmosContainerFactory();
+                    services.AddCosmosContainerV2ToV3Transition();
 
                     services.AddInMemoryWorkflowTriggerQueue();
                     services.AddInMemoryLeasing();
@@ -94,7 +88,24 @@ namespace Marain.Workflows.Specs.Bindings
 
                     services.AddSingleton<DataCatalogItemRepositoryFactory>();
 
-                    services.AddSingleton<IServiceIdentityTokenSource, FakeServiceIdentityTokenSource>();
+                    // Faking out the service identity is slightly awkward because in some cases we need
+                    // it to work for real (so we can read Azure Key Vault secrets in configuration)
+                    // but some tests need to provide fake results. So we spin up a second container
+                    // with a real service identity, and put a wrapper around that into the container
+                    // that everything is really using.
+                    ServiceCollection containerForRealTokenProvider = new();
+                    string azureServicesAuthConnectionString = root["AzureServicesAuthConnectionString"];
+                    containerForRealTokenProvider
+                        .AddServiceIdentityAzureTokenCredentialSourceFromLegacyConnectionString(azureServicesAuthConnectionString);
+                    IServiceProvider spForRealTokenProvider = containerForRealTokenProvider.BuildServiceProvider();
+                    IServiceIdentityAzureTokenCredentialSource realTokenProvider = spForRealTokenProvider.GetRequiredService<IServiceIdentityAzureTokenCredentialSource>();
+
+                    // We do this to get the IServiceIdentityAccessTokenSource, because there isn't an easy way to get that
+                    // but our adapter as the IServiceIdentityAzureTokenCredentialSource.
+                    services.AddServiceIdentityAzureTokenCredentialSourceFromLegacyConnectionString(azureServicesAuthConnectionString);
+
+                    // And now we replace the IServiceIdentityAzureTokenCredentialSource with our adapter.
+                    services.AddSingleton<IServiceIdentityAzureTokenCredentialSource>(new FakeServiceIdentityTokenSource(realTokenProvider));
                 });
         }
     }

@@ -13,12 +13,16 @@ namespace Marain.Workflows.Specs.Bindings
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+
     using Corvus.Extensions.Json;
-    using Corvus.Extensions.Json.Internal;
     using Corvus.Testing.SpecFlow;
+
     using Microsoft.Extensions.DependencyInjection;
+
     using Newtonsoft.Json;
+
     using NUnit.Framework;
+
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -104,7 +108,7 @@ namespace Marain.Workflows.Specs.Bindings
             private readonly Uri baseUrl;
 
             private readonly Task mainLoopTask;
-            private readonly CancellationTokenSource cancellationSource = new CancellationTokenSource();
+            private readonly CancellationTokenSource cancellationSource = new();
             private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
 
             private string conditionResponseBody;
@@ -128,7 +132,7 @@ namespace Marain.Workflows.Specs.Bindings
             /// Gets a URL to which a POST may be performed, and which will produce a 200 result
             /// with <c>true</c> in the response body.
             /// </summary>
-            public Uri TestUrl => new Uri(this.baseUrl, UrlPath);
+            public Uri TestUrl => new(this.baseUrl, UrlPath);
 
             /// <summary>
             /// Gets or sets the status code to return.

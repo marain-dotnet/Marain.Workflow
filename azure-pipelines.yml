@@ -14,7 +14,7 @@ resources:
       endpoint: marain-github
 
 jobs:
-- template: templates/build.and.release.yml@recommended_practices
+- template: templates/build.and.release.scripted.yml@recommended_practices
   parameters:
     vmImage: 'windows-latest'
     service_connection_nuget_org: $(Endjin_Service_Connection_NuGet_Org)
@@ -59,21 +59,21 @@ jobs:
           ENDJIN_MARAINWORKFLOWSERVICEDISPLAYNAME: $(Endjin_MarainWorkflowServiceDisplayName)
           ENDJIN_MARAINWORKFLOWSERVICETENANTID: $(Endjin_MarainWorkflowServiceTenantId)
       - task: Npm@1
-        displayName: 'Install Latest Azure Functions V3 Runtime'
+        displayName: 'Install Latest Azure Functions V4 Runtime'
         inputs:
           command: custom
           verbose: false
-          customCommand: 'install -g azure-functions-core-tools@3.0.2630 --unsafe-perm true'
+          customCommand: 'install -g azure-functions-core-tools@4 --unsafe-perm true'
       - task: MSBuild@1
         displayName: 'Build SQL DACPAC'
         inputs:
           solution: '**/Marain.Workflow.SqlDatabase.sln' 
           configuration: $(BuildConfiguration)
-    postSpecs:
+    preCopyNugetPackages:
       - task: ArchiveFiles@2
         displayName: 'Archive Message Ingestion Host Function App'
         inputs:
-          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.MessageProcessingHost/bin/Release/netcoreapp3.1/'
+          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.MessageProcessingHost/bin/Release/net6.0/'
           includeRootFolder: false
           archiveType: 'zip'
           archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Api.MessageProcessingHost.zip'
@@ -81,7 +81,7 @@ jobs:
       - task: ArchiveFiles@2
         displayName: 'Archive Engine Host Function App'
         inputs:
-          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.EngineHost/bin/Release/netcoreapp3.1/'
+          rootFolderOrFile: 'Solutions/Marain.Workflow.Api.EngineHost/bin/Release/net6.0/'
           includeRootFolder: false
           archiveType: 'zip'
           archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Api.EngineHost.zip'
@@ -94,7 +94,6 @@ jobs:
           archiveType: 'zip'
           archiveFile: '$(Build.ArtifactStagingDirectory)/Release/Marain.Workflow.Deployment.zip'
           replaceExistingArchive: true
-    postPack:
       - task: CopyFiles@2
         displayName: 'Copy DACPACs To Release Folder'
         inputs:
@@ -102,4 +101,4 @@ jobs:
             **/bin/$(BuildConfiguration)/*.dacpac
           TargetFolder: '$(Build.ArtifactStagingDirectory)/Release/DACPACs'
           flattenFolders: true
-    netSdkVersion: '3.x'
+    netSdkVersion: '6.x'

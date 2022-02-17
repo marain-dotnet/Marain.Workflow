@@ -5,8 +5,10 @@
 namespace Microsoft.Extensions.DependencyInjection
 {
     using System.Linq;
-    using Corvus.Azure.Storage.Tenancy;
+
     using Corvus.Extensions.Json;
+    using Corvus.Storage.Azure.BlobStorage.Tenancy;
+
     using Marain.Workflows;
 
     /// <summary>
@@ -14,12 +16,6 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class TenantedBlobWorkflowStoreServiceCollectionExtensions
     {
-        /// <summary>
-        /// Gets the container definition that will be used for the tenanted workflow store.
-        /// </summary>
-        public static BlobStorageContainerDefinition WorkflowStoreContainerDefinition { get; } =
-            new BlobStorageContainerDefinition("workflowdefinitions");
-
         /// <summary>
         /// Adds Cosmos-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
         /// </summary>
@@ -33,10 +29,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            services.AddTenantCloudBlobContainerFactory(new TenantCloudBlobContainerFactoryOptions());
+            services.AddAzureBlobStorageClientSourceFromDynamicConfiguration();
+            services.AddTenantBlobContainerFactory();
+            services.AddBlobContainerV2ToV3Transition();
             services.AddSingleton<ITenantedWorkflowStoreFactory>(svc => new TenantedBlobWorkflowStoreFactory(
-                svc.GetRequiredService<ITenantCloudBlobContainerFactory>(),
-                WorkflowStoreContainerDefinition,
+                svc.GetRequiredService<IBlobContainerSourceWithTenantLegacyTransition>(),
+                WorkflowTenancyConstants.DefinitionsStoreTenantConfigKey,
+                WorkflowTenancyConstants.DefinitionsStoreTenantConfigKeyV3,
                 svc.GetRequiredService<IJsonSerializerSettingsProvider>()));
 
             return services;

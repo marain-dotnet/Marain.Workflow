@@ -12,12 +12,15 @@ namespace Marain.Workflows
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication;
     using Corvus.Retry;
     using Corvus.Retry.Policies;
     using Corvus.Retry.Strategies;
+
     using Microsoft.Extensions.Logging;
+
     using Newtonsoft.Json;
 
     /// <summary>
@@ -44,8 +47,8 @@ namespace Marain.Workflows
         // on the time taken for total request execution time. For example, on the Azure Functions consumption plan,
         // the maximum function execution time is 10 minutes. However, other hosting environments permit longer
         // execution time, and we don't want to impose unnecessary limitations on external service execution time.
-        private static readonly HttpClient HttpClient = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
-        private readonly IServiceIdentityTokenSource serviceIdentityTokenSource;
+        private static readonly HttpClient HttpClient = new() { Timeout = Timeout.InfiniteTimeSpan };
+        private readonly IServiceIdentityAccessTokenSource serviceIdentityTokenSource;
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
         private readonly ILogger<InvokeExternalServiceAction> logger;
 
@@ -56,7 +59,7 @@ namespace Marain.Workflows
         /// <param name="serializerSettingsProvider">The serialization settings to use when serializing requests.</param>
         /// <param name="logger">The logger.</param>
         public InvokeExternalServiceAction(
-            IServiceIdentityTokenSource serviceIdentityTokenSource,
+            IServiceIdentityAccessTokenSource serviceIdentityTokenSource,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             ILogger<InvokeExternalServiceAction> logger)
         {
@@ -134,7 +137,7 @@ namespace Marain.Workflows
             if (!string.IsNullOrEmpty(responseContent))
             {
                 this.logger.LogDebug(
-                    "Processing response for workflow instance '{workflowInstanceId} from call to external URL '{externalUrl}' resulting from trigger '{triggerId}'",
+                    "Processing response for workflow instance '{workflowInstanceId}' from call to external URL '{externalUrl}' resulting from trigger '{triggerId}'",
                     instance.Id,
                     this.ExternalUrl,
                     trigger?.Id ?? "{no trigger}");
@@ -161,7 +164,7 @@ namespace Marain.Workflows
             else
             {
                 this.logger.LogDebug(
-                    "Request to external URL '{externalUrl}' did not return any response.",
+                    "Request for workflow instance '{workflowInstanceId}' to external URL '{externalUrl}' did not return any response.",
                     instance.Id,
                     this.ExternalUrl);
             }
@@ -181,10 +184,11 @@ namespace Marain.Workflows
 
             if (this.AuthenticateWithManagedServiceIdentity)
             {
-                string token = await this.serviceIdentityTokenSource.GetAccessToken(
-                    this.MsiAuthenticationResource).ConfigureAwait(false);
+                AccessTokenDetail tokenDetails = await this.serviceIdentityTokenSource.GetAccessTokenAsync(
+                    new AccessTokenRequest(new[] { $"{this.MsiAuthenticationResource}/.default" }))
+                    .ConfigureAwait(false);
 
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenDetails.AccessToken);
             }
 
             var requestBody = new ExternalServiceWorkflowRequest
@@ -203,7 +207,7 @@ namespace Marain.Workflows
                     .Where(kv => this.ContextItemsToInclude.Contains(kv.Key))
                     .ToDictionary(kv => kv.Key, kv => kv.Value);
 
-                this.logger.LogDebug($"Including context keys {string.Join(',', requestBody.ContextProperties.Keys)}");
+                this.logger.LogDebug("Including context keys {contextKeys}", string.Join(',', requestBody.ContextProperties.Keys));
             }
 
             request.Content = new StringContent(

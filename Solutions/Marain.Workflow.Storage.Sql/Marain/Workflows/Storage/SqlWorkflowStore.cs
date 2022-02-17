@@ -6,12 +6,16 @@ namespace Marain.Workflows.Storage
 {
     using System;
     using System.Data;
-    using System.Data.SqlClient;
+    using System.Threading;
     using System.Threading.Tasks;
     using Corvus.Extensions.Json;
     using Corvus.Retry;
+    using Corvus.Retry.Policies;
+    using Corvus.Retry.Strategies;
+
     using Marain.Workflows;
     using Marain.Workflows.Storage.Internal;
+    using Microsoft.Data.SqlClient;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -20,7 +24,7 @@ namespace Marain.Workflows.Storage
     public class SqlWorkflowStore : IWorkflowStore
     {
         private readonly IJsonSerializerSettingsProvider serializerSettingsProvider;
-        private readonly Func<Task<SqlConnection>> connectionFactory;
+        private readonly Func<ValueTask<SqlConnection>> connectionFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowEngine"/> class.
@@ -28,7 +32,8 @@ namespace Marain.Workflows.Storage
         /// <param name="serializerSettingsProvider">The serializer settings provider for the store.</param>
         /// <param name="connectionFactory">A factory method to create a sqlconnection for the workflow store.</param>
         public SqlWorkflowStore(
-            IJsonSerializerSettingsProvider serializerSettingsProvider, Func<Task<SqlConnection>> connectionFactory)
+            IJsonSerializerSettingsProvider serializerSettingsProvider,
+            Func<ValueTask<SqlConnection>> connectionFactory)
         {
             this.serializerSettingsProvider = serializerSettingsProvider;
             this.connectionFactory = connectionFactory;
@@ -37,16 +42,23 @@ namespace Marain.Workflows.Storage
         /// <inheritdoc/>
         public async Task<Workflow> GetWorkflowAsync(string workflowId, string partitionKey = null)
         {
-            return await Retriable.RetryAsync(() =>
-            this.GetWorkflowCoreAsync(workflowId))
+            return await Retriable.RetryAsync(
+                () => this.GetWorkflowCoreAsync(workflowId),
+                CancellationToken.None,
+                new Backoff(5, TimeSpan.FromSeconds(1)),
+                DoNotRetryWhenFutile.Instance)
             .ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
-        public Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
+        public async Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
         {
-            return Retriable.RetryAsync(() =>
-                this.UpsertWorkflowCoreAsync(workflow));
+            await Retriable.RetryAsync(
+                () => this.UpsertWorkflowCoreAsync(workflow),
+                CancellationToken.None,
+                new Backoff(5, TimeSpan.FromSeconds(1)),
+                DoNotRetryWhenFutile.Instance)
+            .ConfigureAwait(false);
         }
 
         private async Task<Workflow> GetWorkflowCoreAsync(string workflowId)
@@ -108,6 +120,21 @@ namespace Marain.Workflows.Storage
             }
 
             workflow.ETag = newetag;
+        }
+
+        private sealed class DoNotRetryWhenFutile : IRetryPolicy
+        {
+            public static readonly DoNotRetryWhenFutile Instance = new();
+
+            private DoNotRetryWhenFutile()
+            {
+            }
+
+            public bool CanRetry(Exception exception) => exception switch
+            {
+                WorkflowNotFoundException => false,
+                _ => true,
+            };
         }
     }
 }

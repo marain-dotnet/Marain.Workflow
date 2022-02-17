@@ -5,8 +5,10 @@
 namespace Microsoft.Extensions.DependencyInjection
 {
     using System.Linq;
+
     using Corvus.Extensions.Json;
-    using Corvus.Sql.Tenancy;
+    using Corvus.Storage.Sql;
+
     using Marain.Workflows;
 
     /// <summary>
@@ -15,10 +17,10 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class TenantedSqlWorkflowStoreServiceCollectionExtensions
     {
         /// <summary>
-        /// Gets the connection definition that will be used for the SQL database.
+        /// Gets the tenant properties key under which the SQL Database configuration will be
+        /// stored.
         /// </summary>
-        public static SqlConnectionDefinition WorkflowConnectionDefinition { get; } =
-            new SqlConnectionDefinition("workflow");
+        public static string WorkflowConnectionKey { get; } = "workflow";
 
         /// <summary>
         /// Adds Sql-based implementation of <see cref="ITenantedWorkflowStoreFactory"/> to the service container.
@@ -33,11 +35,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            services.AddTenantSqlConnectionFactory(new TenantSqlConnectionFactoryOptions());
+            services.AddTenantSqlConnectionFactory();
             services.AddSingleton<ITenantedWorkflowStoreFactory>(svc => new TenantedSqlWorkflowStoreFactory(
                 svc.GetRequiredService<IJsonSerializerSettingsProvider>(),
-                svc.GetRequiredService<ITenantSqlConnectionFactory>(),
-                WorkflowConnectionDefinition));
+                svc.GetRequiredService<ISqlConnectionFromDynamicConfiguration>(),
+                WorkflowConnectionKey));
 
             return services;
         }
@@ -55,13 +57,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
             }
 
-            var connectionDefinition = new SqlConnectionDefinition("workflow");
-
-            services.AddTenantSqlConnectionFactory(new TenantSqlConnectionFactoryOptions());
+            services.AddTenantSqlConnectionFactory();
             services.AddSingleton<ITenantedWorkflowInstanceStoreFactory>(svc => new TenantedSqlWorkflowInstanceStoreFactory(
                 svc.GetRequiredService<IJsonSerializerSettingsProvider>(),
-                svc.GetRequiredService<ITenantSqlConnectionFactory>(),
-                connectionDefinition));
+                svc.GetRequiredService<ISqlConnectionFromDynamicConfiguration>(),
+                WorkflowConnectionKey));
 
             return services;
         }

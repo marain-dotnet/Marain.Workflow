@@ -142,7 +142,7 @@ namespace Marain.Workflows
                 workflowEventData.PreviousState = item.StateId;
                 workflowEventData.PreviousStatus = item.Status;
 
-                this.logger.LogDebug($"Accepting trigger {trigger.Id} in instance {item.Id}", trigger, item);
+                this.logger.LogDebug("Accepting trigger {TriggerId} in instance {ItemId}", trigger.Id, item.Id);
 
                 WorkflowTransition transition = await this.AcceptTriggerAsync(item, trigger).ConfigureAwait(false);
 
@@ -151,7 +151,7 @@ namespace Marain.Workflows
                 workflowEventData.NewStatus = item.Status;
                 workflowEventData.NewContext = item.Context;
 
-                this.logger.LogDebug($"Accepted trigger {trigger.Id} in instance {item.Id}", trigger, item);
+                this.logger.LogDebug("Accepted trigger {TriggerId} in instance {ItemId}", trigger.Id, item.Id);
             }
             catch (WorkflowInstanceNotFoundException)
             {
@@ -159,7 +159,9 @@ namespace Marain.Workflows
                 // invalid workflow instance id.
                 this.logger.LogError(
                     new EventId(0),
-                    $"Unable to locate the specified instance {instanceId} for trigger {trigger.Id}");
+                    "Unable to locate the specified instance {InstanceId} for trigger {TriggerId}",
+                    instanceId,
+                    trigger.Id);
 
                 throw;
             }
@@ -168,7 +170,9 @@ namespace Marain.Workflows
                 this.logger.LogError(
                     new EventId(0),
                     ex,
-                    $"Error accepting trigger {trigger.Id} in instance {item?.Id}");
+                    "Error accepting trigger {TriggerId} in instance {ItemId}",
+                    trigger.Id,
+                    item?.Id);
 
                 if (item != null)
                 {
@@ -393,10 +397,11 @@ namespace Marain.Workflows
             if (!exitAllowed)
             {
                 this.logger.LogDebug(
-                    $"Exit not permitted from state {state.Id} [{state.DisplayName}] in instance {instance.Id} with trigger {trigger.Id}",
-                    state,
-                    instance,
-                    trigger);
+                    "Exit not permitted from state {StateId} [{StateDisplayName}] in instance {InstanceId} with trigger {TriggerId}",
+                    state.Id,
+                    state.DisplayName,
+                    instance.Id,
+                    trigger.Id);
                 instance.Status = WorkflowStatus.Waiting;
                 return null;
             }
@@ -405,10 +410,11 @@ namespace Marain.Workflows
             if (transition == null)
             {
                 this.logger.LogDebug(
-                    $"No transition found from state {state.Id} [{state.DisplayName}] in instance {instance.Id} with trigger {trigger.Id}",
-                    state,
-                    instance,
-                    trigger);
+                    "No transition found from state {StateId} [{StateDisplayName}] in instance {InstanceId} with trigger {TriggerId}",
+                    state.Id,
+                    state.DisplayName,
+                    instance.Id,
+                    trigger.Id);
                 instance.Status = WorkflowStatus.Waiting;
                 return transition;
             }
@@ -416,47 +422,65 @@ namespace Marain.Workflows
             WorkflowState targetState = workflow.GetState(transition.TargetStateId);
 
             this.logger.LogDebug(
-                $"Transition {transition.Id}  [{transition.DisplayName}] found from state {state.Id} [{state.DisplayName}] to state {targetState.Id} [{targetState.DisplayName}] in instance {instance.Id} with trigger {trigger.Id}",
-                state,
-                instance,
-                trigger);
+                "Transition {TransitionId}  [{TransitionDisplayName}] found from state {StateId} [{StateDisplayName}] to state {TargetStateId} [{TargetStateDisplayName}] in instance {InstanceId} with trigger {TriggerId}",
+                transition.Id,
+                transition.DisplayName,
+                state.Id,
+                state.DisplayName,
+                targetState.Id,
+                targetState.DisplayName,
+                instance.Id,
+                trigger.Id);
 
             bool entryAllowed = await this.CheckConditionsAsync(targetState.EntryConditions, instance, trigger)
                                    .ConfigureAwait(false);
             if (!entryAllowed)
             {
                 this.logger.LogDebug(
-                    $"Entry not permitted into state {targetState.Id} [{targetState.DisplayName}] in instance {instance.Id} with trigger {trigger.Id}",
-                    state,
-                    instance,
-                    trigger);
+                    "Entry not permitted into state {TargetStateId} [{TargetStateDisplayName}] in instance {InstanceId} with trigger {TriggerId}",
+                    targetState.Id,
+                    targetState.DisplayName,
+                    instance.Id,
+                    trigger.Id);
                 instance.Status = WorkflowStatus.Waiting;
                 return transition;
             }
 
             this.logger.LogDebug(
-                $"Executing exit actions on transition {transition.Id} from state {state.Id} [{state.DisplayName}] to state {targetState.Id} [{targetState.DisplayName}] in instance {instance.Id} with trigger {trigger.Id}",
-                state,
-                instance,
-                trigger);
+                "Executing exit actions on transition {TransitionId} from state {StateId} [{StateDisplayName}] to state {TargetStateId} [{TargetStateDisplayName}] in instance {InstanceId} with trigger {TriggerId}",
+                transition.Id,
+                state.Id,
+                state.DisplayName,
+                targetState.Id,
+                targetState.DisplayName,
+                instance.Id,
+                trigger.Id);
 
             await this.ExecuteAsync(state.ExitActions, instance, trigger).ConfigureAwait(false);
 
             this.logger.LogDebug(
-                $"Executing transition actions on transition {transition.Id} from state {state.Id} [{state.DisplayName}] to state {targetState.Id} [{targetState.DisplayName}] in instance {instance.Id} with trigger {trigger.Id}",
-                state,
-                instance,
-                trigger);
+                "Executing transition actions on transition {TransitionId} from state {StateId} [{StateDisplayName}] to state {TargetStateId} [{TargetStateDisplayName}] in instance {InstanceId} with trigger {TriggerId}",
+                transition.Id,
+                state.Id,
+                state.DisplayName,
+                targetState.Id,
+                targetState.DisplayName,
+                instance.Id,
+                trigger.Id);
             await this.ExecuteAsync(transition.Actions, instance, trigger).ConfigureAwait(false);
 
             instance.Status = targetState.Transitions.Count == 0 ? WorkflowStatus.Complete : WorkflowStatus.Waiting;
             instance.SetState(targetState);
 
             this.logger.LogDebug(
-                $"Executing entry actions on transition {transition.Id} from state {state.Id} [{state.DisplayName}] to state {targetState.Id} [{targetState.DisplayName}] in instance {instance.Id} with trigger {trigger.Id}",
-                state,
-                instance,
-                trigger);
+                "Executing entry actions on transition {TransitionId} from state {StateId} [{StateDisplayName}] to state {TargetStateId} [{TargetStateDisplayName}] in instance {InstanceId} with trigger {TriggerId}",
+                transition.Id,
+                state.Id,
+                state.DisplayName,
+                targetState.Id,
+                targetState.DisplayName,
+                instance.Id,
+                trigger.Id);
             await this.ExecuteAsync(targetState.EntryActions, instance, trigger).ConfigureAwait(false);
 
             // Then update the instance status, set the new state
@@ -512,14 +536,14 @@ namespace Marain.Workflows
         {
             foreach (WorkflowTransition transition in transitions)
             {
-                this.logger.LogDebug($"Considering transition {transition.Id} [{transition.DisplayName}]");
+                this.logger.LogDebug("Considering transition {TransitionId} [{TransitionDisplayName}]", transition.Id, transition.DisplayName);
                 if (await this.CheckConditionsAsync(transition.Conditions, instance, trigger).ConfigureAwait(false))
                 {
-                    this.logger.LogDebug($"Accepted transition {transition.Id} [{transition.DisplayName}]");
+                    this.logger.LogDebug("Accepted transition {TransitionId} [{TransitionDisplayName}]", transition.Id, transition.DisplayName);
                     return transition;
                 }
 
-                this.logger.LogDebug($"Rejected transition {transition.Id} [{transition.DisplayName}]");
+                this.logger.LogDebug("Rejected transition {TransitionId} [{TransitionDisplayName}]", transition.Id, transition.DisplayName);
             }
 
             return null;
@@ -550,15 +574,16 @@ namespace Marain.Workflows
         {
             foreach (IWorkflowCondition condition in conditions)
             {
-                this.logger.LogDebug($"Evaluating condition {condition.Id} {condition.GetType().Name}");
+                string conditionName = condition.GetType().Name;
+                this.logger.LogDebug("Evaluating condition {ConditionId} {ConditionName}", condition.Id, conditionName);
 
                 if (!await condition.EvaluateAsync(instance, trigger).ConfigureAwait(false))
                 {
-                    this.logger.LogDebug($"Condition false: {condition.Id} {condition.GetType().Name}");
+                    this.logger.LogDebug("Condition false: {ConditionId} {ConditionName}", condition.Id, conditionName);
                     return false;
                 }
 
-                this.logger.LogDebug($"Condition true: {condition.Id} {condition.GetType().Name}");
+                this.logger.LogDebug("Condition true: {ConditionId} {ConditionName}", condition.Id, conditionName);
             }
 
             return true;
@@ -599,9 +624,10 @@ namespace Marain.Workflows
             if (!entryAllowed)
             {
                 this.logger.LogDebug(
-                    $"Initialization not permitted to state {workflowState.Id} [{workflowState.DisplayName}] in instance {instance.Id}",
-                    workflowState,
-                    this);
+                    "Initialization not permitted to state {WorkflowStateId} [{WorkflowStateDisplayName}] in instance {InstanceId}",
+                    workflowState.Id,
+                    workflowState.DisplayName,
+                    instance.Id);
                 instance.Status = WorkflowStatus.Faulted;
 
                 return;
@@ -611,9 +637,9 @@ namespace Marain.Workflows
             instance.Status = WorkflowStatus.Waiting;
 
             this.logger.LogDebug(
-                $"Executing entry actions on state {workflowState.Id} [{workflowState.DisplayName}]",
-                workflowState,
-                this);
+                "Executing entry actions on state {WorkflowStateId} [{WorkflowStateDisplayName}]",
+                workflowState.Id,
+                workflowState.DisplayName);
 
             await this.ExecuteAsync(workflowState.EntryActions, instance, null).ConfigureAwait(false);
         }

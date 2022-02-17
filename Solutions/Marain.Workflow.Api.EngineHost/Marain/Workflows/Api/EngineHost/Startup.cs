@@ -6,25 +6,27 @@
 
 namespace Marain.Workflows.Api.EngineHost
 {
-    using Microsoft.Azure.WebJobs;
-    using Microsoft.Azure.WebJobs.Hosting;
+    using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Startup code for the Function.
     /// </summary>
-    public class Startup : IWebJobsStartup
+    public class Startup : FunctionsStartup
     {
         /// <inheritdoc/>
-        public void Configure(IWebJobsBuilder builder)
+        public override void Configure(IFunctionsHostBuilder builder)
         {
+            IConfiguration configuration = builder.GetContext().Configuration;
             IServiceCollection services = builder.Services;
 
             services.AddApplicationInsightsInstrumentationTelemetry();
             services.AddLogging();
 
-            services.AddTenantedWorkflowEngineApi(config => config.Documents.AddSwaggerEndpoint());
+            services.AddTenantedWorkflowEngineApiWithOpenApiActionResultHosting(
+                configuration,
+                config => config.Documents.AddSwaggerEndpoint());
         }
     }
 }

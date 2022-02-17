@@ -68,7 +68,7 @@ namespace Marain.Workflows
         /// </remarks>
         public IList<IWorkflowAction> Actions
         {
-            get => this.actions ?? (this.actions = new List<IWorkflowAction>());
+            get => this.actions ??= new List<IWorkflowAction>();
 
             set => this.actions = value;
         }
@@ -79,7 +79,7 @@ namespace Marain.Workflows
         /// </summary>
         public IList<IWorkflowCondition> Conditions
         {
-            get => this.conditions ?? (this.conditions = new List<IWorkflowCondition>());
+            get => this.conditions ??= new List<IWorkflowCondition>();
 
             set => this.conditions = value;
         }

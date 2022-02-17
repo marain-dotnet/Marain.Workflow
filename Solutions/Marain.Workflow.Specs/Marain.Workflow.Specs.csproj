@@ -2,39 +2,39 @@
   <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <RootNamespace>Marain.Workflows.Specs</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <NoWarn>RCS1029; CS1591; SA1633</NoWarn>
+  <PropertyGroup>
+    <!--
+    SA1600, CS1591 - Mandatory XML doc comments
+    Not necessary for test projects
+    CA1822 - mark as static
+    Test frameworks want test methods to be non-static
+    -->
+    <NoWarn>$(NoWarn);CS1591;CA1822;SA1600</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <NoWarn>RCS1029; CS1591; SA1633</NoWarn>
+  <PropertyGroup>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode Condition="$(ContinuousIntegrationBuild) == 'true'">true</RestoreLockedMode>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Azure.Cosmos.Tenancy" Version="2.0.7" />
-    <PackageReference Include="Corvus.Leasing.InMemory" Version="1.2.6" />
-    <PackageReference Include="Corvus.Identity.ManagedServiceIdentity.ClientAuthentication" Version="1.0.7" />
-    <PackageReference Include="Corvus.Tenancy.Storage.Azure.Blob" Version="2.0.7" />
-    <PackageReference Include="Corvus.Testing.SpecFlow.NUnit" Version="1.4.2" />
-    <PackageReference Include="Endjin.RecommendedPractices" Version="1.2.0">
+    <PackageReference Include="Corvus.Leasing.InMemory" Version="1.2.9" />
+    <PackageReference Include="Corvus.Testing.SpecFlow.NUnit" Version="1.4.8" />
+    <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.16" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.16" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.16" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.16" />
-    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="150.5084.2" />
-    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.46367.54" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="[6.*,)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="[6.*,)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="[6.*,)" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="[6.*,)" />
+    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="160.5400.1" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.46521.71" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="Marain.Services.Tenancy.Testing" Version="2.3.3" />
   </ItemGroup>

@@ -6,7 +6,7 @@ namespace Marain.Workflows.Specs.TestObjects
 {
     using System;
     using Corvus.Extensions.Json;
-    using Corvus.Identity.ManagedServiceIdentity.ClientAuthentication;
+    using Corvus.Identity.ClientAuthentication;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -26,7 +26,7 @@ namespace Marain.Workflows.Specs.TestObjects
         public static Workflow Create(
             string id,
             string externalServiceUrl,
-            IServiceIdentityTokenSource serviceIdentityTokenSource,
+            IServiceIdentityAccessTokenSource serviceIdentityTokenSource,
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             ILogger<InvokeExternalServiceAction> externalServiceActionLogger)
         {
