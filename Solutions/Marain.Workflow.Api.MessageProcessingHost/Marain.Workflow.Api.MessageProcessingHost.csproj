@@ -27,7 +27,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Marain.Operations.ControlClient" Version="2.0.0" />
+    <PackageReference Include="Marain.Operations.ControlClient" Version="2.0.1" />
     <PackageReference Include="Marain.Services.Tenancy" Version="2.3.3" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.24.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
