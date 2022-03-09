@@ -22,8 +22,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Marain.Tenancy.ClientTenantProvider" Version="2.0.4" />
-    <PackageReference Include="Menes.Hosting.AspNetCore" Version="3.1.2" />
+    <PackageReference Include="Marain.Tenancy.ClientTenantProvider" Version="2.0.5" />
+    <PackageReference Include="Menes.Hosting.AspNetCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="[6.*,)" />
   </ItemGroup>
 
@@ -31,13 +31,6 @@
     <ProjectReference Include="..\Marain.Workflow.Api.Services\Marain.Workflow.Api.Services.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureCosmos\Marain.Workflow.Tenancy.AzureCosmos.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureStorage\Marain.Workflow.Tenancy.AzureStorage.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="1.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
 </Project>

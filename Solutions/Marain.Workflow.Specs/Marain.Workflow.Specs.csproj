@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Corvus.Leasing.InMemory" Version="1.2.9" />
-    <PackageReference Include="Corvus.Testing.SpecFlow.NUnit" Version="1.4.8" />
+    <PackageReference Include="Corvus.Testing.SpecFlow.NUnit" Version="1.4.10" />
     <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -34,8 +34,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="[6.*,)" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="[6.*,)" />
     <PackageReference Include="Microsoft.SqlServer.DACFx" Version="160.5400.1" />
-    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.46521.71" />
-    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.47008.0" />
     <PackageReference Include="Marain.Services.Tenancy.Testing" Version="2.3.3" />
   </ItemGroup>
 

@@ -20,12 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Storage.Azure.Cosmos.Tenancy" Version="3.1.0" />
+    <PackageReference Include="Corvus.Storage.Azure.Cosmos.Tenancy" Version="3.2.0" />
     <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.24.0" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.25.0" />
   </ItemGroup>
 
 </Project>
