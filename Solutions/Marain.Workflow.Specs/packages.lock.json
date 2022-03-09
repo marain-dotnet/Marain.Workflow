@@ -120,18 +120,26 @@
       },
       "Microsoft.SqlServer.SqlManagementObjects": {
         "type": "Direct",
-        "requested": "[161.46521.71, )",
-        "resolved": "161.46521.71",
-        "contentHash": "fNymkydwKnvccJrs53JaKz2nHk6ErzXfC9sMSI2Xr0Huo0h9VZQbo1nCXqFCcjF7FM7ACMzSNwPdVYXMJOaxiA==",
+        "requested": "[161.47008.0, )",
+        "resolved": "161.47008.0",
+        "contentHash": "+zWV8GNbKuWVKCbPj48jNKjuFsAZuZX7vObhr0J/TFz7ri9h3Lxm1uSPZZk58yVqNLaVpV6fptZUBQcV5Oj3Xg==",
         "dependencies": {
+          "Azure.Core": "1.20.0",
+          "Azure.Identity": "1.5.0",
           "Microsoft.Data.SqlClient": "3.0.0",
+          "Microsoft.Identity.Client": "4.35.0",
           "Microsoft.SqlServer.Assessment": "1.0.305",
           "NewtonSoft.Json": "11.0.1",
+          "System.Buffers": "4.5.1",
           "System.Data.OleDb": "4.7.0",
+          "System.Diagnostics.DiagnosticSource": "4.7.0",
           "System.Management": "4.7.0",
+          "System.Memory": "4.5.4",
+          "System.Runtime.CompilerServices.Unsafe": "5.0.0",
           "System.Security.Cryptography.ProtectedData": "4.7.0",
           "System.Security.Permissions": "4.7.0",
-          "System.Security.Principal.Windows": "4.7.0"
+          "System.Security.Principal.Windows": "4.7.0",
+          "System.ValueTuple": "4.5.0"
         }
       },
       "Roslynator.Analyzers": {
@@ -274,20 +282,20 @@
       },
       "Corvus.CosmosClient.Extensions": {
         "type": "Transitive",
-        "resolved": "4.0.0",
-        "contentHash": "N3uB4Vuwz5i0biT7Vu+6vIK+U7UXn6yP6DDh+dqGtE3XYgV4ix8cLppVj778pkVUuY9d8QwkLt/snhtkby1A9A==",
+        "resolved": "4.0.2",
+        "contentHash": "DTalVuXQNz/6jyrV+a7w3i5DfSykXWMJGFeE6NUrnmE4BckFYPK5/XpUX2vLIBMfeyVfcu5pnf2T33fasUL9/g==",
         "dependencies": {
           "Corvus.Retry": "1.0.2",
-          "Microsoft.Azure.Cosmos": "3.24.0",
+          "Microsoft.Azure.Cosmos": "3.25.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0"
         }
       },
       "Corvus.CosmosClient.NewtonSoft.Json.Extensions": {
         "type": "Transitive",
-        "resolved": "4.0.0",
-        "contentHash": "ARMDdOotYDUDjFkALDgY4B3pB/ZsSG8C5ns7yWI80tlWzk0cchkPRWBlsflg2cMTCGuD31+HrVKwQkP2564ZHA==",
+        "resolved": "4.0.2",
+        "contentHash": "q+ZIS3bNb0jDNuDCFFU1zW4Up9mYU+aGnQ2LTfeTDjoyNHtqtgARAIMWcZAO0non+lxdZPHOYx9AMIxd04SeDA==",
         "dependencies": {
-          "Corvus.CosmosClient.Extensions": "4.0.0",
+          "Corvus.CosmosClient.Extensions": "4.0.2",
           "Corvus.Extensions.Newtonsoft.Json": "2.0.6"
         }
       },
@@ -485,10 +493,10 @@
       },
       "Microsoft.Azure.Cosmos": {
         "type": "Transitive",
-        "resolved": "3.24.0",
-        "contentHash": "QpUe5ho6OzlXwgcJVgAmOR7t3XLC9RI4t8T96RZY61pSOIllPOJdp30L0LwA16tKcqi5r2KayEgWO/MS9fh/6A==",
+        "resolved": "3.25.0",
+        "contentHash": "Tg7AxiTY/OZvAIkHqc2QtKkOK2IuoNqLVBF9SIBkgsipvtETSSAfDCAf/8cXb4ibC9WQwcfRw825rFv2gb/Z7A==",
         "dependencies": {
-          "Azure.Core": "1.3.0",
+          "Azure.Core": "1.19.0",
           "Microsoft.Bcl.AsyncInterfaces": "1.0.0",
           "Microsoft.Bcl.HashCode": "1.1.0",
           "Newtonsoft.Json": "10.0.2",
@@ -497,7 +505,7 @@
           "System.Configuration.ConfigurationManager": "4.7.0",
           "System.Memory": "4.5.4",
           "System.Numerics.Vectors": "4.5.0",
-          "System.Runtime.CompilerServices.Unsafe": "4.5.3",
+          "System.Runtime.CompilerServices.Unsafe": "4.6.0",
           "System.Threading.Tasks.Extensions": "4.5.4",
           "System.ValueTuple": "4.5.0"
         }
@@ -883,8 +891,8 @@
       },
       "Microsoft.Identity.Client": {
         "type": "Transitive",
-        "resolved": "4.33.0",
-        "contentHash": "6ScMUJapsQff2lrtbyA13pPfySScJUCWTm/5Xtm5J1En48JbtXqDqZMfBPr2Yrq/OF2gVwtguOUXDkl+keXumg=="
+        "resolved": "4.35.0",
+        "contentHash": "oebkkKUlS8Z/gSBUVMGulaUerQGmD1qNr+5I5o9E2/bPC/jqYjVowGV9u7DRbdBfCc6oDoX9VajQwO+2Tl0SAA=="
       },
       "Microsoft.Identity.Client.Extensions.Msal": {
         "type": "Transitive",
@@ -2759,7 +2767,7 @@
         "dependencies": {
           "Corvus.Storage.Azure.Cosmos.Tenancy": "3.2.0",
           "Marain.Workflow.Abstractions": "1.0.0",
-          "Microsoft.Azure.Cosmos": "3.24.0"
+          "Microsoft.Azure.Cosmos": "3.25.0"
         }
       },
       "marain.workflow.storage.azurestorage": {
@@ -2787,7 +2795,7 @@
       "marain.workflow.tenancy.azurecosmos": {
         "type": "Project",
         "dependencies": {
-          "Corvus.CosmosClient.NewtonSoft.Json.Extensions": "4.0.0",
+          "Corvus.CosmosClient.NewtonSoft.Json.Extensions": "4.0.2",
           "Marain.Workflow.Storage.AzureCosmos": "1.0.0",
           "Marain.Workflow.Tenancy.Abstractions": "1.0.0"
         }

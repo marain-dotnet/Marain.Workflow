@@ -34,7 +34,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="[6.*,)" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="[6.*,)" />
     <PackageReference Include="Microsoft.SqlServer.DACFx" Version="160.5400.1" />
-    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.46521.71" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.47008.0" />
     <PackageReference Include="Marain.Services.Tenancy.Testing" Version="2.3.3" />
   </ItemGroup>
 
