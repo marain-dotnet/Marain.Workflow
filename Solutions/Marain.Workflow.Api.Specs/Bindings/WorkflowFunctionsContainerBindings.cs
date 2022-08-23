@@ -73,6 +73,9 @@ namespace Marain.Workflows.Api.Specs.Bindings
 
                     services.RegisterCoreWorkflowContentTypes();
 
+                    services.AddMarainTenantManagementForBlobStorage();
+                    services.AddMarainTenantManagementForCosmosDb();
+
                     services.AddAzureLeasing(svc =>
                     {
                         IConfiguration config = svc.GetRequiredService<IConfiguration>();

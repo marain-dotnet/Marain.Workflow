@@ -5,17 +5,22 @@
 namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Azure.Storage.Blobs;
 
-    using Corvus.Azure.Cosmos.Tenancy;
-    using Corvus.Azure.Storage.Tenancy;
+    using Corvus.Storage.Azure.BlobStorage;
+    using Corvus.Storage.Azure.Cosmos;
     using Corvus.Tenancy;
     using Corvus.Testing.AzureFunctions;
     using Corvus.Testing.AzureFunctions.SpecFlow;
     using Corvus.Testing.SpecFlow;
     using Marain.Services;
+    using Marain.TenantManagement.Configuration;
     using Marain.TenantManagement.EnrollmentConfiguration;
     using Marain.TenantManagement.Testing;
+
+    using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using TechTalk.SpecFlow;
@@ -26,9 +31,12 @@ namespace Marain.Workflows.Api.Specs.Bindings
     [Binding]
     public static class TransientTenantBindings
     {
+        public const string OperationsStoreContainerNameKey = "TransientTenantBindings:OperationsStoreContainerName";
+        private const string OperationsV1Id = "3633754ac4c9be44b55bfe791b1780f12429524fe7b6cc48a265a307407ec858";
+
         /// <summary>
-        /// Creates a new <see cref="ITenant"/> for the current feature, adding a test <see cref="CosmosConfiguration"/>
-        /// to the tenant data.
+        /// Creates a new <see cref="ITenant"/> for the current feature, adding test <see cref="CosmosContainerConfiguration"/>
+        /// and <see cref="BlobContainerConfiguration"/> entries to the tenant data.
         /// </summary>
         /// <param name="featureContext">The current <see cref="FeatureContext"/>.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -39,7 +47,8 @@ namespace Marain.Workflows.Api.Specs.Bindings
         [BeforeFeature("@useTransientTenant", Order = BindingSequence.TransientTenantSetup)]
         public static async Task SetupTransientTenant(FeatureContext featureContext)
         {
-            ITenantProvider tenantProvider = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<ITenantProvider>();
+            IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
+            ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
             var transientTenantManager = TransientTenantManager.GetInstance(featureContext);
             await transientTenantManager.EnsureInitialised().ConfigureAwait(false);
 
@@ -55,10 +64,26 @@ namespace Marain.Workflows.Api.Specs.Bindings
             // transient service.
             ITenant transientClientTenant = await transientTenantManager.CreateTransientClientTenantAsync().ConfigureAwait(false);
 
+            EnrollmentConfigurationEntry enrollmentConfiguration = CreateWorkflowConfig(featureContext);
+            var definitionsStoreConfig = (BlobStorageConfigurationItem)enrollmentConfiguration.ConfigurationItems[WorkflowAzureBlobTenancyPropertyKeys.Definitions];
+            var instancesStoreConfig = (CosmosConfigurationItem)enrollmentConfiguration.ConfigurationItems[WorkflowCosmosTenancyPropertyKeys.Instances];
+            var operationsStoreConfig = (BlobStorageConfigurationItem)enrollmentConfiguration.Dependencies[OperationsV1Id].ConfigurationItems["Marain:Operations:BlobContainerConfiguration:Operations"];
+            IBlobContainerSourceFromDynamicConfiguration blobContainerSource = serviceProvider.GetRequiredService<IBlobContainerSourceFromDynamicConfiguration>();
+            BlobContainerClient definitionsContainer = await blobContainerSource.GetStorageContextAsync(definitionsStoreConfig.Configuration);
+            ICosmosContainerSourceFromDynamicConfiguration cosmosContainerSource = serviceProvider.GetRequiredService<ICosmosContainerSourceFromDynamicConfiguration>();
+            BlobContainerClient operationsContainer = await blobContainerSource.GetStorageContextAsync(operationsStoreConfig.Configuration);
+            Container instancesContainer = await cosmosContainerSource.GetStorageContextAsync(instancesStoreConfig.Configuration);
+            await definitionsContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
+            await instancesContainer.Database.CreateContainerIfNotExistsAsync(
+                instancesContainer.Id,
+                TenantedCosmosWorkflowStoreServiceCollectionExtensions.WorkflowInstanceStorePartitionKeyPath).ConfigureAwait(false);
+            featureContext[OperationsStoreContainerNameKey] = operationsStoreConfig.Configuration;
+            await operationsContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
+
             await transientTenantManager.AddEnrollmentAsync(
                 transientClientTenant.Id,
                 transientServiceTenant.Id,
-                GetWorkflowConfig(featureContext)).ConfigureAwait(false);
+                enrollmentConfiguration).ConfigureAwait(false);
 
             // TODO: Temporary hack to work around the fact that the transient tenant manager no longer holds the latest
             // version of the tenants it's tracking; see https://github.com/marain-dotnet/Marain.TenantManagement/issues/28
@@ -111,8 +136,13 @@ namespace Marain.Workflows.Api.Specs.Bindings
                 configuration.ServiceDisplayName);
         }
 
-        private static EnrollmentConfigurationItem[] GetWorkflowConfig(FeatureContext featureContext)
+        private static EnrollmentConfigurationEntry CreateWorkflowConfig(FeatureContext featureContext)
         {
+            // We need each test run to have a distinct container. We want these test-generated
+            // containers to be easily recognized in storage accounts, so we don't just want to use
+            // GUIDs.
+            string testRunId = DateTime.Now.ToString("yyyy-MM-dd-hhmmssfff");
+
             IConfiguration configuration = ContainerBindings
                 .GetServiceProvider(featureContext)
                 .GetRequiredService<IConfiguration>();
@@ -123,34 +153,59 @@ namespace Marain.Workflows.Api.Specs.Bindings
             // those older types.
 
             // Load the config items we need:
-            CosmosConfiguration cosmosConfiguration =
-                configuration.GetSection("TestCosmosConfiguration").Get<CosmosConfiguration>()
-                ?? new CosmosConfiguration();
+            CosmosContainerConfiguration cosmosConfiguration =
+                configuration.GetSection("TestCosmosConfiguration").Get<CosmosContainerConfiguration>()
+                ?? new CosmosContainerConfiguration();
 
-            cosmosConfiguration.DatabaseName = "endjinspecssharedthroughput";
+            cosmosConfiguration.Database = "endjinspecssharedthroughput";
+            cosmosConfiguration.Container = $"specs-workflow-instances-{testRunId}";
 
-            BlobStorageConfiguration storageConfiguration =
-                configuration.GetSection("TestBlobStorageConfiguration").Get<BlobStorageConfiguration>()
-                ?? new BlobStorageConfiguration();
+            BlobContainerConfiguration definitionsStorageConfiguration =
+                configuration.GetSection("TestBlobStorageConfiguration").Get<BlobContainerConfiguration>()
+                ?? new BlobContainerConfiguration();
+            definitionsStorageConfiguration.Container = $"specs-workflow-definitions-{testRunId}";
 
-            return new EnrollmentConfigurationItem[]
-            {
-                new EnrollmentBlobStorageConfigurationItem
+            BlobContainerConfiguration operationsStorageConfiguration =
+                configuration.GetSection("TestBlobStorageConfiguration").Get<BlobContainerConfiguration>()
+                ?? new BlobContainerConfiguration();
+            operationsStorageConfiguration.Container = $"specs-workflow-operations-{testRunId}";
+
+            return new EnrollmentConfigurationEntry(
+                new Dictionary<string, ConfigurationItem>
                 {
-                    Key = "workflowStore",
-                    Configuration = storageConfiguration,
+                    {
+                        WorkflowAzureBlobTenancyPropertyKeys.Definitions,
+                        new BlobStorageConfigurationItem
+                        {
+                            Configuration = definitionsStorageConfiguration,
+                        }
+                    },
+                    {
+                        WorkflowCosmosTenancyPropertyKeys.Instances,
+                        new CosmosConfigurationItem
+                        {
+                            Configuration = cosmosConfiguration,
+                        }
+                    },
                 },
-                new EnrollmentCosmosConfigurationItem
+                new Dictionary<string, EnrollmentConfigurationEntry>
                 {
-                    Key = "workflowInstanceStore",
-                    Configuration = cosmosConfiguration,
-                },
-                new EnrollmentBlobStorageConfigurationItem
-                {
-                    Key = "operationsStore",
-                    Configuration = storageConfiguration,
-                },
-            };
+                    {
+                        OperationsV1Id,
+                        new EnrollmentConfigurationEntry(
+                            new Dictionary<string, ConfigurationItem>
+                            {
+                                {
+                                    "Marain:Operations:BlobContainerConfiguration:Operations",
+                                    new BlobStorageConfigurationItem
+                                    {
+                                        Configuration = definitionsStorageConfiguration,
+                                    }
+                                },
+                            },
+                            null)
+                    },
+                });
         }
     }
 }
