@@ -11,7 +11,7 @@ resources:
     - repository: recommended_practices
       type: github
       name: endjin/Endjin.RecommendedPractices.AzureDevopsPipelines.GitHub
-      endpoint: marain-github
+      endpoint: marain-dotnet-github
 
 jobs:
 - template: templates/build.and.release.scripted.yml@recommended_practices
