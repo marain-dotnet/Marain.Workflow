@@ -18,7 +18,7 @@
   <ItemGroup>
     <PackageReference Include="Corvus.ContentHandling" Version="2.0.11" />
     <PackageReference Include="Corvus.Extensions.Newtonsoft.Json" Version="2.0.6" />
-    <PackageReference Include="Corvus.Identity.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Corvus.Identity.Abstractions" Version="3.1.0" />
     <PackageReference Include="Corvus.Leasing.Abstractions" Version="1.2.9" />
     <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.1">
       <PrivateAssets>all</PrivateAssets>
