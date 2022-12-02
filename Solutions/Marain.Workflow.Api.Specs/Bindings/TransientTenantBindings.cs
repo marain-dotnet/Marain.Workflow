@@ -65,9 +65,9 @@ namespace Marain.Workflows.Api.Specs.Bindings
             ITenant transientClientTenant = await transientTenantManager.CreateTransientClientTenantAsync().ConfigureAwait(false);
 
             EnrollmentConfigurationEntry enrollmentConfiguration = CreateWorkflowConfig(featureContext);
-            var definitionsStoreConfig = (BlobStorageConfigurationItem)enrollmentConfiguration.ConfigurationItems[WorkflowAzureBlobTenancyPropertyKeys.Definitions];
-            var instancesStoreConfig = (CosmosConfigurationItem)enrollmentConfiguration.ConfigurationItems[WorkflowCosmosTenancyPropertyKeys.Instances];
-            var operationsStoreConfig = (BlobStorageConfigurationItem)enrollmentConfiguration.Dependencies[OperationsV1Id].ConfigurationItems["Marain:Operations:BlobContainerConfiguration:Operations"];
+            var definitionsStoreConfig = (BlobContainerConfigurationItem)enrollmentConfiguration.ConfigurationItems[WorkflowAzureBlobTenancyPropertyKeys.Definitions];
+            var instancesStoreConfig = (CosmosContainerConfigurationItem)enrollmentConfiguration.ConfigurationItems[WorkflowCosmosTenancyPropertyKeys.Instances];
+            var operationsStoreConfig = (BlobContainerConfigurationItem)enrollmentConfiguration.Dependencies[OperationsV1Id].ConfigurationItems["Marain:Operations:BlobContainerConfiguration:Operations"];
             IBlobContainerSourceFromDynamicConfiguration blobContainerSource = serviceProvider.GetRequiredService<IBlobContainerSourceFromDynamicConfiguration>();
             BlobContainerClient definitionsContainer = await blobContainerSource.GetStorageContextAsync(definitionsStoreConfig.Configuration);
             ICosmosContainerSourceFromDynamicConfiguration cosmosContainerSource = serviceProvider.GetRequiredService<ICosmosContainerSourceFromDynamicConfiguration>();
@@ -175,14 +175,14 @@ namespace Marain.Workflows.Api.Specs.Bindings
                 {
                     {
                         WorkflowAzureBlobTenancyPropertyKeys.Definitions,
-                        new BlobStorageConfigurationItem
+                        new BlobContainerConfigurationItem
                         {
                             Configuration = definitionsStorageConfiguration,
                         }
                     },
                     {
                         WorkflowCosmosTenancyPropertyKeys.Instances,
-                        new CosmosConfigurationItem
+                        new CosmosContainerConfigurationItem
                         {
                             Configuration = cosmosConfiguration,
                         }
@@ -197,7 +197,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
                             {
                                 {
                                     "Marain:Operations:BlobContainerConfiguration:Operations",
-                                    new BlobStorageConfigurationItem
+                                    new BlobContainerConfigurationItem
                                     {
                                         Configuration = definitionsStorageConfiguration,
                                     }
