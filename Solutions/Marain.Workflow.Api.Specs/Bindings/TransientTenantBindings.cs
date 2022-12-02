@@ -147,11 +147,6 @@ namespace Marain.Workflows.Api.Specs.Bindings
                 .GetServiceProvider(featureContext)
                 .GetRequiredService<IConfiguration>();
 
-            // Note: this next part is using configuration types from the old (v2) Corvus.Tenancy
-            // libraries. Unfortunately, this is currently unavoidable because the current version
-            // of Marain.TenantManagement.Abstractions defines enrollment mechanism in terms of
-            // those older types.
-
             // Load the config items we need:
             CosmosContainerConfiguration cosmosConfiguration =
                 configuration.GetSection("TestCosmosConfiguration").Get<CosmosContainerConfiguration>()

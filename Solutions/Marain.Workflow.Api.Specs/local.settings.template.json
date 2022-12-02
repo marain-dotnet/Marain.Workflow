@@ -25,8 +25,8 @@
   // CosmosDb configuration for testing.
   // Remove these to use the local storage emulator.
   "TestCosmosConfiguration:AccountUri": "https://endjintestsql.documents.azure.com/",
-  "TestCosmosConfigurationAccessKeyInKeyVault:SecretName": "endjintestsql",
-  "TestCosmosConfigurationAccessKeyInKeyVault:VaultName": "endjintest"
+  "TestCosmosConfiguration:AccessKeyInKeyVault:SecretName": "endjintestsql",
+  "TestCosmosConfiguration:AccessKeyInKeyVault:VaultName": "endjintest"
 
   // If any of the TenancyClient, Operations, TestBlobStorageConfiguration or TestCosmosConfguration are set to point at
   // resources in Azure, this local service will need to authenticate. And for that to work, you won't be able to use the

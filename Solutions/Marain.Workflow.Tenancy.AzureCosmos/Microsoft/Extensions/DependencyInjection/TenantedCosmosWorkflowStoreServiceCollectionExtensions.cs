@@ -7,7 +7,6 @@ namespace Microsoft.Extensions.DependencyInjection
     using System.Linq;
 
     using Corvus.CosmosClient;
-    using Corvus.Extensions.Json;
     using Corvus.Storage.Azure.Cosmos.Tenancy;
 
     using Marain.Workflows;
