@@ -181,7 +181,7 @@ namespace Marain.Workflows.Specs.Steps
             BlobContainerClient container = await containerFactory.GetBlobContainerClientFromTenantAsync(
                 tenantProvider.Root,
                 "StorageConfiguration__workflowdefinitions",
-                "Workflow_BlobStorage_Definitions").ConfigureAwait(false);
+                WorkflowAzureBlobTenancyPropertyKeys.Definitions).ConfigureAwait(false);
 
             return container.GetBlobClient(blobId);
         }

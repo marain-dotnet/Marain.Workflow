@@ -6,22 +6,19 @@
   // If using a real Cosmos account, provide the details using these settings. To use the emulator, omit the settings
   // completely.
   "TestCosmosConfiguration:AccountUri": "https://endjintestsql.documents.azure.com/",
-  "TestCosmosConfiguration:AccountKeySecretName": "endjintestsql",
-  "TestCosmosConfiguration:KeyVaultName": "endjintest",
-  "TestCosmosConfiguration:DisableTenantIdPrefix": "true",
+  "TestCosmosConfiguration:AccessKeyInKeyVault:VaultName": "endjintest",
+  "TestCosmosConfiguration:AccessKeyInKeyVault:SecretName": "endjintestsql",
 
   // If using a real SQL database, provide the details using these settings. To use the emulator, omit the settings
   // completely.
-  "TestSqlConfiguration:Database": "endjintestsql",
-  "TestSqlConfiguration:ConnectionStringSecretName": "endjintestazuresql",
-  "TestSqlConfiguration:KeyVaultName": "endjintest",
+  "TestSqlConfiguration:ConnectionStringInKeyVault:VaultName": "endjintest",
+  "TestSqlConfiguration:ConnectionStringInKeyVault:SecretName": "endjintestazuresql",
 
   // If using a real storage account, provide the details using these settings. To use the emulator, omit the settings
   // completely.
   "TestStorageConfiguration:AccountName": "endteststorage",
-  "TestStorageConfiguration:Container": "workflow",
-  "TestStorageConfiguration:KeyVaultName": "endjintest",
-  "TestStorageConfiguration:AccountKeySecretName": "endteststorage"
+  "TestStorageConfiguration:AccessKeyInKeyVault:VaultName": "endjintest",
+  "TestStorageConfiguration:AccessKeyInKeyVault:SecretName": "endteststorage"
 
   // If using a real Cosmos or Sql configuration that requires KeyVault access, this local service will need to authenticate.
   // And for that to work, you won't be able to use the normal az cli-based AzureServicesAuthConnectionString

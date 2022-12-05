@@ -64,11 +64,10 @@ namespace Marain.Workflows
         public async Task<IWorkflowInstanceStore> GetWorkflowInstanceStoreForTenantAsync(ITenant tenant)
         {
             string v2Key = $"StorageConfiguration__{this.logicalDatabaseName}__{this.logicalInstanceContainerName}";
-            const string v3Key = "Workflow_CosmosStorage_Instance";
             Container container = await this.containerFactory.GetContainerForTenantAsync(
                 tenant,
                 v2Key,
-                v3Key,
+                WorkflowCosmosTenancyPropertyKeys.Instances,
                 containerName: this.logicalInstanceContainerName,
                 partitionKeyPath: this.instancePartitionKeyPath,
                 cosmosClientOptions: this.clientOptions).ConfigureAwait(false);

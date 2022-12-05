@@ -9,6 +9,9 @@ namespace Marain.Workflows.Specs.Bindings
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Azure.Storage.Blobs;
+
+    using Corvus.Storage.Azure.BlobStorage;
     using Corvus.Storage.Azure.BlobStorage.Tenancy;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
@@ -39,9 +42,15 @@ namespace Marain.Workflows.Specs.Bindings
         /// Note that this sets up a resource in Azure and will incur cost. Ensure the corresponding tear down operation
         /// is always run, or verify manually after a test run.
         /// </remarks>
+        /// <returns>A <see cref="Task"/> indicating when setup completes.</returns>
         [BeforeFeature("@setupTenantedBlobStorageContainers", Order = ContainerBeforeFeatureOrder.ServiceProviderAvailable)]
-        public static void SetupBlobStorageRepository(FeatureContext featureContext)
+        public static async Task SetupBlobStorageRepository(FeatureContext featureContext)
         {
+            // We need each test run to have a distinct container. We want these test-generated
+            // containers to be easily recognized in storage accounts, so we don't just want to use
+            // GUIDs.
+            string testRunId = DateTime.Now.ToString("yyyy-MM-dd-hhmmssfff");
+
             IServiceProvider serviceProvider = ContainerBindings.GetServiceProvider(featureContext);
             IBlobContainerSourceWithTenantLegacyTransition factory = serviceProvider.GetRequiredService<IBlobContainerSourceWithTenantLegacyTransition>();
             ITenantProvider tenantProvider = serviceProvider.GetRequiredService<ITenantProvider>();
@@ -49,17 +58,24 @@ namespace Marain.Workflows.Specs.Bindings
 
             ITenant rootTenant = tenantProvider.Root;
 
-            LegacyV2BlobStorageConfiguration storageConfig =
-                configuration.GetSection("TestStorageConfiguration").Get<LegacyV2BlobStorageConfiguration>()
-                    ?? new LegacyV2BlobStorageConfiguration();
+            BlobContainerConfiguration storageConfig =
+                configuration.GetSection("TestStorageConfiguration").Get<BlobContainerConfiguration>()
+                    ?? new BlobContainerConfiguration();
 
             // Generate a container name just for this test, otherwise you can end up with collisions
             // on subsequent tests runs while containers are still being deleted.
-            storageConfig.Container = Guid.NewGuid().ToString();
+            storageConfig.Container = $"specs-workflow-definitions-{testRunId}";
 
             tenantProvider.Root.UpdateProperties(data => data.Append(new KeyValuePair<string, object>(
-                "StorageConfiguration__workflowdefinitions",
+                WorkflowAzureBlobTenancyPropertyKeys.Definitions,
                 storageConfig)));
+
+            BlobContainerClient container = await factory.GetBlobContainerClientFromTenantAsync(
+                tenantProvider.Root,
+                "NotUsed",
+                WorkflowAzureBlobTenancyPropertyKeys.Definitions)
+                .ConfigureAwait(false);
+            await container.CreateIfNotExistsAsync().ConfigureAwait(false);
         }
 
         /// <summary>

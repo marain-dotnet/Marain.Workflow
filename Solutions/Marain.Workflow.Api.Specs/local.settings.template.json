@@ -16,8 +16,8 @@
   // Blob storage configuration for Operations and workflow definitions during testing.
   // Remove this to use local storage emulator.
   "TestBlobStorageConfiguration:AccountName": "endteststorage",
-  "TestBlobStorageConfiguration:AccountKeySecretName": "endteststorage",
-  "TestBlobStorageConfiguration:KeyVaultName": "endjintest",
+  "TestBlobStorageConfiguration:AccessKeyInKeyVault:SecretName": "endteststorage",
+  "TestBlobStorageConfiguration:AccessKeyInKeyVault:VaultName": "endjintest",
   // Note that the Operations services will need to have access to the key
   // vault specified. Alternatively, set just this to use a connection string.
   //"TestBlobStorageConfiguration:AccountName": "<Storage Account Connection String Here>",
@@ -25,9 +25,8 @@
   // CosmosDb configuration for testing.
   // Remove these to use the local storage emulator.
   "TestCosmosConfiguration:AccountUri": "https://endjintestsql.documents.azure.com/",
-  "TestCosmosConfiguration:AccountKeySecretName": "endjintestsql",
-  "TestCosmosConfiguration:KeyVaultName": "endjintest",
-  "TestCosmosConfiguration:DisableTenantIdPrefix": "true"
+  "TestCosmosConfiguration:AccessKeyInKeyVault:SecretName": "endjintestsql",
+  "TestCosmosConfiguration:AccessKeyInKeyVault:VaultName": "endjintest"
 
   // If any of the TenancyClient, Operations, TestBlobStorageConfiguration or TestCosmosConfguration are set to point at
   // resources in Azure, this local service will need to authenticate. And for that to work, you won't be able to use the

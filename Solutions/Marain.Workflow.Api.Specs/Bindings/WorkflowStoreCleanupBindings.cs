@@ -6,6 +6,9 @@ namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System;
     using System.Threading.Tasks;
+    using Azure.Storage.Blobs;
+
+    using Corvus.Storage.Azure.BlobStorage;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
     using Marain.TenantManagement.Testing;
@@ -55,6 +58,16 @@ namespace Marain.Workflows.Api.Specs.Bindings
                     ITenantedWorkflowInstanceStoreFactory workflowInstanceStoreFactory = serviceProvider.GetRequiredService<ITenantedWorkflowInstanceStoreFactory>();
                     var workflowInstanceStore = (CosmosWorkflowInstanceStore)await workflowInstanceStoreFactory.GetWorkflowInstanceStoreForTenantAsync(transientTenant).ConfigureAwait(false);
                     await workflowInstanceStore.Container.DeleteContainerAsync().ConfigureAwait(false);
+                }).ConfigureAwait(false);
+
+                await context.RunAndStoreExceptionsAsync(async () =>
+                {
+                    IBlobContainerSourceFromDynamicConfiguration blobContainerSource = serviceProvider.GetRequiredService<IBlobContainerSourceFromDynamicConfiguration>();
+                    if (context.TryGetValue(TransientTenantBindings.OperationsStoreContainerNameKey, out BlobContainerConfiguration operationsStoreContainerConfig))
+                    {
+                        BlobContainerClient operationsContainer = await blobContainerSource.GetStorageContextAsync(operationsStoreContainerConfig);
+                        await operationsContainer.DeleteIfExistsAsync().ConfigureAwait(false);
+                    }
                 }).ConfigureAwait(false);
             }
         }

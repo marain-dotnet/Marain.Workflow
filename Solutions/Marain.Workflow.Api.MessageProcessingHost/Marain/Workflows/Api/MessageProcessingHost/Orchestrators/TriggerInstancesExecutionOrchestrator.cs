@@ -15,6 +15,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
     using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Extensions.Logging;
 
+    using Newtonsoft.Json;
+
     /// <summary>
     /// The trigger instances execution orchestrator.
     /// </summary>
@@ -48,12 +50,16 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
             ILogger log)
         {
             ILogger replaySafeLogger = orchestrationContext.CreateReplaySafeLogger(log);
+#pragma warning disable IDE0079 // VS spuriously tags the DF0113 supression as unnecessary
+#pragma warning disable DF0113 // The durable functions orchestrator treats DI as non-deterministic
+            JsonSerializerSettings serializerSettings = this.serializerSettingsProvider.Instance;
+#pragma warning restore DF0113, IDE0079
 
             replaySafeLogger.LogDebug("Starting new TriggerInstancesExecutionOrchestrator instance");
 
             WorkflowMessageEnvelope envelope =
                 orchestrationContext.GetInputWithCustomSerializationSettings<WorkflowMessageEnvelope>(
-                    this.serializerSettingsProvider.Instance);
+                    serializerSettings);
 
             int pageNumber = envelope.GetWorkflowInstancesPageNumber();
 
@@ -63,7 +69,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
                 await orchestrationContext.CallActivityWithCustomSerializationSettingsAsync<WorkflowMessageEnvelope, string[]>(
                     nameof(GetWorkflowInstanceIdsActivity),
                     envelope,
-                    this.serializerSettingsProvider.Instance);
+                    serializerSettings);
 
             replaySafeLogger.LogDebug($"Retrieved {instanceIds.Length} instance Ids");
 
@@ -71,11 +77,14 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
 
             foreach (string current in instanceIds)
             {
+#pragma warning disable IDE0079 // VS spuriously tags the DF0113 supression as unnecessary
+#pragma warning disable DF0113 // The durable functions orchestrator treats DI as non-deterministic
                 envelope.SetWorkflowInstanceId(this.propertyBagFactory, current);
+#pragma warning restore DF0113, IDE0079
                 tasks.Add(orchestrationContext.CallActivityWithCustomSerializationSettingsAsync(
                     nameof(ProcessTriggerActivity),
                     envelope,
-                    this.serializerSettingsProvider.Instance));
+                    serializerSettings));
             }
 
             await Task.WhenAll(tasks);
