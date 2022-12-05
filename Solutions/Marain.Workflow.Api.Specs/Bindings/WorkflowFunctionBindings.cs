@@ -4,7 +4,6 @@
 
 namespace Marain.Workflows.Api.Specs.Bindings
 {
-    using System;
     using System.Threading.Tasks;
 
     using Corvus.Testing.AzureFunctions;
@@ -82,14 +81,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
         {
             ILogger<FunctionsController> logger = ContainerBindings.GetServiceProvider(featureContext).GetRequiredService<ILogger<FunctionsController>>();
             FunctionsController functionsController = FunctionsBindings.GetFunctionsController(featureContext);
-            ////logger.LogAllAndClear(functionsController.GetFunctionsOutput());
-            foreach (IProcessOutput po in functionsController.GetFunctionsOutput())
-            {
-                Console.WriteLine(po.StandardOutputText);
-                Console.WriteLine(po.StandardErrorText);
-
-                po.ClearAllOutput();
-            }
+            logger.LogAllAndClear(functionsController.GetFunctionsOutput());
         }
 
         /// <summary>

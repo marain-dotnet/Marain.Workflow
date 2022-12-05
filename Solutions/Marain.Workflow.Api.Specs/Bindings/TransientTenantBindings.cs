@@ -155,15 +155,18 @@ namespace Marain.Workflows.Api.Specs.Bindings
             cosmosConfiguration.Database = "endjinspecssharedthroughput";
             cosmosConfiguration.Container = $"specs-workflow-instances-{testRunId}";
 
-            BlobContainerConfiguration definitionsStorageConfiguration =
+            BlobContainerConfiguration testBlobStorageConfiguration =
                 configuration.GetSection("TestBlobStorageConfiguration").Get<BlobContainerConfiguration>()
                 ?? new BlobContainerConfiguration();
-            definitionsStorageConfiguration.Container = $"specs-workflow-definitions-{testRunId}";
+            BlobContainerConfiguration definitionsStorageConfiguration = testBlobStorageConfiguration with
+            {
+                Container = $"specs-workflow-definitions-{testRunId}",
+            };
 
-            BlobContainerConfiguration operationsStorageConfiguration =
-                configuration.GetSection("TestBlobStorageConfiguration").Get<BlobContainerConfiguration>()
-                ?? new BlobContainerConfiguration();
-            operationsStorageConfiguration.Container = $"specs-workflow-operations-{testRunId}";
+            BlobContainerConfiguration operationsStorageConfiguration = testBlobStorageConfiguration with
+            {
+                Container = $"specs-workflow-operations-{testRunId}",
+            };
 
             return new EnrollmentConfigurationEntry(
                 new Dictionary<string, ConfigurationItem>
@@ -194,7 +197,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
                                     "Marain:Operations:BlobContainerConfiguration:Operations",
                                     new BlobContainerConfigurationItem
                                     {
-                                        Configuration = definitionsStorageConfiguration,
+                                        Configuration = operationsStorageConfiguration,
                                     }
                                 },
                             },
