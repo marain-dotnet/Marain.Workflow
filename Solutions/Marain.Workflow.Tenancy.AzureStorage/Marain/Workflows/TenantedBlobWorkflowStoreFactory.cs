@@ -59,7 +59,7 @@ namespace Marain.Workflows
         {
             string tenantedLogicalContainerName = AzureStorageBlobTenantedContainerNaming.GetTenantedLogicalBlobContainerNameFor(
                 tenant,
-                WorkflowTenancyConstants.StoreDefinitionsLogicalContainerName);
+                WorkflowAzureBlobTenancyPropertyKeys.StoreDefinitionsLogicalContainerName);
             BlobContainerClient blobContainer =
                 await this.containerFactory.GetBlobContainerClientFromTenantAsync(
                     tenant,

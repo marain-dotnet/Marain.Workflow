@@ -154,8 +154,10 @@ namespace Marain.Workflows.Api.Specs.Steps
             string body = JsonConvert.SerializeObject(instance, serializationSettingsProvider.Instance);
             var address = new Uri(url);
 
-            HttpRequestMessage request = new(method, address);
-            request.Content = new StringContent(body, encoding: null, mediaType: "application/json");
+            HttpRequestMessage request = new(method, address)
+            {
+                Content = new StringContent(body, encoding: null, mediaType: "application/json"),
+            };
 
             setHeaders?.Invoke(request);
 

@@ -34,8 +34,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddBlobContainerV2ToV3Transition();
             services.AddSingleton<ITenantedWorkflowStoreFactory>(svc => new TenantedBlobWorkflowStoreFactory(
                 svc.GetRequiredService<IBlobContainerSourceWithTenantLegacyTransition>(),
-                WorkflowTenancyConstants.DefinitionsStoreTenantConfigKey,
-                WorkflowTenancyConstants.DefinitionsStoreTenantConfigKeyV3,
+                WorkflowAzureBlobTenancyPropertyKeys.DefinitionsStoreTenantConfigKey,
+                WorkflowAzureBlobTenancyPropertyKeys.Definitions,
                 svc.GetRequiredService<IJsonSerializerSettingsProvider>()));
 
             return services;

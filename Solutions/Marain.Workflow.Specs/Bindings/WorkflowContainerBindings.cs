@@ -15,6 +15,8 @@ namespace Marain.Workflows.Specs.Bindings
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
+    using Newtonsoft.Json.Serialization;
+
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -52,7 +54,7 @@ namespace Marain.Workflows.Specs.Bindings
                     services.AddJsonNetPropertyBag();
                     services.AddJsonNetCultureInfoConverter();
                     services.AddJsonNetDateTimeOffsetToIso8601AndUnixTimeConverter();
-                    services.AddSingleton<JsonConverter>(new StringEnumConverter(true));
+                    services.AddSingleton<JsonConverter>(new StringEnumConverter(new CamelCaseNamingStrategy()));
                     services.AddCosmosClientBuilderWithNewtonsoftJsonIntegration();
 
                     // Even non-cosmos tests depend on ICosmosContainerSourceWithTenantLegacyTransition

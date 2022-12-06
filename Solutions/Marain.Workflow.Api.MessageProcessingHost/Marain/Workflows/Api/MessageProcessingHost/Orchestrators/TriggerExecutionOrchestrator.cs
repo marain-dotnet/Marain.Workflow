@@ -14,6 +14,8 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
     using Microsoft.Azure.WebJobs.Extensions.DurableTask;
     using Microsoft.Extensions.Logging;
 
+    using Newtonsoft.Json;
+
     /// <summary>
     /// The trigger execution orchestrator.
     /// </summary>
@@ -47,10 +49,14 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
             ILogger log)
         {
             ILogger replaySafeLogger = orchestrationContext.CreateReplaySafeLogger(log);
+#pragma warning disable IDE0079 // VS spuriously tags the DF0113 supression as unnecessary
+#pragma warning disable DF0113 // The durable functions orchestrator treats DI as non-deterministic
+            JsonSerializerSettings serializerSettings = this.serializerSettingsProvider.Instance;
+#pragma warning restore DF0113, IDE0079
 
             WorkflowMessageEnvelope envelope =
                 orchestrationContext.GetInputWithCustomSerializationSettings<WorkflowMessageEnvelope>(
-                    this.serializerSettingsProvider.Instance);
+                    serializerSettings);
 
             try
             {
@@ -66,7 +72,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
                     await orchestrationContext.CallActivityWithCustomSerializationSettingsAsync(
                         nameof(CreateWorkflowActivity),
                         envelope,
-                        this.serializerSettingsProvider.Instance);
+                        serializerSettings);
                 }
                 else
                 {
@@ -75,7 +81,7 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
                     int count = await orchestrationContext.CallActivityWithCustomSerializationSettingsAsync<WorkflowMessageEnvelope, int>(
                                     nameof(GetWorkflowInstanceCountActivity),
                                     envelope,
-                                    this.serializerSettingsProvider.Instance);
+                                    serializerSettings);
 
                     int pages = (int)Math.Ceiling((decimal)count / 500);
 
@@ -85,11 +91,14 @@ namespace Marain.Workflows.Api.MessageProcessingHost.Orchestrators
 
                     for (int i = 0; i < pages; i++)
                     {
+#pragma warning disable IDE0079 // VS spuriously tags the DF0113 supression as unnecessary
+#pragma warning disable DF0113 // The durable functions orchestrator treats DI as non-deterministic
                         envelope.SetWorkflowInstancesPageNumber(this.propertyBagFactory, i);
+#pragma warning restore DF0113, IDE0079
                         tasks[i] = orchestrationContext.CallSubOrchestratorWithCustomSerializationSettingsAsync(
                             nameof(TriggerInstancesExecutionOrchestrator),
                             envelope,
-                            this.serializerSettingsProvider.Instance);
+                            serializerSettings);
                     }
 
                     await Task.WhenAll(tasks);

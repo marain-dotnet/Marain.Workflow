@@ -12,6 +12,8 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
+    using Newtonsoft.Json.Serialization;
+
     using TechTalk.SpecFlow;
 
     /// <summary>
@@ -44,7 +46,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
                     services.AddJsonNetPropertyBag();
                     services.AddJsonNetCultureInfoConverter();
                     services.AddJsonNetDateTimeOffsetToIso8601AndUnixTimeConverter();
-                    services.AddSingleton<JsonConverter>(new StringEnumConverter(true));
+                    services.AddSingleton<JsonConverter>(new StringEnumConverter(new CamelCaseNamingStrategy()));
 
                     services.AddLogging();
 
@@ -72,6 +74,9 @@ namespace Marain.Workflows.Api.Specs.Bindings
                     services.AddTenantedWorkflowEngineFactory();
 
                     services.RegisterCoreWorkflowContentTypes();
+
+                    services.AddMarainTenantManagementForBlobStorage();
+                    services.AddMarainTenantManagementForCosmosDb();
 
                     services.AddAzureLeasing(svc =>
                     {
