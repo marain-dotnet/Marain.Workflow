@@ -1,0 +1,98 @@
+#!markdown
+
+# Basic Workflow Example
+
+#!markdown
+
+## Referencing dependencies
+
+#!markdown
+
+First add a reference to the `Marain.Workflow.Abstractions` NuGet package.
+
+#!csharp
+
+#r "nuget: Marain.Workflow.Abstractions, 0.3.0"
+
+#!markdown
+
+`Marain.Workflow.Abstractions` has a dependency on the [`Marain.Leasing`](ADD-LINK) library; we're going to use an object from `Corvus.Leasing.InMemory` in the example, and so we need a reference to that also.
+
+(Actually, maybe we wont need a reference to leasing here if the leasing code is being used in the helper file and we're referencing that. We'll see about that once we get to referencing that dll)
+
+#!csharp
+
+#r "nuget: Corvus.Leasing.InMemory, 1.2.9"
+
+#!markdown
+
+We've got some helper code in the `WorkflowExampleHelpers.cs` file in this directory that's going to help us set up this workflow example; we need a reference to the resulting dll.
+
+#!csharp
+
+// This cell as is is going to fail. There is no dll emitted within the Examples folder.
+// To comppile any C# file you need either a solution or project file
+
+//TODO: understand how VS Code uses project files to produce dlls
+//Desired outcome: have this code cell run successfully. I.e. be able to use the helper code in
+// WorkflowExampleHelpers.cs
+
+#r "bin\Debug\net6.0\Examples.dll"
+
+#!csharp
+
+using Marain.Workflows;
+
+#!markdown
+
+## Basic workflow example
+
+In this example we're going to modelling the workflow of an expense claim.
+
+#!markdown
+
+### Create a `Workflow`
+
+#!markdown
+
+The first thing to do is create a workflow. We're going to have a `Workflow` with two states: `"Pending"` & `"Approved"`, with a single transition attached to the `"Pending"` state that has a target state of `"Approved"`.
+
+#!csharp
+
+Workflow expenseClaimWorkflow = new Workflow
+{
+    Id = "expense claim",
+    DisplayName = "Expense claim",
+    InitialStateId = "Pending",
+    States =
+    {
+        {
+            "Pending",
+            new WorkflowState
+            {
+                Id = "Pending",
+                DisplayName = "Pending approval",
+                Transitions =
+                {
+                    new WorkflowTransition
+                    {
+                        TargetStateId = "Approved",
+                        // Conditions =
+                        // {
+                        //     new ApprovalCondition()
+                        // }
+                    }
+                }
+            }
+        },
+
+        {
+            "Approved",
+            new WorkflowState
+            {
+                Id = "Approved",
+                DisplayName = "Approved"
+            }
+        }
+    }
+};
