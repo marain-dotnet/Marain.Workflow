@@ -180,3 +180,74 @@ Console.WriteLine($"MyExpenseClaim workflow instance state: {myExpenseClaimWorkf
 #!markdown
 
 It has changed to approved, as expected. 
+
+#!markdown
+
+### Add an entry condition
+
+As well as having conditions on transitions, we can have entry/exit conditions which must pass in order for an instance to enter/leave a state.
+
+We're going to add an entry condition to the `"Pending"` state of our workflow. The condition will check the `"Date Issued"` value in the `Context` dictionary attached to an instance; if the date issued value represents a date that is more than two days old (compared to today) then, then the condition will not pass, otherwise it will.
+
+First, let's delete the workflow instance currently in the workflow instance store.
+
+#!csharp
+
+await workflowEngineBuilder.WorkflowInstanceStore.DeleteWorkflowInstanceAsync("MyExpenseClaim");
+
+#!markdown
+
+Next, let's update our workflow, `expenseClaimWorkflow`, by adding a condition to the "Approved" state. The `IWorkflowCondition` being added is one we've defined in the `WorkflowExampleHelpers` folder, and is called `EntryCondition`.
+
+Afterwards we need to upsert the updated `expenseClaimWorkflow` claim workflow into the workflow store so that the change is reflected there.
+
+#!csharp
+
+expenseClaimWorkflow.GetState("Approved").EntryConditions.Add(new SimpleEntryCondition());
+await workflowStore.UpsertWorkflowAsync(expenseClaimWorkflow);
+
+#!markdown
+
+Now, let's go through the process again of using the workflow engine to start an instance of our `expenseClaimWorkflow` - this time we'll add some information to the `Context` property when creating the instance - and to process a trigger.
+
+Now, lets use the workflow engine to start an instance of our `expenseClaimWorkflow`; this time we'll add some information to the `Context` property on the instance when starting it. 
+
+#!csharp
+
+await workflowEngine.StartWorkflowInstanceAsync(new StartWorkflowInstanceRequest
+{
+    WorkflowId = expenseClaimWorkflow.Id,
+    WorkflowInstanceId = "MyExpenseClaim2",
+    Context = new Dictionary<string, string>() { { "Date Issued", DateTime.Now.AddDays(-3.0).ToString() } }
+});
+
+#!markdown
+
+Let's raise a trigger into the workflow, this time targeting our new workflow instance, whose `Id` is `"MyExpenseClaim2"`.
+
+#!csharp
+
+await workflowEngine.ProcessTriggerAsync(new HostedWorkflowTrigger
+{
+    Subjects = new[] { "Approval" }
+},
+workflowInstanceId: "MyExpenseClaim2");
+
+#!markdown
+
+Since the value for the `"Date Issued"` key in the `Context` dictionary our instance is a string that represents a date 3 days earlier than the current date, we expect the entry condition on the `"Approval"` state to fail, and therefore the instance will not be allowed to enter that state.
+
+Let's check that by looking at the current state of our workflow instance.
+
+#!csharp
+
+WorkflowInstance myExpenseClaimWorkflowInstance = await workflowEngineBuilder.WorkflowInstanceStore.GetWorkflowInstanceAsync("MyExpenseClaim2");
+Console.WriteLine($"MyExpenseClaim2 workflow instance state: {myExpenseClaimWorkflowInstance.StateId}");
+
+#!markdown
+
+So, our workflow instance processed the trigger, which tried to change the state from `"Pending"` to `"Approved"`, but the entry condition on the `"Approved"` state (a `SimpleEntryCondition`) did not pass, therefore the instance was prevented from entering the `"Approved"`, and remained in the `"Pending"` state.
+
+#!markdown
+
+### Add an `Action`

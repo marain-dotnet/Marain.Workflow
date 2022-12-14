@@ -7,7 +7,8 @@ public class SimpleWorkflowInstanceStore : IWorkflowInstanceStore
 
     public Task DeleteWorkflowInstanceAsync(string workflowInstanceId, string partitionKey = null)
     {
-        throw new NotImplementedException();
+        workflowInstances.RemoveAll(wi => wi.Id == workflowInstanceId);
+        return Task.CompletedTask;
     }
 
     // TODO : Change use of Task.Factory to Task.GetResult
@@ -26,7 +27,7 @@ public class SimpleWorkflowInstanceStore : IWorkflowInstanceStore
     {
         return Task.FromResult(workflowInstances.Single(wi => wi.Id == workflowInstanceId));
     }
-        
+
     public Task UpsertWorkflowInstanceAsync(WorkflowInstance workflowInstance, string partitionKey = null)
     {
         int existingIndex = workflowInstances.FindIndex(wi => wi.Id == workflowInstance.Id);
@@ -36,7 +37,7 @@ public class SimpleWorkflowInstanceStore : IWorkflowInstanceStore
         }
         else
         {
-            workflowInstances.Add(workflowInstance); 
+            workflowInstances.Add(workflowInstance);
         }
         return Task.CompletedTask;
     }
