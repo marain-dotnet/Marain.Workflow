@@ -15,6 +15,10 @@ parameters:
   type: boolean
   default: false
   displayName: When checked, NuGet packages will be published to an internal feed; this is independent of whether a public release is performed 
+- name: ForceRelease
+  type: boolean
+  default: false
+  displayName: When checked, a GitHub Release will be created but NuGet packages will not be published (unless other options are enabled)
 
 resources:
   repositories:
@@ -22,10 +26,12 @@ resources:
       type: github
       name: endjin/Endjin.RecommendedPractices.AzureDevopsPipelines.GitHub
       endpoint: marain-dotnet-github
+      ref: feature/add-releaseonly-support
 
 variables:
   Endjin.ForcePublish: ${{ parameters.ForcePublish }}
   Endjin.InternalPublish: ${{ parameters.InternalPublish }}
+  Endjin.ForceRelease: ${{ parameters.ForceRelease }}
 
 jobs:
 - template: templates/build.and.release.scripted.yml@recommended_practices
