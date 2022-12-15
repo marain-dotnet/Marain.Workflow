@@ -27,7 +27,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Marain.Services.Tenancy.Testing" Version="3.0.0" />
-    <PackageReference Include="Marain.TenantManagement.Azure.BlobStorage" Version="3.0.0" />
+    <PackageReference Include="Marain.TenantManagement.Azure.BlobStorage" Version="3.1.0" />
     <PackageReference Include="Marain.TenantManagement.Azure.Cosmos" Version="3.0.0" />
   </ItemGroup>
 
