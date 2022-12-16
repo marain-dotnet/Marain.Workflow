@@ -74,7 +74,7 @@ param (
     [version] $BuildModuleVersion = "1.1.1",
 
     [Parameter()]
-    [version] $InvokeBuildModuleVersion = "5.7.1"
+    [version] $InvokeBuildModuleVersion = "5.10.1"
 )
 
 $ErrorActionPreference = $ErrorActionPreference ? $ErrorActionPreference : 'Stop'
@@ -128,7 +128,9 @@ $SkipBuild = $false
 $CleanBuild = $Clean
 $SkipTest = $false
 $SkipTestReport = $false
+$SkipAnalysis = $false
 $SkipPackage = $false
+$SkipPublish = $false
 
 
 #
@@ -136,7 +138,8 @@ $SkipPackage = $false
 #
 $SolutionToBuild = (Resolve-Path (Join-Path $here ".\Solutions\Marain.Workflow.sln")).Path
 $ProjectsToPublish = @(
-    # "Solutions/MySolution/MyWebSite/MyWebSite.csproj"
+    "Solutions\Marain.Workflow.Api.EngineHost\Marain.Workflow.Api.EngineHost.csproj"
+    "Solutions\Marain.Workflow.Api.MessageProcessingHost\Marain.Workflow.Api.MessageProcessingHost.csproj"
 )
 $NuSpecFilesToPackage = @(
     # "Solutions/MySolution/MyProject/MyProject.nuspec"
