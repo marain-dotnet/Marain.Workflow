@@ -17,6 +17,7 @@ First add a reference to the `Marain.Workflow.Abstractions` NuGet package.
 #!csharp
 
 #r "nuget: Marain.Workflow.Abstractions, 0.3.0"
+#r "nuget: Microsoft.Extensions.Logging, 7.0.0"
 
 #!markdown
 
@@ -38,6 +39,7 @@ We've got some helper code in the `WorkflowExampleHelpers` folder in this direct
 #!csharp
 
 using Marain.Workflows;
+using Microsoft.Extensions.Logging;
 
 #!markdown
 
@@ -143,9 +145,14 @@ await workflowEngine.StartWorkflowInstanceAsync(new StartWorkflowInstanceRequest
 
 We're going to a raise a trigger into the engine targeting our `MyExpenseClaim` instance. The trigger will have a single subject: `"Approval"`, meaning any instances with `"Approval"` in their set of interest will process the trigger.
 
-A subset of the set of interests for a given instance is composed of the interests of the transitions associated with the instance's current state; the set of interests for a given transition is composed of the interests from transition's conditions. The `SimpleApprovalCondition` condition on the transition attached to the `"Pending"` state of our `expenseClaimWorkflow` has an interest of `"Approval"`, therefore the `"Pending"` state has an interest of `"Approval"`, and so a trigger with a subject of `"Approval"` will be processed by our `"Pending"` state.
+A subset of the set of interests for a given instance is composed of the interests of the transitions associated with the instance's current state; the set of interests for a given transition is composed of the interests from the transition's conditions. The `SimpleApprovalCondition` condition on the transition attached to the `"Pending"` state of our `expenseClaimWorkflow` has an interest of `"Approval"`, therefore the `"Pending"` state has an interest of `"Approval"`, and so a trigger with a subject of `"Approval"` will be processed by our instance in the `"Pending"` state.
 
 There's a method on the `SimpleApprovalCondition` class (in the helper code) that allows you to signal that the condition has passed (it simply changes a `bool` property on the class to `true`, which is what gets returned by the `EvaluateAsync()` method on the condition). Let's call that method so our `"MyExpenseClaim"` workflow instance will process the trigger.
+
+#!csharp
+
+WorkflowInstance myExpenseClaimWorkflowInstance = await workflowEngineBuilder.WorkflowInstanceStore.GetWorkflowInstanceAsync("MyExpenseClaim");
+Console.WriteLine($"MyExpenseClaim workflow instance state: {myExpenseClaimWorkflowInstance.StateId}");
 
 #!csharp
 
@@ -187,7 +194,7 @@ It has changed to approved, as expected.
 
 As well as having conditions on transitions, we can have entry/exit conditions which must pass in order for an instance to enter/leave a state.
 
-We're going to add an entry condition to the `"Pending"` state of our workflow. The condition will check the `"Date Issued"` value in the `Context` dictionary attached to an instance; if the date issued value represents a date that is more than two days old (compared to today) then, then the condition will not pass, otherwise it will.
+We're going to add an entry condition to the `"Approved"` state of our workflow. The condition will check the `"Date Issued"` value in the `Context` dictionary attached to an instance; if the date issued value represents a date that is more than two days old (compared to today) then, then the condition will not pass, otherwise it will.
 
 First, let's delete the workflow instance currently in the workflow instance store.
 
@@ -197,9 +204,9 @@ await workflowEngineBuilder.WorkflowInstanceStore.DeleteWorkflowInstanceAsync("M
 
 #!markdown
 
-Next, let's update our workflow, `expenseClaimWorkflow`, by adding a condition to the "Approved" state. The `IWorkflowCondition` being added is one we've defined in the `WorkflowExampleHelpers` folder, and is called `EntryCondition`.
+Next, let's update our workflow, `expenseClaimWorkflow`, by adding a condition to the "Approved" state. The `IWorkflowCondition` being added is one we've defined in the `WorkflowExampleHelpers` folder, and is called `SimpleEntryCondition`.
 
-Afterwards we need to upsert the updated `expenseClaimWorkflow` claim workflow into the workflow store so that the change is reflected there.
+Afterwards we need to upsert the updated `expenseClaimWorkflow` workflow into the workflow store so that the change is reflected there.
 
 #!csharp
 
@@ -207,8 +214,6 @@ expenseClaimWorkflow.GetState("Approved").EntryConditions.Add(new SimpleEntryCon
 await workflowStore.UpsertWorkflowAsync(expenseClaimWorkflow);
 
 #!markdown
-
-Now, let's go through the process again of using the workflow engine to start an instance of our `expenseClaimWorkflow` - this time we'll add some information to the `Context` property when creating the instance - and to process a trigger.
 
 Now, lets use the workflow engine to start an instance of our `expenseClaimWorkflow`; this time we'll add some information to the `Context` property on the instance when starting it. 
 
@@ -235,7 +240,7 @@ workflowInstanceId: "MyExpenseClaim2");
 
 #!markdown
 
-Since the value for the `"Date Issued"` key in the `Context` dictionary our instance is a string that represents a date 3 days earlier than the current date, we expect the entry condition on the `"Approval"` state to fail, and therefore the instance will not be allowed to enter that state.
+Since the value for the `"Date Issued"` key in the `Context` dictionary in our instance is a string that represents a date 3 days earlier than the current date, we expect the entry condition on the `"Approval"` state to fail, and therefore the instance will not be allowed to enter that state.
 
 Let's check that by looking at the current state of our workflow instance.
 
@@ -251,3 +256,83 @@ So, our workflow instance processed the trigger, which tried to change the state
 #!markdown
 
 ### Add an `Action`
+
+An action is something that happens either as part of a transition, or as a result of entering or leaving a state. For example, in an expense claim workflow process, you could have an action that is triggered when an instance enters the `"Approved"` state that triggers an other process that handles a bank transfer.
+
+In this example we're going to add an action that simply logs some information when an instance enters the `"Approved"` state. For this we'll use the built-in `Workflows.LogAction` action class which simply writes a log message to the provided logger. The class requires a logger, which we've setup in the `SetupLogging` class in the `WorkflowExampleHelpers` folder in this directory.
+
+As before, let's first delete the current workflow instance, then edit our `expenseClaimWorkflow` and upsert it into the workflow store.
+
+#!csharp
+
+await workflowEngineBuilder.WorkflowInstanceStore.DeleteWorkflowInstanceAsync("MyExpenseClaim2");
+
+#!markdown
+
+Instantiate a `SetupLogging` and grab the `ILogger<Workflow>` provided by the `Logger` property. Then we can use the to create a `LogAction`, which we can add to the entry actions on the `"Approved"` state.
+
+#!csharp
+
+using Microsoft.Extensions.DependencyInjection;
+
+#!csharp
+
+public class SetupLoggingNb
+{
+    public ILogger<LogAction> Logger { get; }
+    public SetupLoggingNb()
+    {
+        ServiceCollection services = new();
+        //services.AddLogging();
+        services.AddLogging(logging =>
+        {
+            logging.AddConsole();
+            logging.SetMinimumLevel(LogLevel.Debug);
+        });
+        IServiceProvider serviceProvider = services.BuildServiceProvider();
+        this.Logger = serviceProvider.GetRequiredService<ILogger<LogAction>>();
+    }
+}
+
+#!csharp
+
+SetupLoggingNb setupLogging = new();
+ILogger<LogAction> logger = setupLogging.Logger;
+LogAction logAction = new LogAction(logger){LogMessage = "this action has happened"};
+
+expenseClaimWorkflow.GetState("Approved").EntryActions.Add(logAction);
+await workflowStore.UpsertWorkflowAsync(expenseClaimWorkflow);
+
+#!markdown
+
+Now, let's start an instance of our updated `expenseClaimWorkflow`.
+
+#!csharp
+
+await workflowEngine.StartWorkflowInstanceAsync(new StartWorkflowInstanceRequest
+{
+    WorkflowId = expenseClaimWorkflow.Id,
+    WorkflowInstanceId = "MyExpenseClaim3",
+    Context = new Dictionary<string, string>() { { "Date Issued", DateTime.Now.AddDays(-1.0).ToString() } }
+});
+
+#!markdown
+
+Raise a trigger into the workflow engine.
+
+#!csharp
+
+await workflowEngine.ProcessTriggerAsync(new HostedWorkflowTrigger
+{
+    Subjects = new[] { "Approval" }
+},
+workflowInstanceId: "MyExpenseClaim3");
+
+#!markdown
+
+Let's check the state of our workflow instance, it should have moved into the `"Approved"` state.
+
+#!csharp
+
+WorkflowInstance myExpenseClaimWorkflowInstance = await workflowEngineBuilder.WorkflowInstanceStore.GetWorkflowInstanceAsync("MyExpenseClaim3");
+Console.WriteLine($"MyExpenseClaim workflow instance state: {myExpenseClaimWorkflowInstance.StateId}");
