@@ -1,5 +1,3 @@
-#!csharp
-
 #!meta
 
 {"kernelInfo":{"defaultKernelName":null,"items":[{"name":"csharp","languageName":"C#","aliases":["c#","cs"]},{"name":"fsharp","languageName":"F#","aliases":["f#","fs"]},{"name":"pwsh","languageName":"PowerShell","aliases":["powershell"]},{"name":"javascript","languageName":"JavaScript","aliases":["js"]},{"name":"html","languageName":"HTML"},{"name":"sql","languageName":"SQL"},{"name":"kql","languageName":"KQL"},{"name":"mermaid","languageName":"Mermaid"},{"name":"httpRequest","languageName":"http"},{"name":"value"}]}}
@@ -279,28 +277,22 @@ using Microsoft.Extensions.DependencyInjection;
 
 #!csharp
 
-public class SetupLoggingNb
+public class MinimalConsoleLogger : ILogger<LogAction>
 {
-    public ILogger<LogAction> Logger { get; }
-    public SetupLoggingNb()
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {
-        ServiceCollection services = new();
-        //services.AddLogging();
-        services.AddLogging(logging =>
-        {
-            logging.AddConsole();
-            logging.SetMinimumLevel(LogLevel.Debug);
-        });
-        IServiceProvider serviceProvider = services.BuildServiceProvider();
-        this.Logger = serviceProvider.GetRequiredService<ILogger<LogAction>>();
+        Console.WriteLine($"{logLevel}: [{eventId}] {formatter(state, exception)}");
     }
+
+    public bool IsEnabled(LogLevel logLevel) => true;
+
+    public IDisposable BeginScope<TState>(TState state) => throw new NotImplementedException();
 }
 
 #!csharp
 
-SetupLoggingNb setupLogging = new();
-ILogger<LogAction> logger = setupLogging.Logger;
-LogAction logAction = new LogAction(logger){LogMessage = "this action has happened"};
+ILogger<LogAction> logger = new MinimalConsoleLogger();
+LogAction logAction = new LogAction(logger) { LogMessage = "this action has happened" };
 
 expenseClaimWorkflow.GetState("Approved").EntryActions.Add(logAction);
 await workflowStore.UpsertWorkflowAsync(expenseClaimWorkflow);
