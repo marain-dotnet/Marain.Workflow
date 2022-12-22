@@ -16,7 +16,7 @@ First add a reference to the `Marain.Workflow.Abstractions` NuGet package.
 
 #!csharp
 
-#r "nuget: Marain.Workflow.Abstractions, 0.3.0"
+#r "nuget: Marain.Workflow.Abstractions, 0.4.0"
 #r "nuget: Microsoft.Extensions.Logging, 7.0.0"
 
 #!markdown
@@ -277,28 +277,22 @@ using Microsoft.Extensions.DependencyInjection;
 
 #!csharp
 
-public class SetupLoggingNb
+public class MinimalConsoleLogger : ILogger<LogAction>
 {
-    public ILogger<LogAction> Logger { get; }
-    public SetupLoggingNb()
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {
-        ServiceCollection services = new();
-        //services.AddLogging();
-        services.AddLogging(logging =>
-        {
-            logging.AddConsole();
-            logging.SetMinimumLevel(LogLevel.Debug);
-        });
-        IServiceProvider serviceProvider = services.BuildServiceProvider();
-        this.Logger = serviceProvider.GetRequiredService<ILogger<LogAction>>();
+        Console.WriteLine($"{logLevel}: [{eventId}] {formatter(state, exception)}");
     }
+
+    public bool IsEnabled(LogLevel logLevel) => true;
+
+    public IDisposable BeginScope<TState>(TState state) => throw new NotImplementedException();
 }
 
 #!csharp
 
-SetupLoggingNb setupLogging = new();
-ILogger<LogAction> logger = setupLogging.Logger;
-LogAction logAction = new LogAction(logger){LogMessage = "this action has happened"};
+ILogger<LogAction> logger = new MinimalConsoleLogger();
+LogAction logAction = new LogAction(logger) { LogMessage = "this action has happened" };
 
 expenseClaimWorkflow.GetState("Approved").EntryActions.Add(logAction);
 await workflowStore.UpsertWorkflowAsync(expenseClaimWorkflow);
