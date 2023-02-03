@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Corvus.Extensions.Newtonsoft.Json" Version="3.0.0" />
-    <PackageReference Include="Corvus.Identity.MicrosoftRest" Version="3.2.0" />
+    <PackageReference Include="Corvus.Identity.MicrosoftRest" Version="3.2.1" />
     <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
