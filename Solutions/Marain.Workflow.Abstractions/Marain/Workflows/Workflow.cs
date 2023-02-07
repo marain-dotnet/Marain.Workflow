@@ -40,8 +40,16 @@ namespace Marain.Workflows
         /// <param name="id">The id of the workflow.</param>
         /// <param name="displayName">The display name of the workflow.</param>
         /// <param name="description">The description of the workflow.</param>
-        public Workflow(string id = null, string displayName = null, string description = null)
+        public Workflow(
+            string id = null,
+            string displayName = null,
+            string description = null,
+            string eTag = null,
+            string initialStateId = null,
+            IDictionary<string, WorkflowState> states = null,
+            IList<WorkflowEventSubscription> workflowEventSubscriptions = null)
         {
+            // Verify that States contan initial state
             this.Id = string.IsNullOrEmpty(id) ? Guid.NewGuid().ToString() : id;
             this.DisplayName = displayName;
             this.Description = description;
@@ -112,57 +120,6 @@ namespace Marain.Workflows
             get => this.eventSubscriptions ??= new List<WorkflowEventSubscription>();
 
             set => this.eventSubscriptions = value;
-        }
-
-        /// <summary>
-        /// Adds a new state to the workflow.
-        /// </summary>
-        /// <param name="state">The new state to add.</param>
-        public void AddState(WorkflowState state)
-        {
-            if (!this.States.ContainsKey(state.Id))
-            {
-                this.States.Add(state.Id, state);
-            }
-        }
-
-        /// <summary>
-        /// Adds a new state to the workflow.
-        /// </summary>
-        /// <param name="id">The id for the state.</param>
-        /// <param name="displayName">The displayname of the state.</param>
-        /// <param name="description">The description of the state.</param>
-        /// <returns>The newly created state.</returns>
-        public WorkflowState CreateState(
-            string id = null,
-            string displayName = null,
-            string description = null)
-        {
-            var state = new WorkflowState { Description = description, DisplayName = displayName };
-
-            if (!string.IsNullOrEmpty(id))
-            {
-                state.Id = id;
-            }
-
-            if (!this.States.ContainsKey(state.Id))
-            {
-                this.States.Add(state.Id, state);
-            }
-
-            return state;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="WorkflowState" /> that has been defined as the initial state of the workflow.
-        /// </summary>
-        /// <returns>
-        /// The <see cref="WorkflowState" /> that will be the first state for new <see cref="WorkflowInstance" />s
-        /// created from this Workflow.
-        /// </returns>
-        public WorkflowState GetInitialState()
-        {
-            return this.GetState(this.InitialStateId);
         }
 
         /// <summary>

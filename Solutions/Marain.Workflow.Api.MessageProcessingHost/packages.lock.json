@@ -2497,86 +2497,86 @@
       "marain.workflow.abstractions": {
         "type": "Project",
         "dependencies": {
-          "Corvus.ContentHandling": "[3.0.0, )",
-          "Corvus.Extensions.Newtonsoft.Json": "[3.0.0, )",
-          "Corvus.Identity.Abstractions": "[3.2.0, )",
-          "Corvus.Leasing.Abstractions": "[1.2.9, )",
-          "Microsoft.AspNet.WebApi.Client": "[5.2.9, )",
-          "Microsoft.CSharp": "[4.7.0, )",
-          "Microsoft.Extensions.Configuration.Abstractions": "[6.0.0, )",
-          "Microsoft.Extensions.DependencyInjection": "[6.0.1, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[6.0.3, )",
-          "NodaTime": "[3.1.6, )",
-          "System.Threading.Tasks.Parallel": "[4.3.0, )"
+          "Corvus.ContentHandling": "3.0.0",
+          "Corvus.Extensions.Newtonsoft.Json": "3.0.0",
+          "Corvus.Identity.Abstractions": "3.2.0",
+          "Corvus.Leasing.Abstractions": "1.2.9",
+          "Microsoft.AspNet.WebApi.Client": "5.2.9",
+          "Microsoft.CSharp": "4.7.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
+          "Microsoft.Extensions.DependencyInjection": "6.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.3",
+          "NodaTime": "3.1.6",
+          "System.Threading.Tasks.Parallel": "4.3.0"
         }
       },
       "marain.workflow.api.enginehost.client": {
         "type": "Project",
         "dependencies": {
-          "Corvus.Extensions.Newtonsoft.Json": "[3.0.0, )",
-          "Corvus.Identity.MicrosoftRest": "[3.2.0, )"
+          "Corvus.Extensions.Newtonsoft.Json": "3.0.0",
+          "Corvus.Identity.MicrosoftRest": "3.2.0"
         }
       },
       "marain.workflow.api.services": {
         "type": "Project",
         "dependencies": {
-          "Marain.Operations.ControlClient": "[3.0.1, )",
-          "Marain.Services.Tenancy": "[3.1.0, )",
-          "Marain.Workflow.Abstractions": "[1.0.0, )",
-          "Marain.Workflow.Tenancy.Abstractions": "[1.0.0, )",
-          "Menes.Abstractions": "[4.0.0, )"
+          "Marain.Operations.ControlClient": "3.0.1",
+          "Marain.Services.Tenancy": "3.1.0",
+          "Marain.Workflow.Abstractions": "1.0.0",
+          "Marain.Workflow.Tenancy.Abstractions": "1.0.0",
+          "Menes.Abstractions": "4.0.0"
         }
       },
       "marain.workflow.api.services.aspnetcore": {
         "type": "Project",
         "dependencies": {
-          "Corvus.Identity.MicrosoftRest": "[3.2.0, )",
-          "Corvus.Leasing.Azure": "[1.2.9, )",
-          "Marain.Tenancy.ClientTenantProvider": "[3.0.4, )",
-          "Marain.Workflow.Api.Services": "[1.0.0, )",
-          "Marain.Workflow.Tenancy.AzureCosmos": "[1.0.0, )",
-          "Marain.Workflow.Tenancy.AzureStorage": "[1.0.0, )",
-          "Menes.Hosting.AspNetCore": "[4.0.0, )",
-          "Microsoft.Extensions.Logging.Console": "[6.0.0, )"
+          "Corvus.Identity.MicrosoftRest": "3.2.0",
+          "Corvus.Leasing.Azure": "1.2.9",
+          "Marain.Tenancy.ClientTenantProvider": "3.0.4",
+          "Marain.Workflow.Api.Services": "1.0.0",
+          "Marain.Workflow.Tenancy.AzureCosmos": "1.0.0",
+          "Marain.Workflow.Tenancy.AzureStorage": "1.0.0",
+          "Menes.Hosting.AspNetCore": "4.0.0",
+          "Microsoft.Extensions.Logging.Console": "6.0.0"
         }
       },
       "marain.workflow.storage.azurecosmos": {
         "type": "Project",
         "dependencies": {
-          "Corvus.Storage.Azure.Cosmos.Tenancy": "[3.5.0, )",
-          "Marain.Workflow.Abstractions": "[1.0.0, )"
+          "Corvus.Storage.Azure.Cosmos.Tenancy": "3.5.0",
+          "Marain.Workflow.Abstractions": "1.0.0"
         }
       },
       "marain.workflow.storage.azurestorage": {
         "type": "Project",
         "dependencies": {
-          "Azure.Storage.Blobs": "[12.14.1, )",
-          "Marain.Workflow.Abstractions": "[1.0.0, )"
+          "Azure.Storage.Blobs": "12.14.1",
+          "Marain.Workflow.Abstractions": "1.0.0"
         }
       },
       "marain.workflow.tenancy.abstractions": {
         "type": "Project",
         "dependencies": {
-          "Corvus.Tenancy.Abstractions": "[3.5.0, )",
-          "Marain.Workflow.Abstractions": "[1.0.0, )",
-          "Microsoft.Extensions.Configuration.Binder": "[6.0.0, )"
+          "Corvus.Tenancy.Abstractions": "3.5.0",
+          "Marain.Workflow.Abstractions": "1.0.0",
+          "Microsoft.Extensions.Configuration.Binder": "6.0.0"
         }
       },
       "marain.workflow.tenancy.azurecosmos": {
         "type": "Project",
         "dependencies": {
-          "Corvus.CosmosClient.NewtonSoft.Json.Extensions": "[5.1.0, )",
-          "Marain.Workflow.Storage.AzureCosmos": "[1.0.0, )",
-          "Marain.Workflow.Tenancy.Abstractions": "[1.0.0, )"
+          "Corvus.CosmosClient.NewtonSoft.Json.Extensions": "5.1.0",
+          "Marain.Workflow.Storage.AzureCosmos": "1.0.0",
+          "Marain.Workflow.Tenancy.Abstractions": "1.0.0"
         }
       },
       "marain.workflow.tenancy.azurestorage": {
         "type": "Project",
         "dependencies": {
-          "Corvus.Storage.Azure.BlobStorage.Tenancy": "[3.5.0, )",
-          "Corvus.Storage.Azure.Cosmos.Tenancy": "[3.5.0, )",
-          "Marain.Workflow.Storage.AzureStorage": "[1.0.0, )",
-          "Marain.Workflow.Tenancy.Abstractions": "[1.0.0, )"
+          "Corvus.Storage.Azure.BlobStorage.Tenancy": "3.5.0",
+          "Corvus.Storage.Azure.Cosmos.Tenancy": "3.5.0",
+          "Marain.Workflow.Storage.AzureStorage": "1.0.0",
+          "Marain.Workflow.Tenancy.Abstractions": "1.0.0"
         }
       }
     }
