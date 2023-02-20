@@ -23,7 +23,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Marain.Tenancy.ClientTenantProvider" Version="3.0.4" />
-    <PackageReference Include="Menes.Hosting.AspNetCore" Version="4.0.0" />
+    <PackageReference Include="Menes.Hosting.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
   </ItemGroup>
 
