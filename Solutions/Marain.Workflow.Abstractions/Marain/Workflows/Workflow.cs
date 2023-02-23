@@ -39,18 +39,22 @@ namespace Marain.Workflows
         /// </summary>
         /// <param name="id">The id of the workflow.</param>
         /// <param name="displayName">The display name of the workflow.</param>
+        /// <param name="states"></param>
         /// <param name="description">The description of the workflow.</param>
+        /// <param name="eTag"></param>
+        /// <param name="initialStateId"></param>
+        /// <param name="workflowEventSubscriptions"></param>
         public Workflow(
-            string id = null,
+            string id,
+            IDictionary<string, WorkflowState> states,
+            string initialStateId,
             string displayName = null,
             string description = null,
             string eTag = null,
-            string initialStateId = null,
-            IDictionary<string, WorkflowState> states = null,
             IList<WorkflowEventSubscription> workflowEventSubscriptions = null)
         {
             // Verify that States contan initial state
-            this.Id = string.IsNullOrEmpty(id) ? Guid.NewGuid().ToString() : id;
+            this.Id = id;
             this.DisplayName = displayName;
             this.Description = description;
         }
@@ -120,44 +124,6 @@ namespace Marain.Workflows
             get => this.eventSubscriptions ??= new List<WorkflowEventSubscription>();
 
             set => this.eventSubscriptions = value;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="WorkflowState" /> with the given Id.
-        /// </summary>
-        /// <param name="id">The id of the state to retrieve.</param>
-        /// <returns>
-        /// The <see cref="WorkflowState" /> with the given Id, or null if no matching state is present
-        /// in the <see cref="States" /> collection.
-        /// </returns>
-        public WorkflowState GetState(string id)
-        {
-            if (this.States.TryGetValue(id, out WorkflowState value))
-            {
-                return value;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Removes the <see cref="WorkflowState" /> with the given Id from the.
-        /// </summary>
-        /// <param name="state">The <see cref="WorkflowState" /> to remove.</param>
-        public void RemoveState(WorkflowState state)
-        {
-            this.States.Remove(state.Id);
-        }
-
-        /// <summary>
-        /// Adds the given <see cref="WorkflowState" /> to the <see cref="States" /> collection
-        /// and sets <see cref="InitialStateId" /> to it's Id.
-        /// </summary>
-        /// <param name="state">The state to add.</param>
-        public void SetInitialState(WorkflowState state)
-        {
-            this.AddState(state);
-            this.InitialStateId = state.Id;
         }
     }
 }
