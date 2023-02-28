@@ -17,7 +17,7 @@ namespace Marain.Workflows
         /// <param name="workflowId">The workflow ID.</param>
         /// <param name="partitionKey">The partition key for the workflow. If not supplied, the Id will be used.</param>
         /// <returns>A <see cref="Task"/> which completes with the <see cref="Workflow"/>.</returns>
-        Task<Workflow> GetWorkflowAsync(string workflowId, string partitionKey = null);
+        Task<(Workflow Workflow, string ETag)> GetWorkflowAsync(string workflowId, string partitionKey = null);
 
         /// <summary>
         /// Upserts a <see cref="Workflow"/>.
@@ -25,6 +25,6 @@ namespace Marain.Workflows
         /// <param name="workflow">The workflow to upsert.</param>
         /// <param name="partitionKey">The partition key for the workflow. If not supplied, the Id will be used.</param>
         /// <returns>A <see cref="Task"/> which completes when the workflow has been upserted.</returns>
-        Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null);
+        Task<string> UpsertWorkflowAsync(Workflow workflow, string partitionKey = null, string eTag = null);
     }
 }

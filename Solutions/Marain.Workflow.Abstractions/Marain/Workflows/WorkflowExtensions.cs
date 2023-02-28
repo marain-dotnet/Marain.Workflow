@@ -25,26 +25,7 @@ namespace Marain.Workflows
         /// </returns>
         public static WorkflowState GetInitialState(this Workflow workflow)
         {
-            return workflow.GetState(workflow.InitialStateId);
-        }
-
-        /// <summary>
-        /// Gets the <see cref="WorkflowState" /> with the given Id.
-        /// </summary>
-        /// <param name="workflow">The workflow.</param>
-        /// <param name="id">The id of the state to retrieve.</param>
-        /// <returns>
-        /// The <see cref="WorkflowState" /> with the given Id, or null if no matching state is present
-        /// in the <see cref="Workflow.States" /> collection.
-        /// </returns>
-        public static WorkflowState GetState(this Workflow workflow, string id)
-        {
-            if (workflow.States.TryGetValue(id, out WorkflowState value))
-            {
-                return value;
-            }
-
-            return null;
+            return workflow.States[workflow.InitialStateId];
         }
     }
 }

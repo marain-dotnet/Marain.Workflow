@@ -2,11 +2,12 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
+#nullable enable
+
 namespace Marain.Workflows
 {
     using System;
     using System.Collections.Generic;
-    using Newtonsoft.Json;
 
     /// <summary>
     /// Class representing the definition of a workflow. Contains the list of possible states and potential
@@ -20,43 +21,35 @@ namespace Marain.Workflows
         public const string RegisteredContentType = "application/vnd.marain.workflows.workflow";
 
         /// <summary>
-        /// The list of possible states for the workflow.
-        /// </summary>
-        private IDictionary<string, WorkflowState> states;
-
-        private IList<WorkflowEventSubscription> eventSubscriptions;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Workflow" /> class.
-        /// </summary>
-        public Workflow()
-        {
-            this.Id = Guid.NewGuid().ToString();
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Workflow"/> class.
         /// </summary>
-        /// <param name="id">The id of the workflow.</param>
-        /// <param name="displayName">The display name of the workflow.</param>
-        /// <param name="states"></param>
-        /// <param name="description">The description of the workflow.</param>
-        /// <param name="eTag"></param>
-        /// <param name="initialStateId"></param>
-        /// <param name="workflowEventSubscriptions"></param>
+        /// <param name="id">The <see cref="Id"/> property.</param>
+        /// <param name="states">The <see cref="States"/> property.</param>
+        /// <param name="initialStateId">The <see cref="InitialStateId"/> property.</param>
+        /// <param name="displayName">The <see cref="DisplayName"/> property.</param>
+        /// <param name="description">The <see cref="Description"/> property.</param>
+        /// <param name="workflowEventSubscriptions">The <see cref="WorkflowEventSubscriptions"/> property.</param>
         public Workflow(
             string id,
-            IDictionary<string, WorkflowState> states,
+            IReadOnlyDictionary<string, WorkflowState> states,
             string initialStateId,
-            string displayName = null,
-            string description = null,
-            string eTag = null,
-            IList<WorkflowEventSubscription> workflowEventSubscriptions = null)
+            string? displayName = null,
+            string? description = null,
+            IReadOnlyList<WorkflowEventSubscription>? workflowEventSubscriptions = null)
         {
-            // Verify that States contan initial state
             this.Id = id;
+            this.States = states;
+            this.InitialStateId = initialStateId;
             this.DisplayName = displayName;
             this.Description = description;
+            this.WorkflowEventSubscriptions = workflowEventSubscriptions ?? Array.Empty<WorkflowEventSubscription>();
+
+            if (!this.States.ContainsKey(initialStateId))
+            {
+                throw new ArgumentException(
+                    $"Initial state {initialStateId} was not found in {nameof(states)}",
+                    nameof(initialStateId));
+            }
         }
 
         /// <summary>
@@ -65,65 +58,39 @@ namespace Marain.Workflows
         public string ContentType => RegisteredContentType;
 
         /// <summary>
-        /// Gets or sets the description of this workflow.
+        /// Gets the description of this workflow.
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; }
 
         /// <summary>
-        /// Gets or sets the display name of this workflow.
+        /// Gets the display name of this workflow.
         /// </summary>
-        public string DisplayName { get; set; }
+        public string? DisplayName { get; }
 
         /// <summary>
-        /// Gets or sets the unique id of the workflow.
+        /// Gets the unique id of the workflow.
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; }
 
         /// <summary>
-        /// Gets the parition key for the workflow.
-        /// </summary>
-        public string PartitionKey => this.Id;
-
-        /// <summary>
-        /// Gets or sets the ETag of the workflow.
-        /// </summary>
-        [JsonProperty("_etag")]
-        public string ETag { get; set; }
-
-        /// <summary>
-        /// Gets or sets the id of this workflow's initial State.
+        /// Gets the id of this workflow's initial State.
         /// </summary>
         /// <remarks>
-        /// Do not set directly; prefer calling <see cref="SetInitialState(WorkflowState)" />.
         /// When new instances of the workflow are created, they will enter this state and any entry
         /// conditions and actions on the state will be validated/executed. Failure in any condition
         /// or action will result in the new workflow instance being Faulted.
         /// </remarks>
-        public string InitialStateId { get; set; }
+        public string InitialStateId { get; }
 
         /// <summary>
-        /// Gets or sets list of possible states for the workflow.
+        /// Gets list of possible states for the workflow.
         /// </summary>
-        /// <remarks>
-        /// Use <see cref="CreateState(string, string, string)" /> or <see cref="AddState(WorkflowState)"/>
-        /// to add new states, and <see cref="GetState" /> and <see cref="RemoveState" /> to retrieve/remove states.
-        /// </remarks>
-        public IDictionary<string, WorkflowState> States
-        {
-            get => this.states ??= new Dictionary<string, WorkflowState>();
-
-            set => this.states = value;
-        }
+        public IReadOnlyDictionary<string, WorkflowState> States { get; }
 
         /// <summary>
-        /// Gets or sets the list of subscriptions for events raised as a result of activity against instances of this
+        /// Gets the list of subscriptions for events raised as a result of activity against instances of this
         /// workflow.
         /// </summary>
-        public IList<WorkflowEventSubscription> WorkflowEventSubscriptions
-        {
-            get => this.eventSubscriptions ??= new List<WorkflowEventSubscription>();
-
-            set => this.eventSubscriptions = value;
-        }
+        public IReadOnlyList<WorkflowEventSubscription> WorkflowEventSubscriptions { get; }
     }
 }

@@ -279,7 +279,7 @@ namespace Marain.Workflows
             IWorkflowTrigger trigger)
         {
             Workflow workflow = await this.workflowStore.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
-            WorkflowState state = workflow.GetState(instance.StateId);
+            WorkflowState state = workflow.States[instance.StateId];
 
             if (instance.Status == WorkflowStatus.Faulted)
             {
@@ -419,7 +419,7 @@ namespace Marain.Workflows
                 return transition;
             }
 
-            WorkflowState targetState = workflow.GetState(transition.TargetStateId);
+            WorkflowState targetState = workflow.States[transition.TargetStateId];
 
             this.logger.LogDebug(
                 "Transition {TransitionId}  [{TransitionDisplayName}] found from state {StateId} [{StateDisplayName}] to state {TargetStateId} [{TargetStateDisplayName}] in instance {InstanceId} with trigger {TriggerId}",
