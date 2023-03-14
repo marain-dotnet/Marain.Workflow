@@ -16,7 +16,7 @@ namespace Marain.Workflows.Storage
     using Azure.Storage.Blobs.Specialized;
 
     using Corvus.Extensions.Json;
-
+    using Corvus.Storage;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -46,7 +46,7 @@ namespace Marain.Workflows.Storage
         public BlobContainerClient Container { get; }
 
         /// <inheritdoc/>
-        public async Task<Workflow> GetWorkflowAsync(string workflowId, string partitionKey = null)
+        public async Task<EntityWithETag<Workflow>> GetWorkflowAsync(string workflowId, string partitionKey = null, string eTag)
         {
             BlockBlobClient blob = this.Container.GetBlockBlobClient(workflowId);
             Response<BlobDownloadResult> response;
@@ -66,12 +66,12 @@ namespace Marain.Workflows.Storage
                 workflow = this.jsonSerializer.Deserialize<Workflow>(jr);
             }
 
-            workflow.ETag = response.Value.Details.ETag.ToString("H");
-            return workflow;
+            string eTag = response.Value.Details.ETag.ToString("H");
+            return new EntityWithETag<Workflow>(workflow, eTag);
         }
 
         /// <inheritdoc/>
-        public async Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
+        public async Task<string> UpsertWorkflowAsync(Workflow workflow, string partitionKey = null, string eTag = null)
         {
             if (workflow == null)
             {
@@ -90,20 +90,20 @@ namespace Marain.Workflows.Storage
             try
             {
                 BlobRequestConditions requestConditions = new();
-                if (string.IsNullOrEmpty(workflow.ETag))
+                if (string.IsNullOrEmpty(eTag))
                 {
                     requestConditions.IfNoneMatch = ETag.All;
                 }
                 else
                 {
-                    requestConditions.IfMatch = new ETag(workflow.ETag);
+                    requestConditions.IfMatch = new ETag(eTag);
                 }
 
                 Response<BlobContentInfo> response = await blob.UploadAsync(
                     content,
                     new BlobUploadOptions { Conditions = requestConditions })
                     .ConfigureAwait(false);
-                workflow.ETag = response.Value.ETag.ToString("H");
+                return response.Value.ETag.ToString("H");
             }
             catch (RequestFailedException ex) when (ex.Status == (int)HttpStatusCode.Conflict)
             {

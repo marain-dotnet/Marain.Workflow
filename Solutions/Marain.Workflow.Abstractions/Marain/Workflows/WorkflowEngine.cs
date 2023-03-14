@@ -82,7 +82,7 @@ namespace Marain.Workflows
             // b) we don't want a failure in CloudEvent publishing to cause a retry
             //    of the whole process. The ICloudEventPublisher implementation is expected
             //    to provide its own retry mechanism.
-            Workflow workflow = await this.workflowStore.GetWorkflowAsync(newInstance.WorkflowId).ConfigureAwait(false);
+            (Workflow workflow, string eTag) = await this.workflowStore.GetWorkflowAsync(newInstance.WorkflowId).ConfigureAwait(false);
             var workflowEventData = new WorkflowInstanceCreationCloudEventData(newInstance.Id)
             {
                 NewContext = newInstance.Context,
@@ -135,7 +135,7 @@ namespace Marain.Workflows
             try
             {
                 item = await this.workflowInstanceStore.GetWorkflowInstanceAsync(instanceId, partitionKey).ConfigureAwait(false);
-                workflow = await this.workflowStore.GetWorkflowAsync(item.WorkflowId).ConfigureAwait(false);
+                (workflow, string etag) = await this.workflowStore.GetWorkflowAsync(item.WorkflowId).ConfigureAwait(false);
 
                 workflowEventData.PreviousContext = item.Context.ToDictionary(x => x.Key, x => x.Value);
                 workflowEventData.WorkflowId = item.WorkflowId;
@@ -239,7 +239,7 @@ namespace Marain.Workflows
                 instance.Id = workflowInstanceId;
             }
 
-            Workflow workflow = await this.workflowStore.GetWorkflowAsync(workflowId, workflowPartitionKey).ConfigureAwait(false);
+            (Workflow workflow, string eTag) = await this.workflowStore.GetWorkflowAsync(workflowId, workflowPartitionKey).ConfigureAwait(false);
             if (workflow == null)
             {
                 throw new WorkflowNotFoundException();
@@ -278,7 +278,7 @@ namespace Marain.Workflows
             WorkflowInstance instance,
             IWorkflowTrigger trigger)
         {
-            Workflow workflow = await this.workflowStore.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
+            (Workflow workflow, string eTag) = await this.workflowStore.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
             WorkflowState state = workflow.States[instance.StateId];
 
             if (instance.Status == WorkflowStatus.Faulted)
