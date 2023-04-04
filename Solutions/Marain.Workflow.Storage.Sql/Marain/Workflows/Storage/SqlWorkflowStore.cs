@@ -12,7 +12,7 @@ namespace Marain.Workflows.Storage
     using Corvus.Retry;
     using Corvus.Retry.Policies;
     using Corvus.Retry.Strategies;
-
+    using Corvus.Storage;
     using Marain.Workflows;
     using Marain.Workflows.Storage.Internal;
     using Microsoft.Data.SqlClient;
@@ -40,7 +40,7 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public async Task<Workflow> GetWorkflowAsync(string workflowId, string partitionKey = null)
+        public async Task<EntityWithETag<Workflow>> GetWorkflowAsync(string workflowId, string partitionKey, string eTagExpected)
         {
             return await Retriable.RetryAsync(
                 () => this.GetWorkflowCoreAsync(workflowId),
@@ -51,17 +51,17 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public async Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
+        public async Task<string> UpsertWorkflowAsync(Workflow workflow, string partitionKey, string eTagExpected)
         {
-            await Retriable.RetryAsync(
-                () => this.UpsertWorkflowCoreAsync(workflow),
+            return await Retriable.RetryAsync(
+                () => this.UpsertWorkflowCoreAsync(workflow, eTagExpected),
                 CancellationToken.None,
                 new Backoff(5, TimeSpan.FromSeconds(1)),
                 DoNotRetryWhenFutile.Instance)
             .ConfigureAwait(false);
         }
 
-        private async Task<Workflow> GetWorkflowCoreAsync(string workflowId)
+        private async Task<EntityWithETag<Workflow>> GetWorkflowCoreAsync(string workflowId)
         {
             using SqlConnection connection = await this.connectionFactory().ConfigureAwait(false);
 
@@ -80,14 +80,13 @@ namespace Marain.Workflows.Storage
 
             await reader.ReadAsync().ConfigureAwait(false);
             string serializedResult = reader.GetString(0);
-            string etag = reader.GetString(1);
+            string returnedETag = reader.GetString(1);
             Workflow instance = JsonConvert.DeserializeObject<Workflow>(serializedResult, this.serializerSettingsProvider.Instance);
-            instance.ETag = etag;
 
-            return instance;
+            return new EntityWithETag<Workflow>(instance, returnedETag);
         }
 
-        private async Task UpsertWorkflowCoreAsync(Workflow workflow)
+        private async Task<string> UpsertWorkflowCoreAsync(Workflow workflow, string eTagExpected)
         {
             string serializedWorkflow = JsonConvert.SerializeObject(workflow, this.serializerSettingsProvider.Instance);
             string newetag = EtagHelper.BuildEtag(nameof(SqlWorkflowStore), serializedWorkflow);
@@ -96,7 +95,7 @@ namespace Marain.Workflows.Storage
 
             using SqlCommand command = connection.CreateCommand();
             command.Parameters.Add("@workflowId", SqlDbType.NVarChar, 50).Value = workflow.Id;
-            command.Parameters.Add("@etag", SqlDbType.NVarChar, 50).Value = workflow.ETag ?? (object)DBNull.Value;
+            command.Parameters.Add("@etag", SqlDbType.NVarChar, 50).Value = eTagExpected ?? (object)DBNull.Value;
             command.Parameters.Add("@newetag", SqlDbType.NVarChar, 50).Value = newetag;
             command.Parameters.Add("@serializedWorkflow", SqlDbType.NVarChar, -1).Value = serializedWorkflow;
 
@@ -119,7 +118,7 @@ namespace Marain.Workflows.Storage
                 throw new WorkflowPreconditionFailedException($"The workflow with id {workflow.Id} was already modified.");
             }
 
-            workflow.ETag = newetag;
+            return newetag;
         }
 
         private sealed class DoNotRetryWhenFutile : IRetryPolicy

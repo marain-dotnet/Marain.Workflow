@@ -7,6 +7,7 @@ namespace Marain.Workflows.Storage
     using System.Net;
     using System.Threading.Tasks;
     using Corvus.Retry;
+    using Corvus.Storage;
     using Marain.Workflows;
     using Microsoft.Azure.Cosmos;
 
@@ -31,7 +32,7 @@ namespace Marain.Workflows.Storage
         public Container Container { get; }
 
         /// <inheritdoc/>
-        public async Task<Workflow> GetWorkflowAsync(string workflowId, string partitionKey = null)
+        public async Task<EntityWithETag<Workflow>> GetWorkflowAsync(string workflowId, string partitionKey, string eTagExpected)
         {
             try
             {
@@ -41,7 +42,10 @@ namespace Marain.Workflows.Storage
                         new PartitionKey(partitionKey ?? workflowId)))
                     .ConfigureAwait(false);
 
-                return itemResponse.Resource;
+                Workflow workflow = itemResponse.Resource;
+                string returnedETag = itemResponse.ETag;
+
+                return new EntityWithETag<Workflow>(workflow, returnedETag);
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
@@ -50,12 +54,14 @@ namespace Marain.Workflows.Storage
         }
 
         /// <inheritdoc/>
-        public Task UpsertWorkflowAsync(Workflow workflow, string partitionKey = null)
+        public Task<string> UpsertWorkflowAsync(Workflow workflow, string partitionKey = null, string eTag = null)
         {
             return Retriable.RetryAsync(() =>
             {
-                if (string.IsNullOrEmpty(workflow.ETag))
+                if (string.IsNullOrEmpty(eTag))
                 {
+                    // This seems to be saying: "if you don't provide an eTag, the workflow you provided will be pushed
+                    // up to Cosmos. Is this the behaviour we want?
                     return this.CreateWorkflowAsync(workflow, partitionKey);
                 }
 
@@ -63,13 +69,15 @@ namespace Marain.Workflows.Storage
             });
         }
 
-        private async Task CreateWorkflowAsync(Workflow workflow, string partitionKey = null)
+        private async Task<string> CreateWorkflowAsync(Workflow workflow, string partitionKey = null)
         {
             try
             {
-                await this.Container.CreateItemAsync(
+                ItemResponse<Workflow> response = await this.Container.CreateItemAsync(
                     workflow,
                     new PartitionKey(partitionKey ?? workflow.Id)).ConfigureAwait(false);
+
+                return response.ETag;
             }
             catch (CosmosException cex) when (cex.StatusCode == HttpStatusCode.Conflict)
             {
@@ -78,14 +86,16 @@ namespace Marain.Workflows.Storage
             }
         }
 
-        private async Task UpdateWorkflowAsync(Workflow workflow, string partitionKey = null)
+        private async Task<string> UpdateWorkflowAsync(Workflow workflow, string partitionKey = null, string eTag = null)
         {
             try
             {
-                await this.Container.UpsertItemAsync(
+                ItemResponse<Workflow> response = await this.Container.UpsertItemAsync(
                     workflow,
                     new PartitionKey(partitionKey ?? workflow.Id),
-                    new ItemRequestOptions { IfMatchEtag = workflow.ETag }).ConfigureAwait(false);
+                    new ItemRequestOptions { IfMatchEtag = eTag }).ConfigureAwait(false);
+
+                return response.ETag;
             }
             catch (CosmosException cex) when (cex.StatusCode == HttpStatusCode.PreconditionFailed)
             {

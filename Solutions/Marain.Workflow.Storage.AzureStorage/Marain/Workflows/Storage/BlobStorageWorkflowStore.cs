@@ -46,7 +46,7 @@ namespace Marain.Workflows.Storage
         public BlobContainerClient Container { get; }
 
         /// <inheritdoc/>
-        public async Task<EntityWithETag<Workflow>> GetWorkflowAsync(string workflowId, string partitionKey = null, string eTag)
+        public async Task<EntityWithETag<Workflow>> GetWorkflowAsync(string workflowId, string partitionKey, string eTagExpected)
         {
             BlockBlobClient blob = this.Container.GetBlockBlobClient(workflowId);
             Response<BlobDownloadResult> response;
@@ -66,8 +66,8 @@ namespace Marain.Workflows.Storage
                 workflow = this.jsonSerializer.Deserialize<Workflow>(jr);
             }
 
-            string eTag = response.Value.Details.ETag.ToString("H");
-            return new EntityWithETag<Workflow>(workflow, eTag);
+            string returnedETag = response.Value.Details.ETag.ToString("H");
+            return new EntityWithETag<Workflow>(workflow, returnedETag);
         }
 
         /// <inheritdoc/>
