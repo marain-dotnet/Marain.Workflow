@@ -5,12 +5,13 @@
 namespace Marain.Workflows.Api.Services
 {
     using System.Threading.Tasks;
-
+    using Corvus.Storage;
     using Corvus.Tenancy;
 
     using Marain.Services.Tenancy;
 
     using Menes;
+    using Tavis.UriTemplates;
 
     /// <summary>
     /// Handles incoming triggers posted to the trigger service.
@@ -86,12 +87,12 @@ namespace Marain.Workflows.Api.Services
         {
             ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(tenantId).ConfigureAwait(false);
             IWorkflowStore workflowStore = await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
-            Workflow workflow = await workflowStore.GetWorkflowAsync(workflowId).ConfigureAwait(false);
+            (Workflow workflow, string eTag) = await workflowStore.GetWorkflowAsync(workflowId).ConfigureAwait(false);
             OpenApiResult result = this.OkResult(workflow, "application/json");
 
-            if (!string.IsNullOrEmpty(workflow.ETag))
+            if (!string.IsNullOrEmpty(eTag))
             {
-                result.Results.Add("ETag", workflow.ETag);
+                result.Results.Add("ETag", eTag);
             }
 
             return result;
@@ -106,17 +107,18 @@ namespace Marain.Workflows.Api.Services
         [OperationId(CreateWorkflowOperationId)]
         public async Task<OpenApiResult> CreateWorkflow(string tenantId, Workflow body)
         {
-            // New workflow definitions shouldn't contain an etag.
-            if (!string.IsNullOrEmpty(body.ETag))
-            {
-                return new OpenApiResult { StatusCode = 400 };
-            }
-
             ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(tenantId).ConfigureAwait(false);
             IWorkflowStore workflowStore = await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
 
-            await workflowStore.UpsertWorkflowAsync(body).ConfigureAwait(false);
-            return this.CreatedResult();
+            string eTag = await workflowStore.UpsertWorkflowAsync(body).ConfigureAwait(false);
+            OpenApiResult result = this.CreatedResult();
+
+            if (!string.IsNullOrEmpty(eTag))
+            {
+                result.Results.Add("ETag", eTag);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -136,16 +138,21 @@ namespace Marain.Workflows.Api.Services
                 return new OpenApiResult { StatusCode = 400 };
             }
 
-            body.ETag = ifMatch;
-
             ITenant tenant = await this.marainServicesTenancy.GetRequestingTenantAsync(tenantId).ConfigureAwait(false);
             IWorkflowStore workflowStore = await this.workflowStoreFactory.GetWorkflowStoreForTenantAsync(tenant).ConfigureAwait(false);
 
             // Because there's an etag in the body, the workflow store will throw an exception if either the workflow
             // doesn't already exist, or if the stored version doesn't have a matching etag.
-            await workflowStore.UpsertWorkflowAsync(body).ConfigureAwait(false);
+            string eTag = await workflowStore.UpsertWorkflowAsync(body, eTagExpected: ifMatch).ConfigureAwait(false);
 
-            return this.OkResult();
+            OpenApiResult result = this.OkResult();
+
+            if (!string.IsNullOrEmpty(eTag))
+            {
+                result.Results.Add("ETag", eTag);
+            }
+
+            return result;
         }
     }
 }

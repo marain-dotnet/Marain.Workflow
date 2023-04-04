@@ -4,6 +4,8 @@
 
 namespace Marain.Workflows.Api.Specs.Steps
 {
+    using System.Collections.Generic;
+
     public static class TestWorkflowFactory
     {
         public static Workflow Get(string name)
@@ -17,9 +19,12 @@ namespace Marain.Workflows.Api.Specs.Steps
 
         public static Workflow GetSimpleExpensesWorkflow()
         {
-            var workflow = new Workflow { DisplayName = "Simple expenses workflow" };
 
-            WorkflowState waitingToBeSubmitted = workflow.CreateState("waiting-for-submission", "Waiting to be submitted");
+            WorkflowState waitingToBeSubmitted = new()
+            {
+                Id = "waiting-for-submission",
+                Description = "Waiting to be submitted",
+            };
             WorkflowState waitingForApproval = workflow.CreateState("waiting-for-approval", "Waiting for approval");
             WorkflowState waitingForPayment = workflow.CreateState("waiting-for-payment", "Waiting for payment");
             WorkflowState paid = workflow.CreateState("paid", "Paid");
@@ -44,6 +49,15 @@ namespace Marain.Workflows.Api.Specs.Steps
 
             WorkflowTransition payTransition = waitingForPayment.CreateTransition(paid, "pay", "Pay");
             payTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Pay" });
+
+            var workflow = new Workflow(
+                id: "w0",
+                states: new Dictionary<string, WorkflowState>
+                {
+                    { "waiting-for-submission", waitingToBeSubmitted },
+                },
+                initialStateId: waitingToBeSubmitted.Id,
+                displayName: "Simple expenses workflow");
 
             return workflow;
         }

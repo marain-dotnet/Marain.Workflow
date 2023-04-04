@@ -12,6 +12,7 @@ Scenario: Store a workflow definition
 	When I post the workflow called 'SimpleExpensesWorkflow' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflows'
 	Then I should have received a 201 status code from the HTTP request
 	And there should be a workflow with the id 'simple-expenses-workflow' in the workflow store
+	And the response should contain an ETag header
 
 Scenario: Attempt to store a workflow definition when a definition with the specified Id already exists
 	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-2'
