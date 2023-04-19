@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
 
   <PropertyGroup>
@@ -18,7 +18,7 @@
   <ItemGroup>
     <PackageReference Include="Corvus.ContentHandling" Version="3.0.0" />
     <PackageReference Include="Corvus.Extensions.Newtonsoft.Json" Version="3.0.0" />
-    <PackageReference Include="Corvus.Identity.Abstractions" Version="3.2.0" />
+    <PackageReference Include="Corvus.Identity.Abstractions" Version="3.3.0" />
     <PackageReference Include="Corvus.Leasing.Abstractions" Version="1.2.9" />
     <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.4">
       <PrivateAssets>all</PrivateAssets>
