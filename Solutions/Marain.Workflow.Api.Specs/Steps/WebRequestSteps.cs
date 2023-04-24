@@ -104,8 +104,6 @@ namespace Marain.Workflows.Api.Specs.Steps
             url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
             Workflow workflow = this.context.Get<Workflow>(workflowName);
 
-            // When POSTing, we shouldn't send an etag.
-            workflow.ETag = null;
             await this.SendObjectToEndpoint(workflow, url, HttpMethod.Post).ConfigureAwait(false);
         }
 

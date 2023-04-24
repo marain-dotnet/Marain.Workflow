@@ -19,18 +19,12 @@ namespace Marain.Workflows.Api.Specs.Steps
 
         public static Workflow GetSimpleExpensesWorkflow(string id)
         {
-
-            WorkflowState waitingToBeSubmitted = new()
-            {
-                Id = id,
-                Description = "Waiting to be submitted",
-            };
-            WorkflowState waitingForApproval = workflow.CreateState("waiting-for-approval", "Waiting for approval");
-            WorkflowState waitingForPayment = workflow.CreateState("waiting-for-payment", "Waiting for payment");
-            WorkflowState paid = workflow.CreateState("paid", "Paid");
-            WorkflowState abandoned = workflow.CreateState("abandoned", "Abandoned");
-
-            workflow.SetInitialState(waitingToBeSubmitted);
+            Dictionary<string, WorkflowState> states = new();
+            WorkflowState waitingForApproval = states.AddState("waiting-for-approval", "Waiting for approval");
+            WorkflowState waitingForPayment = states.AddState("waiting-for-payment", "Waiting for payment");
+            WorkflowState paid = states.AddState("paid", "Paid");
+            WorkflowState abandoned = states.AddState("abandoned", "Abandoned");
+            WorkflowState waitingToBeSubmitted = states.AddState("waiting-for-submission", "Waiting to be submitted");
 
             WorkflowTransition updateTransition = waitingToBeSubmitted.CreateTransition(waitingToBeSubmitted, "update", "Update");
             updateTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Update" });
@@ -51,11 +45,8 @@ namespace Marain.Workflows.Api.Specs.Steps
             payTransition.Conditions.Add(new HostedWorkflowTriggerNameCondition { TriggerName = "Pay" });
 
             var workflow = new Workflow(
-                id: "w0",
-                states: new Dictionary<string, WorkflowState>
-                {
-                    { "waiting-for-submission", waitingToBeSubmitted },
-                },
+                id: id,
+                states: states,
                 initialStateId: waitingToBeSubmitted.Id,
                 displayName: "Simple expenses workflow");
 

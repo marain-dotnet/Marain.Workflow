@@ -5,9 +5,11 @@
 namespace Marain.Workflows.Specs.TestObjects
 {
     using System;
+    using System.Collections.Generic;
     using System.Net.Http;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ClientAuthentication;
+    using Microsoft.SqlServer.Management.Sdk.Sfc;
 
     /// <summary>
     /// Creates a workflow for testing external conditions.
@@ -28,15 +30,16 @@ namespace Marain.Workflows.Specs.TestObjects
             IServiceIdentityAccessTokenSource serviceIdentityTokenSource,
             IJsonSerializerSettingsProvider serializerSettingsProvider)
         {
+            Dictionary<string, WorkflowState> states = new();
+            WorkflowState waitingToRun = states.AddState("WaitingToRun", displayName: "Waiting to run");
+            WorkflowState done = states.AddState("Done", displayName: "Done");
+
             var workflow = new Workflow(
                 id,
+                states,
+                waitingToRun.Id,
                 "External Condition workflow",
                 "Simple workflow using an external condition");
-
-            WorkflowState waitingToRun = workflow.CreateState(displayName: "Waiting to run");
-            WorkflowState done = workflow.CreateState(displayName: "Done");
-
-            workflow.SetInitialState(waitingToRun);
 
             WorkflowTransition transition = waitingToRun.CreateTransition(done);
             var condition = new InvokeExternalServiceCondition(serviceIdentityTokenSource, serializerSettingsProvider)

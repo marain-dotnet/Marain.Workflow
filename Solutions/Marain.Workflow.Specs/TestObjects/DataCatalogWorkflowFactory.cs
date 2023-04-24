@@ -4,6 +4,7 @@
 
 namespace Marain.Workflows.Specs.TestObjects
 {
+    using System.Collections.Generic;
     using Marain.Workflows.Specs.TestObjects.Actions;
     using Marain.Workflows.Specs.TestObjects.Conditions;
     using Marain.Workflows.Specs.TestObjects.Subjects;
@@ -91,18 +92,19 @@ namespace Marain.Workflows.Specs.TestObjects
         {
             var dataCatalogItemRepositoryFactory = new DataCatalogItemRepositoryFactory();
 
+            Dictionary<string, WorkflowState> states = new();
+            WorkflowState initializing = states.AddState("WaitingForInitialization", displayName: "Waiting for initialization");
+            WorkflowState waitingForDocumentation = states.AddState("WaitingForDocumentation", displayName: "Waiting for documentation");
+            WorkflowState published = states.AddState("Published", displayName: "Published");
+            WorkflowState deleted = states.AddState("Deleted", displayName: "Deleted");
+            WorkflowState deprecated = states.AddState("Deprecated", displayName: "Deprecated");
+
             var workflow = new Workflow(
                 id,
+                states,
+                initializing.Id,
                 "Data Catalog item workflow",
                 "Controls the lifecycle of a data catalog item");
-
-            WorkflowState initializing = workflow.CreateState(displayName: "Waiting for initialization");
-            WorkflowState waitingForDocumentation = workflow.CreateState(displayName: "Waiting for documentation");
-            WorkflowState published = workflow.CreateState(displayName: "Published");
-            WorkflowState deleted = workflow.CreateState(displayName: "Deleted");
-            WorkflowState deprecated = workflow.CreateState(displayName: "Deprecated");
-
-            workflow.SetInitialState(initializing);
 
             initializing.EntryConditions.Add(
                 new ContextItemsPresentCondition { RequiredContextItems = new[] { "Identifier", "Type" } });

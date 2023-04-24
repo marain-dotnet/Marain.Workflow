@@ -140,13 +140,6 @@ namespace Marain.Workflows.Api.Specs.Steps
             this.scenarioContext.Set(workflow, workflowName);
         }
 
-        [Given("the workflow called '(.*)' has an etag value of '(.*)'")]
-        public void GivenTheWorkflowCalledHasAnEtagValueOf(string workflowName, string etag)
-        {
-            Workflow workflow = this.scenarioContext.Get<Workflow>(workflowName);
-            workflow.ETag = etag;
-        }
-
         [Then("there should be (.*) workflow instance in the workflow instance store")]
         [Then("there should be (.*) workflow instances in the workflow instance store")]
         public async Task ThenThereShouldBeANewWorkflowInstanceInTheWorkflowInstanceStore(int expected)
