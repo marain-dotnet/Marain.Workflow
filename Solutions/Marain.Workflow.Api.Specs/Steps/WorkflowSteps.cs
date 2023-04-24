@@ -135,8 +135,7 @@ namespace Marain.Workflows.Api.Specs.Steps
         [Given("I have an instance of the workflow '(.*)' with Id '(.*)'")]
         public void GivenIHaveAnInstanceOfTheWorkflowWithId(string workflowName, string workflowId)
         {
-            Workflow workflow = TestWorkflowFactory.Get(workflowName);
-            workflow.Id = workflowId;
+            Workflow workflow = TestWorkflowFactory.Get(workflowName, workflowId);
 
             this.scenarioContext.Set(workflow, workflowName);
         }
@@ -314,9 +313,8 @@ namespace Marain.Workflows.Api.Specs.Steps
 
         private async Task AddWorkflowToStore(string workflowName, string workflowId, WorkflowEventSubscription[] subscriptions)
         {
-            Workflow workflow = TestWorkflowFactory.Get(workflowName);
+            Workflow workflow = TestWorkflowFactory.Get(workflowName, workflowId);
             workflow.WorkflowEventSubscriptions = subscriptions;
-            workflow.Id = workflowId;
 
             ITenantedWorkflowStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
             IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(

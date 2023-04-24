@@ -8,21 +8,21 @@ namespace Marain.Workflows.Api.Specs.Steps
 
     public static class TestWorkflowFactory
     {
-        public static Workflow Get(string name)
+        public static Workflow Get(string name, string id)
         {
             return name switch
             {
-                "SimpleExpensesWorkflow" => GetSimpleExpensesWorkflow(),
+                "SimpleExpensesWorkflow" => GetSimpleExpensesWorkflow(id),
                 _ => null,
             };
         }
 
-        public static Workflow GetSimpleExpensesWorkflow()
+        public static Workflow GetSimpleExpensesWorkflow(string id)
         {
 
             WorkflowState waitingToBeSubmitted = new()
             {
-                Id = "waiting-for-submission",
+                Id = id,
                 Description = "Waiting to be submitted",
             };
             WorkflowState waitingForApproval = workflow.CreateState("waiting-for-approval", "Waiting for approval");

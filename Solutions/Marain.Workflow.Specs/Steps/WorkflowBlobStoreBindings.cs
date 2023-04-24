@@ -14,6 +14,7 @@ namespace Marain.Workflows.Specs.Steps
     using Azure.Storage.Blobs.Models;
 
     using Corvus.Extensions.Json;
+    using Corvus.Storage;
     using Corvus.Storage.Azure.BlobStorage.Tenancy;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
@@ -26,9 +27,10 @@ namespace Marain.Workflows.Specs.Steps
     [Binding]
     public class WorkflowBlobStoreBindings
     {
-        private readonly Dictionary<string, Workflow> workflows = new();
+        private readonly Dictionary<string, EntityWithETag<Workflow>> workflows = new();
         private readonly FeatureContext featureContext;
         private readonly ScenarioContext scenarioContext;
+        private readonly Dictionary<string, string> eTagsForUpsertedWorkflows = new();
 
         public WorkflowBlobStoreBindings(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
@@ -48,11 +50,12 @@ namespace Marain.Workflows.Specs.Steps
         {
             IWorkflowStore workflowStore = await this.GetWorkflowStoreForCurrentTenantAsync().ConfigureAwait(false);
 
-            Workflow workflow = this.workflows[workflowName];
+            Workflow workflow = this.workflows[workflowName].Entity;
 
             try
             {
-                await workflowStore.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
+                string eTag = await workflowStore.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
+                this.eTagsForUpsertedWorkflows.Add(workflowName, eTag);
             }
             catch (Exception ex)
             {
@@ -82,7 +85,7 @@ namespace Marain.Workflows.Specs.Steps
             string blobContents = getResponse.Value.Content.ToString();
             Workflow actualWorkflow = JsonConvert.DeserializeObject<Workflow>(blobContents, serializerSettingsProvider.Instance);
 
-            Workflow expectedWorkflow = this.workflows[workflowName];
+            Workflow expectedWorkflow = this.workflows[workflowName].Entity;
 
             // We don't need to check that every property has deserialized correctly - we're not testing JSON.NET.
             // It's enough to know that we've successfully deserialized the JSON from the blob and that it's the
@@ -90,17 +93,16 @@ namespace Marain.Workflows.Specs.Steps
             Assert.AreEqual(expectedWorkflow.Id, actualWorkflow.Id);
         }
 
-        [Then("the workflow called '(.*)' has its etag updated to match the etag of the blob with Id '(.*)'")]
+        [Then("the eTag returned by the store for the upserted workflow called '(.*)' matches the etag of the blob with Id '(.*)'")]
         public async Task WhenTheWorkflowCalledHasItsEtagUpdatedToMatchTheEtagOfTheBlobWithId(string workflowName, string blobId)
         {
-            Workflow workflow = this.workflows[workflowName];
             BlobClient blob = await this.GetBlobClientForCurrentTenantAsync(blobId).ConfigureAwait(false);
             Response<BlobProperties> propertiesResponse = await blob.GetPropertiesAsync().ConfigureAwait(false);
 
             // Note: we want the form that includes the double quotes (because that's what we were doing
             // back before the storage libraries made you choose explicitly), which is what the "H"
             // form gives us.
-            Assert.AreEqual(propertiesResponse.Value.ETag.ToString("H"), workflow.ETag);
+            Assert.AreEqual(propertiesResponse.Value.ETag.ToString("H"), this.eTagsForUpsertedWorkflows[workflowName]);
         }
 
         [Then("the request is successful")]
@@ -139,13 +141,13 @@ namespace Marain.Workflows.Specs.Steps
             }
         }
 
-        [Then("the workflow called '(.*)' has an etag matching the workflow called '(.*)'")]
-        public void ThenTheWorkflowCalledHasAnEtagMatchingTheWorkflowCalled(string workflow1Name, string workflow2Name)
+        [Then("the eTag the store returned for get result named '([^']*)' is the same eTag it returned when upserting workflow '([^']*)'")]
+        public void TheEtagTheStoreReturnedForGetResultIsTheSameETagItReturnedWhenUpsertingTheWorkflow(string workflow1Name, string workflow2Name)
         {
-            Workflow workflow1 = this.workflows[workflow1Name];
-            Workflow workflow2 = this.workflows[workflow2Name];
+            string eTag1 = this.workflows[workflow1Name].ETag;
+            string eTag2 = this.workflows[workflow2Name].ETag;
 
-            Assert.AreEqual(workflow2.ETag, workflow1.ETag);
+            Assert.AreEqual(eTag1, eTag2);
         }
 
         [Given("I change the description of the workflow definition called '(.*)' to '(.*)'")]

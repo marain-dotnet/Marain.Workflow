@@ -12,7 +12,9 @@ Scenario: Store a new workflow definition
 	Then the request is successful
 	And a new blob with Id 'workflow1-1' is created in the container for the current tenant
 	And the blob with Id 'workflow1-1' contains the workflow called 'workflow1-1' serialized and encoded using UTF8
-	And the workflow called 'workflow1-1' has its etag updated to match the etag of the blob with Id 'workflow1-1'
+	And the eTag returned by the store for the upserted workflow called 'workflow1-1' matches the etag of the blob with Id 'workflow1-1'
+
+	#"the eTag returned by the store for the upserted workflow called '(.*)' matches the etag of the blob with Id '(.*)'"
 
 Scenario: Attempt to store a new workflow definition when a workflow with the same Id already exists
 	Given I have a workflow definition with Id 'workflow2-1' called 'workflow2-1'
@@ -26,7 +28,9 @@ Scenario: Retrieve a workflow definition
 	And I have stored the workflow called 'workflow3-1' in the Azure storage workflow store
 	When I request the workflow with Id 'workflow3-1' from the Azure storage workflow store and call it 'workflow3-1-retrieved'
 	Then the request is successful
-	And the workflow called 'workflow3-1-retrieved' has an etag matching the workflow called 'workflow3-1'
+	And the eTag the store returned for get result named 'workflow3-1-retrieved' is the same eTag it returned when upserting workflow 'workflow3-1'
+
+	#"the eTag the store returned for get result named '([^']*)' is the same eTag it returned when upserting workflow '([^']*)'"
 
 Scenario: Attempt to retrieve a workflow definition that does not exist
 	When I request the workflow with Id 'made-up-id' from the Azure storage workflow store and call it 'workflow4-1-retrieved'
