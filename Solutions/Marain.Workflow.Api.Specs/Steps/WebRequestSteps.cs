@@ -39,6 +39,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             this.context = scenarioContext;
             this.featureContext = featureContext;
             this.transientTenantManager = TransientTenantManager.GetInstance(featureContext);
+
         }
 
         [Then("I should have received a (.*) status code from the HTTP request")]
@@ -123,6 +124,10 @@ namespace Marain.Workflows.Api.Specs.Steps
             url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
             Workflow workflow = this.context.Get<Workflow>(workflowName);
 
+            /* Where are we to get the eTag from here? The eTag is not longer part of Workflow, can we get it from the Given
+             * step?
+             * Next time: What step puts the workflow in the store?
+             */
             await this.SendObjectToEndpoint(workflow, url, HttpMethod.Put, setHeaders: msg => msg.Headers.IfMatch.Add(new EntityTagHeaderValue(workflow.ETag))).ConfigureAwait(false);
         }
 

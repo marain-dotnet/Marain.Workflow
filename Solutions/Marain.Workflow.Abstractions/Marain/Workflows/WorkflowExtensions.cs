@@ -27,5 +27,16 @@ namespace Marain.Workflows
         {
             return workflow.States[workflow.InitialStateId];
         }
+
+        /// <summary>
+        /// Gets a workflow state.
+        /// </summary>
+        /// <param name="workflow">The workflow from which to get the state.</param>
+        /// <param name="stateId">The state ID.</param>
+        /// <returns>The workflow state.</returns>
+        public static WorkflowState GetState(this Workflow workflow, string stateId)
+        {
+            return workflow.States[stateId];
+        }
     }
 }

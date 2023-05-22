@@ -2,22 +2,31 @@
 // Copyright (c) Endjin Limited. All rights reserved.
 // </copyright>
 
+// Is it OK to have nullability enabled in here?
+#nullable enable
+
 namespace Marain.Workflows.Api.Specs.Steps
 {
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     public static class TestWorkflowFactory
     {
-        public static Workflow Get(string name, string id)
+        public static Workflow? Get(string name, string id)
+        {
+            return Get(name, id, null);
+        }
+
+        public static Workflow? Get(string name, string id, IReadOnlyList<WorkflowEventSubscription>? workflowEventSubscriptions)
         {
             return name switch
             {
-                "SimpleExpensesWorkflow" => GetSimpleExpensesWorkflow(id),
+                "SimpleExpensesWorkflow" => GetSimpleExpensesWorkflow(id, workflowEventSubscriptions),
                 _ => null,
             };
         }
 
-        public static Workflow GetSimpleExpensesWorkflow(string id)
+        public static Workflow GetSimpleExpensesWorkflow(string id, IReadOnlyList<WorkflowEventSubscription>? workflowEventSubscriptions)
         {
             Dictionary<string, WorkflowState> states = new();
             WorkflowState waitingForApproval = states.AddState("waiting-for-approval", "Waiting for approval");
@@ -48,7 +57,8 @@ namespace Marain.Workflows.Api.Specs.Steps
                 id: id,
                 states: states,
                 initialStateId: waitingToBeSubmitted.Id,
-                displayName: "Simple expenses workflow");
+                displayName: "Simple expenses workflow",
+                workflowEventSubscriptions: workflowEventSubscriptions);
 
             return workflow;
         }

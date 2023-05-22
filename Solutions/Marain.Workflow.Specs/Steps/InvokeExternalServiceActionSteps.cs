@@ -64,20 +64,7 @@ namespace Marain.Workflows.Specs.Steps
 
             IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(async () =>
-            {
-                try
-                {
-                    Workflow oldWorkflow = await store.GetWorkflowAsync(workflowId).ConfigureAwait(false);
-                    workflow.ETag = oldWorkflow.ETag;
-                }
-                catch (WorkflowNotFoundException)
-                {
-                    // Don't care if there is no old workflow.
-                }
-
-                await store.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
-            }).ConfigureAwait(false);
+            await store.InsertOrOverwriteWorkflowAsync(workflowId, workflow).ConfigureAwait(false);
         }
 
         [When("I send a trigger that will execute the action with a trigger id of '(.*)'")]

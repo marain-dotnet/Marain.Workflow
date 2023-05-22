@@ -9,6 +9,7 @@ namespace Marain.Workflows.Specs.Steps
     using System.Net;
     using System.Threading.Tasks;
     using Corvus.Extensions;
+    using Corvus.Storage;
     using Corvus.Tenancy;
     using Corvus.Testing.SpecFlow;
     using Marain.Workflows.Specs.TestObjects;
@@ -52,20 +53,7 @@ namespace Marain.Workflows.Specs.Steps
 
             IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(tenantProvider.Root).ConfigureAwait(false);
 
-            await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(async () =>
-            {
-                try
-                {
-                    Workflow oldWorkflow = await store.GetWorkflowAsync(workflowId).ConfigureAwait(false);
-                    workflow.ETag = oldWorkflow.ETag;
-                }
-                catch (WorkflowNotFoundException)
-                {
-                    // Don't care if there is no old workflow.
-                }
-
-                await store.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
-            }).ConfigureAwait(false);
+            await store.InsertOrOverwriteWorkflowAsync(workflowId, workflow).ConfigureAwait(false);
         }
 
         [Then("a new data catalog item with Id '(.*)' should have been added to the data catalog store")]
@@ -201,8 +189,10 @@ namespace Marain.Workflows.Specs.Steps
             WorkflowInstance instance = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
                 () => instanceStore.GetWorkflowInstanceAsync(instanceId)).ConfigureAwait(false);
 
-            Workflow workflow = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
+            EntityWithETag<Workflow> workflowWithETag = await WorkflowRetryHelper.ExecuteWithStandardTestRetryRulesAsync(
                 () => store.GetWorkflowAsync(instance.WorkflowId)).ConfigureAwait(false);
+
+            Workflow workflow = workflowWithETag.Entity;
 
             WorkflowState currentState = workflow.GetState(instance.StateId);
 

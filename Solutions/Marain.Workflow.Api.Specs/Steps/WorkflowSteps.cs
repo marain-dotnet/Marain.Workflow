@@ -306,8 +306,7 @@ namespace Marain.Workflows.Api.Specs.Steps
 
         private async Task AddWorkflowToStore(string workflowName, string workflowId, WorkflowEventSubscription[] subscriptions)
         {
-            Workflow workflow = TestWorkflowFactory.Get(workflowName, workflowId);
-            workflow.WorkflowEventSubscriptions = subscriptions;
+            Workflow workflow = TestWorkflowFactory.Get(workflowName, workflowId, subscriptions);
 
             ITenantedWorkflowStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
             IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(

@@ -27,10 +27,11 @@ namespace Marain.Workflows.Specs.Steps
     [Binding]
     public class WorkflowBlobStoreBindings
     {
-        private readonly Dictionary<string, EntityWithETag<Workflow>> workflows = new();
+        private readonly Dictionary<string, EntityWithETag<Workflow>> workflowsWithETags = new();
+        private readonly Dictionary<string, Workflow> workflowsWithoutETags = new();
+
         private readonly FeatureContext featureContext;
         private readonly ScenarioContext scenarioContext;
-        private readonly Dictionary<string, string> eTagsForUpsertedWorkflows = new();
 
         public WorkflowBlobStoreBindings(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
@@ -41,21 +42,41 @@ namespace Marain.Workflows.Specs.Steps
         [Given("I have a workflow definition with Id '(.*)' called '(.*)'")]
         public void GivenIHaveAWorkflowDefinitionWithIdCalled(string workflowId, string workflowName)
         {
-            this.workflows.Add(workflowName, DataCatalogWorkflowFactory.Create(workflowId, null));
+            this.workflowsWithoutETags.Add(workflowName, DataCatalogWorkflowFactory.Create(workflowId, null));
         }
 
-        [Given("I have stored the workflow called '(.*)' in the Azure storage workflow store")]
-        [When("I store the workflow called '(.*)' in the Azure storage workflow store")]
-        public async Task WhenIStoreTheWorkflowCalledInTheAzureStorageWorkflowStore(string workflowName)
+        [Given("I have inserted the workflow called '(.*)' into the Azure storage workflow store")]
+        [When("I insert the workflow called '(.*)' in the Azure storage workflow store")]
+        public async Task WhenIInsertTheWorkflowCalledInTheAzureStorageWorkflowStore(string workflowName)
         {
             IWorkflowStore workflowStore = await this.GetWorkflowStoreForCurrentTenantAsync().ConfigureAwait(false);
 
-            Workflow workflow = this.workflows[workflowName].Entity;
+            Workflow workflow = this.workflowsWithoutETags[workflowName];
 
             try
             {
                 string eTag = await workflowStore.UpsertWorkflowAsync(workflow).ConfigureAwait(false);
-                this.eTagsForUpsertedWorkflows.Add(workflowName, eTag);
+                this.workflowsWithETags.Add(workflowName, new EntityWithETag<Workflow>(workflow, eTag));
+            }
+            catch (Exception ex)
+            {
+                this.scenarioContext.Set(ex);
+            }
+        }
+
+        [Given("I have updated the workflow called '(.*)' in the Azure storage workflow store")]
+        [When("I update the workflow called '(.*)' in the Azure storage workflow store")]
+        public async Task WhenIUpdateTheWorkflowCalledInTheAzureStorageWorkflowStore(string workflowName)
+        {
+            IWorkflowStore workflowStore = await this.GetWorkflowStoreForCurrentTenantAsync().ConfigureAwait(false);
+
+            Workflow workflow = this.workflowsWithETags[workflowName].Entity;
+            string currentETag = this.workflowsWithETags[workflowName].ETag;
+
+            try
+            {
+                string eTag = await workflowStore.UpsertWorkflowAsync(workflow, eTagExpected: currentETag).ConfigureAwait(false);
+                this.workflowsWithETags[workflowName] = new EntityWithETag<Workflow>(workflow, eTag);
             }
             catch (Exception ex)
             {
@@ -85,7 +106,7 @@ namespace Marain.Workflows.Specs.Steps
             string blobContents = getResponse.Value.Content.ToString();
             Workflow actualWorkflow = JsonConvert.DeserializeObject<Workflow>(blobContents, serializerSettingsProvider.Instance);
 
-            Workflow expectedWorkflow = this.workflows[workflowName].Entity;
+            Workflow expectedWorkflow = this.workflowsWithETags[workflowName].Entity;
 
             // We don't need to check that every property has deserialized correctly - we're not testing JSON.NET.
             // It's enough to know that we've successfully deserialized the JSON from the blob and that it's the
@@ -131,7 +152,7 @@ namespace Marain.Workflows.Specs.Steps
 
             try
             {
-                this.workflows.Add(
+                this.workflowsWithETags.Add(
                     workflowName,
                     await workflowStore.GetWorkflowAsync(workflowId).ConfigureAwait(false));
             }
@@ -144,8 +165,8 @@ namespace Marain.Workflows.Specs.Steps
         [Then("the eTag the store returned for get result named '([^']*)' is the same eTag it returned when upserting workflow '([^']*)'")]
         public void TheEtagTheStoreReturnedForGetResultIsTheSameETagItReturnedWhenUpsertingTheWorkflow(string workflow1Name, string workflow2Name)
         {
-            string eTag1 = this.workflows[workflow1Name].ETag;
-            string eTag2 = this.workflows[workflow2Name].ETag;
+            string eTag1 = this.workflowsWithETags[workflow1Name].ETag;
+            string eTag2 = this.workflowsWithETags[workflow2Name].ETag;
 
             Assert.AreEqual(eTag1, eTag2);
         }
@@ -153,14 +174,14 @@ namespace Marain.Workflows.Specs.Steps
         [Given("I change the description of the workflow definition called '(.*)' to '(.*)'")]
         public void GivenIChangeTheDescriptionOfTheWorkflowDefinitionCalledTo(string workflowName, string newDescription)
         {
-            Workflow workflow = this.workflows[workflowName];
+            Workflow workflow = this.workflowsWithETags[workflowName];
             workflow.Description = newDescription;
         }
 
         [Given("I set the etag of the workflow definition called '(.*)' to '(.*)'")]
         public void GivenISetTheEtagOfTheWorkflowDefinitionCalledTo(string workflowName, string newEtag)
         {
-            Workflow workflow = this.workflows[workflowName];
+            Workflow workflow = this.workflowsWithETags[workflowName];
             workflow.ETag = newEtag;
         }
 
