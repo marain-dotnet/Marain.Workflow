@@ -34,6 +34,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Api.Services.AspNetCore\Marain.Workflow.Api.Services.AspNetCore.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Specs\Marain.Workflow.Specs.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.Abstractions\Marain.Workflow.Tenancy.Abstractions.csproj" />
   </ItemGroup>
 

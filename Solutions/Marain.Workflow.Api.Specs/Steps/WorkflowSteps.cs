@@ -45,12 +45,6 @@ namespace Marain.Workflows.Api.Specs.Steps
             this.transientTenantManager = TransientTenantManager.GetInstance(featureContext);
         }
 
-        [Given("I have added the workflow '(.*)' to the workflow store with Id '(.*)'")]
-        public Task GivenIHaveAddedTheToTheWorkflowStoreWithId(string workflowName, string workflowId)
-        {
-            return this.AddWorkflowToStore(workflowName, workflowId, Array.Empty<WorkflowEventSubscription>());
-        }
-
         [Given("I have added the workflow '(.*)' to the workflow store with Id '(.*)' and event subscriptions")]
         public Task GivenIHaveAddedTheWorkflowToTheWorkflowStoreWithIdAndEventSubscriptions(string workflowName, string workflowId, Table table)
         {
@@ -257,7 +251,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             ITenantedWorkflowStoreFactory storeFactory = this.serviceProvider.GetRequiredService<ITenantedWorkflowStoreFactory>();
             IWorkflowStore store = await storeFactory.GetWorkflowStoreForTenantAsync(this.transientTenantManager.PrimaryTransientClient).ConfigureAwait(false);
 
-            Workflow workflow = await store.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false);
+            Workflow workflow = (await store.GetWorkflowAsync(instance.WorkflowId).ConfigureAwait(false)).Entity;
             WorkflowState state = workflow.GetState(instance.StateId);
 
             if (useAssert)
@@ -322,7 +316,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             }
 
             // Get the workflow so we have the correct etag.
-            workflow = await store.GetWorkflowAsync(workflow.Id).ConfigureAwait(false);
+            workflow = (await store.GetWorkflowAsync(workflow.Id).ConfigureAwait(false)).Entity;
             this.scenarioContext.Set(workflow, workflowName);
         }
     }

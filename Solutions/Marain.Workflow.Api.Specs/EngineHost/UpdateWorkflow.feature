@@ -13,7 +13,8 @@ Scenario: Update a workflow definition without supplying an eTag returns a Confl
 	Then I should have received a 409 status code from the HTTP request
 
 Scenario: Update a workflow definition with an etag succeeds
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-2'
+	Given I have a workflow definition with Id 'simple-expenses-workflow-2' called 'SimpleExpensesWorkflow'
+	And I have inserted the workflow called 'SimpleExpensesWorkflow' into the Azure storage workflow store
 	When I put the workflow called 'SimpleExpensesWorkflow' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflows/simple-expenses-workflow-2' with an If-Match header value from the etag of the workflow
 	Then I should have received a 200 status code from the HTTP request
 	And the response should contain an ETag header

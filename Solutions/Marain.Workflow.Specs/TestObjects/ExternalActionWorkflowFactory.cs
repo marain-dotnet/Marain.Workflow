@@ -5,6 +5,7 @@
 namespace Marain.Workflows.Specs.TestObjects
 {
     using System;
+    using System.Collections.Generic;
     using Corvus.Extensions.Json;
     using Corvus.Identity.ClientAuthentication;
     using Microsoft.Extensions.Logging;
@@ -30,15 +31,16 @@ namespace Marain.Workflows.Specs.TestObjects
             IJsonSerializerSettingsProvider serializerSettingsProvider,
             ILogger<InvokeExternalServiceAction> externalServiceActionLogger)
         {
+            Dictionary<string, WorkflowState> states = new();
+            WorkflowState waitingToRun = states.AddState("WaitingToRun", displayName: "Waiting to run");
+            WorkflowState done = states.AddState("Done", displayName: "Done");
+
             var workflow = new Workflow(
                 id,
+                states,
+                waitingToRun.Id,
                 "External Action workflow",
                 "Simple workflow using an external action");
-
-            WorkflowState waitingToRun = workflow.CreateState(displayName: "Waiting to run");
-            WorkflowState done = workflow.CreateState(displayName: "Done");
-
-            workflow.SetInitialState(waitingToRun);
 
             WorkflowTransition transition = waitingToRun.CreateTransition(done);
             var action = new InvokeExternalServiceAction(

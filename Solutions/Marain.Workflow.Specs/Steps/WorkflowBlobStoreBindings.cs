@@ -39,6 +39,11 @@ namespace Marain.Workflows.Specs.Steps
             this.scenarioContext = scenarioContext;
         }
 
+        public EntityWithETag<Workflow> GetETagAndWorkflow(string workflowName)
+        {
+            return this.workflowsWithETags[workflowName];
+        }
+
         [Given("I have a workflow definition with Id '(.*)' called '(.*)'")]
         public void GivenIHaveAWorkflowDefinitionWithIdCalled(string workflowId, string workflowName)
         {
@@ -123,7 +128,7 @@ namespace Marain.Workflows.Specs.Steps
             // Note: we want the form that includes the double quotes (because that's what we were doing
             // back before the storage libraries made you choose explicitly), which is what the "H"
             // form gives us.
-            Assert.AreEqual(propertiesResponse.Value.ETag.ToString("H"), this.eTagsForUpsertedWorkflows[workflowName]);
+            Assert.AreEqual(propertiesResponse.Value.ETag.ToString("H"), this.workflowsWithETags[workflowName].ETag);
         }
 
         [Then("the request is successful")]
@@ -174,15 +179,28 @@ namespace Marain.Workflows.Specs.Steps
         [Given("I change the description of the workflow definition called '(.*)' to '(.*)'")]
         public void GivenIChangeTheDescriptionOfTheWorkflowDefinitionCalledTo(string workflowName, string newDescription)
         {
-            Workflow workflow = this.workflowsWithETags[workflowName];
-            workflow.Description = newDescription;
+            Workflow workflow = this.workflowsWithETags[workflowName].Entity;
+            var newWorkflow = new Workflow(
+                workflow.Id,
+                workflow.States,
+                workflow.InitialStateId,
+                workflow.DisplayName,
+                newDescription,
+                workflow.WorkflowEventSubscriptions);
+
+            this.workflowsWithETags[workflowName] = new EntityWithETag<Workflow>(
+                newWorkflow,
+                this.workflowsWithETags[workflowName].ETag);
         }
 
         [Given("I set the etag of the workflow definition called '(.*)' to '(.*)'")]
         public void GivenISetTheEtagOfTheWorkflowDefinitionCalledTo(string workflowName, string newEtag)
         {
-            Workflow workflow = this.workflowsWithETags[workflowName];
-            workflow.ETag = newEtag;
+            EntityWithETag<Workflow> workflowWithEtag = this.workflowsWithETags[workflowName];
+
+            this.workflowsWithETags[workflowName] = new EntityWithETag<Workflow>(
+                workflowWithEtag.Entity,
+                newEtag);
         }
 
         private Task<IWorkflowStore> GetWorkflowStoreForCurrentTenantAsync()

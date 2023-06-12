@@ -13,11 +13,12 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System.Threading.Tasks;
 
     using Corvus.Extensions.Json;
+    using Corvus.Storage;
     using Corvus.Testing.SpecFlow;
 
     using Marain.TenantManagement.Testing;
     using Marain.Workflows.Api.Specs.Bindings;
-
+    using Marain.Workflows.Specs.Steps;
     using Microsoft.Extensions.DependencyInjection;
 
     using Newtonsoft.Json;
@@ -31,15 +32,19 @@ namespace Marain.Workflows.Api.Specs.Steps
     {
         private readonly HttpClient http = new();
         private readonly ScenarioContext context;
+        private readonly WorkflowBlobStoreBindings blobStoreBindings;
         private readonly FeatureContext featureContext;
         private readonly TransientTenantManager transientTenantManager;
 
-        public WebRequestSteps(FeatureContext featureContext, ScenarioContext scenarioContext)
+        public WebRequestSteps(
+            FeatureContext featureContext,
+            ScenarioContext scenarioContext,
+            WorkflowBlobStoreBindings blobStoreBindings)
         {
             this.context = scenarioContext;
+            this.blobStoreBindings = blobStoreBindings;
             this.featureContext = featureContext;
             this.transientTenantManager = TransientTenantManager.GetInstance(featureContext);
-
         }
 
         [Then("I should have received a (.*) status code from the HTTP request")]
@@ -122,13 +127,13 @@ namespace Marain.Workflows.Api.Specs.Steps
         {
             string url = WorkflowFunctionBindings.EngineHostBaseUrl + path;
             url = url.Replace("{tenantId}", this.transientTenantManager.PrimaryTransientClient.Id);
-            Workflow workflow = this.context.Get<Workflow>(workflowName);
+            EntityWithETag<Workflow> workflowAndETag = this.blobStoreBindings.GetETagAndWorkflow(workflowName);
 
-            /* Where are we to get the eTag from here? The eTag is not longer part of Workflow, can we get it from the Given
-             * step?
-             * Next time: What step puts the workflow in the store?
-             */
-            await this.SendObjectToEndpoint(workflow, url, HttpMethod.Put, setHeaders: msg => msg.Headers.IfMatch.Add(new EntityTagHeaderValue(workflow.ETag))).ConfigureAwait(false);
+            await this.SendObjectToEndpoint(
+                workflowAndETag.Entity,
+                url,
+                HttpMethod.Put,
+                setHeaders: msg => msg.Headers.IfMatch.Add(new EntityTagHeaderValue(workflowAndETag.ETag))).ConfigureAwait(false);
         }
 
         [When("I put the workflow called '(.*)' to the workflow engine path '(.*)' with '(.*)' as the If-Match header value")]
