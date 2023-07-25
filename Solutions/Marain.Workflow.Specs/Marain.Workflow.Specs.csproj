@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Marain.Workflow.Abstractions\Marain.Workflow.Abstractions.csproj" />
+    <ProjectReference Include="..\Marain.Workflow.Specs.SharedBindings\Marain.Workflow.Specs.SharedBindings.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.Abstractions\Marain.Workflow.Tenancy.Abstractions.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureCosmos\Marain.Workflow.Tenancy.AzureCosmos.csproj" />
     <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureStorage\Marain.Workflow.Tenancy.AzureStorage.csproj" />
@@ -50,12 +51,19 @@
     <None Update="local.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="local.settings.template.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="specflow.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestObjects\Subjects\" />
   </ItemGroup>
 
 </Project>

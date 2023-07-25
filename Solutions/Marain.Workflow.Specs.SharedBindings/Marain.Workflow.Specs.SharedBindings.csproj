@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
+
+	<PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>Marain.Workflows.Specs</RootNamespace>
+  </PropertyGroup>
+	
+	<PropertyGroup>
+		<!--
+    SA1600, CS1591 - Mandatory XML doc comments
+    Not necessary for test projects
+    CA1822 - mark as static
+    Test frameworks want test methods to be non-static
+    -->
+		<NoWarn>$(NoWarn);CS1591;CA1822;SA1600</NoWarn>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+		<RestoreLockedMode Condition="$(ContinuousIntegrationBuild) == 'true'">true</RestoreLockedMode>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Corvus.Testing.SpecFlow.NUnit" Version="2.0.0" />
+	  <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.4">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureCosmos\Marain.Workflow.Tenancy.AzureCosmos.csproj" />
+	  <ProjectReference Include="..\Marain.Workflow.Tenancy.AzureStorage\Marain.Workflow.Tenancy.AzureStorage.csproj" />
+	</ItemGroup>
+
+</Project>
