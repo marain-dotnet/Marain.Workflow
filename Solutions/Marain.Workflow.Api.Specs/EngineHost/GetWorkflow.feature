@@ -8,7 +8,8 @@ Feature: Get workflow
 	I want to be able to retrieve a workflow.
 
 Scenario: Retrieve workflow
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow'
+	Given I have a workflow definition with Id 'simple-expenses-workflow' called 'SimpleExpensesWorkflow'
+	And I have inserted the workflow called 'SimpleExpensesWorkflow' into the Azure storage workflow store
 	When I get the workflow engine path '/{tenantId}/marain/workflow/engine/workflows/simple-expenses-workflow'
 	Then I should have received a 200 status code from the HTTP request
 	And the response should contain the the workflow 'SimpleExpensesWorkflow'

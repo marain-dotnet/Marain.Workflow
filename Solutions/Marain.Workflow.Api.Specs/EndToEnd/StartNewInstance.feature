@@ -9,7 +9,8 @@ Feature: StartNewInstance
 	I want to be able to start a new instance of a workflow
 
 Scenario: Start a new instance with a specified instance id
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow'
+	Given I have a workflow definition with Id 'simple-expenses-workflow' called 'SimpleExpensesWorkflow'
+	And I have inserted the workflow called 'SimpleExpensesWorkflow' into the Azure storage workflow store
 	And The workflow instance store is empty
 	And I have a dictionary called 'context'
 	| Key        | Value    |

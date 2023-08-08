@@ -8,7 +8,8 @@ Feature: SendTriggerToInstance
 	I want to send a trigger to a specific workflow instance
 
 Scenario: Send a trigger
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow'
+	Given I have a workflow definition with Id 'simple-expenses-workflow' called 'SimpleExpensesWorkflow'
+	And I have inserted the workflow called 'SimpleExpensesWorkflow' into the Azure storage workflow store
 	And The workflow instance store is empty
 	And I have a dictionary called 'context'
 	| Key        | Value    |

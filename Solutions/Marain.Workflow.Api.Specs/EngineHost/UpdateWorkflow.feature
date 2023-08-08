@@ -8,7 +8,8 @@ Feature: Update workflow
 	I want to be able to store an updated workflow definition
 
 Scenario: Update a workflow definition without supplying an eTag returns a Conflict response
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-1'
+	Given I have a workflow definition with Id 'simple-expenses-workflow-1' called 'SimpleExpensesWorkflow'
+	And I have inserted the workflow called 'SimpleExpensesWorkflow' into the Azure storage workflow store
 	When I put the workflow called 'SimpleExpensesWorkflow' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflows/simple-expenses-workflow-1'
 	Then I should have received a 409 status code from the HTTP request
 
@@ -20,7 +21,8 @@ Scenario: Update a workflow definition with an etag succeeds
 	And the response should contain an ETag header
 
 Scenario: Attempt to update a workflow definition with an etag that does not match the stored version returns a Precondition Failed response
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-3'
+	Given I have a workflow definition with Id 'simple-expenses-workflow-3' called 'SimpleExpensesWorkflow'
+	And I have inserted the workflow called 'SimpleExpensesWorkflow' into the Azure storage workflow store
 	When I put the workflow called 'SimpleExpensesWorkflow' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflows/simple-expenses-workflow-3' with '"33a64df551425fcc55e4d42a148795d9f25f89d4"' as the If-Match header value
 	Then I should have received a 412 status code from the HTTP request
 
@@ -32,7 +34,8 @@ Scenario: Attempt to store a workflow definition when a definition with the supp
 	And the response should contain an ETag header
 	
 Scenario: Attempt to store a workflow definition when the workflow Id in the path doesn't match that in the body returns a Bad Request response
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-5'
+	Given I have a workflow definition with Id 'simple-expenses-workflow-5' called 'SimpleExpensesWorkflow'
+	And I have inserted the workflow called 'SimpleExpensesWorkflow' into the Azure storage workflow store
 	When I put the workflow called 'SimpleExpensesWorkflow' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflows/the-incorrect-workflow'
 	Then I should have received a 400 status code from the HTTP request
 

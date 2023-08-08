@@ -15,7 +15,8 @@ Scenario: Store a workflow definition
 	And the response should contain an ETag header
 
 Scenario: Attempt to store a workflow definition when a definition with the specified Id already exists
-	Given I have added the workflow 'SimpleExpensesWorkflow' to the workflow store with Id 'simple-expenses-workflow-2'
+	Given I have a workflow definition with Id 'simple-expenses-workflow-2' called 'SimpleExpensesWorkflow'
+	And I have inserted the workflow called 'SimpleExpensesWorkflow' into the Azure storage workflow store
 	When I post the workflow called 'SimpleExpensesWorkflow' to the workflow engine path '/{tenantId}/marain/workflow/engine/workflows'
 	Then I should have received a 409 status code from the HTTP request
 	

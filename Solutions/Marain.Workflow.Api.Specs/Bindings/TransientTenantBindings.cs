@@ -6,6 +6,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Azure.Storage.Blobs;
 
@@ -84,6 +85,12 @@ namespace Marain.Workflows.Api.Specs.Bindings
                 transientClientTenant.Id,
                 transientServiceTenant.Id,
                 enrollmentConfiguration).ConfigureAwait(false);
+
+            // Some of the steps in the Marain.Workflow.Specs.SharedBindings project expects the workflow definitions storage configuration
+            // to be available in the root tenant.
+            tenantProvider.Root.UpdateProperties(data => data.Append(new KeyValuePair<string, object>(
+                WorkflowAzureBlobTenancyPropertyKeys.Definitions,
+                definitionsStoreConfig)));
 
             // TODO: Temporary hack to work around the fact that the transient tenant manager no longer holds the latest
             // version of the tenants it's tracking; see https://github.com/marain-dotnet/Marain.TenantManagement/issues/28
