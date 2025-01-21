@@ -2,7 +2,7 @@
   <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,13 +18,13 @@
   <ItemGroup>
     <PackageReference Include="Corvus.Identity.MicrosoftRest" Version="3.2.0" />
     <PackageReference Include="Corvus.Leasing.Azure" Version="1.2.9" />
-    <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.12">
+    <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.15">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Marain.Tenancy.ClientTenantProvider" Version="3.0.4" />
     <PackageReference Include="Menes.Hosting.AspNetCore" Version="4.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="[8.0.*,)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,4 +34,3 @@
   </ItemGroup>
 
 </Project>
-
