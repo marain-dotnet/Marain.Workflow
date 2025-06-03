@@ -231,8 +231,8 @@
       },
       "Corvus.Identity.Abstractions": {
         "type": "Transitive",
-        "resolved": "3.3.0",
-        "contentHash": "yW2Yf08JOlTg968u/Ok3rx1D3hunGzkx0x9soZ9yGIco7uyyyQlbrHPzKqYr98/ulwut+nqHKfxY7o1osibWtw=="
+        "resolved": "4.0.0",
+        "contentHash": "5G+gAZiuYOYkklMklxvIeKCOKzjnMrB6dvlmpa469V/L+N1kaicj5GhUusoWQ2Piw+hYzyTHU63QxIRK7AsD5Q=="
       },
       "Corvus.Identity.Azure": {
         "type": "Transitive",
@@ -2148,7 +2148,7 @@
         "dependencies": {
           "Corvus.ContentHandling": "[4.0.0, )",
           "Corvus.Extensions.Newtonsoft.Json": "[3.0.0, )",
-          "Corvus.Identity.Abstractions": "[3.2.0, )",
+          "Corvus.Identity.Abstractions": "[4.0.0, )",
           "Corvus.Leasing.Abstractions": "[1.2.10, )",
           "Microsoft.AspNet.WebApi.Client": "[6.0.0, )",
           "Microsoft.CSharp": "[4.7.0, )",
