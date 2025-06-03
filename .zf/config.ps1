@@ -33,6 +33,12 @@ $SkipPackage = $false
 $SolutionToBuild = (Resolve-Path (Join-Path $here "./Solutions/Marain.Workflow.sln")).Path
 $IncludeAssembliesInCodeCoverage = "Marain.Workflow*"
 $NugetPublishSource = property ZF_NUGET_PUBLISH_SOURCE "$here/_local-nuget-feed"
+$ProjectsToPublish = @(
+    "Solutions\Marain.Workflow.Api.EngineHost\Marain.Workflow.Api.EngineHost.csproj"
+    "Solutions\Marain.Workflow.Api.MessageProcessingHost\Marain.Workflow.Api.MessageProcessingHost.csproj"
+)
+# $ExcludeFilesFromCodeCoverage = "**/Marain.Workflow.Api.Client/**/Models/*.cs,**/Marain.Workflow.Api.Client/**/MarainWorkflowService*.cs,**/Marain.Workflow.Api.EngineHost.Client/**/Models/*.cs,**/Marain.Workflow.Api.EngineHost.Client/**/MarainWorkflowEngine*.cs"
+
 
 # Customise the build process
 task . FullBuild
