@@ -24,9 +24,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Leasing.InMemory" Version="1.2.9" />
+    <PackageReference Include="Corvus.Leasing.InMemory" Version="1.2.10" />
     <PackageReference Include="Corvus.Testing.ReqnRoll.NUnit" Version="4.0.3" />
-    <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.15">
+    <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.18">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -34,9 +34,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="[8.0.*,)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="[8.0.*,)" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="[8.0.*,)" />
-    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="162.5.57" />
-    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.52.0" />
-    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="3.1.0" />
+    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="170.0.94" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.76.0" />
+    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="3.1.2" />
   </ItemGroup>
 
   <ItemGroup>

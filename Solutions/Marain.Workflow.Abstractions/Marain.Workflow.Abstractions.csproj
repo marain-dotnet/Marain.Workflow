@@ -16,11 +16,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.ContentHandling" Version="3.0.1" />
+    <PackageReference Include="Corvus.ContentHandling" Version="4.0.0" />
     <PackageReference Include="Corvus.Extensions.Newtonsoft.Json" Version="3.0.0" />
     <PackageReference Include="Corvus.Identity.Abstractions" Version="3.2.0" />
     <PackageReference Include="Corvus.Leasing.Abstractions" Version="1.2.10" />
-    <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.15">
+    <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.18">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -29,7 +29,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="[8.0.*,)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[8.0.*,)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="[8.0.*,)" />
-    <PackageReference Include="NodaTime" Version="3.2.1" />
+    <PackageReference Include="NodaTime" Version="3.2.2" />
     <PackageReference Include="System.Threading.Tasks.Parallel" Version="4.3.0" />
   </ItemGroup>
 
