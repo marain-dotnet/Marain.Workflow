@@ -47,6 +47,25 @@ jobs:
           ZF_NUGET_PUBLISH_SOURCE: ${{ startsWith(github.ref, 'refs/tags/') && 'https://api.nuget.org/v3/index.json' || format('https://nuget.pkg.github.com/{0}/index.json', github.repository_owner) }}
         secretsYaml: |
           NUGET_API_KEY: ${{ startsWith(github.ref, 'refs/tags/') && secrets.NUGET_APIKEY || secrets.BUILD_PUBLISHER_PAT }}
+          AzureServicesAuthConnectionString: ${{ secrets.TESTS_AZURESERVICESAUTHCONNECTIONSTRING }}
+          APPINSIGHTS_INSTRUMENTATIONKEY: ''
+          AzureWebJobsStorage: ${{ secrets.TESTS_AZURESTORAGECONNECTIONSTRING }}
+          TenancyClient__TenancyServiceBaseUri: ${{ vars.TESTS_MARAINTENANCYBASEURL }}
+          TenancyClient__ResourceIdForMsiAuthentication: ${{ vars.TESTS_MARAINTENANCYRESOURCEIDFORMSIAUTHENTICATION }}
+          Operations__ControlServiceBaseUrl: ${{ vars.TESTS_MARAINOPERATIONSCONTROLBASEURL }}
+          Operations__ResourceIdForMsiAuthentication: ${{ vars.TESTS_MARAINOPERATIONSCONTROLRESOURCEID }}
+          TestBlobStorageConfiguration__ConnectionStringPlainText: ${{ secrets.TESTS_AZURESTORAGECONNECTIONSTRING }}
+          TestStorageConfiguration__ConnectionStringPlainText: ${{ secrets.TESTS_AZURESTORAGECONNECTIONSTRING }}
+          TestCosmosConfiguration__AccountUri: ${{ vars.TESTS_COSMOSDBACCOUNTURI }}
+          TestCosmosConfiguration__AccessKeyInKeyVault__SecretName: ${{ vars.TESTS_COSMOSDBKEYSECRETNAME }}
+          TestCosmosConfiguration__AccessKeyInKeyVault__VaultName: ${{ vars.TESTS_KEYVAULTNAME }}
+          TestCosmosConfiguration__DisableTenantIdPrefix: true
+          TestSqlConfiguration__ConnectionStringInKeyVault__SecretName: ${{ vars.TESTS_SQLDBCONNECTIONSTRINGSECRETNAME }}
+          TestSqlConfiguration__ConnectionStringInKeyVault__VaultName: ${{ vars.TESTS_KEYVAULTNAME }}
+          MarainServiceConfiguration:ServiceDisplayName: ${{ vars.TESTS_MARAINWORKFLOWSERVICEDISPLAYNAME}}
+          MarainServiceConfiguration:ServiceTenantId: ${{ vars.TESTS_MARAINWORKFLOWSERVICETENANTID }}
+          LeasingStorageAccountConnectionString: ${{ secrets.TESTS_AZURESTORAGECONNECTIONSTRING }}
+          TenantedWorkflowEngineFactoryConfiguration__CloudEventBaseSourceName: 'azuresubscriptionid.workflowresourcegroupname'
         secretsEncryptionKey: ${{ secrets.SHARED_WORKFLOW_KEY}}
 
     - uses: endjin/Endjin.RecommendedPractices.GitHubActions/actions/run-build-process@main
