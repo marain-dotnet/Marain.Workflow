@@ -32,7 +32,6 @@ $SkipPackage = $false
 
 $SolutionToBuild = (Resolve-Path (Join-Path $here "./Solutions/Marain.Workflow.sln")).Path
 $IncludeAssembliesInCodeCoverage = "Marain.Workflow*"
-$TargetFrameworkMoniker = "net6.0" # prevent GHA trying to run tests under .NET Framework 4.5 - Linux agents now lack mono
 $NugetPublishSource = property ZF_NUGET_PUBLISH_SOURCE "$here/_local-nuget-feed"
 
 # Customise the build process
