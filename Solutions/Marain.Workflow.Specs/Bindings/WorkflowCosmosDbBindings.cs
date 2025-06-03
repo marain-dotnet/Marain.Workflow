@@ -14,7 +14,7 @@ namespace Marain.Workflows.Specs.Bindings
     using Corvus.Storage.Azure.Cosmos;
     using Corvus.Storage.Azure.Cosmos.Tenancy;
     using Corvus.Tenancy;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
 
     using Marain.Workflows.Specs.Steps;
     using Marain.Workflows.Storage;
@@ -22,11 +22,10 @@ namespace Marain.Workflows.Specs.Bindings
     using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     /// <summary>
-    /// Specflow bindings to support Cosmos DB.
+    /// Reqnroll bindings to support Cosmos DB.
     /// </summary>
     [Binding]
     public static class WorkflowCosmosDbBindings

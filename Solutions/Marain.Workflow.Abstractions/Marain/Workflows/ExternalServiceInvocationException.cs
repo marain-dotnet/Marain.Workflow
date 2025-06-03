@@ -66,17 +66,5 @@ namespace Marain.Workflows
             : this($"Action or condition [{actionOrConditionContentType}] with Id [{actionOrConditionId}] return status code [{responseStatusCode} - {responseReasonPhrase}] when executing for workflow instance [{workflowInstanceId}] as part of trigger [{triggerId}]", innerException)
         {
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExternalServiceInvocationException"/> class.
-        /// </summary>
-        /// <param name="info">The serialization info.</param>
-        /// <param name="context">The streaming context.</param>
-        protected ExternalServiceInvocationException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 }

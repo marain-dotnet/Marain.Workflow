@@ -15,15 +15,14 @@ namespace Marain.Workflows.Specs.Bindings
     using System.Threading.Tasks;
 
     using Corvus.Extensions.Json;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
 
     using Microsoft.Extensions.DependencyInjection;
 
     using Newtonsoft.Json;
 
     using NUnit.Framework;
-
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     /// <summary>
     /// Provides an external HTTP service.
@@ -78,7 +77,7 @@ namespace Marain.Workflows.Specs.Bindings
         /// Gets the external service associated with the current scenario.
         /// </summary>
         /// <param name="context">The current scenario context.</param>
-        /// <returns>The Extenrnal Service for the scenario.</returns>
+        /// <returns>The External Service for the scenario.</returns>
         public static ExternalService GetService(ScenarioContext context) => context.Get<ExternalService>();
 
         /// <summary>

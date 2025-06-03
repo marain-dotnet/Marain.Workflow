@@ -2,7 +2,8 @@
   <Import Project="$(EndjinProjectPropsPath)" Condition="$(EndjinProjectPropsPath) != ''" />
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
     <RootNamespace>Marain.Workflows.Specs</RootNamespace>
   </PropertyGroup>
@@ -23,19 +24,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Leasing.InMemory" Version="1.2.9" />
-    <PackageReference Include="Corvus.Testing.SpecFlow.NUnit" Version="2.0.0" />
-    <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.12">
+    <PackageReference Include="Corvus.Leasing.InMemory" Version="1.2.10" />
+    <PackageReference Include="Corvus.Testing.ReqnRoll.NUnit" Version="4.0.3" />
+    <PackageReference Include="Endjin.RecommendedPractices.GitHub" Version="2.1.18">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="[6.*,)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="[6.*,)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="[6.*,)" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="[6.*,)" />
-    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="161.6374.0" />
-    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="170.11.0" />
-    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="[8.0.*,)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="[8.0.*,)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="[8.0.*,)" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="[8.0.*,)" />
+    <PackageReference Include="Microsoft.SqlServer.DACFx" Version="170.0.94" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.76.0" />
+    <PackageReference Include="Marain.Services.Tenancy.Testing" Version="3.1.2" />
   </ItemGroup>
 
   <ItemGroup>
