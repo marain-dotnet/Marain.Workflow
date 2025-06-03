@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - main
+    - feature/migrate-to-zf-and-gha
     tags:
     - '*'
   pull_request:
