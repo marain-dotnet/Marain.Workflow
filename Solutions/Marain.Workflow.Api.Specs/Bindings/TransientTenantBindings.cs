@@ -13,8 +13,8 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using Corvus.Storage.Azure.Cosmos;
     using Corvus.Tenancy;
     using Corvus.Testing.AzureFunctions;
-    using Corvus.Testing.AzureFunctions.SpecFlow;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.AzureFunctions.ReqnRoll;
+    using Corvus.Testing.ReqnRoll;
     using Marain.Services;
     using Marain.TenantManagement.Configuration;
     using Marain.TenantManagement.EnrollmentConfiguration;
@@ -23,7 +23,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     /// <summary>
     /// Bindings to manage creation and deletion of tenants for test features.

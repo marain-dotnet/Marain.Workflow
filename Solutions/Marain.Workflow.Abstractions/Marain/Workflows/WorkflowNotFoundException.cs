@@ -36,15 +36,5 @@ namespace Marain.Workflows
             : base(message, inner)
         {
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowNotFoundException"/> class.
-        /// </summary>
-        /// <param name="info"> The serialization info. </param>
-        /// <param name="context"> The context. </param>
-        protected WorkflowNotFoundException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 }

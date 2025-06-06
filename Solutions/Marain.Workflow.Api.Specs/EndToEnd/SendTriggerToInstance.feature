@@ -3,7 +3,7 @@
 @useWorkflowEngineApi
 @useTransientTenant
 @useChildObjects
-Feature: SendTriggerToInstance
+Feature: SendTriggerToInstance 
 	In order to tell the workflow engine to carry out actions
 	As an external user of the workflow engine
 	I want to send a trigger to a specific workflow instance

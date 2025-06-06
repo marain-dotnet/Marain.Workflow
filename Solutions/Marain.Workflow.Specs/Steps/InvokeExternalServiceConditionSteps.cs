@@ -10,14 +10,14 @@ namespace Marain.Workflows.Specs.Steps
     using Corvus.Extensions.Json;
     using Corvus.Identity.ClientAuthentication;
     using Corvus.Tenancy;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
     using Marain.Workflows.Specs.Bindings;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Triggers;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using NUnit.Framework;
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     [Binding]
     public class InvokeExternalServiceConditionSteps

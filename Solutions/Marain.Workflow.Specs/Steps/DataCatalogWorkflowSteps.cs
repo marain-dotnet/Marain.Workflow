@@ -10,15 +10,14 @@ namespace Marain.Workflows.Specs.Steps
     using System.Threading.Tasks;
     using Corvus.Extensions;
     using Corvus.Tenancy;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Actions;
     using Marain.Workflows.Specs.TestObjects.Subjects;
     using Microsoft.Azure.Cosmos;
     using Microsoft.Extensions.DependencyInjection;
     using NUnit.Framework;
-    using TechTalk.SpecFlow;
-    using TechTalk.SpecFlow.Assist;
+    using Reqnroll;
 
     [Binding]
     public class DataCatalogWorkflowSteps
@@ -245,7 +244,7 @@ namespace Marain.Workflows.Specs.Steps
                 instance.Context.Count,
                 "The number of context items in the workflow instance is different to the number of items in the specified list");
 
-            foreach (TableRow current in expectedContextItems.Rows)
+            foreach (DataTableRow current in expectedContextItems.Rows)
             {
                 Assert.IsTrue(
                     instance.Context.TryGetValue(current[0], out string actualValue),

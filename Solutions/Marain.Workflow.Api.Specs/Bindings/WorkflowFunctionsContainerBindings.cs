@@ -5,7 +5,7 @@
 namespace Marain.Workflows.Api.Specs.Bindings
 {
     using Corvus.Leasing;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
     using Marain.Services;
     using Marain.Tenancy.Client;
     using Microsoft.Extensions.Configuration;
@@ -13,8 +13,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
     using Newtonsoft.Json.Serialization;
-
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     /// <summary>
     /// Bindings to set up the test container with workflow services so that test setup/teardown can be performed.
@@ -23,7 +22,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
     public static class WorkflowFunctionsContainerBindings
     {
         /// <summary>
-        /// Setup the endjin container for a feature.
+        /// Set up the endjin container for a feature.
         /// </summary>
         /// <param name="featureContext">The feature context for the current feature.</param>
         /// <remarks>We expect features run in parallel to be executing in separate app domains.</remarks>

@@ -5,11 +5,9 @@
 namespace Marain.Workflows.Api.Specs.Steps
 {
     using System.Linq;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
     using Microsoft.Extensions.DependencyInjection;
-
-    using TechTalk.SpecFlow;
-    using TechTalk.SpecFlow.Assist;
+    using Reqnroll;
 
     [Binding]
     public class ObjectSteps

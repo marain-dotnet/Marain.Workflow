@@ -9,8 +9,7 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     public class TraceAction : IWorkflowAction
     {
@@ -26,7 +25,7 @@ namespace Marain.Workflows.Specs.TestObjects.Actions
 
         public Task ExecuteAsync(WorkflowInstance instance, IWorkflowTrigger trigger)
         {
-            var log = GetTraces();
+            IList<string> log = GetTraces();
 
             log.Add(this.Message);
 
