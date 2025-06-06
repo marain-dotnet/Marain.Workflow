@@ -16,16 +16,14 @@ namespace Marain.Workflows.Api.Specs.Steps
     using Corvus.Retry;
     using Corvus.Retry.Policies;
     using Corvus.Retry.Strategies;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
     using Marain.TenantManagement.Testing;
     using Marain.Workflows.Api.Specs.Helpers;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using NUnit.Framework;
-
-    using TechTalk.SpecFlow;
-    using TechTalk.SpecFlow.Assist;
+    using Reqnroll;
 
     [Binding]
     public class WorkflowSteps
@@ -83,7 +81,7 @@ namespace Marain.Workflows.Api.Specs.Steps
             // Get the data from the requests as JObjects so we can check their values...
             JObject[] requestPayloads = subscriber.ReceivedRequests.Select(x => JObject.Parse(x.Content)).ToArray();
 
-            foreach (TableRow row in table.Rows)
+            foreach (DataTableRow row in table.Rows)
             {
                 int index = int.Parse(row[0]);
                 string path = row[1];

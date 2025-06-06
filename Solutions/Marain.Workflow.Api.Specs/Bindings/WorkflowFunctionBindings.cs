@@ -7,16 +7,15 @@ namespace Marain.Workflows.Api.Specs.Bindings
     using System.Threading.Tasks;
 
     using Corvus.Testing.AzureFunctions;
-    using Corvus.Testing.AzureFunctions.SpecFlow;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.AzureFunctions.ReqnRoll;
+    using Corvus.Testing.ReqnRoll;
 
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     /// <summary>
-    /// SpecFlow bindings to run the workflow functions using the Functions tools.
+    /// Reqnroll bindings to run the workflow functions using the Functions tools.
     /// </summary>
     [Binding]
     public static class WorkflowFunctionBindings
@@ -48,7 +47,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
             FunctionConfiguration config = FunctionsBindings.GetFunctionConfiguration(context);
             config.EnvironmentVariables["AzureFunctionsJobHost:logging:logLevel:default"] = "Debug";
 
-            return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
+            return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstanceAsync(
                     "Marain.Workflow.Api.EngineHost",
                     EngineHostPort,
                     "net6.0",
@@ -68,7 +67,7 @@ namespace Marain.Workflows.Api.Specs.Bindings
             config.EnvironmentVariables["Workflow:EngineClient:BaseUrl"] = EngineHostBaseUrl;
             config.EnvironmentVariables["AzureFunctionsJobHost:logging:logLevel:default"] = "Debug";
 
-            return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstance(
+            return FunctionsBindings.GetFunctionsController(context).StartFunctionsInstanceAsync(
                 "Marain.Workflow.Api.MessageProcessingHost",
                 MessageProcessingHostPort,
                 "net6.0",
@@ -88,12 +87,13 @@ namespace Marain.Workflows.Api.Specs.Bindings
         /// Tear down the running functions instances for the scenario.
         /// </summary>
         /// <param name="context">The current <see cref="FeatureContext"/>.</param>
+        /// <returns>Task which represents the status of the operation.</returns>
         [AfterFeature]
-        public static void TeardownFunctionsAfterScenario(FeatureContext context)
+        public static async Task TeardownFunctionsAfterScenario(FeatureContext context)
         {
             if (context.TryGetValue(out FunctionsController controller))
             {
-                context.RunAndStoreExceptions(controller.TeardownFunctions);
+                await context.RunAndStoreExceptionsAsync(async () => await controller.TeardownFunctionsAsync());
             }
         }
     }

@@ -13,7 +13,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     using System.Threading.Tasks;
 
     using Corvus.Extensions.Json;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
 
     using Marain.TenantManagement.Testing;
     using Marain.Workflows.Api.Specs.Bindings;
@@ -23,8 +23,7 @@ namespace Marain.Workflows.Api.Specs.Steps
     using Newtonsoft.Json;
 
     using NUnit.Framework;
-
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     [Binding]
     public class WebRequestSteps
