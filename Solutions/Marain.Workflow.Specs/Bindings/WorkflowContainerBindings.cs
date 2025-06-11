@@ -8,7 +8,7 @@ namespace Marain.Workflows.Specs.Bindings
     using System.Linq;
 
     using Corvus.Identity.ClientAuthentication.Azure;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
     using Marain.Workflows.Specs.TestObjects;
     using Marain.Workflows.Specs.TestObjects.Subjects;
     using Microsoft.Extensions.Configuration;
@@ -16,8 +16,7 @@ namespace Marain.Workflows.Specs.Bindings
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
     using Newtonsoft.Json.Serialization;
-
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     /// <summary>
     /// Container related bindings to configure the service provider for features.

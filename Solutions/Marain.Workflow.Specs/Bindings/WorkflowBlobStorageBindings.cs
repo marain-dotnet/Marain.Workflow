@@ -14,17 +14,16 @@ namespace Marain.Workflows.Specs.Bindings
     using Corvus.Storage.Azure.BlobStorage;
     using Corvus.Storage.Azure.BlobStorage.Tenancy;
     using Corvus.Tenancy;
-    using Corvus.Testing.SpecFlow;
+    using Corvus.Testing.ReqnRoll;
 
     using Marain.Workflows.Storage;
 
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     /// <summary>
-    /// Specflow bindings to support BlobStorage DB.
+    /// Reqnroll bindings to support BlobStorage DB.
     /// </summary>
     [Binding]
     public static class WorkflowBlobStorageBindings

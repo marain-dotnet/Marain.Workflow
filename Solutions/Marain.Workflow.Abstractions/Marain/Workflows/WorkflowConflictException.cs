@@ -36,17 +36,5 @@ namespace Marain.Workflows
             : base(message, inner)
         {
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowConflictException"/> class.
-        /// </summary>
-        /// <param name="info"> The serialization info. </param>
-        /// <param name="context"> The context. </param>
-        protected WorkflowConflictException(
-            SerializationInfo info,
-            StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 }

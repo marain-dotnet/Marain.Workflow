@@ -8,8 +8,7 @@ namespace Marain.Workflows.Specs.TestObjects.Subjects
 {
     using Microsoft.Azure.Cosmos;
     using Marain.Workflows.Specs.Bindings;
-
-    using TechTalk.SpecFlow;
+    using Reqnroll;
 
     public class DataCatalogItemRepositoryFactory
     {
